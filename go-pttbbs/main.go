@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/Ptt-official-app/go-pttbbs/api"
+	"github.com/Ptt-official-app/go-pttbbs/types"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	jww "github.com/spf13/jwalterweatherman"
@@ -63,6 +64,11 @@ func initMain() error {
 		return err
 	}
 	err = api.InitConfig()
+	if err != nil {
+		return err
+	}
+	log.Infof("to types.InitConfig")
+	err = types.InitConfig()
 	if err != nil {
 		return err
 	}
