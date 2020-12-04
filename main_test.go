@@ -25,7 +25,7 @@ func Test_Index(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{
-			args: args{path: "/", params: &api.IndexParams{}},
+			args: args{path: "/", params: &api.IndexParams{}}, // json: {}
 		},
 	}
 	for _, tt := range tests {
