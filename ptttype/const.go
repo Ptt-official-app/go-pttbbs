@@ -61,6 +61,12 @@ const (
 	CLEAN_USER_EXPIRE_RANGE_MIN = 365 * 12 * 60 // 180 days.
 
 	//mbbsd/user.c line: 42
-	DIR_TMP  = "tmp"
-	DIR_HOME = "home"
+	DIR_TMP   = "tmp"
+	DIR_HOME  = "home"
+	DIR_BOARD = "boards"
+)
+
+const (
+	//mbbsd/board.c line: 1477
+	USE_REAL_DESC_FOR_HIDDEN_BOARD_IN_MYFAV = false
 )

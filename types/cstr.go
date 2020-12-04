@@ -129,3 +129,19 @@ func CcharTolower(ch byte) byte {
 
 	return ch
 }
+
+func CstrToupper(cstr Cstr) Cstr {
+	cstrUpper := make(Cstr, len(cstr))
+	for idx, each := range cstr {
+		cstrUpper[idx] = CcharToupper(each)
+	}
+
+	return cstrUpper
+}
+
+func CcharToupper(ch byte) byte {
+	if ch >= 'a' && ch <= 'z' {
+		return ch - 32
+	}
+	return ch
+}

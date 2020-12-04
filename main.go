@@ -48,19 +48,7 @@ func initAllConfig(filename string) error {
 
 	log.Infof("viper keys: %v", viper.AllKeys())
 
-	return InitConfig()
-}
-
-func initMain() error {
-	jww.SetLogThreshold(jww.LevelDebug)
-	jww.SetStdoutThreshold(jww.LevelDebug)
-	log.SetLevel(log.InfoLevel)
-
-	filename := ""
-	flag.StringVar(&filename, "ini", "config.ini", "ini filename")
-	flag.Parse()
-
-	err := InitConfig()
+	err = InitConfig()
 	if err != nil {
 		return err
 	}
@@ -76,6 +64,18 @@ func initMain() error {
 	if err != nil {
 		return err
 	}
+
+	return InitConfig()
+}
+
+func initMain() error {
+	jww.SetLogThreshold(jww.LevelDebug)
+	jww.SetStdoutThreshold(jww.LevelDebug)
+	log.SetLevel(log.InfoLevel)
+
+	filename := ""
+	flag.StringVar(&filename, "ini", "config.ini", "ini filename")
+	flag.Parse()
 
 	return initAllConfig(filename)
 }

@@ -366,3 +366,67 @@ func TestCstrcasestr(t *testing.T) {
 		})
 	}
 }
+
+func TestCstrToupper(t *testing.T) {
+	type args struct {
+		cstr Cstr
+	}
+	tests := []struct {
+		name     string
+		args     args
+		expected Cstr
+	}{
+		// TODO: Add test cases.
+		{
+			args:     args{Cstr([]byte("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_-+=[]{}"))},
+			expected: Cstr([]byte("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_-+=[]{}")),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := CstrToupper(tt.args.cstr); !reflect.DeepEqual(got, tt.expected) {
+				t.Errorf("CstrToupper() = %v, want %v", got, tt.expected)
+			}
+		})
+	}
+}
+
+func TestCcharToupper(t *testing.T) {
+	type args struct {
+		theByte byte
+	}
+	tests := []struct {
+		name     string
+		args     args
+		expected byte
+	}{
+		// TODO: Add test cases.
+		{
+			args:     args{'a'},
+			expected: 'A',
+		},
+		{
+			args:     args{'A'},
+			expected: 'A',
+		},
+		{
+			args:     args{'0'},
+			expected: '0',
+		},
+		{
+			args:     args{'9'},
+			expected: '9',
+		},
+		{
+			args:     args{'?'},
+			expected: '?',
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := CcharToupper(tt.args.theByte); got != tt.expected {
+				t.Errorf("toupper() = %v, expected %v", got, tt.expected)
+			}
+		})
+	}
+}
