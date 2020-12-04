@@ -90,6 +90,10 @@ func Test_fnv1a32DBCSCase(t *testing.T) {
 		expected uint32
 	}{
 		// TODO: Add test cases.
+		{
+			args:     args{[]byte("12312"), 12345},
+			expected: 0x2d7500e0,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
