@@ -896,6 +896,12 @@ func TestMemcmp(t *testing.T) {
 	text2 := [13]byte{}
 	copy(text2[:], []byte("456"))
 
+	text3 := [13]byte{}
+	copy(text3[:], []byte("C124"))
+
+	text4 := [13]byte{}
+	copy(text4[:], []byte("1DE"))
+
 	type args struct {
 		shmaddr unsafe.Pointer
 		offset  int
@@ -909,27 +915,49 @@ func TestMemcmp(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{
+			name: "ABC",
 			args: args{
 				shmaddr: shmaddr,
 				offset:  4500,
 				size:    uintptr(3),
 				cmpaddr: unsafe.Pointer(&text1),
 			},
-			expected: 0, //equal
+			expected: 0, //ABC: equal
 		},
 		{
+			name: "456",
 			args: args{
 				shmaddr: shmaddr,
 				offset:  4500,
 				size:    uintptr(3),
 				cmpaddr: unsafe.Pointer(&text2),
 			},
-			expected: 'A' - '4', // equal
+			expected: 1, //456: gt
+		},
+		{
+			name: "C124",
+			args: args{
+				shmaddr: shmaddr,
+				offset:  4500,
+				size:    uintptr(3),
+				cmpaddr: unsafe.Pointer(&text3),
+			},
+			expected: -1, //C124 lt
+		},
+		{
+			name: "1DE",
+			args: args{
+				shmaddr: shmaddr,
+				offset:  4500,
+				size:    uintptr(3),
+				cmpaddr: unsafe.Pointer(&text4),
+			},
+			expected: 1, //1DE gt
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Memcmp(tt.args.shmaddr, tt.args.offset, tt.args.size, tt.args.cmpaddr); got != tt.expected {
+			if got := Memcmp(tt.args.shmaddr, tt.args.offset, tt.args.size, tt.args.cmpaddr); got*tt.expected < 0 {
 				t.Errorf("Memcmp() = %v, want %v", got, tt.expected)
 			}
 		})
