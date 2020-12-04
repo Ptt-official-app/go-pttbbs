@@ -1,5 +1,7 @@
 package ptttype
 
+import "github.com/Ptt-official-app/go-pttbbs/types"
+
 func config() {
 	serviceModeStr := setStringConfig("SERVICE_MODE", "DEV")
 	SERVICE_MODE = stringToServiceMode(serviceModeStr)
@@ -157,7 +159,7 @@ func config() {
 
 	DEFAULT_FILE_CREATE_PERM = setIntConfig("DEFAULT_FILE_CREATE_PERM", DEFAULT_FILE_CREATE_PERM)
 
-	SHM_KEY = setIntConfig("SHM_KEY", SHM_KEY)
+	SHM_KEY = types.Key_t(setIntConfig("SHM_KEY", int(SHM_KEY)))
 
 	PASSWDSEM_KEY = setIntConfig("PASSWDSEM_KEY", PASSWDSEM_KEY)
 

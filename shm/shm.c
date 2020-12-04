@@ -2,14 +2,6 @@
 
 char *_BCACHEPTR;
 
-int isEExist() {
-  return errno == EEXIST;
-}
-
-int isPtrLessThan0(void *p) {
-  return p < 0;
-}
-
 void
 readwrapper(void *outptr, void *shmaddr, int offset, unsigned long n) {
   unsigned char *src = (unsigned char *)shmaddr + offset;
@@ -60,8 +52,6 @@ memsetwrapper(void *shmaddr, int offset, unsigned char c, unsigned long n) {
 void
 set_bcacheptr(void *shmaddr, int offset) {
     _BCACHEPTR = (char *)shmaddr + offset;
-
-    fprintf(stderr, "_BCACHEPTR: %lu\n", (unsigned long)_BCACHEPTR);
 }
 
 char *
@@ -79,14 +69,6 @@ qsort_cmpboardname_wrapper(void *shmaddr, int offset, unsigned long n) {
     int *pbsortedaddr = (int *)bsortedaddr;
     for (i = 0, pbsortedaddr = (int *)bsortedaddr; i < n; i++, pbsortedaddr++) {
         *pbsortedaddr = i;
-    }
-
-    char *bcache_i;
-    unsigned long _offset = 0;
-    for(i = 0; i < n; i++) {
-      bcache_i = _bcache(i);
-
-      fprintf(stderr, "bcache: (%d/%lu) %s\n", i, n, bcache_i + _offset);
     }
 
     //qsort

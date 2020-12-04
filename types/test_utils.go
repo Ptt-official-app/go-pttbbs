@@ -5,13 +5,19 @@ import (
 	"testing"
 )
 
-func DeepEqual(t *testing.T, got interface{}, expected interface{}) {
+func TDeepEqual(t *testing.T, got interface{}, expected interface{}) {
 	if !reflect.DeepEqual(got, expected) {
 		t.Errorf("got = %v, want %v", got, expected)
 	}
 
-	gotVal := reflect.ValueOf(got).Elem()
-	expectedVal := reflect.ValueOf(expected).Elem()
+	valueOfGot := reflect.ValueOf(got)
+	valueOfExpect := reflect.ValueOf(expected)
+	if valueOfGot.IsNil() || valueOfExpect.IsNil() {
+		return
+	}
+
+	gotVal := valueOfGot.Elem()
+	expectedVal := valueOfExpect.Elem()
 	for i := 0; i < gotVal.NumField(); i++ {
 		valueField := gotVal.Field(i)
 		typeField := gotVal.Type().Field(i)

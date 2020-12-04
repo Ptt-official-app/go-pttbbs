@@ -1,6 +1,7 @@
 package ptttype
 
 import (
+	"github.com/Ptt-official-app/go-pttbbs/types"
 	"github.com/Ptt-official-app/go-pttbbs/types/ansi"
 )
 
@@ -276,7 +277,7 @@ var (
 
 	DEFAULT_FILE_CREATE_PERM = 0644
 
-	SHM_KEY = 1228
+	SHM_KEY = types.Key_t(1228)
 
 	PASSWDSEM_KEY = 2010 /* semaphore key */
 

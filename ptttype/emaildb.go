@@ -18,8 +18,8 @@ const (
 
 type RegMailDBReq struct {
 	RegMailDBReqHeader
-	UserID [IDLEN + 1]byte
-	Email  [EMAILSZ]byte
+	UserID UserID_t
+	Email  Email_t
 }
 
 const REG_MAILDB_REQ_SZ = unsafe.Sizeof(RegMailDBReq{})

@@ -10,6 +10,8 @@ const (
 	SORT_BY_FROM
 	SORT_BY_FIVE
 	SORT_BY_SEX
+
+	SORT_BY_MAX SortByCategory = 9
 )
 
 func (d SortByCategory) String() string {
