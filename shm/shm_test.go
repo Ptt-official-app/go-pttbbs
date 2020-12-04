@@ -888,7 +888,7 @@ func TestMemcmp(t *testing.T) {
 
 	WriteAt(
 		shmaddr,
-		20,
+		4500,
 		13,
 		unsafe.Pointer(&text1),
 	)
@@ -911,7 +911,7 @@ func TestMemcmp(t *testing.T) {
 		{
 			args: args{
 				shmaddr: shmaddr,
-				offset:  20,
+				offset:  4500,
 				size:    uintptr(3),
 				cmpaddr: unsafe.Pointer(&text1),
 			},
@@ -920,7 +920,7 @@ func TestMemcmp(t *testing.T) {
 		{
 			args: args{
 				shmaddr: shmaddr,
-				offset:  20,
+				offset:  4500,
 				size:    uintptr(3),
 				cmpaddr: unsafe.Pointer(&text2),
 			},
