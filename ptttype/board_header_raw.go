@@ -44,4 +44,9 @@ type BoardHeaderRaw struct {
 }
 
 //Require updating SHM_VERSION if BOARD_HEADER_RAW_SZ is changed.
-const BOARD_HEADER_RAW_SZ = unsafe.Sizeof(BoardHeaderRaw{})
+
+var EMPTY_BOARD_HEADER_RAW = BoardHeaderRaw{}
+
+const BOARD_HEADER_RAW_SZ = unsafe.Sizeof(EMPTY_BOARD_HEADER_RAW)
+const BOARD_HEADER_BRDNAME_OFFSET = unsafe.Offsetof(EMPTY_BOARD_HEADER_RAW.Brdname)
+const BOARD_HEADER_TITLE_OFFSET = unsafe.Offsetof(EMPTY_BOARD_HEADER_RAW.Title)
