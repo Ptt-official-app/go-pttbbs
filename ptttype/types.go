@@ -42,9 +42,11 @@ type Owner_t [IDLEN + 2]byte //user-id[.]
 type Title_t [TTLEN + 1]byte
 
 var (
-	EMPTY_USER_ID  = UserID_t{}
-	EMPTY_BOARD_ID = BoardID_t{}
+	EMPTY_USER_ID     = UserID_t{}
+	EMPTY_BOARD_ID    = BoardID_t{}
+	EMPTY_BOARD_TITLE = BoardTitle_t{}
 )
 
 const USER_ID_SZ = unsafe.Sizeof(EMPTY_USER_ID)
 const BOARD_ID_SZ = unsafe.Sizeof(EMPTY_BOARD_ID)
+const BOARD_TITLE_SZ = unsafe.Sizeof(EMPTY_BOARD_TITLE)
