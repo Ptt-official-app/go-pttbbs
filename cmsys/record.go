@@ -1,6 +1,8 @@
 package cmsys
 
-import "os"
+import (
+	"os"
+)
 
 func GetNumRecords(filename string, size uintptr) int {
 	stat, err := os.Stat(filename)

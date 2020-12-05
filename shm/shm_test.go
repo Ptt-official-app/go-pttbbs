@@ -40,11 +40,13 @@ func TestCreateShm(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{
+			name:      "first-good-shm-id",
 			args:      args{testShmKey, 100, false},
 			wantShmid: 0,
 			wantIsNew: true,
 		},
 		{
+			name:      "not first-good-shm-id",
 			args:      args{testShmKey, 100, false},
 			wantShmid: 0,
 			wantIsNew: false,
@@ -52,37 +54,42 @@ func TestCreateShm(t *testing.T) {
 	}
 
 	firstGoodShmID := 0
-	for _, tt := range tests {
-		if firstGoodShmID != 0 {
-			tt.wantShmid = firstGoodShmID
+	var firstGoodShmaddr unsafe.Pointer
+	defer CloseShm(firstGoodShmID, firstGoodShmaddr)
+	for idx, tt := range tests {
+		gotShmid, gotShmaddr, gotIsNew, err := CreateShm(tt.args.key, tt.args.size, tt.args.is_usehugetlb)
+		log.Infof("(%v/%v): after CreateShm: gotShmid: %v gotShmaddr: %v gotIsNew: %v e: %v", idx, tt.name, gotShmid, gotShmaddr, gotIsNew, err)
+
+		if (err != nil) != tt.wantErr {
+			t.Errorf("(%v/%v): CreateShm() error = %v, wantErr %v", idx, tt.name, err, tt.wantErr)
+			return
 		}
 
-		t.Run(tt.name, func(t *testing.T) {
-			gotShmid, _, gotIsNew, err := CreateShm(tt.args.key, tt.args.size, tt.args.is_usehugetlb)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("CreateShm() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
+		log.Infof("shm_test.CreateShm: to check firstGoodShmID: %v %v", firstGoodShmID, firstGoodShmaddr)
+		if firstGoodShmID == 0 {
+			firstGoodShmID = gotShmid
+			firstGoodShmaddr = gotShmaddr
+		}
 
-			if tt.wantShmid != 0 && gotShmid != tt.wantShmid {
-				t.Errorf("CreateShm() gotShmid = %v, expected %v", gotShmid, tt.wantShmid)
-			}
-			if gotIsNew != tt.wantIsNew {
-				t.Errorf("CreateShm() gotIsNew = %v, expected %v", gotIsNew, tt.wantIsNew)
-			}
-		})
+		if tt.wantShmid != 0 && gotShmid != tt.wantShmid {
+			t.Errorf("%v: CreateShm() gotShmid = %v, expected %v", tt.name, gotShmid, tt.wantShmid)
+		}
+		if gotIsNew != tt.wantIsNew {
+			t.Errorf("%v: CreateShm() gotIsNew = %v, expected %v", tt.name, gotIsNew, tt.wantIsNew)
+		}
 	}
-	CloseShm(firstGoodShmID)
 }
 
 func TestCloseShm(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	gotShmid, _, _, _ := CreateShm(testShmKey, 100, false)
+	gotShmid, gotShmaddr, _, _ := CreateShm(testShmKey, 100, false)
+	log.Infof("TestCloseShm: after CreateShm: gotShmid: %v gotShmaddr: %v", gotShmid, gotShmaddr)
 
 	type args struct {
-		shmid int
+		shmid   int
+		shmaddr unsafe.Pointer
 	}
 	tests := []struct {
 		name    string
@@ -91,16 +98,18 @@ func TestCloseShm(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{
-			args: args{gotShmid},
+			args: args{gotShmid, gotShmaddr},
 		},
 		{
-			args: args{gotShmid},
+			args:    args{gotShmid, gotShmaddr},
+			wantErr: true,
 		},
 	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			CloseShm(tt.args.shmid)
-		})
+	for idx, tt := range tests {
+		err := CloseShm(tt.args.shmid, tt.args.shmaddr)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("(%v/%v) CloseShm: e: %v wantErr: %v", idx, tt.name, err, tt.wantErr)
+		}
 	}
 }
 
@@ -108,8 +117,8 @@ func TestOpenShm(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	shmid, _, _, _ := CreateShm(testShmKey, 100, false)
-	defer CloseShm(shmid)
+	shmid, shmaddr, _, _ := CreateShm(testShmKey, 100, false)
+	defer CloseShm(shmid, shmaddr)
 
 	type args struct {
 		key           types.Key_t
@@ -167,7 +176,7 @@ func TestReadAt(t *testing.T) {
 	defer teardownTest()
 
 	shmid, shmaddr, _, _ := CreateShm(testShmKey, 40, false)
-	defer CloseShm(shmid)
+	defer CloseShm(shmid, shmaddr)
 
 	_, shmaddr2, _ := OpenShm(testShmKey, 40, false)
 
@@ -244,7 +253,7 @@ func TestWriteAt(t *testing.T) {
 	defer teardownTest()
 
 	shmid, shmaddr, _, _ := CreateShm(testShmKey, 40, false)
-	defer CloseShm(shmid)
+	defer CloseShm(shmid, shmaddr)
 
 	empty := [40]byte{}
 	emptyptr := unsafe.Pointer(&empty)
@@ -322,7 +331,7 @@ func TestIncUint32(t *testing.T) {
 	defer teardownTest()
 
 	shmid, shmaddr, _, _ := CreateShm(testShmKey, 40, false)
-	defer CloseShm(shmid)
+	defer CloseShm(shmid, shmaddr)
 
 	empty := [40]byte{}
 	emptyptr := unsafe.Pointer(&empty)
@@ -369,7 +378,7 @@ func TestSetOrUint32(t *testing.T) {
 	defer teardownTest()
 
 	shmid, shmaddr, _, _ := CreateShm(testShmKey, 40, false)
-	defer CloseShm(shmid)
+	defer CloseShm(shmid, shmaddr)
 
 	type args struct {
 		shmaddr unsafe.Pointer
@@ -418,7 +427,7 @@ func TestInnerSetInt32(t *testing.T) {
 	defer teardownTest()
 
 	shmid, shmaddr, _, _ := CreateShm(testShmKey, 40, false)
-	defer CloseShm(shmid)
+	defer CloseShm(shmid, shmaddr)
 
 	in := int32(8)
 	WriteAt(
@@ -467,7 +476,7 @@ func TestMemset(t *testing.T) {
 	defer teardownTest()
 
 	shmid, shmaddr, _, _ := CreateShm(testShmKey, 40, false)
-	defer CloseShm(shmid)
+	defer CloseShm(shmid, shmaddr)
 
 	type args struct {
 		shmaddr unsafe.Pointer
@@ -513,7 +522,7 @@ func TestQsortCmpBoardName(t *testing.T) {
 	defer teardownTest()
 
 	shmid, shmaddr, _, _ := CreateShm(testShmKey, 5000, false)
-	defer CloseShm(shmid)
+	defer CloseShm(shmid, shmaddr)
 
 	SetBCACHEPTR(shmaddr, 1200)
 
@@ -697,7 +706,7 @@ func TestQsortCmpBoardClass(t *testing.T) {
 	defer teardownTest()
 
 	shmid, shmaddr, _, _ := CreateShm(testShmKey, 5000, false)
-	defer CloseShm(shmid)
+	defer CloseShm(shmid, shmaddr)
 
 	SetBCACHEPTR(shmaddr, 1200)
 
@@ -881,7 +890,7 @@ func TestMemcmp(t *testing.T) {
 	defer teardownTest()
 
 	shmid, shmaddr, _, _ := CreateShm(testShmKey, 5000, false)
-	defer CloseShm(shmid)
+	defer CloseShm(shmid, shmaddr)
 
 	text1 := [13]byte{}
 	copy(text1[:], []byte("ABC"))

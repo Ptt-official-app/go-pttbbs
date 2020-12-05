@@ -181,14 +181,7 @@ const (
 	/* ----------------------------------------------------- */
 	/* 群組名單模式   Ptt                                    */
 	/* ----------------------------------------------------- */
-	FRIEND_OVERRIDE = 0
-	FRIEND_REJECT   = 1
-	FRIEND_ALOHA    = 2
-	// #define FRIEND_POST     3	    // deprecated
-	FRIEND_SPECIAL = 4
-	FRIEND_CANVOTE = 5
-	BOARD_WATER    = 6
-	BOARD_VISIBLE  = 7
+	// friend_type.go
 
 	LOCK_THIS  = 1 // lock這線不能重複玩
 	LOCK_MULTI = 2 // lock所有線不能重複玩

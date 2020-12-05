@@ -8,7 +8,7 @@ import (
 
 type UserInfoRaw struct {
 	//Require updating SHM_VERSION if USER_INFO_RAW_SZ is changed.
-	Uid      int32       /* Used to find user name in passwd file */
+	Uid      Uid         /* Used to find user name in passwd file */
 	Pid      types.Pid_t /* kill() to notify user of talk request */
 	SockAddr int32       /* ... */
 

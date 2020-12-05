@@ -3,6 +3,8 @@ package shm
 //#include "shm.h"
 import "C"
 import (
+	"os"
+	"reflect"
 	"unsafe"
 
 	"github.com/Ptt-official-app/go-pttbbs/types"
@@ -14,22 +16,26 @@ func CreateShm(key types.Key_t, size types.Size_t, isUseHugeTlb bool) (shmid int
 	if isUseHugeTlb {
 		flags |= SHM_HUGETLB
 	}
-	shmid = shmget(key, size, flags)
+	shmid, err = shmget(key, size, flags)
+	log.Debugf("shm.CreateShm: after 1st shmget: shmid: %v err: (%v/%v)", shmid, err, reflect.TypeOf(err))
 
-	isEExist := int(C.isEExist()) != 0
-	if isEExist {
+	isEExist := false
+	if os.IsExist(err) {
+		isEExist = true
 		flags = 0600 | IPC_CREAT
 		if isUseHugeTlb {
 			flags |= SHM_HUGETLB
 		}
-		shmid = shmget(key, size, flags)
+		shmid, err = shmget(key, size, flags)
+		log.Debugf("shm.CreateShm: after 2nd shmget: shmid: %v err: (%v/%v)", shmid, err, reflect.TypeOf(err))
 	}
 	if shmid < 0 {
 		log.Errorf("shm.CreateShm: unable to create shm: key: %v size: %v", key, size)
-		return shmid, nil, false, ErrInvalidShm
+		return shmid, nil, false, err
 	}
 
 	shmaddr, err = shmat(shmid, nil, 0)
+	log.Infof("shm.CreateShm: after shmat: shmaddr: %v e: %v", shmaddr, err)
 	if err != nil {
 		return -1, nil, false, err
 	}
@@ -42,11 +48,11 @@ func OpenShm(key types.Key_t, size types.Size_t, is_usehugetlb bool) (shmid int,
 	if is_usehugetlb {
 		flags |= SHM_HUGETLB
 	}
-	shmid = shmget(key, size, flags)
+	shmid, err = shmget(key, size, flags)
 
-	if shmid < 0 {
+	if err != nil {
 		log.Errorf("shm.OpenShm: unable to create shm: key: %v size: %v", key, size)
-		return shmid, nil, ErrInvalidShm
+		return shmid, nil, err
 	}
 
 	shmaddr, err = shmat(shmid, nil, 0)
@@ -57,12 +63,18 @@ func OpenShm(key types.Key_t, size types.Size_t, is_usehugetlb bool) (shmid int,
 	return shmid, shmaddr, nil
 }
 
-func CloseShm(shmid int) (err error) {
-	cerrno := C.shmctl(C.int(shmid), C.IPC_RMID, nil)
+func CloseShm(shmid int, shmaddr unsafe.Pointer) (err error) {
+	cret, err := C.shmdt(shmaddr)
+	log.Debugf("shm.CloseShm: After detach shm: shmaddr: %v ret: %v err: %v", shmaddr, cret, err)
 
-	log.Infof("After close shm: errno: %v", cerrno)
+	if err != nil {
+		return err
+	}
 
-	if int(cerrno) < 0 {
+	cret, err = C.shmctl(C.int(shmid), C.IPC_RMID, nil)
+	log.Infof("shm.CloseShm: After close shm: ret: %v, err: %v", cret, err)
+
+	if int(cret) < 0 {
 		return ErrUnableToCloseShm
 	}
 
@@ -117,16 +129,20 @@ func Memcmp(shmaddr unsafe.Pointer, offset int, size uintptr, cmpaddr unsafe.Poi
 	return int(cret)
 }
 
-func shmget(key types.Key_t, size types.Size_t, shmflg int) int {
-	cshmid := C.shmget(C.int(key), C.ulong(size), C.int(shmflg))
-	return int(cshmid)
+func shmget(key types.Key_t, size types.Size_t, shmflg int) (int, error) {
+	cshmid, err := C.shmget(C.int(key), C.ulong(size), C.int(shmflg))
+	shmid := int(cshmid)
+	if shmid < 0 {
+		log.Errorf("unable to shmget: shmid: %v e: %v", shmid, err)
+	}
+	return shmid, err
 }
 
 func shmat(shmid int, shmaddr unsafe.Pointer, shmflg int) (unsafe.Pointer, error) {
-	shmaddr = C.shmat(C.int(shmid), shmaddr, C.int(shmflg))
-	if int(C.isPtrLessThan0(shmaddr)) != 0 {
-		return nil, ErrUnableToAttachShm
+	newShmAddr, err := C.shmat(C.int(shmid), shmaddr, C.int(shmflg))
+	if err != nil {
+		return nil, err
 	}
 
-	return shmaddr, nil
+	return newShmAddr, nil
 }
