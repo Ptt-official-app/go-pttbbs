@@ -308,7 +308,7 @@ func reloadCacheLoadBottom() {
 }
 
 func reloadBCacheReadFile() ([]byte, error) {
-	file, err := os.Open(path.SetBBSHomePath(ptttype.FN_BOARD))
+	file, err := os.Open(ptttype.FN_BOARD)
 	if err != nil {
 		return nil, err
 	}

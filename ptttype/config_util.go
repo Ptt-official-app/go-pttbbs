@@ -56,6 +56,7 @@ func SetBBSHOME(bbshome string) string {
 	//common.go
 	FN_CONF_BANIP = BBSHOME + FN_CONF_BANIP_POSTFIX // 禁止連線的 IP 列表
 	FN_PASSWD = BBSHOME + FN_PASSWD_POSTFIX         /* User records */
+	FN_BOARD = BBSHOME + FN_BOARD_POSTFIX           /* board list */
 
 	return origBBSHome
 }

@@ -20,25 +20,25 @@ const (
 	FN_CONF_BINDPORTS   = "etc/bindports.conf" // 預設要提供連線服務的 port 列表
 
 	// BBS Data File Names
-	FN_CHICKEN                 = "chicken"
-	FN_USSONG                  = "ussong"    /* 點歌統計 */
-	FN_POST_NOTE               = "post.note" /* po文章備忘錄 */
-	FN_POST_BID                = "post.bid"
-	FN_MONEY                   = "etc/money"
-	FN_OVERRIDES               = "overrides"
-	FN_REJECT                  = "reject"
-	FN_WATER                   = "water"           // 舊水桶
-	FN_BANNED                  = "banned"          // 新水桶
-	FN_BANNED_HISTORY          = "banned.history"  // 新水桶之歷史記錄
-	FN_BADPOST_HISTORY         = "badpost.history" // 劣文歷史記錄
-	FN_CANVOTE                 = "can_vote"
-	FN_VISIBLE                 = "visable" // 不知道是誰拼錯的，將錯就錯吧... // variable corrected in go.
-	FN_ALOHAED                 = "alohaed" // 上站要通知我的名單 (編輯用)
-	FN_ALOHA                   = "aloha"   // 我上站要通知的名單 (自動產生)
-	FN_USIES                   = "usies"   /* BBS log */
-	FN_DIR                     = ".DIR"
-	FN_DIR_BOTTOM              = ".DIR.bottom"
-	FN_BOARD                   = ".BRD"    /* board list */
+	FN_CHICKEN         = "chicken"
+	FN_USSONG          = "ussong"    /* 點歌統計 */
+	FN_POST_NOTE       = "post.note" /* po文章備忘錄 */
+	FN_POST_BID        = "post.bid"
+	FN_MONEY           = "etc/money"
+	FN_OVERRIDES       = "overrides"
+	FN_REJECT          = "reject"
+	FN_WATER           = "water"           // 舊水桶
+	FN_BANNED          = "banned"          // 新水桶
+	FN_BANNED_HISTORY  = "banned.history"  // 新水桶之歷史記錄
+	FN_BADPOST_HISTORY = "badpost.history" // 劣文歷史記錄
+	FN_CANVOTE         = "can_vote"
+	FN_VISIBLE         = "visable" // 不知道是誰拼錯的，將錯就錯吧... // variable corrected in go.
+	FN_ALOHAED         = "alohaed" // 上站要通知我的名單 (編輯用)
+	FN_ALOHA           = "aloha"   // 我上站要通知的名單 (自動產生)
+	FN_USIES           = "usies"   /* BBS log */
+	FN_DIR             = ".DIR"
+	FN_DIR_BOTTOM      = ".DIR.bottom"
+	//FN_BOARD                   = ".BRD"    /* board list */ (var)
 	FN_USEBOARD                = "usboard" /* 看板統計 */
 	FN_TOPSONG                 = "etc/topsong"
 	FN_TICKET                  = "ticket"
@@ -257,6 +257,8 @@ var (
 	FN_CONF_BANIP         = BBSHOME + FN_CONF_BANIP_POSTFIX // 禁止連線的 IP 列表
 	FN_PASSWD_POSTFIX     = "/.PASSWDS"                     /* User records */
 	FN_PASSWD             = BBSHOME + FN_PASSWD_POSTFIX     /* User records */
+	FN_BOARD_POSTFIX      = "/.BRD"                         /* board list */
+	FN_BOARD              = BBSHOME + FN_BOARD_POSTFIX      /* board list */
 
 	MSG_SELECT_BOARD = ansi.ANSIColor("7") + "【 選擇看板 】" + ansi.ANSIReset() + "\n" + "請輸入看板名稱(按空白鍵自動搜尋): "
 )
