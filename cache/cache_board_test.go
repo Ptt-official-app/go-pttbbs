@@ -247,17 +247,16 @@ func Test_reloadCacheLoadBottom(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			reloadCacheLoadBottom()
+			nBottom := uint8(0)
+			Shm.ReadAt(
+				unsafe.Offsetof(Shm.Raw.NBottom)+unsafe.Sizeof(nBottom)*9,
+				unsafe.Sizeof(nBottom),
+				unsafe.Pointer(&nBottom),
+			)
+
+			if nBottom != tt.expected {
+				t.Errorf("nBottom: %v want: %v", nBottom, tt.expected)
+			}
 		})
-
-		nBottom := uint8(0)
-		Shm.ReadAt(
-			unsafe.Offsetof(Shm.Raw.NBottom)+unsafe.Sizeof(nBottom)*9,
-			unsafe.Sizeof(nBottom),
-			unsafe.Pointer(&nBottom),
-		)
-
-		if nBottom != tt.expected {
-			t.Errorf("nBottom: %v want: %v", nBottom, tt.expected)
-		}
 	}
 }
