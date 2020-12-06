@@ -16,6 +16,7 @@ func setupTest() {
 	origBBSHOME = ptttype.SetBBSHOME("./testcase")
 
 	cache.IsTest = true
+	IsTest = true
 	err := cache.NewSHM(cache.TestShmKey, ptttype.USE_HUGETLB, true)
 	if err != nil {
 		log.Errorf("setupTest: unable to NewSHM: e: %v", err)
@@ -28,5 +29,6 @@ func teardownTest() {
 	_ = cache.CloseSHM()
 	ptttype.SetBBSHOME(origBBSHOME)
 	cache.IsTest = false
+	IsTest = false
 	cache.TestMutex.Unlock()
 }
