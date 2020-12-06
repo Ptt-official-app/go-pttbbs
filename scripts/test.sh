@@ -2,5 +2,5 @@
 
 go build ./...
 gotest -v ./... -cover
-ipcrm -S 0x0000fffd
+ipcrm -S 0x00007ffb
 
