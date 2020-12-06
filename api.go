@@ -3,11 +3,18 @@ package main
 import (
 	"github.com/Ptt-official-app/go-pttbbs/api"
 	"github.com/gin-gonic/gin"
+	"gopkg.in/square/go-jose.v2/jwt"
 )
 
 type Api struct {
 	Func   api.ApiFunc
 	Params interface{}
+}
+
+type LoginRequiredParams struct {
+	UserID string `json:"u"`
+	Jwt    string `json:"j"`
+	Data   interface{}
 }
 
 type LoginRequiredApi struct {
@@ -19,11 +26,9 @@ func NewApi(f api.ApiFunc, params interface{}) *Api {
 	return &Api{Func: f, Params: params}
 }
 
-/*
 func NewLoginRequiredApi(f api.LoginRequiredApiFunc, params interface{}) *LoginRequiredApi {
 	return &LoginRequiredApi{Func: f, Params: params}
 }
-*/
 
 func (api *Api) Json(c *gin.Context) {
 	err := c.ShouldBindJSON(api.Params)
@@ -36,7 +41,6 @@ func (api *Api) Json(c *gin.Context) {
 	processResult(c, result, err)
 }
 
-/*
 func (api *LoginRequiredApi) LoginRequiredJson(c *gin.Context) {
 	loginParams := &LoginRequiredParams{Data: api.Params}
 	err := c.ShouldBindJSON(loginParams)
@@ -72,18 +76,15 @@ func verifyJwt(userID string, raw string) error {
 
 	return nil
 }
-*/
 
 func processResult(c *gin.Context, result interface{}, err error) {
 	switch err {
 	case nil:
 		c.JSON(200, result)
-	/*
-		case ErrInvalidToken:
-			c.JSON(401, &errResult{err.Error()})
-		case api.ErrLoginFailed:
-			c.JSON(401, &errResult{err.Error()})
-	*/
+	case ErrInvalidToken:
+		c.JSON(401, &errResult{err.Error()})
+	case api.ErrLoginFailed:
+		c.JSON(401, &errResult{err.Error()})
 	default:
 		c.JSON(500, &errResult{err.Error()})
 	}

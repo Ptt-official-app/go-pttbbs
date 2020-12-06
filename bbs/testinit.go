@@ -1,4 +1,4 @@
-package main
+package bbs
 
 import (
 	"os"
@@ -7,31 +7,15 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
-	"github.com/gin-gonic/gin"
-	log "github.com/sirupsen/logrus"
-
-	jww "github.com/spf13/jwalterweatherman"
 )
 
 var (
-	origBBSHOME = ""
+	origBBSHOME string
 )
 
 func setupTest() {
-
-	jww.SetLogOutput(os.Stderr)
-	//jww.SetLogThreshold(jww.LevelDebug)
-	//jww.SetStdoutThreshold(jww.LevelDebug)
-	log.SetLevel(log.DebugLevel)
-
 	cache.SetIsTest()
 	cmbbs.SetIsTest()
-
-	log.Infof("setupTest: to initAllConfig: sem_key: %v", ptttype.PASSWDSEM_KEY)
-
-	_ = initAllConfig("./testcase/test.ini")
-
-	gin.SetMode(gin.TestMode)
 
 	origBBSHOME = ptttype.SetBBSHOME("./testcase")
 
@@ -45,9 +29,12 @@ func setupTest() {
 
 	_ = cmbbs.PasswdInit()
 
+	initTestVars()
 }
 
 func teardownTest() {
+	freeTestVars()
+
 	_ = cmbbs.PasswdDestroy()
 
 	_ = cache.CloseSHM()
@@ -55,6 +42,7 @@ func teardownTest() {
 	os.Remove("./testcase/.fresh")
 	os.Remove("./testcase/.PASSWDS")
 	os.RemoveAll("./testcase/home")
+
 	ptttype.SetBBSHOME(origBBSHOME)
 
 	cmbbs.UnsetIsTest()

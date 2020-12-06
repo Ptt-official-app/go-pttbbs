@@ -7,7 +7,7 @@ type IndexResult struct {
 	Data string
 }
 
-func Index(params interface{}) (interface{}, error) {
+func Index(userID string, params interface{}) (interface{}, error) {
 	result := &IndexResult{Data: "index"}
 	return result, nil
 }
