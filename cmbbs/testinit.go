@@ -13,7 +13,7 @@ var (
 	IsTest      = false
 	TestMutex   sync.Mutex
 
-	TestPASSWDSEM_KEY = 65533
+	TestPASSWDSEM_KEY = 32763
 
 	origPASSWDSEM_KEY = 0
 )

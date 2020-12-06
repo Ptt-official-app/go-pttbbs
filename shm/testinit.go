@@ -1,7 +1,9 @@
 package shm
 
+import "github.com/Ptt-official-app/go-pttbbs/types"
+
 const (
-	testShmKey = 65533
+	testShmKey = types.Key_t(65534)
 )
 
 func setupTest() {
