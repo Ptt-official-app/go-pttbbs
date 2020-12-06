@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	TestShmKey = types.Key_t(1000000)
+	TestShmKey = types.Key_t(65534)
 )
 
 var (
@@ -23,10 +23,8 @@ var (
 )
 
 func setupTest() {
-	TestMutex.Lock()
-	IsTest = true
-	origShmKey = ptttype.SHM_KEY
-	ptttype.SHM_KEY = TestShmKey
+	SetIsTest()
+
 	origBBSHome = ptttype.SetBBSHOME("./testcase")
 
 	initTestCases()
@@ -34,8 +32,20 @@ func setupTest() {
 
 func teardownTest() {
 	ptttype.SetBBSHOME(origBBSHome)
+
+	UnsetIsTest()
+	time.Sleep(1 * time.Millisecond)
+}
+
+func SetIsTest() {
+	TestMutex.Lock()
+	IsTest = true
+	origShmKey = ptttype.SHM_KEY
+	ptttype.SHM_KEY = TestShmKey
+}
+
+func UnsetIsTest() {
 	ptttype.SHM_KEY = origShmKey
 	IsTest = false
 	TestMutex.Unlock()
-	time.Sleep(1 * time.Millisecond)
 }

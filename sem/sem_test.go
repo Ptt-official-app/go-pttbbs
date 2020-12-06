@@ -1,47 +1,12 @@
 package sem
 
 import (
-	"errors"
-	"os"
 	"reflect"
-	"syscall"
 	"testing"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 )
-
-func Test_errnoErr(t *testing.T) {
-	type args struct {
-		errno syscall.Errno
-	}
-	tests := []struct {
-		name     string
-		args     args
-		expected error
-		wantErr  bool
-	}{
-		// TODO: Add test cases.
-		{
-			args:     args{syscall.EEXIST},
-			expected: os.ErrExist,
-			wantErr:  true,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			err := errnoErr(tt.args.errno)
-
-			if (err != nil) != tt.wantErr {
-				t.Errorf("errnoErr() error = %v, wantErr %v", err, tt.wantErr)
-			}
-
-			if !errors.Is(err, tt.expected) {
-				t.Errorf("errnoErr() err: %v expected: %v", err, tt.expected)
-			}
-		})
-	}
-}
 
 func TestSemGet(t *testing.T) {
 	testSem := &Semaphore{testSemKey, 1}
@@ -96,7 +61,7 @@ func TestSemGet(t *testing.T) {
 		})
 	}
 	if firstGot != nil {
-		firstGot.Destroy()
+		firstGot.Destroy(0)
 	}
 }
 
@@ -105,7 +70,7 @@ func TestSemaphore_SetVal(t *testing.T) {
 	if err != nil {
 		return
 	}
-	defer s.Destroy()
+	defer s.Destroy(0)
 
 	type fields struct {
 		semid int
@@ -157,7 +122,7 @@ func TestSemaphore_Wait(t *testing.T) {
 	if err != nil {
 		return
 	}
-	defer s.Destroy()
+	defer s.Destroy(0)
 
 	type fields struct {
 		semid int
@@ -220,7 +185,7 @@ func TestSemaphore_Post(t *testing.T) {
 	if err != nil {
 		return
 	}
-	defer s.Destroy()
+	defer s.Destroy(0)
 
 	type fields struct {
 		semid int

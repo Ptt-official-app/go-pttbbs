@@ -11,6 +11,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/crypt"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/sem"
+	log "github.com/sirupsen/logrus"
 )
 
 //GenPasswd
@@ -144,6 +145,8 @@ func PasswdInit() error {
 		return nil
 	}
 
+	log.Infof("PasswdInit: to init Sem: passwd_key: %v", ptttype.PASSWDSEM_KEY)
+
 	var err error
 	Sem, err = sem.SemGet(ptttype.PASSWDSEM_KEY, 1, sem.SEM_R|sem.SEM_A|sem.IPC_CREAT|sem.IPC_EXCL)
 	if err != nil {
@@ -163,6 +166,13 @@ func PasswdInit() error {
 	if err != nil {
 		return err
 	}
+
+	val, err := Sem.GetVal(0)
+	log.Infof("PasswdInit: after GetVal: val: %v e: %v", val, err)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -172,4 +182,43 @@ func PasswdLock() error {
 
 func PasswdUnlock() error {
 	return Sem.Post(0)
+}
+
+//PasswdDestroy
+//
+//XXX [WARNING] know what you are doing before using Close!.
+//This is to be able to close the semaphore for the completeness of the sem-usage.
+//However, in production, we create sem without the need of closing the sem.
+//
+//We simply use ipcrm to delete the sem if necessary.
+//
+//Currently used only in test.
+//
+//XXX [2020-12-06] We don't do PasswdDestroy.
+//                 Just let PasswdInit do the checking to avoid
+//                 the duplication of sem.
+func PasswdDestroy() error {
+	return nil
+
+	/*
+		if !IsTest {
+			return ErrInvalidOp
+		}
+
+		if Sem == nil {
+			return ErrSemNotExists
+		}
+
+		err := Sem.Destroy(0)
+		if err != nil {
+			log.Errorf("cmbbs.PasswdDestroy: unable to close: e: %v", err)
+			return err
+		}
+
+		Sem = nil
+
+		log.Infof("cmbbs.PasswdDestroy: done")
+
+		return nil
+	*/
 }

@@ -1,3 +1,6 @@
 #!/bin/bash
 
-gotest ./... -coverprofile cover.out
+go build ./...
+gotest -v ./... -cover
+ipcrm -S 0x0000fffd
+

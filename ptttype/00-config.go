@@ -1,6 +1,8 @@
 package ptttype
 
 import (
+	"os"
+
 	"github.com/Ptt-official-app/go-pttbbs/types"
 	"github.com/Ptt-official-app/go-pttbbs/types/ansi"
 )
@@ -125,9 +127,9 @@ var (
 	COLORDATE = false
 
 	/* 若定義, 在使用者註冊之前, 會先顯示出該檔案, 經使用者確認後才能註冊 */
-	HAVE_USERAGREEMENT            = "etc/UserAgreement"
-	HAVE_USERAGREEMENT_VERSION    = "etc/UserAgreementVersion"
-	HAVE_USERAGREEMENT_ACCEPTABLE = "etc/UserAgreementAcceptable"
+	//HAVE_USERAGREEMENT            = "etc/UserAgreement" (var)
+	//HAVE_USERAGREEMENT_VERSION    = "etc/UserAgreementVersion" (var)
+	//HAVE_USERAGREEMENT_ACCEPTABLE = "etc/UserAgreementAcceptable" (var)
 
 	/* DBCS 相關設定 */
 	/* DBCS Aware: 讓游標不會跑到 DBCS trailing bytes 上 */
@@ -227,10 +229,12 @@ var (
 	//////////
 	// config.h
 	//////////
-	BBSPROGPOSTFIX = "/bin/mbbsd"             /* 主程式 */
-	BBSPROG        = BBSHOME + BBSPROGPOSTFIX /* 主程式 */
-	BAN_FILE       = "BAN"                    /* 關站通告檔 */
-	LOAD_FILE      = "/proc/loadavg"          /* for Linux */
+	BBSPROGPOSTFIX = "bin/mbbsd" /* 主程式 */
+	BBSPROG        = BBSHOME +   /* 主程式 */
+		string(os.PathSeparator) +
+		BBSPROGPOSTFIX
+	BAN_FILE  = "BAN"           /* 關站通告檔 */
+	LOAD_FILE = "/proc/loadavg" /* for Linux */
 
 	/////////////////////////////////////////////////////////////////////////////
 	// System Name Configuration 系統名稱設定
@@ -506,4 +510,17 @@ var (
 
 var (
 	IS_NEW_SHM = true // whether to create new shm (use only with ShmInit)
+
+	HAVE_USERAGREEMENT_POSTFIX = "etc/UserAgreement"
+	HAVE_USERAGREEMENT         = BBSHOME +
+		string(os.PathSeparator) +
+		HAVE_USERAGREEMENT_POSTFIX
+	HAVE_USERAGREEMENT_VERSION_POSTFIX = "etc/UserAgreementVersion"
+	HAVE_USERAGREEMENT_VERSION         = BBSHOME +
+		string(os.PathSeparator) +
+		HAVE_USERAGREEMENT_VERSION_POSTFIX
+	HAVE_USERAGREEMENT_ACCEPTABLE_POSTFIX = "etc/UserAgreementAcceptable"
+	HAVE_USERAGREEMENT_ACCEPTABLE         = BBSHOME +
+		string(os.PathSeparator) +
+		HAVE_USERAGREEMENT_ACCEPTABLE_POSTFIX
 )

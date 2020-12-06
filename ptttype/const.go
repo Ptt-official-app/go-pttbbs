@@ -1,5 +1,7 @@
 package ptttype
 
+import "os"
+
 const (
 	//////////
 	//pttstruct.h
@@ -54,8 +56,6 @@ const (
 )
 
 const (
-	//mbbsd/register.c line: 381
-	FN_FRESH = ".fresh"
 
 	//mbbsd/register.c line: 415
 	CLEAN_USER_EXPIRE_RANGE_MIN = 365 * 12 * 60 // 180 days.
@@ -69,4 +69,10 @@ const (
 const (
 	//mbbsd/board.c line: 1477
 	USE_REAL_DESC_FOR_HIDDEN_BOARD_IN_MYFAV = false
+)
+
+var (
+	//mbbsd/register.c line: 381
+	FN_FRESH_POSTFIX = ".fresh"
+	FN_FRESH         = BBSHOME + string(os.PathSeparator) + FN_FRESH_POSTFIX
 )

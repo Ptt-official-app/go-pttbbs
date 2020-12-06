@@ -1,6 +1,7 @@
 package ptttype
 
 import (
+	"os"
 	"regexp"
 
 	"github.com/Ptt-official-app/go-pttbbs/config_util"
@@ -35,6 +36,17 @@ func setDoubleConfig(idx string, orig float64) float64 {
 	return config_util.SetDoubleConfig(configPrefix, idx, orig)
 }
 
+func setServiceMode(serviceMode ServiceMode) ServiceMode {
+	switch serviceMode {
+	case DEV:
+		log.SetLevel(log.DebugLevel)
+	default:
+		log.SetLevel(log.InfoLevel)
+	}
+
+	return serviceMode
+}
+
 //SetBBSHOME
 //
 //This is to safely set BBSHOME
@@ -51,12 +63,35 @@ func SetBBSHOME(bbshome string) string {
 
 	// config.go
 	BBSHOME = bbshome
-	BBSPROG = BBSHOME + BBSPROGPOSTFIX
+	BBSPROG = BBSHOME + /* 主程式 */
+		string(os.PathSeparator) +
+		BBSPROGPOSTFIX
+
+	HAVE_USERAGREEMENT = BBSHOME +
+		string(os.PathSeparator) +
+		HAVE_USERAGREEMENT_POSTFIX
+	HAVE_USERAGREEMENT_VERSION = BBSHOME +
+		string(os.PathSeparator) +
+		HAVE_USERAGREEMENT_VERSION_POSTFIX
+	HAVE_USERAGREEMENT_ACCEPTABLE = BBSHOME +
+		string(os.PathSeparator) +
+		HAVE_USERAGREEMENT_ACCEPTABLE_POSTFIX
 
 	//common.go
-	FN_CONF_BANIP = BBSHOME + FN_CONF_BANIP_POSTFIX // 禁止連線的 IP 列表
-	FN_PASSWD = BBSHOME + FN_PASSWD_POSTFIX         /* User records */
-	FN_BOARD = BBSHOME + FN_BOARD_POSTFIX           /* board list */
+	FN_CONF_BANIP = BBSHOME + // 禁止連線的 IP 列表
+		string(os.PathSeparator) +
+		FN_CONF_BANIP_POSTFIX
+	FN_PASSWD = BBSHOME + /* User records */
+		string(os.PathSeparator) +
+		FN_PASSWD_POSTFIX
+	FN_BOARD = BBSHOME + /* board list */
+		string(os.PathSeparator) +
+		FN_BOARD_POSTFIX
+
+	//const.go
+	FN_FRESH = BBSHOME +
+		string(os.PathSeparator) +
+		FN_FRESH_POSTFIX /* mbbsd/register.c line: 381 */
 
 	return origBBSHome
 }
@@ -166,6 +201,7 @@ func setRecycleBinName(recycleBinName string) string {
 }
 
 func postInitConfig() error {
+	_ = setServiceMode(SERVICE_MODE)
 	_ = SetBBSHOME(BBSHOME)
 	_ = setBBSMName(BBSMNAME)
 	_ = setCAPTCHAInsertServerAddr(CAPTCHA_INSERT_SERVER_ADDR)

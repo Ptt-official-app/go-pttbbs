@@ -1,6 +1,10 @@
 package ptttype
 
-import "github.com/Ptt-official-app/go-pttbbs/types/ansi"
+import (
+	"os"
+
+	"github.com/Ptt-official-app/go-pttbbs/types/ansi"
+)
 
 const (
 	//////////
@@ -253,12 +257,18 @@ var (
 	USER_ID_GUEST  = [IDLEN + 1]byte{'g', 'u', 'e', 's', 't'} // guest account
 	USER_ID_REGNEW = [IDLEN + 1]byte{'n', 'e', 'w'}           // 用來建新帳號的名稱
 
-	FN_CONF_BANIP_POSTFIX = "/etc/banip.conf"               // 禁止連線的 IP 列表
-	FN_CONF_BANIP         = BBSHOME + FN_CONF_BANIP_POSTFIX // 禁止連線的 IP 列表
-	FN_PASSWD_POSTFIX     = "/.PASSWDS"                     /* User records */
-	FN_PASSWD             = BBSHOME + FN_PASSWD_POSTFIX     /* User records */
-	FN_BOARD_POSTFIX      = "/.BRD"                         /* board list */
-	FN_BOARD              = BBSHOME + FN_BOARD_POSTFIX      /* board list */
+	FN_CONF_BANIP_POSTFIX = "etc/banip.conf" // 禁止連線的 IP 列表
+	FN_CONF_BANIP         = BBSHOME +        // 禁止連線的 IP 列表
+		string(os.PathSeparator) +
+		FN_CONF_BANIP_POSTFIX
+	FN_PASSWD_POSTFIX = ".PASSWDS" /* User records */
+	FN_PASSWD         = BBSHOME +  /* User records */
+		string(os.PathSeparator) +
+		FN_PASSWD_POSTFIX
+	FN_BOARD_POSTFIX = ".BRD"    /* board list */
+	FN_BOARD         = BBSHOME + /* board list */
+		string(os.PathSeparator) +
+		FN_BOARD_POSTFIX
 
 	MSG_SELECT_BOARD = ansi.ANSIColor("7") + "【 選擇看板 】" + ansi.ANSIReset() + "\n" + "請輸入看板名稱(按空白鍵自動搜尋): "
 )

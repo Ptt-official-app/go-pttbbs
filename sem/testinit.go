@@ -1,7 +1,7 @@
 package sem
 
 const (
-	testSemKey = 2020
+	testSemKey = 32763
 )
 
 func setupTest() {

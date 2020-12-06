@@ -154,6 +154,10 @@ func debugShm() {
 //
 //Currently used only in test.
 func CloseSHM() error {
+    if !IsTest {
+        return ErrInvalidOp
+    }
+
     if Shm == nil {
         // Already Closed
         log.Errorf("cache.CloseSHM: already closed")

@@ -1,6 +1,8 @@
 package types
 
 import (
+	"bufio"
+	"io"
 	"os"
 	"reflect"
 	"testing"
@@ -220,6 +222,91 @@ func TestBinWrite(t *testing.T) {
 			if nBytes != int64(tt.args.theSize) {
 				t.Errorf("BinWrite() nBytes: %v expected: %v", nBytes, tt.args.theSize)
 
+			}
+		})
+	}
+}
+
+func TestReadLine(t *testing.T) {
+	file, _ := os.Open("testcase/testreadline.txt")
+	defer file.Close()
+
+	file2, _ := os.Open("testcase/testreadline2.txt")
+	defer file2.Close()
+
+	reader := bufio.NewReader(file)
+	reader2 := bufio.NewReader(file2)
+
+	type args struct {
+		reader *bufio.Reader
+	}
+	tests := []struct {
+		name        string
+		args        args
+		expected    []byte
+		wantErr     bool
+		expectedErr error
+	}{
+		// TODO: Add test cases.
+		{
+			args:     args{reader},
+			expected: []byte("test1"),
+		},
+		{
+			args:     args{reader},
+			expected: []byte("test2"),
+		},
+		{
+			args:     args{reader},
+			expected: []byte("test3"),
+		},
+		{
+			args:        args{reader},
+			expected:    nil,
+			wantErr:     true,
+			expectedErr: io.EOF,
+		},
+		{
+			args:     args{reader2},
+			expected: []byte("test1"),
+		},
+		{
+			args:     args{reader2},
+			expected: []byte("test2"),
+		},
+		{
+			args:     args{reader2},
+			expected: []byte("test3"),
+		},
+		{
+			args:     args{reader2},
+			expected: []byte("test4"),
+		},
+		{
+			args:        args{reader},
+			expected:    nil,
+			wantErr:     true,
+			expectedErr: io.EOF,
+		},
+		{
+			args:        args{nil},
+			expected:    nil,
+			wantErr:     true,
+			expectedErr: ErrNilReader,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := ReadLine(tt.args.reader)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ReadLine() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if err != tt.expectedErr {
+				t.Errorf("ReadLine() e: %v expected: %v", err, tt.expectedErr)
+			}
+			if !reflect.DeepEqual(got, tt.expected) {
+				t.Errorf("ReadLine() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
