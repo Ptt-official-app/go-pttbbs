@@ -17,7 +17,9 @@ import (
 func initGin() (*gin.Engine, error) {
 	router := gin.Default()
 
-	router.POST("/", NewApi(api.Index, &api.IndexParams{}).Json)
+	router.POST("/", NewLoginRequiredApi(api.Index, &api.IndexParams{}).LoginRequiredJson)
+	router.POST("/login", NewApi(api.Login, &api.LoginParams{}).Json)
+	router.POST("/register", NewApi(api.Register, &api.RegisterParams{}).Json)
 
 	return router, nil
 }

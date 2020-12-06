@@ -23,6 +23,10 @@ func TDeepEqual(t *testing.T, got interface{}, expected interface{}) {
 		typeField := gotVal.Type().Field(i)
 		fieldName := typeField.Name
 
+		if fieldName[0] < 'A' || fieldName[0] > 'Z' {
+			continue
+		}
+
 		gotValue := valueField.Interface()
 		expectedValue := expectedVal.FieldByName(fieldName).Interface()
 		if !reflect.DeepEqual(gotValue, expectedValue) {

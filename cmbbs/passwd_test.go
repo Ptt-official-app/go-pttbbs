@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
+	"github.com/Ptt-official-app/go-pttbbs/types"
 	"github.com/sirupsen/logrus"
 )
 
@@ -280,9 +281,7 @@ func TestPasswdUpdate(t *testing.T) {
 			}
 
 			_, userecRaw, _ := PasswdLoadUser(&testUserecRaw1Updated.UserID)
-			if !reflect.DeepEqual(userecRaw, tt.expected) {
-				t.Errorf("UserecRaw: %v want: %v", userecRaw, tt.expected)
-			}
+			types.TDeepEqual(t, userecRaw, tt.expected)
 
 		})
 	}
