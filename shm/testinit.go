@@ -1,7 +1,7 @@
 package shm
 
 const (
-	testShmKey = 65538
+	testShmKey = 65533
 )
 
 func setupTest() {

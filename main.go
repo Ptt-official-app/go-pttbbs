@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/Ptt-official-app/go-pttbbs/api"
+	"github.com/Ptt-official-app/go-pttbbs/ptt"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
 	"github.com/gin-gonic/gin"
@@ -46,7 +47,7 @@ func initAllConfig(filename string) error {
 		return err
 	}
 
-	log.Infof("viper keys: %v", viper.AllKeys())
+	log.Debugf("viper keys: %v", viper.AllKeys())
 
 	err = InitConfig()
 	if err != nil {
@@ -61,6 +62,10 @@ func initAllConfig(filename string) error {
 		return err
 	}
 	err = ptttype.InitConfig()
+	if err != nil {
+		return err
+	}
+	err = ptt.InitConfig()
 	if err != nil {
 		return err
 	}

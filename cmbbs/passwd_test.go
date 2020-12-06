@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
-	"github.com/Ptt-official-app/go-pttbbs/sem"
 	"github.com/sirupsen/logrus"
 )
 
@@ -177,7 +176,7 @@ func TestPasswdLock(t *testing.T) {
 	defer teardownTest()
 
 	PasswdInit()
-	defer Sem.Destroy()
+	defer PasswdDestroy()
 
 	tests := []struct {
 		name      string
@@ -213,8 +212,8 @@ func TestPasswdLock(t *testing.T) {
 				}
 				logrus.Infof("TestPasswdLock: %v: got lock", name)
 				time.Sleep(tt.sleep * time.Millisecond)
+				logrus.Infof("TestPasswdLock: %v: done. to unlock", name)
 				PasswdUnlock()
-				logrus.Infof("TestPasswdLock: %v: done", name)
 				wait <- true
 			}()
 			nameChan <- tt.name
@@ -230,36 +229,22 @@ func TestPasswdInit(t *testing.T) {
 	defer teardownTest()
 
 	tests := []struct {
-		name       string
-		wantErr    bool
-		isResetSem bool
+		name    string
+		wantErr bool
 	}{
 		// TODO: Add test cases.
 		{},
-		{
-			isResetSem: true,
-		},
-		{
-			isResetSem: true,
-		},
 	}
 
-	sems := make([]*sem.Semaphore, len(tests))
-	for idx, tt := range tests {
+	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.isResetSem {
-				Sem = nil
-			}
 			if err := PasswdInit(); (err != nil) != tt.wantErr {
 				t.Errorf("PasswdInit() error = %v, wantErr %v", err, tt.wantErr)
 			}
-			sems[idx] = Sem
+			defer PasswdDestroy()
 		})
 	}
 
-	for _, eachSem := range sems {
-		eachSem.Destroy()
-	}
 }
 
 func TestPasswdUpdate(t *testing.T) {

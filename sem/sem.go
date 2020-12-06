@@ -2,36 +2,11 @@ package sem
 
 // from: https://github.com/shubhros/drunkendeluge/blob/master/semaphore/semaphore.go
 
-// #include <sys/sem.h>
-//
-// /* https://comp.os.linux.development.system.narkive.com/rvJxp3Vb/union-variable-error-storage-size-isn-t-known */
-// #if defined ( _SEM_SEMUN_UNDEFINED )
-// union semun {
-//   int val; /* value for SETVAL */
-//   struct semid_ds *buf; /* buffer for IPC_STAT, IPC_SET */
-//   unsigned short int *array; /* array for GETALL, SETALL */
-//   struct seminfo *__buf; /* buffer for IPC_INFO */
-// };
-// #endif
-//
-//
-// #ifndef SEM_R
-// #define SEM_R 0400
-// #endif
-//
-// #ifndef SEM_A
-// #define SEM_A 0200
-// #endif
-// int semctlsetvalwrapper(int semid, int semnum, int val) {
-//   union semun s;
-//   s.val = val;
-//   return semctl(semid, semnum, SETVAL, s);
-// }
+// #include "sem.h"
 import "C"
 
 import (
-	"syscall"
-	"unsafe"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -56,53 +31,45 @@ type semop struct {
 	semFlag int16
 }
 
-func errnoErr(errno syscall.Errno) error {
-	switch errno {
-	case syscall.Errno(0):
-		return nil
-	default:
-		return errno
-	}
-}
-
 func SemGet(key int, nsems int, flags int) (*Semaphore, error) {
-	r1, _, errno := syscall.Syscall(syscall.SYS_SEMGET,
-		uintptr(key), uintptr(nsems), uintptr(flags))
-	if errno == syscall.Errno(0) {
-		return &Semaphore{semid: int(r1), nsems: nsems}, nil
-	} else {
-		return nil, errnoErr(errno)
+	cret, err := C.semget(C.int(key), C.int(nsems), C.int(flags))
+	log.Debugf("sem.SemGet: key: %v nsems: %v cret: %v e: %v", key, nsems, cret, err)
+	if err != nil {
+		return nil, err
 	}
+
+	return &Semaphore{semid: int(cret), nsems: nsems}, nil
 }
 
-func (s *Semaphore) Destroy() error {
-	_, _, errno := syscall.Syscall(syscall.SYS_SEMCTL, uintptr(s.semid),
-		uintptr(0), uintptr(IPC_RMID))
-	return errnoErr(errno)
+func (s *Semaphore) Destroy(semNum int) error {
+	cret, err := C.semdestroywrapper(C.int(s.semid), C.int(semNum))
+
+	log.Debugf("sem.Destroy: semid: %v cret: %v e: %v", s.semid, cret, err)
+	return err
 }
 
 func (s *Semaphore) GetVal(semNum int) (int, error) {
-	val, _, errno := syscall.Syscall(syscall.SYS_SEMCTL, uintptr(s.semid),
-		uintptr(semNum), uintptr(GETVAL))
-	return int(val), errnoErr(errno)
+	cret, err := C.semgetvalwrapper(C.int(s.semid), C.int(semNum))
+	log.Debugf("sem.GetVal: semid: %v semNum: %v cret: %v e: %v", s.semid, semNum, cret, err)
+	return int(cret), err
 }
 
 func (s *Semaphore) SetVal(semNum int, val int) error {
-	cerrno := C.semctlsetvalwrapper(C.int(s.semid), C.int(semNum), C.int(val))
-	return errnoErr(syscall.Errno(int(cerrno)))
+	cret, err := C.semctlsetvalwrapper(C.int(s.semid), C.int(semNum), C.int(val))
+	log.Debugf("sem.SetVal: semid: %v semNum: %v val: %v cret: %v e: %v", s.semid, semNum, val, cret, err)
+	return err
 }
 
 func (s *Semaphore) Post(semNum int) error {
-	post := semop{semNum: uint16(semNum), semOp: 1, semFlag: SEM_UNDO}
-	_, _, errno := syscall.Syscall(syscall.SYS_SEMOP, uintptr(s.semid),
-		uintptr(unsafe.Pointer(&post)), uintptr(s.nsems))
-	return errnoErr(errno)
+	cret, err := C.sempostwrapper(C.int(s.semid), C.int(semNum))
+	log.Debugf("sem.Post: semid: %v semNum: %v cret: %v e: %v", s.semid, semNum, cret, err)
 
+	return err
 }
 
 func (s *Semaphore) Wait(semNum int) error {
-	wait := semop{semNum: uint16(semNum), semOp: -1, semFlag: SEM_UNDO}
-	_, _, errno := syscall.Syscall(syscall.SYS_SEMOP, uintptr(s.semid),
-		uintptr(unsafe.Pointer(&wait)), uintptr(s.nsems))
-	return errnoErr(errno)
+	cret, err := C.semwaitwrapper(C.int(s.semid), C.int(semNum))
+	log.Debugf("sem.Wait: semid: %v semNum: %v cret: %v err: %v", s.semid, semNum, cret, err)
+
+	return err
 }

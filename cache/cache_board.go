@@ -89,13 +89,15 @@ func HbflReload(bidInCache ptttype.BidInStore) {
 	hbfl := [ptttype.MAX_FRIEND + 1]ptttype.Uid{}
 	const hbflsz = unsafe.Sizeof(hbfl)
 
-	scanner := bufio.NewScanner(file)
+	reader := bufio.NewReader(file)
 	var line []byte
 	var uid ptttype.Uid
 	// num++ is in the end of the for.
-	for num := ptttype.Uid(1); scanner.Scan() && num <= ptttype.MAX_FRIEND; {
-
-		line = scanner.Bytes()
+	for num := ptttype.Uid(1); num <= ptttype.MAX_FRIEND; {
+		line, _ = types.ReadLine(reader)
+		if len(line) == 0 {
+			break
+		}
 		theList := bytes.Split(line, []byte{' '}) //The \x00 is taken care of by scanner.
 
 		eachUserID := &ptttype.UserID_t{}

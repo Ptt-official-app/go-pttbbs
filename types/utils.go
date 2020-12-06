@@ -1,9 +1,11 @@
 package types
 
 import (
+	"bufio"
 	"encoding/base64"
 	"encoding/binary"
 	"errors"
+	"io"
 	"io/ioutil"
 	"os"
 	"reflect"
@@ -107,4 +109,28 @@ func BinWrite(file *os.File, v interface{}, theSize uintptr) error {
 		return err
 	}
 	return nil
+}
+
+//ReadLine
+//
+//To avoid confusion, use only []byte is nil or not
+//to know whether it's the end of file.
+func ReadLine(reader *bufio.Reader) ([]byte, error) {
+	if reader == nil {
+		return nil, ErrNilReader
+	}
+	line, err := reader.ReadBytes('\n')
+	if err != nil && err != io.EOF {
+		return nil, err
+	}
+
+	if len(line) == 0 {
+		return nil, io.EOF
+	}
+
+	if line[len(line)-1] == '\n' {
+		line = line[:len(line)-1]
+	}
+
+	return line, nil
 }

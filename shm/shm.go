@@ -72,7 +72,7 @@ func CloseShm(shmid int, shmaddr unsafe.Pointer) (err error) {
 	}
 
 	cret, err = C.shmctl(C.int(shmid), C.IPC_RMID, nil)
-	log.Infof("shm.CloseShm: After close shm: ret: %v, err: %v", cret, err)
+	log.Infof("shm.CloseShm: After close shm: shmaddr: %v ret: %v, err: %v", shmaddr, cret, err)
 
 	if int(cret) < 0 {
 		return ErrUnableToCloseShm
