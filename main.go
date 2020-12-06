@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/Ptt-official-app/go-pttbbs/api"
+	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/ptt"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
@@ -42,7 +43,7 @@ func initAllConfig(filename string) error {
 	filenamePostfix := filenameList[len(filenameList)-1]
 	viper.SetConfigName(filenamePrefix)
 	viper.SetConfigType(filenamePostfix)
-	viper.AddConfigPath("/etc/go-bbs")
+	viper.AddConfigPath("/etc/go-pttbbs")
 	viper.AddConfigPath(".")
 	err := viper.ReadInConfig()
 	if err != nil {
@@ -84,7 +85,31 @@ func initMain() error {
 	flag.StringVar(&filename, "ini", "config.ini", "ini filename")
 	flag.Parse()
 
-	return initAllConfig(filename)
+	err := initAllConfig(filename)
+	if err != nil {
+		return err
+	}
+
+	err = cache.NewSHM(types.Key_t(ptttype.SHM_KEY), ptttype.USE_HUGETLB, ptttype.IS_NEW_SHM)
+	if err != nil {
+		log.Errorf("unable to init SHM: e: %v", err)
+		return err
+	}
+
+	if ptttype.IS_NEW_SHM {
+		err = cache.LoadUHash()
+		if err != nil {
+			log.Errorf("unable to load UHash: e: %v", err)
+			return err
+		}
+	}
+	err = cache.AttachCheckSHM()
+	if err != nil {
+		log.Errorf("unable to attach-check-shm: e: %v", err)
+		return err
+	}
+
+	return nil
 }
 
 func main() {
