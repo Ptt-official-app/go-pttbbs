@@ -13,9 +13,6 @@ import (
 )
 
 func Test_registerCountEmail(t *testing.T) {
-	setupTest()
-	defer teardownTest()
-
 	type args struct {
 		user  *ptttype.UserecRaw
 		email *ptttype.Email_t
@@ -32,6 +29,9 @@ func Test_registerCountEmail(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			setupTest()
+			defer teardownTest()
+
 			gotCount, err := registerCountEmail(tt.args.user, tt.args.email)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("registerCountEmail() error = %v, wantErr %v", err, tt.wantErr)
@@ -45,9 +45,6 @@ func Test_registerCountEmail(t *testing.T) {
 }
 
 func Test_getSystemUaVersion(t *testing.T) {
-	setupTest()
-	defer teardownTest()
-
 	tests := []struct {
 		name     string
 		expected uint8
@@ -57,6 +54,9 @@ func Test_getSystemUaVersion(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			setupTest()
+			defer teardownTest()
+
 			if got := getSystemUaVersion(); got != tt.expected {
 				t.Errorf("getSystemUaVersion() = %v, expected %v", got, tt.expected)
 			}
@@ -65,8 +65,6 @@ func Test_getSystemUaVersion(t *testing.T) {
 }
 
 func TestSetupNewUser(t *testing.T) {
-	setupTest()
-	defer teardownTest()
 
 	type args struct {
 		user *ptttype.UserecRaw
@@ -85,19 +83,22 @@ func TestSetupNewUser(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			setupTest()
+			defer teardownTest()
+
 			if err := SetupNewUser(tt.args.user); (err != nil) != tt.wantErr {
 				t.Errorf("SetupNewUser() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 
-			_, got, err := initCurrentUser(&tt.args.user.UserID)
+			_, got, err := InitCurrentUser(&tt.args.user.UserID)
 			if err != nil {
-				t.Errorf("SetupNewUser (initCurrentUser): err: %v", err)
+				t.Errorf("SetupNewUser (InitCurrentUser): err: %v", err)
 				return
 			}
 
 			if !reflect.DeepEqual(got, tt.expected) {
-				t.Errorf("SetupNewUser (initCurrentUser): got: %v expected: %v", got, tt.expected)
+				t.Errorf("SetupNewUser (InitCurrentUser): got: %v expected: %v", got, tt.expected)
 			}
 		})
 	}

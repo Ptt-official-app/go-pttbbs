@@ -1,5 +1,7 @@
 package ptttype
 
+import log "github.com/sirupsen/logrus"
+
 type PERM uint32
 
 const (
@@ -54,3 +56,12 @@ const (
 	PERM_FORWARD    PERM = PERM_LOGINOK /* to do the forwarding */
 	PERM_INTERNET   PERM = PERM_LOGINOK /* 身份認證過關的才能寄信到 Internet */
 )
+
+func (p PERM) HasUserPerm(perm PERM) bool {
+	log.Infof("p: %O perm: %O", uint32(p), uint32(perm))
+	return p&perm != 0
+}
+
+func (p PERM) HasBasicUserPerm(perm PERM) bool {
+	return p.HasUserPerm(PERM_BASIC) && p.HasUserPerm(perm)
+}

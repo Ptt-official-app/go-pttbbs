@@ -11,9 +11,6 @@ import (
 )
 
 func TestPasswdLoadUser(t *testing.T) {
-	setupTest()
-	defer teardownTest()
-
 	userID1 := ptttype.UserID_t{}
 	copy(userID1[:], []byte("SYSOP"))
 
@@ -36,6 +33,9 @@ func TestPasswdLoadUser(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			setupTest()
+			defer teardownTest()
+
 			got, got1, err := PasswdLoadUser(tt.args.userID)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("PasswdLoadUser() error = %v, wantErr %v", err, tt.wantErr)
@@ -44,17 +44,12 @@ func TestPasswdLoadUser(t *testing.T) {
 			if got != tt.expected {
 				t.Errorf("PasswdLoadUser() got = %v, expected %v", got, tt.expected)
 			}
-			if !reflect.DeepEqual(got1, tt.expected1) {
-				t.Errorf("PasswdLoadUser() got1 = %v, expected1 %v", got1, tt.expected1)
-			}
+			types.TDeepEqual(t, got1, tt.expected1)
 		})
 	}
 }
 
 func TestPasswdQuery(t *testing.T) {
-	setupTest()
-	defer teardownTest()
-
 	type args struct {
 		uid ptttype.Uid
 	}
@@ -72,6 +67,9 @@ func TestPasswdQuery(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			setupTest()
+			defer teardownTest()
+
 			got, err := PasswdQuery(tt.args.uid)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("PasswdQuery() error = %v, wantErr %v", err, tt.wantErr)
@@ -85,8 +83,6 @@ func TestPasswdQuery(t *testing.T) {
 }
 
 func TestCheckPasswd(t *testing.T) {
-	setupTest()
-	defer teardownTest()
 
 	input1 := []byte{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', 0}
 	input2 := []byte{'0', '1', '2', '4', '4', '5', '6', '7', '8', '9', '0', '1', 0}
@@ -115,6 +111,9 @@ func TestCheckPasswd(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			setupTest()
+			defer teardownTest()
+
 			got, err := CheckPasswd(tt.args.expected, tt.args.input)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CheckPasswd() error = %v, wantErr %v", err, tt.wantErr)
@@ -249,8 +248,6 @@ func TestPasswdInit(t *testing.T) {
 }
 
 func TestPasswdUpdate(t *testing.T) {
-	setupTest()
-	defer teardownTest()
 
 	defer PasswdUpdate(1, testUserecRaw1)
 
@@ -276,6 +273,9 @@ func TestPasswdUpdate(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			setupTest()
+			defer teardownTest()
+
 			if err := PasswdUpdate(tt.args.uid, tt.args.user); (err != nil) != tt.wantErr {
 				t.Errorf("PasswdUpdate() error = %v, wantErr %v", err, tt.wantErr)
 			}

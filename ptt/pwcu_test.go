@@ -74,9 +74,6 @@ func Test_pwcuBitDisableLevel(t *testing.T) {
 }
 
 func Test_pwcuSetByBit(t *testing.T) {
-	setupTest()
-	defer teardownTest()
-
 	type args struct {
 		perm  ptttype.PERM
 		mask  ptttype.PERM
@@ -99,6 +96,9 @@ func Test_pwcuSetByBit(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			setupTest()
+			defer teardownTest()
+
 			if got := pwcuSetByBit(tt.args.perm, tt.args.mask, tt.args.isSet); !reflect.DeepEqual(got, tt.expected) {
 				t.Errorf("pwcuSetByBit() = %v, want %v", got, tt.expected)
 			}

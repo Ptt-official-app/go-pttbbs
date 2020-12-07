@@ -8,8 +8,6 @@ import (
 )
 
 func TestLoginQuery(t *testing.T) {
-	setupTest()
-	defer teardownTest()
 
 	userid1 := ptttype.UserID_t{}
 	copy(userid1[:], []byte("SYSOP"))
@@ -38,6 +36,9 @@ func TestLoginQuery(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			setupTest()
+			defer teardownTest()
+
 			got, err := LoginQuery(tt.args.userID, tt.args.passwd, tt.args.ip)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoginQuery() error = %v, wantErr %v", err, tt.wantErr)

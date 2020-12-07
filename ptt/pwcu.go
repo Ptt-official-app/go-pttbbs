@@ -55,6 +55,24 @@ func pwcuRegCompleteJustify(uid ptttype.Uid, userID *ptttype.UserID_t, justify *
 	return nil
 }
 
+func pwcuBitEnableLevel(uid ptttype.Uid, userID *ptttype.UserID_t, perm ptttype.PERM) (err error) {
+	var user *ptttype.UserecRaw
+	user, err = pwcuStart(uid, userID)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		errEnd := pwcuEnd(uid, user)
+		if err == nil {
+			err = errEnd
+		}
+	}()
+
+	_ = pwcuEnableBit(user.UserLevel, perm)
+
+	return nil
+}
+
 func pwcuBitDisableLevel(uid ptttype.Uid, userID *ptttype.UserID_t, perm ptttype.PERM) (err error) {
 	var user *ptttype.UserecRaw
 

@@ -65,7 +65,7 @@ func OpenShm(key types.Key_t, size types.Size_t, is_usehugetlb bool) (shmid int,
 
 func CloseShm(shmid int, shmaddr unsafe.Pointer) (err error) {
 	cret, err := C.shmdt(shmaddr)
-	log.Debugf("shm.CloseShm: After detach shm: shmaddr: %v ret: %v err: %v", shmaddr, cret, err)
+	log.Infof("shm.CloseShm: After detach shm: shmaddr: %v ret: %v err: %v", shmaddr, cret, err)
 
 	if err != nil {
 		return err

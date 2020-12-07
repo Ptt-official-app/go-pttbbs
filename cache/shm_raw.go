@@ -45,7 +45,7 @@ type SHMRaw struct {
 
 	/* brdshm */
 	Gap8    [types.INT32_SZ]byte
-	BMCache [ptttype.MAX_BOARD][ptttype.MAX_BMs]int32
+	BMCache [ptttype.MAX_BOARD][ptttype.MAX_BMs]ptttype.Uid
 	Gap9    [types.INT32_SZ]byte
 	BCache  [ptttype.MAX_BOARD]ptttype.BoardHeaderRaw
 	Gap10   [types.INT32_SZ]byte
@@ -58,7 +58,7 @@ type SHMRaw struct {
 	Gap12         [types.INT32_SZ]byte
 	BusyStateB    [ptttype.MAX_BOARD]types.Time4
 	Gap13         [types.INT32_SZ]byte
-	Total         [ptttype.MAX_BOARD]int32
+	Total         [ptttype.MAX_BOARD]int32 /* numbre of all posts */
 	Gap14         [types.INT32_SZ]byte
 	NBottom       [ptttype.MAX_BOARD]uint8 /* number of bottom */
 	Gap15         [types.INT32_SZ]byte

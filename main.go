@@ -15,12 +15,21 @@ import (
 	"github.com/spf13/viper"
 )
 
+var apiPrefix = "/v1"
+
+func withPrefix(path string) string {
+	return apiPrefix + path
+}
+
 func initGin() (*gin.Engine, error) {
 	router := gin.Default()
 
+	apiPrefix = "/v1"
+
 	router.POST("/", NewLoginRequiredApi(api.Index, &api.IndexParams{}).LoginRequiredJson)
-	router.POST("/login", NewApi(api.Login, &api.LoginParams{}).Json)
-	router.POST("/register", NewApi(api.Register, &api.RegisterParams{}).Json)
+	router.POST(withPrefix("/token"), NewApi(api.Login, &api.LoginParams{}).Json)
+	router.POST(withPrefix("/register"), NewApi(api.Register, &api.RegisterParams{}).Json)
+	router.POST(withPrefix("/loadGeneralBoards"), NewLoginRequiredApi(api.LoadGeneralBoards, &api.LoadGeneralBoardsParams{}).LoginRequiredJson)
 
 	return router, nil
 }

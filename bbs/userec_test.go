@@ -1,10 +1,10 @@
 package bbs
 
 import (
-	"reflect"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
+	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
 func TestNewUserecFromRaw(t *testing.T) {
@@ -27,9 +27,9 @@ func TestNewUserecFromRaw(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewUserecFromRaw(tt.args.userecraw); !reflect.DeepEqual(got, tt.expected) {
-				t.Errorf("NewUserecFromRaw() = %v, expected %v", got, tt.expected)
-			}
+			got := NewUserecFromRaw(tt.args.userecraw)
+
+			types.TDeepEqual(t, got, tt.expected)
 		})
 	}
 }
