@@ -4,7 +4,6 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs"
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs/names"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
-	log "github.com/sirupsen/logrus"
 )
 
 //LoginQuery
@@ -22,14 +21,12 @@ func LoginQuery(userID *ptttype.UserID_t, passwd []byte, ip *ptttype.IPv4_t) (*p
 		return nil, ptttype.ErrInvalidUserID
 	}
 
-	_, cuser, err := initCurrentUser(userID)
-	log.Debugf("after initCurrentUser: cuser: %v e: %v", cuser, err)
+	_, cuser, err := InitCurrentUser(userID)
 	if err != nil {
 		return nil, err
 	}
 
 	isValid, err := cmbbs.CheckPasswd(cuser.PasswdHash[:], passwd)
-	log.Debugf("mbbsd.LoginQuery: after CheckPasswd: isValid: %v e: %v", isValid, err)
 	if err != nil {
 		cmbbs.LogAttempt(userID, ip, true)
 		return nil, err

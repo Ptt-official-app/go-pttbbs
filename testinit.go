@@ -43,6 +43,8 @@ func setupTest() {
 	_ = cache.AttachSHM()
 	_ = cache.LoadUHash()
 
+	cache.ReloadBCache()
+
 	_ = cmbbs.PasswdInit()
 
 }

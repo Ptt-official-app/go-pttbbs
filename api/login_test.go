@@ -8,9 +8,6 @@ import (
 )
 
 func TestLogin(t *testing.T) {
-	setupTest()
-	defer teardownTest()
-
 	type args struct {
 		params interface{}
 	}
@@ -32,6 +29,9 @@ func TestLogin(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			setupTest()
+			defer teardownTest()
+
 			got, err := Login(tt.args.params)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Login() error = %v, wantErr %v", err, tt.wantErr)

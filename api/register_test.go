@@ -5,9 +5,6 @@ import (
 )
 
 func TestRegister(t *testing.T) {
-	setupTest()
-	defer teardownTest()
-
 	type args struct {
 		params interface{}
 	}
@@ -24,6 +21,9 @@ func TestRegister(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			setupTest()
+			defer teardownTest()
+
 			got, err := Register(tt.args.params)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Register() error = %v, wantErr %v", err, tt.wantErr)

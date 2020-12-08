@@ -7,7 +7,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 )
 
-func Test_initCurrentUser(t *testing.T) {
+func TestInitCurrentUser(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
@@ -33,16 +33,16 @@ func Test_initCurrentUser(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, got1, err := initCurrentUser(tt.args.userID)
+			got, got1, err := InitCurrentUser(tt.args.userID)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("initCurrentUser() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("InitCurrentUser() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if got != tt.expected {
-				t.Errorf("initCurrentUser() got = %v, expected %v", got, tt.expected)
+				t.Errorf("InitCurrentUser() got = %v, expected %v", got, tt.expected)
 			}
 			if !reflect.DeepEqual(got1, tt.expected1) {
-				t.Errorf("initCurrentUser() got1 = %v, expected1 %v", got1, tt.expected1)
+				t.Errorf("InitCurrentUser() got1 = %v, expected1 %v", got1, tt.expected1)
 			}
 		})
 	}

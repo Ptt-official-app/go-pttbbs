@@ -56,7 +56,3 @@ func tryDeleteHomePath(userID *ptttype.UserID_t) error {
 
 	return nil
 }
-
-func hasUserPerm(user *ptttype.UserecRaw, perm ptttype.PERM) bool {
-	return user.UserLevel&perm != 0
-}

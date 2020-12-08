@@ -86,7 +86,7 @@ func NewRegister(
 	}
 
 	// read and ensure that every works as expected.
-	uid, _, err := initCurrentUser(userID)
+	uid, _, err := InitCurrentUser(userID)
 	if err != nil {
 		log.Errorf("register.NewRegister: unable to initCurrentUser: userID: %v e: %v", userID, err)
 		return nil, err

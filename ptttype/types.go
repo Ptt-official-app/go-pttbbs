@@ -1,6 +1,11 @@
 package ptttype
 
-import "unsafe"
+import (
+	"bytes"
+	"unsafe"
+
+	"github.com/Ptt-official-app/go-pttbbs/types"
+)
 
 //We have 3 different ids for user:
 //	UserID_t: (username)
@@ -55,6 +60,9 @@ const USER_ID_SZ = unsafe.Sizeof(EMPTY_USER_ID)
 const BOARD_ID_SZ = unsafe.Sizeof(EMPTY_BOARD_ID)
 const BOARD_TITLE_SZ = unsafe.Sizeof(EMPTY_BOARD_TITLE)
 const UID_IN_STORE_SZ = unsafe.Sizeof(UidInStore(0))
+const UID_SZ = unsafe.Sizeof(Uid(0))
+const BID_IN_STORE_SZ = unsafe.Sizeof(BidInStore(0))
+const BID_SZ = unsafe.Sizeof(Bid(0))
 
 func (u UidInStore) ToUid() Uid {
 	return Uid(u + 1)
@@ -70,4 +78,45 @@ func (b BidInStore) ToBid() Bid {
 
 func (b Bid) ToBidInStore() BidInStore {
 	return BidInStore(b - 1)
+}
+
+//RealTitle
+//
+//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1517
+func (t *BoardTitle_t) RealTitle() []byte {
+	return t[7:41]
+}
+
+//BoardClass
+//
+//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1517
+func (t *BoardTitle_t) BoardClass() []byte {
+	return t[:4]
+}
+
+//BoardType
+//
+//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1517
+func (t *BoardTitle_t) BoardType() []byte {
+	return t[5:7]
+}
+
+//ToBMs
+//
+//We would like to have a better method
+//(We don't need to worry about this once we move everything to the db.)
+func (bm *BM_t) ToBMs() []*UserID_t {
+	bmBytes := types.CstrToBytes(bm[:])
+	theList := bytes.Split(bmBytes, []byte{'/'})
+	bms := make([]*UserID_t, 0, len(theList))
+	for _, each := range theList {
+		if len(each) == 0 || each[0] == 0 {
+			continue
+		}
+		eachUser := &UserID_t{}
+		copy(eachUser[:], each[:])
+		bms = append(bms, eachUser)
+	}
+
+	return bms
 }

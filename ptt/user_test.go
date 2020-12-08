@@ -10,9 +10,6 @@ import (
 )
 
 func Test_killUser(t *testing.T) {
-	setupTest()
-	defer teardownTest()
-
 	userID1 := &ptttype.UserID_t{}
 	copy(userID1[:], []byte("CodingMan"))
 
@@ -35,6 +32,9 @@ func Test_killUser(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			setupTest()
+			defer teardownTest()
+
 			if err := killUser(tt.args.uid, tt.args.userID); (err != nil) != tt.wantErr {
 				t.Errorf("killUser() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -53,11 +53,6 @@ func Test_killUser(t *testing.T) {
 }
 
 func Test_tryDeleteHomePath(t *testing.T) {
-	setupTest()
-	defer func() {
-		teardownTest()
-		os.RemoveAll("./testcase/tmp")
-	}()
 
 	userID1 := &ptttype.UserID_t{}
 	copy(userID1[:], []byte("CodingMan"))
@@ -77,6 +72,12 @@ func Test_tryDeleteHomePath(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			setupTest()
+			defer func() {
+				teardownTest()
+				os.RemoveAll("./testcase/tmp")
+			}()
+
 			homepath := path.SetHomePath(tt.args.userID)
 			_, err := os.Stat(homepath)
 			if err != nil {
@@ -90,38 +91,6 @@ func Test_tryDeleteHomePath(t *testing.T) {
 			_, err = os.Stat(homepath)
 			if err == nil {
 				t.Errorf("tryDeleteHomePath: still with hoem-path: homepath: %v", homepath)
-			}
-		})
-	}
-}
-
-func Test_hasUserPerm(t *testing.T) {
-	setupTest()
-	defer teardownTest()
-
-	type args struct {
-		user *ptttype.UserecRaw
-		perm ptttype.PERM
-	}
-	tests := []struct {
-		name     string
-		args     args
-		expected bool
-	}{
-		// TODO: Add test cases.
-		{
-			args:     args{user: testNewRegister1, perm: ptttype.PERM_POST},
-			expected: false,
-		},
-		{
-			args:     args{user: testNewRegister1, perm: ptttype.PERM_BASIC},
-			expected: true,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := hasUserPerm(tt.args.user, tt.args.perm); got != tt.expected {
-				t.Errorf("hasUserPerm() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
