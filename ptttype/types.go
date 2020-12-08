@@ -2,6 +2,7 @@ package ptttype
 
 import (
 	"bytes"
+	"strconv"
 	"unsafe"
 
 	"github.com/Ptt-official-app/go-pttbbs/types"
@@ -50,6 +51,8 @@ type Title_t [TTLEN + 1]byte
 
 type Gid int32
 
+type SortIdx int
+
 var (
 	EMPTY_USER_ID     = UserID_t{}
 	EMPTY_BOARD_ID    = BoardID_t{}
@@ -72,12 +75,40 @@ func (u Uid) ToUidInStore() UidInStore {
 	return UidInStore(u - 1)
 }
 
+func (u Uid) String() string {
+	return strconv.Itoa(int(u))
+}
+
 func (b BidInStore) ToBid() Bid {
 	return Bid(b + 1)
 }
 
 func (b Bid) ToBidInStore() BidInStore {
 	return BidInStore(b - 1)
+}
+
+func (b Bid) String() string {
+	return strconv.Itoa(int(b))
+}
+
+func (s SortIdx) String() string {
+	if s <= 0 {
+		return ""
+	}
+	return strconv.Itoa(int(s))
+}
+
+func ToSortIdx(str string) (SortIdx, error) {
+	if str == "" {
+		return 0, nil
+	}
+
+	idx, err := strconv.Atoi(str)
+	if err != nil {
+		return -1, err
+	}
+
+	return SortIdx(idx), nil
 }
 
 //RealTitle

@@ -15,7 +15,16 @@ import (
 	"github.com/spf13/viper"
 )
 
-var apiPrefix = "/v1"
+var (
+	apiPrefix = "/v1"
+)
+
+var (
+	index_r             = withPrefix("/")
+	login_r             = withPrefix("/token")
+	register_r          = withPrefix("/register")
+	loadGeneralBoards_r = withPrefix("/board/boards")
+)
 
 func withPrefix(path string) string {
 	return apiPrefix + path
@@ -24,12 +33,10 @@ func withPrefix(path string) string {
 func initGin() (*gin.Engine, error) {
 	router := gin.Default()
 
-	apiPrefix = "/v1"
-
-	router.POST("/", NewLoginRequiredApi(api.Index, &api.IndexParams{}).LoginRequiredJson)
-	router.POST(withPrefix("/token"), NewApi(api.Login, &api.LoginParams{}).Json)
-	router.POST(withPrefix("/register"), NewApi(api.Register, &api.RegisterParams{}).Json)
-	router.POST(withPrefix("/loadGeneralBoards"), NewLoginRequiredApi(api.LoadGeneralBoards, &api.LoadGeneralBoardsParams{}).LoginRequiredJson)
+	router.POST(index_r, NewLoginRequiredApi(api.Index, &api.IndexParams{}).LoginRequiredJson)
+	router.POST(login_r, NewApi(api.Login, &api.LoginParams{}).Json)
+	router.POST(register_r, NewApi(api.Register, &api.RegisterParams{}).Json)
+	router.POST(loadGeneralBoards_r, NewLoginRequiredApi(api.LoadGeneralBoards, &api.LoadGeneralBoardsParams{}).LoginRequiredJson)
 
 	return router, nil
 }

@@ -16,7 +16,7 @@ func TestRegister(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{
-			args: args{params: &RegisterParams{UserID: "C1", Passwd: "567", IP: "127.0.0.1"}},
+			args: args{params: &RegisterParams{UserID: "C1", Passwd: "567"}},
 		},
 	}
 	for _, tt := range tests {
@@ -24,7 +24,7 @@ func TestRegister(t *testing.T) {
 			setupTest()
 			defer teardownTest()
 
-			got, err := Register(tt.args.params)
+			got, err := Register(testIP, tt.args.params)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Register() error = %v, wantErr %v", err, tt.wantErr)
 				return

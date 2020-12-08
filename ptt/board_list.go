@@ -25,14 +25,14 @@ import (
 //  summary
 //	nextIdx: next idx in bsorted.
 //	err
-func LoadGeneralBoards(user *ptttype.UserecRaw, uid ptttype.Uid, startIdx int32, nBoards int, keyword []byte) (summary []*ptttype.BoardSummaryRaw, nextIdx int32, err error) {
+func LoadGeneralBoards(user *ptttype.UserecRaw, uid ptttype.Uid, startIdx ptttype.SortIdx, nBoards int, keyword []byte) (summary []*ptttype.BoardSummaryRaw, nextIdx ptttype.SortIdx, err error) {
 
 	nBoardsInCache := cache.NumBoards()
 
 	boardStats := make([]*ptttype.BoardStat, 0, nBoards)
-	currentIdx := int32(0)
+	currentIdx := ptttype.SortIdx(0)
 	for currentIdx = startIdx; ; currentIdx++ {
-		if currentIdx >= nBoardsInCache || len(boardStats) >= nBoards {
+		if int32(currentIdx) >= nBoardsInCache || len(boardStats) >= nBoards {
 			break
 		}
 
@@ -52,7 +52,7 @@ func LoadGeneralBoards(user *ptttype.UserecRaw, uid ptttype.Uid, startIdx int32,
 		return nil, -1, err
 	}
 
-	if currentIdx == nBoardsInCache {
+	if int32(currentIdx) == nBoardsInCache {
 		currentIdx = -1
 	}
 
@@ -62,7 +62,7 @@ func LoadGeneralBoards(user *ptttype.UserecRaw, uid ptttype.Uid, startIdx int32,
 //loadGeneralBoardStat
 //
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1147
-func loadGeneralBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idx int32, keyword []byte) (*ptttype.BoardStat, error) {
+func loadGeneralBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idx ptttype.SortIdx, keyword []byte) (*ptttype.BoardStat, error) {
 	var bidInCache ptttype.BidInStore
 
 	const bsort0sz = unsafe.Sizeof(cache.Shm.Raw.BSorted[0])

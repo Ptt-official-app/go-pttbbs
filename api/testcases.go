@@ -1,13 +1,15 @@
 package api
 
 import (
+	"strconv"
+
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 )
 
 var (
 	testBoardSummary6 = &bbs.BoardSummary{
-		Bid:        6,
+		Bid:        strconv.Itoa(6),
 		BrdAttr:    ptttype.BRD_POSTMASK,
 		StatAttr:   ptttype.NBRD_FAV,
 		Brdname:    "ALLPOST",
@@ -17,7 +19,7 @@ var (
 		BM:         []string{},
 	}
 	testBoardSummary7 = &bbs.BoardSummary{
-		Bid:        7,
+		Bid:        strconv.Itoa(7),
 		StatAttr:   ptttype.NBRD_FAV,
 		Brdname:    "deleted",
 		BoardClass: "嘰哩",
@@ -26,7 +28,7 @@ var (
 		BM:         []string{},
 	}
 	testBoardSummary11 = &bbs.BoardSummary{
-		Bid:        11,
+		Bid:        strconv.Itoa(11),
 		StatAttr:   ptttype.NBRD_FAV,
 		Brdname:    "EditExp",
 		BoardClass: "嘰哩",
@@ -35,7 +37,7 @@ var (
 		BM:         []string{},
 	}
 	testBoardSummary8 = &bbs.BoardSummary{
-		Bid:        8,
+		Bid:        strconv.Itoa(8),
 		StatAttr:   ptttype.NBRD_FAV,
 		Brdname:    "Note",
 		BoardClass: "嘰哩",

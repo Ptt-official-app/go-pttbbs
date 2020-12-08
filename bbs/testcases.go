@@ -154,7 +154,7 @@ var (
 	}
 
 	testBoardSummary6 = &BoardSummary{
-		Bid:        6,
+		Bid:        "6",
 		BrdAttr:    ptttype.BRD_POSTMASK,
 		StatAttr:   ptttype.NBRD_FAV,
 		Brdname:    "ALLPOST",
@@ -164,7 +164,7 @@ var (
 		BM:         []string{},
 	}
 	testBoardSummary7 = &BoardSummary{
-		Bid:        7,
+		Bid:        "7",
 		StatAttr:   ptttype.NBRD_FAV,
 		Brdname:    "deleted",
 		BoardClass: "嘰哩",
@@ -173,7 +173,7 @@ var (
 		BM:         []string{},
 	}
 	testBoardSummary11 = &BoardSummary{
-		Bid:        11,
+		Bid:        "11",
 		StatAttr:   ptttype.NBRD_FAV,
 		Brdname:    "EditExp",
 		BoardClass: "嘰哩",
@@ -182,7 +182,7 @@ var (
 		BM:         []string{},
 	}
 	testBoardSummary8 = &BoardSummary{
-		Bid:        8,
+		Bid:        "8",
 		StatAttr:   ptttype.NBRD_FAV,
 		Brdname:    "Note",
 		BoardClass: "嘰哩",

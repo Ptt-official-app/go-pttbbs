@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -26,18 +25,21 @@ func Test_Login(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{
-			args: args{path: withPrefix("/token"), params: &api.LoginParams{UserID: "SYSOP", Passwd: "123123", IP: "127.0.0.1"}}, // json: {}
+			args: args{
+				path: login_r,
+				params: &api.LoginParams{
+					UserID: "SYSOP",
+					Passwd: "123123",
+				},
+			}, // json: {}
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			log.Infof("Test_Login: start: name: %v", tt.name)
-
 			router, _ := initGin()
 
 			w := httptest.NewRecorder()
-			jsonStr, _ := json.Marshal(tt.args.params)
-			req, _ := http.NewRequest("POST", tt.args.path, bytes.NewBuffer(jsonStr))
+			req := setRequest(tt.args.path, tt.args.params, "", nil)
 			router.ServeHTTP(w, req)
 
 			if w.Code != http.StatusOK {

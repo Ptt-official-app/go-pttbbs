@@ -1,0 +1,43 @@
+login
+---
+tags:
+  - user
+parameters:
+  - name: Host
+    in: header
+    required: true
+    description: ip of the middleware
+    type: string
+  - name: X-Forwarded-For
+    in: header
+    required: true
+    description: ip of the frontend (requiring using ip for now to fit in Userec)
+    type: string
+  - name: params
+    in: body
+    required: true
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      type: object
+      properties:
+        username:
+          type: string
+          required: true
+        password:
+          type: string
+          required: true
+responses:
+  200:
+    description: index-response
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      type: object
+      properties:
+        access_token:
+          type: string
+          description: access_token
+          required: true
+        token_type:
+          type: string
+          description: token_type
+          required: true

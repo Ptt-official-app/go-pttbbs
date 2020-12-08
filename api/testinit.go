@@ -11,6 +11,7 @@ import (
 
 var (
 	origBBSHOME = ""
+	testIP      = "127.0.0.1"
 )
 
 func setupTest() {
