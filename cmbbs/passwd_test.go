@@ -11,6 +11,8 @@ import (
 )
 
 func TestPasswdLoadUser(t *testing.T) {
+	//setupTest moves to for-loop
+	//teardownTest moves to for-loop
 	userID1 := ptttype.UserID_t{}
 	copy(userID1[:], []byte("SYSOP"))
 
@@ -50,6 +52,8 @@ func TestPasswdLoadUser(t *testing.T) {
 }
 
 func TestPasswdQuery(t *testing.T) {
+	//setupTest moves to for-loop
+	//teardownTest moves to for-loop
 	type args struct {
 		uid ptttype.Uid
 	}
@@ -83,6 +87,8 @@ func TestPasswdQuery(t *testing.T) {
 }
 
 func TestCheckPasswd(t *testing.T) {
+	//setupTest moves to for-loop
+	//teardownTest moves to for-loop
 
 	input1 := []byte{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', 0}
 	input2 := []byte{'0', '1', '2', '4', '4', '5', '6', '7', '8', '9', '0', '1', 0}

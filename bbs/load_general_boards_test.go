@@ -7,6 +7,8 @@ import (
 )
 
 func TestLoadGeneralBoards(t *testing.T) {
+	//setupTest moves in for-loop
+	//teardownTest moves in for-loop
 	type args struct {
 		userID      string
 		startIdxStr string

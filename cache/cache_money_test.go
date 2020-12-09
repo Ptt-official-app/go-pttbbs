@@ -11,13 +11,6 @@ func TestSetUMoney(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	err := NewSHM(TestShmKey, ptttype.USE_HUGETLB, true)
-	if err != nil {
-		log.Errorf("TestGetUserID: unable to NewSHM: e: %v", err)
-		return
-	}
-	defer CloseSHM()
-
 	_ = LoadUHash()
 
 	userID1 := &ptttype.UserID_t{}
@@ -72,13 +65,6 @@ func TestSetUMoney(t *testing.T) {
 func TestDeUMoney(t *testing.T) {
 	setupTest()
 	defer teardownTest()
-
-	err := NewSHM(TestShmKey, ptttype.USE_HUGETLB, true)
-	if err != nil {
-		log.Errorf("TestGetUserID: unable to NewSHM: e: %v", err)
-		return
-	}
-	defer CloseSHM()
 
 	_ = LoadUHash()
 

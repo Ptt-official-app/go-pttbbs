@@ -6,19 +6,11 @@ import (
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
-	log "github.com/sirupsen/logrus"
 )
 
 func TestSearchUListUserID(t *testing.T) {
 	setupTest()
 	defer teardownTest()
-
-	err := NewSHM(TestShmKey, ptttype.USE_HUGETLB, true)
-	if err != nil {
-		log.Errorf("TestGetUserID: unable to NewSHM: e: %v", err)
-		return
-	}
-	defer CloseSHM()
 
 	InitFillUHash(false)
 

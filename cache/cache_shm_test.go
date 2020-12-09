@@ -15,12 +15,6 @@ func TestAttachSHM(t *testing.T) {
 
 	log.Infof("TestAttachSHM: to NewSHM: shm_key: %v USE_HUGETLB: %v", ptttype.SHM_KEY, ptttype.USE_HUGETLB)
 
-	err := NewSHM(types.Key_t(TestShmKey), ptttype.USE_HUGETLB, true)
-	if err != nil {
-		return
-	}
-	defer CloseSHM()
-
 	log.Infof("TestAttachSHM: after NewSHM")
 
 	tests := []struct {
@@ -42,12 +36,6 @@ func TestAttachSHM(t *testing.T) {
 func TestAttachCheckSHM(t *testing.T) {
 	setupTest()
 	defer teardownTest()
-
-	err := NewSHM(types.Key_t(TestShmKey), ptttype.USE_HUGETLB, true)
-	if err != nil {
-		return
-	}
-	defer CloseSHM()
 
 	loaded := int32(1)
 	Shm.WriteAt(

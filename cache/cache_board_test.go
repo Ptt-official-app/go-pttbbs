@@ -13,12 +13,6 @@ func TestGetBCache(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	err := NewSHM(types.Key_t(TestShmKey), ptttype.USE_HUGETLB, true)
-	if err != nil {
-		return
-	}
-	defer CloseSHM()
-
 	boards := [3]ptttype.BoardHeaderRaw{testBoardHeader0, testBoardHeader1, testBoardHeader2}
 	Shm.WriteAt(
 		unsafe.Offsetof(Shm.Raw.BCache),
@@ -66,12 +60,6 @@ func TestGetBCache(t *testing.T) {
 func TestIsHiddenBoardFriend(t *testing.T) {
 	setupTest()
 	defer teardownTest()
-
-	err := NewSHM(types.Key_t(TestShmKey), ptttype.USE_HUGETLB, true)
-	if err != nil {
-		return
-	}
-	defer CloseSHM()
 
 	_ = LoadUHash()
 
@@ -125,12 +113,6 @@ func TestNumBoards(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	err := NewSHM(types.Key_t(TestShmKey), ptttype.USE_HUGETLB, true)
-	if err != nil {
-		return
-	}
-	defer CloseSHM()
-
 	ReloadBCache()
 
 	tests := []struct {
@@ -154,12 +136,6 @@ func TestNumBoards(t *testing.T) {
 func TestReloadBCache(t *testing.T) {
 	setupTest()
 	defer teardownTest()
-
-	err := NewSHM(types.Key_t(TestShmKey), ptttype.USE_HUGETLB, true)
-	if err != nil {
-		return
-	}
-	defer CloseSHM()
 
 	tests := []struct {
 		name                  string
@@ -226,12 +202,6 @@ func TestReloadBCache(t *testing.T) {
 func Test_reloadCacheLoadBottom(t *testing.T) {
 	setupTest()
 	defer teardownTest()
-
-	err := NewSHM(types.Key_t(TestShmKey), ptttype.USE_HUGETLB, true)
-	if err != nil {
-		return
-	}
-	defer CloseSHM()
 
 	ReloadBCache()
 
