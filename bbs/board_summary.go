@@ -6,25 +6,25 @@ import (
 )
 
 type BoardSummary struct {
-	Bid          ptttype.Bid
-	BrdAttr      ptttype.BrdAttr
-	StatAttr     ptttype.BoardStatAttr
-	Brdname      string
-	RealTitle    string //Require to separate RealTitle, BoardClass, BoardType, because it's hard to parse in utf8
-	BoardClass   string
-	BoardType    string //□, ◎, Σ
-	BM           []string
-	Reason       ptttype.RestrictReason
-	LastPostTime types.Time4
-	NUser        int32
-	Total        int32
+	Bid          string                `json:"bid"`
+	BrdAttr      ptttype.BrdAttr       `json:"brdAttr"`
+	StatAttr     ptttype.BoardStatAttr `json:"statAttr"`
+	Brdname      string                `json:"brdname"`
+	RealTitle    string                `json:"title"` //Require to separate RealTitle, BoardClass, BoardType, because it's hard to parse in utf8
+	BoardClass   string                `json:"class"`
+	BoardType    string                `json:"boardType"` //□, ◎, Σ
+	BM           []string              `json:"moderators"`
+	Reason       string                `json:"reason"`
+	LastPostTime types.Time4           `json:"lastPostTime"`
+	NUser        int32                 `json:"nUser"`
+	Total        int32                 `json:"total"`
 }
 
 func NewBoardSummaryFromRaw(boardSummaryRaw *ptttype.BoardSummaryRaw) *BoardSummary {
 
 	boardSummary := &BoardSummary{}
 
-	boardSummary.Bid = boardSummaryRaw.Bid
+	boardSummary.Bid = boardSummaryRaw.Bid.String()
 	boardSummary.BrdAttr = boardSummaryRaw.BrdAttr
 	boardSummary.StatAttr = boardSummaryRaw.StatAttr
 	boardSummary.Brdname = types.CstrToString(boardSummaryRaw.Brdname[:])
@@ -38,7 +38,7 @@ func NewBoardSummaryFromRaw(boardSummaryRaw *ptttype.BoardSummaryRaw) *BoardSumm
 			boardSummary.BM[idx] = types.CstrToString(each[:])
 		}
 	}
-	boardSummary.Reason = boardSummaryRaw.Reason
+	boardSummary.Reason = boardSummaryRaw.Reason.String()
 	boardSummary.LastPostTime = boardSummaryRaw.LastPostTime
 	boardSummary.Total = boardSummaryRaw.Total
 

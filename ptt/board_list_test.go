@@ -14,7 +14,7 @@ func TestLoadGeneralBoards(t *testing.T) {
 	type args struct {
 		user     *ptttype.UserecRaw
 		uid      ptttype.Uid
-		startIdx int32
+		startIdx ptttype.SortIdx
 		nBoards  int
 		keyword  []byte
 	}
@@ -22,7 +22,7 @@ func TestLoadGeneralBoards(t *testing.T) {
 		name            string
 		args            args
 		expectedSummary []*ptttype.BoardSummaryRaw
-		expectedNextIdx int32
+		expectedNextIdx ptttype.SortIdx
 		wantErr         bool
 	}{
 		// TODO: Add test cases.

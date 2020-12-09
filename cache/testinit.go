@@ -22,7 +22,7 @@ var (
 	TestEachMutex sync.Mutex
 )
 
-func setupTest() {
+func shmSetupTest() {
 	SetIsTest()
 
 	origBBSHome = ptttype.SetBBSHOME("./testcase")
@@ -30,11 +30,29 @@ func setupTest() {
 	initTestCases()
 }
 
-func teardownTest() {
+func shmTeardownTest() {
 	ptttype.SetBBSHOME(origBBSHome)
 
 	UnsetIsTest()
 	time.Sleep(1 * time.Millisecond)
+}
+
+func setupTest() {
+	shmSetupTest()
+
+	err := NewSHM(types.Key_t(TestShmKey), ptttype.USE_HUGETLB, true)
+	if err != nil {
+		return
+	}
+
+	Shm.Reset()
+
+}
+
+func teardownTest() {
+	CloseSHM()
+
+	shmTeardownTest()
 }
 
 func SetIsTest() {

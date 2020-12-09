@@ -32,7 +32,7 @@ func TestLogin(t *testing.T) {
 			setupTest()
 			defer teardownTest()
 
-			got, err := Login(tt.args.params)
+			got, err := Login(testIP, tt.args.params)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Login() error = %v, wantErr %v", err, tt.wantErr)
 				return

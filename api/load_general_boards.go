@@ -1,19 +1,21 @@
 package api
 
-import "github.com/Ptt-official-app/go-pttbbs/bbs"
+import (
+	"github.com/Ptt-official-app/go-pttbbs/bbs"
+)
 
 type LoadGeneralBoardsParams struct {
-	StartIdx int32
-	NBoards  int
-	Keyword  []byte
+	StartIdx string `json:"start_bid"`
+	NBoards  int    `json:"n_boards"`
+	Keyword  string `json:"keyword"`
 }
 
 type LoadGeneralBoardsResult struct {
-	Boards  []*bbs.BoardSummary
-	NextIdx int32
+	Boards  []*bbs.BoardSummary `json:"boards"`
+	NextIdx string              `json:"next_bid"`
 }
 
-func LoadGeneralBoards(userID string, params interface{}) (interface{}, error) {
+func LoadGeneralBoards(remoteAddr string, userID string, params interface{}) (interface{}, error) {
 	loadGeneralBoardsParams, ok := params.(*LoadGeneralBoardsParams)
 	if !ok {
 		return nil, ErrInvalidParams

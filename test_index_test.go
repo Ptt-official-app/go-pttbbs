@@ -1,9 +1,6 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -15,9 +12,8 @@ func Test_Index(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	params := &LoginRequiredParams{
-		Data: &api.IndexParams{},
-	}
+	params := &api.IndexParams{}
+
 	type args struct {
 		path   string
 		userID string
@@ -31,7 +27,7 @@ func Test_Index(t *testing.T) {
 		// TODO: Add test cases.
 		{
 			args: args{
-				path:   "/",
+				path:   index_r,
 				userID: "SYSOP",
 				passwd: "123123",
 				params: params,
@@ -42,22 +38,9 @@ func Test_Index(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			router, _ := initGin()
 
+			jwt := getJwt(router, tt.args.userID, tt.args.passwd)
 			w := httptest.NewRecorder()
-			loginParams := &api.LoginParams{UserID: tt.args.userID, Passwd: tt.args.passwd, IP: "127.0.0.1"}
-			jsonStr, _ := json.Marshal(loginParams)
-			req, _ := http.NewRequest("POST", withPrefix("/token"), bytes.NewBuffer(jsonStr))
-			router.ServeHTTP(w, req)
-			body, _ := ioutil.ReadAll(w.Body)
-			resultLogin := &api.LoginResult{}
-			_ = json.Unmarshal(body, resultLogin)
-			jwt := resultLogin.Jwt
-
-			params.UserID = tt.args.userID
-			params.Jwt = jwt
-
-			w = httptest.NewRecorder()
-			jsonStr, _ = json.Marshal(tt.args.params)
-			req, _ = http.NewRequest("POST", tt.args.path, bytes.NewBuffer(jsonStr))
+			req := setRequest(tt.args.path, params, jwt, nil)
 			router.ServeHTTP(w, req)
 
 			if w.Code != http.StatusOK {

@@ -10,6 +10,17 @@ const (
 	RESTRICT_REASON_HIDDEN
 )
 
+func (r RestrictReason) String() string {
+	switch r {
+	case RESTRICT_REASON_FORBIDDEN:
+		return "forbidden"
+	case RESTRICT_REASON_HIDDEN:
+		return "hidden"
+	default:
+		return ""
+	}
+}
+
 type BoardSummaryRaw struct {
 	Bid          Bid
 	BrdAttr      BrdAttr

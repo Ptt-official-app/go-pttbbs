@@ -9,22 +9,22 @@ import (
 )
 
 type LoginParams struct {
-	UserID string
-	Passwd string
-	IP     string
+	UserID string `json:"username"`
+	Passwd string `json:"password"`
 }
 
 type LoginResult struct {
-	Jwt string
+	Jwt       string `json:"access_token"`
+	TokenType string `json:"token_type"`
 }
 
-func Login(params interface{}) (interface{}, error) {
+func Login(remoteAddr string, params interface{}) (interface{}, error) {
 	loginParams, ok := params.(*LoginParams)
 	if !ok {
 		return nil, ErrInvalidParams
 	}
 
-	user, err := bbs.Login(loginParams.UserID, loginParams.Passwd, loginParams.IP)
+	user, err := bbs.Login(loginParams.UserID, loginParams.Passwd, remoteAddr)
 	if err != nil {
 		return nil, ErrLoginFailed
 	}
@@ -35,7 +35,8 @@ func Login(params interface{}) (interface{}, error) {
 	}
 
 	result := &LoginResult{
-		Jwt: token,
+		Jwt:       token,
+		TokenType: "bearer",
 	}
 
 	return result, nil

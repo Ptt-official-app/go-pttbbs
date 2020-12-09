@@ -11,13 +11,8 @@ import (
 )
 
 func TestNewSHM(t *testing.T) {
-	setupTest()
-	defer teardownTest()
-
-	ptttype.SERVICE_MODE = ptttype.DEBUG
-	defer func() {
-		ptttype.SERVICE_MODE = ptttype.DEV
-	}()
+	shmSetupTest()
+	defer shmTeardownTest()
 
 	type args struct {
 		key          types.Key_t
@@ -61,6 +56,7 @@ func TestNewSHM(t *testing.T) {
 				t.Errorf("NewSHM() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
+			Shm.Reset()
 
 			if !reflect.DeepEqual(Shm.Raw.Version, tt.wantVersion) {
 				t.Errorf("NewSHM() version: %v expected: %v", Shm.Raw.Version, tt.wantVersion)

@@ -25,6 +25,9 @@ func setupTest() {
 
 	_ = cache.NewSHM(types.Key_t(cache.TestShmKey), ptttype.USE_HUGETLB, true)
 	_ = cache.AttachSHM()
+
+	cache.Shm.Reset()
+
 	_ = cache.LoadUHash()
 	cache.ReloadBCache()
 

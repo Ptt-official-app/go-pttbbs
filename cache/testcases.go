@@ -84,7 +84,15 @@ var (
 	testSortedByClass = []ptttype.BidInStore{1, 4, 2, 3, 11, 5, 6, 10, 7, 8, 0, 9}
 )
 
+var (
+	isInitTestCases = false
+)
+
 func initTestCases() {
+	if isInitTestCases {
+		return
+	}
+	isInitTestCases = true
 	copy(testBCacheName[0][:], []byte("SYSOP"))
 	copy(testBCacheName[1][:], []byte("1..........."))
 	copy(testBCacheName[2][:], []byte("junk"))

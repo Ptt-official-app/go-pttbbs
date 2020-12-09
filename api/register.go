@@ -3,23 +3,23 @@ package api
 import "github.com/Ptt-official-app/go-pttbbs/bbs"
 
 type RegisterParams struct {
-	UserID string
-	Passwd string
-	IP     string
-	Email  string
+	UserID string `json:"username"`
+	Passwd string `json:"password"`
+	Email  string `json:"email,omitempty"`
 
-	Nickname string
-	Realname string
-	Career   string
-	Address  string
-	Over18   bool
+	Nickname string `json:"nickname,omitempty"`
+	Realname string `json:"realname,omitempty"`
+	Career   string `json:"career,omitempty"`
+	Address  string `json:"address,omitempty"`
+	Over18   bool   `json:"over18"`
 }
 
 type RegisterResult struct {
-	Jwt string
+	Jwt       string `json:"access_token"`
+	TokenType string `json:"token_type"`
 }
 
-func Register(params interface{}) (interface{}, error) {
+func Register(remoteAddr string, params interface{}) (interface{}, error) {
 	registerParams, ok := params.(*RegisterParams)
 	if !ok {
 		return nil, ErrInvalidParams
@@ -28,7 +28,7 @@ func Register(params interface{}) (interface{}, error) {
 	user, err := bbs.Register(
 		registerParams.UserID,
 		registerParams.Passwd,
-		registerParams.IP,
+		remoteAddr,
 		registerParams.Email,
 
 		registerParams.Nickname,
@@ -47,7 +47,8 @@ func Register(params interface{}) (interface{}, error) {
 	}
 
 	result := &RegisterResult{
-		Jwt: token,
+		Jwt:       token,
+		TokenType: "bearer",
 	}
 
 	return result, nil

@@ -33,6 +33,9 @@ func setupTest() {
 		log.Errorf("setupTest: unable to NewSHM: e: %v", err)
 		return
 	}
+
+	cache.Shm.Reset()
+
 	_ = cache.LoadUHash()
 }
 

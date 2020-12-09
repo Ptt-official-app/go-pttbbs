@@ -26,7 +26,7 @@ type SHM struct {
 //This is to init SHM with Version and Size checked.
 func NewSHM(key types.Key_t, isUseHugeTlb bool, isCreate bool) error {
     if Shm != nil {
-        return ErrShmAlreadyInit
+        return nil
     }
 
     shmid := int(0)
@@ -153,28 +153,33 @@ func debugShm() {
 //We simply use ipcrm to delete the shm if necessary.
 //
 //Currently used only in test.
+//XXX not doing close shm to prevent opening too many shms in tests.
 func CloseSHM() error {
     if !IsTest {
         return ErrInvalidOp
     }
 
-    if Shm == nil {
-        // Already Closed
-        log.Errorf("cache.CloseSHM: already closed")
-        return ErrShmNotInit
-    }
-
-    err := Shm.Close()
-    if err != nil {
-        log.Errorf("cache.CloseSHM: unable to close: e: %v", err)
-        return err
-    }
-
-    Shm = nil
-
-    log.Infof("cache.CloseSHM: done")
-
     return nil
+
+    /*
+       if Shm == nil {
+           // Already Closed
+           log.Errorf("cache.CloseSHM: already closed")
+           return ErrShmNotInit
+       }
+
+       err := Shm.Close()
+       if err != nil {
+           log.Errorf("cache.CloseSHM: unable to close: e: %v", err)
+           return err
+       }
+
+       Shm = nil
+
+       log.Infof("cache.CloseSHM: done")
+
+       return nil
+    */
 }
 
 //Close
@@ -186,11 +191,25 @@ func CloseSHM() error {
 //We simply use ipcrm to delete the shm if necessary.
 //
 //Currently used only in test.
+//XXX not doing close shm to prevent opening too many shms in tests.
 func (s *SHM) Close() error {
     if !IsTest {
         return ErrInvalidOp
     }
-    return shm.CloseShm(s.Shmid, s.Shmaddr)
+    return nil
+
+    //return shm.CloseShm(s.Shmid, s.Shmaddr)
+}
+
+func (s *SHM) Reset() {
+    if !IsTest {
+        return
+    }
+    s.WriteAt(
+        unsafe.Offsetof(s.Raw.Userid),
+        SHM_RAW_SZ-uintptr(types.INT32_SZ*2),
+        unsafe.Pointer(&EMPTY_SHM_RAW.Userid),
+    )
 }
 
 //ReadAt

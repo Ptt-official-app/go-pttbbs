@@ -6,6 +6,9 @@ import (
 )
 
 func TestIndex(t *testing.T) {
+	//setupTest moves inside for-loop
+	//teardownTest moves inside for-loop
+
 	type args struct {
 		userID string
 		params interface{}
@@ -27,7 +30,7 @@ func TestIndex(t *testing.T) {
 			setupTest()
 			defer teardownTest()
 
-			got, err := Index(tt.args.userID, tt.args.params)
+			got, err := Index(testIP, tt.args.userID, tt.args.params)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Index() error = %v, wantErr %v", err, tt.wantErr)
 				return

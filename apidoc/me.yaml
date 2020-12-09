@@ -1,0 +1,63 @@
+me
+---
+tags:
+  - user
+parameters:
+  - name: Host
+    in: header
+    required: true
+    description: ip of the middleware
+    type: string
+  - name: X-Forwarded-For
+    in: header
+    required: true
+    description: ip of the frontend (requiring using ip for now to fit in Userec)
+    type: string
+  - name: Authorization
+    in: header
+    require: true
+    description: bearer [token]
+    type: string
+  - name: params
+    in: body
+    required: true
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      type: object
+      properties:
+responses:
+  200:
+    description: index-response
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      type: object
+      properties:
+        nickname:
+          type: string
+        realname:
+          type: string
+        career:
+          type: string
+        address:
+          type: string
+        email:
+          type: string
+        money:
+          type: integer
+        over18:
+          type: boolean
+        register_ts:
+          type: integer
+          description: register timestamp in unix-time
+        permission:
+          type: integer
+          description: permission. https://github.com/Ptt-official-app/go-pttbbs/blob/main/ptttype/perm.go
+        justify:
+          type: string
+          description: 認證資料
+        lastlogin_ts:
+          type: integer
+          description: 最近 login timestamp in unix-time
+        accept_external_mail:
+          type: boolean
+          description: 是否可收站外信件
