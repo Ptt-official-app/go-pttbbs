@@ -118,6 +118,8 @@ func initMain() error {
 			log.Errorf("unable to load UHash: e: %v", err)
 			return err
 		}
+
+		cache.ReloadBCache()
 	}
 	err = cache.AttachCheckSHM()
 	if err != nil {

@@ -75,6 +75,7 @@ func (api *LoginRequiredApi) LoginRequiredJson(c *gin.Context) {
 	tokenList := strings.Split(tokenStr, " ")
 	if len(tokenList) != 2 {
 		processResult(c, nil, ErrInvalidToken)
+		return
 	}
 	jwt := tokenList[1]
 

@@ -2,52 +2,5 @@ info:
   version: '0.2.0'
   title: go-pttbbs
 definitions:
-  BoardSummary:
-    type: object
-    properties:
-      bid:
-        type: string
-      brdAttr:
-        type: integer
-        description: board-flag. https://github.com/Ptt-official-app/go-pttbbs/blob/main/ptttype/brdattr.go
-      statAttr:
-        type: integer
-        description: state-flag. https://github.com/Ptt-official-app/go-pttbbs/blob/main/ptttype/board_stat.go
-      brdname:
-        type: string
-      title:
-        type: string
-        description: the title excluding board-class and board-type
-      class:
-        type: string
-        description: the board class
-      boardType:
-        type: string
-        description: the board-type (□, ◎, Σ, ...)
-      moderators:
-        type: array
-        items:
-          type: string
-        description: BMs
-      reason:
-        type: string
-        description: reason unable to see the board.
-      lastPostTime:
-        type: integer
-        description: last post time
-      nUser:
-        type: integer
-      total:
-        type: integer
-  BoardListParams:
-    type: object
-    properties:
-      start_bid:
-        type: string
-        description: 起始的 bid, "" 從最小 bid 開始列出.
-        default: ""
-      n_boards:
-        type: integer
-        required: true
-      keyword:
-        type: string
+  !include defs/board_summary.yaml
+  !include defs/board_list_params.yaml
