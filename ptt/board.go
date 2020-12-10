@@ -3,7 +3,6 @@ package ptt
 import (
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
-	"github.com/sirupsen/logrus"
 )
 
 //boardPermStat
@@ -14,7 +13,6 @@ import (
 func boardPermStat(user *ptttype.UserecRaw, uid ptttype.Uid, board *ptttype.BoardHeaderRaw, bid ptttype.Bid) ptttype.BoardStatAttr {
 
 	//SYSOP
-	logrus.Infof("userLevel: %v SYSOP: %v", user.UserLevel, user.UserLevel.HasUserPerm(ptttype.PERM_SYSOP))
 	if user.UserLevel.HasUserPerm(ptttype.PERM_SYSOP) {
 		return ptttype.NBRD_FAV
 	}

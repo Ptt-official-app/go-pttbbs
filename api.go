@@ -7,7 +7,6 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/api"
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
 	"github.com/gin-gonic/gin"
-	log "github.com/sirupsen/logrus"
 	"gopkg.in/square/go-jose.v2/jwt"
 )
 
@@ -37,16 +36,16 @@ func (api *Api) Json(c *gin.Context) {
 	}
 
 	host := strings.TrimSpace(c.GetHeader("Host"))
-	log.Infof("api.Json: after GetHeader: host: %v", host)
 	if !isValidHost(host) {
 		processResult(c, nil, ErrInvalidHost)
+		return
 	}
 
 	//https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For
 	remoteAddr := strings.TrimSpace(c.GetHeader("X-Forwarded-For"))
-	log.Infof("api.Json: after GetHeader: remoteAddr: %v", remoteAddr)
 	if !isValidRemoteAddr(remoteAddr) {
 		processResult(c, nil, ErrInvalidRemoteAddr)
+		return
 	}
 
 	result, err := api.Func(remoteAddr, api.Params)
@@ -63,12 +62,14 @@ func (api *LoginRequiredApi) LoginRequiredJson(c *gin.Context) {
 	host := strings.TrimSpace(c.GetHeader("Host"))
 	if !isValidHost(host) {
 		processResult(c, nil, ErrInvalidHost)
+		return
 	}
 
 	//https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For
 	remoteAddr := strings.TrimSpace(c.GetHeader("X-Forwarded-For"))
 	if !isValidRemoteAddr(remoteAddr) {
 		processResult(c, nil, ErrInvalidRemoteAddr)
+		return
 	}
 
 	tokenStr := strings.TrimSpace(c.GetHeader("Authorization"))
@@ -100,7 +101,7 @@ func verifyJwt(raw string) (userID string, err error) {
 		return "", ErrInvalidToken
 	}
 
-	currentNanoTS := jwt.NewNumericDate(time.Now().Add(time.Hour * 72))
+	currentNanoTS := jwt.NewNumericDate(time.Now())
 	if *currentNanoTS > *cl.Expire {
 		return "", ErrInvalidToken
 	}

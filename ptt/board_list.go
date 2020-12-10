@@ -6,7 +6,6 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
-	log "github.com/sirupsen/logrus"
 )
 
 //LoadGeneralBoards
@@ -71,7 +70,6 @@ func loadGeneralBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idx ptttype.
 		ptttype.BID_IN_STORE_SZ,
 		unsafe.Pointer(&bidInCache),
 	)
-	log.Infof("loadGeneralBoardStat: idx: %v bidInCache: %v", idx, bidInCache)
 	if bidInCache < 0 {
 		return nil, nil
 	}
@@ -86,7 +84,6 @@ func loadGeneralBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idx ptttype.
 	bid := bidInCache.ToBid()
 	isGroupOp := groupOp(user, board)
 	state := boardPermStat(user, uid, board, bid)
-	log.Infof("loadGeneralBoardStat: userLevel: %v isGroupOp: %v state: %v boardname: %v", user.UserLevel, isGroupOp, state, types.CstrToString(board.Brdname[:]))
 	if (board.Brdname[0] == '\x00') ||
 		(board.BrdAttr&(ptttype.BRD_GROUPBOARD|ptttype.BRD_SYMBOLIC) != 0) ||
 		!((state != ptttype.NBRD_INVALID) || isGroupOp) ||
@@ -129,8 +126,6 @@ func newBoardStat(bidInCache ptttype.BidInStore, state ptttype.BoardStatAttr, bo
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L14
 func keywordNotInTitle(title *ptttype.BoardTitle_t, keyword []byte) bool {
 	result := (len(keyword) > 0) && (types.Cstrcasestr(title[:], keyword) < 0)
-
-	log.Infof("keywordNotInTitle: title: %v keyword: %v result: %v", types.Big5ToUtf8(title[:]), keyword, result)
 
 	return result
 }
@@ -217,13 +212,10 @@ func parseBoardSummary(user *ptttype.UserecRaw, uid ptttype.Uid, boardStat *pttt
 //
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1579
 func groupOp(user *ptttype.UserecRaw, board *ptttype.BoardHeaderRaw) bool {
-	log.Infof("userLevel: %v perm-nocitizen: %v", user.UserLevel, user.UserLevel.HasUserPerm(ptttype.PERM_NOCITIZEN))
-
 	if user.UserLevel.HasUserPerm(ptttype.PERM_NOCITIZEN) {
 		return false
 	}
 
-	log.Infof("userLevel: %v perm-board: %v", user.UserLevel, user.UserLevel.HasUserPerm(ptttype.PERM_BOARD))
 	if user.UserLevel.HasUserPerm(ptttype.PERM_BOARD) {
 		return true
 	}
