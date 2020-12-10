@@ -5,8 +5,8 @@ import (
 )
 
 type LoadGeneralBoardsParams struct {
-	StartIdx string `json:"start_bid"`
-	NBoards  int    `json:"n_boards"`
+	StartIdx string `json:"start_idx"`
+	NBoards  int    `json:"max"`
 	Keyword  string `json:"keyword"`
 }
 
