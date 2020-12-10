@@ -1,7 +1,5 @@
 package ptttype
 
-import log "github.com/sirupsen/logrus"
-
 type PERM uint32
 
 const (
@@ -58,7 +56,6 @@ const (
 )
 
 func (p PERM) HasUserPerm(perm PERM) bool {
-	log.Infof("p: %O perm: %O", uint32(p), uint32(perm))
 	return p&perm != 0
 }
 
