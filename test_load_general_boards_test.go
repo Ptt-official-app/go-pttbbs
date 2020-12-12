@@ -31,7 +31,7 @@ func Test_LoadGeneralBoards(t *testing.T) {
 		// TODO: Add test cases.
 		{
 			args: args{
-				path:   loadGeneralBoards_r,
+				path:   api.LOAD_GENERAL_BOARDS_R,
 				userID: "SYSOP",
 				passwd: "123123",
 				params: params,

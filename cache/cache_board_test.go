@@ -58,13 +58,6 @@ func TestGetBCache(t *testing.T) {
 }
 
 func TestIsHiddenBoardFriend(t *testing.T) {
-	setupTest()
-	defer teardownTest()
-
-	_ = LoadUHash()
-
-	ReloadBCache()
-
 	type args struct {
 		bidInCache ptttype.BidInStore
 		uidInCache ptttype.UidInStore
@@ -102,6 +95,13 @@ func TestIsHiddenBoardFriend(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			setupTest()
+			defer teardownTest()
+
+			_ = LoadUHash()
+
+			ReloadBCache()
+
 			if got := IsHiddenBoardFriend(tt.args.bidInCache, tt.args.uidInCache); got != tt.expected {
 				t.Errorf("IsHiddenBoardFriend() = %v, want %v", got, tt.expected)
 			}

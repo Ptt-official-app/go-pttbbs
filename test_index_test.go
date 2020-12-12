@@ -27,11 +27,11 @@ func Test_Index(t *testing.T) {
 		// TODO: Add test cases.
 		{
 			args: args{
-				path:   index_r,
+				path:   api.INDEX_R,
 				userID: "SYSOP",
 				passwd: "123123",
 				params: params,
-			}, // json: {"Data": "index"}
+			}, // json: input: {}, output: {"Data": "index"}
 		},
 	}
 	for _, tt := range tests {
