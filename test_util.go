@@ -13,7 +13,7 @@ import (
 
 func setRequest(path string, params interface{}, jwt string, headers map[string]string) *http.Request {
 	jsonStr, _ := json.Marshal(params)
-	req, _ := http.NewRequest("POST", path, bytes.NewBuffer(jsonStr))
+	req, _ := http.NewRequest("POST", withPrefix(path), bytes.NewBuffer(jsonStr))
 
 	req.Header.Set("Host", "localhost:5678")
 	req.Header.Set("X-Forwarded-For", "127.0.0.1:5679")
@@ -31,7 +31,7 @@ func setRequest(path string, params interface{}, jwt string, headers map[string]
 func getJwt(router *gin.Engine, userID string, passwd string) string {
 	w := httptest.NewRecorder()
 	loginParams := &api.LoginParams{UserID: userID, Passwd: passwd}
-	req := setRequest(login_r, loginParams, "", nil)
+	req := setRequest(api.LOGIN_R, loginParams, "", nil)
 	router.ServeHTTP(w, req)
 
 	body, _ := ioutil.ReadAll(w.Body)

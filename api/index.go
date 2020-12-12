@@ -1,5 +1,7 @@
 package api
 
+const INDEX_R = "/"
+
 type IndexParams struct {
 }
 

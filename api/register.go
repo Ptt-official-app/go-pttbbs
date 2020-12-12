@@ -2,6 +2,8 @@ package api
 
 import "github.com/Ptt-official-app/go-pttbbs/bbs"
 
+const REGISTER_R = "/register"
+
 type RegisterParams struct {
 	UserID string `json:"username"`
 	Passwd string `json:"password"`

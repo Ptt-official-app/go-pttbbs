@@ -26,7 +26,7 @@ func Test_Login(t *testing.T) {
 		// TODO: Add test cases.
 		{
 			args: args{
-				path: login_r,
+				path: api.LOGIN_R,
 				params: &api.LoginParams{
 					UserID: "SYSOP",
 					Passwd: "123123",

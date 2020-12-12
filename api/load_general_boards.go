@@ -4,6 +4,8 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
 )
 
+const LOAD_GENERAL_BOARDS_R = "/board/boards"
+
 type LoadGeneralBoardsParams struct {
 	StartIdx string `json:"start_idx"`
 	NBoards  int    `json:"max"`

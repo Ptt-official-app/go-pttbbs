@@ -8,6 +8,8 @@ import (
 	"gopkg.in/square/go-jose.v2/jwt"
 )
 
+const LOGIN_R = "/token"
+
 type LoginParams struct {
 	UserID string `json:"username"`
 	Passwd string `json:"password"`
