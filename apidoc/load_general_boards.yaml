@@ -38,4 +38,5 @@ responses:
           items:
             '$ref': '#/definitions/BoardSummary'
         next_bid:
-          type: integer
+          type: string
+
