@@ -1,6 +1,7 @@
 package ptt
 
 import (
+	"github.com/Ptt-official-app/go-pttbbs/cmbbs/path"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
@@ -24,4 +25,20 @@ func is_uBM(userID *ptttype.UserID_t, bm *ptttype.BM_t) bool {
 	}
 
 	return isValidHead && isValidTail
+}
+
+//setBDir
+//
+//XXX do not deal with digest-mode in go-pttbbs.
+//    will use middleware for digest.
+func setBDir(boardID *ptttype.BoardID_t) (filename string, err error) {
+	return path.SetBFile(boardID, ptttype.FN_DIR)
+}
+
+//setBBottom
+//
+//XXX do not deal with digest-mode in go-pttbbs.
+//    will use middleware for digest.
+func setBBottom(boardID *ptttype.BoardID_t) (filename string, err error) {
+	return path.SetBFile(boardID, ptttype.FN_DIR_BOTTOM)
 }

@@ -3,8 +3,10 @@ package cache
 import (
 	"bufio"
 	"bytes"
+	"encoding/binary"
 	"io/ioutil"
 	"os"
+	"syscall"
 	"time"
 	"unsafe"
 
@@ -14,7 +16,9 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
-func GetBCache(bidInCache ptttype.BidInStore) (board *ptttype.BoardHeaderRaw, err error) {
+func GetBCache(bid ptttype.Bid) (board *ptttype.BoardHeaderRaw, err error) {
+	bidInCache := bid.ToBidInStore()
+
 	board = &ptttype.BoardHeaderRaw{}
 
 	Shm.ReadAt(
@@ -23,6 +27,143 @@ func GetBCache(bidInCache ptttype.BidInStore) (board *ptttype.BoardHeaderRaw, er
 		unsafe.Pointer(board),
 	)
 	return board, nil
+}
+
+func GetBTotal(bid ptttype.Bid) (total int32) {
+	bidInCache := bid.ToBidInStore()
+
+	Shm.ReadAt(
+		unsafe.Offsetof(Shm.Raw.Total)+types.INT32_SZ*uintptr(bidInCache),
+		types.INT32_SZ,
+		unsafe.Pointer(&total),
+	)
+
+	return total
+}
+
+//SetBTotal
+//
+//It's possible that we loaded nothing from ReloadBCache in the beginning of the program, and then there are some articles after a while.
+//We need to sync the btotal and lastposttime back to shm.
+func SetBTotal(bid ptttype.Bid) (err error) {
+	if !bid.IsValid() {
+		return ptttype.ErrInvalidBid
+	}
+	board, err := GetBCache(bid)
+	if err != nil {
+		return err
+	}
+	dirFilename, err := path.SetBFile(&board.Brdname, ptttype.FN_DIR)
+	if err != nil {
+		return err
+	}
+
+	file, err := os.Open(dirFilename)
+	if err != nil { // we should always have .DIR
+		return err
+	}
+	defer file.Close()
+
+	stat, err := file.Stat()
+	if err != nil {
+		return err
+	}
+	nArticles := int32(stat.Size() / int64(ptttype.FILE_HEADER_RAW_SZ))
+
+	bidInCache := bid.ToBidInStore()
+	Shm.WriteAt(
+		unsafe.Offsetof(Shm.Raw.Total)+types.INT32_SZ*uintptr(bidInCache),
+		types.INT32_SZ,
+		unsafe.Pointer(&nArticles),
+	)
+
+	zero := types.Time4(0)
+	if nArticles == 0 {
+		Shm.WriteAt(
+			unsafe.Offsetof(Shm.Raw.LastPostTime)+types.TIME4_SZ*uintptr(bidInCache),
+			types.TIME4_SZ,
+			unsafe.Pointer(&zero),
+		)
+		return nil
+	}
+
+	//https://github.com/ptt/pttbbs/blob/master/common/bbs/cache.c#L633
+	//lastPostTime is in filename (create-time), starting from 2nd bytes
+	//ptttype.FileHeaderRaw
+	_, err = file.Seek(int64(nArticles-1)*int64(ptttype.FILE_HEADER_RAW_SZ), 0)
+	if err != nil {
+		return err
+	}
+
+	articleFilename := &ptttype.Filename_t{}
+	err = binary.Read(file, binary.LittleEndian, articleFilename)
+	if err != nil {
+		return err
+	}
+	if types.Cstrcmp(articleFilename[:], []byte(ptttype.FN_SAFEDEL)) == 0 {
+		Shm.WriteAt(
+			unsafe.Offsetof(Shm.Raw.LastPostTime)+types.TIME4_SZ*uintptr(bidInCache),
+			types.TIME4_SZ,
+			unsafe.Pointer(&zero),
+		)
+		return nil
+	}
+
+	createTime, err := articleFilename.CreateTime()
+	if err != nil {
+		return err
+	}
+
+	Shm.WriteAt(
+		unsafe.Offsetof(Shm.Raw.LastPostTime)+types.TIME4_SZ*uintptr(bidInCache),
+		types.TIME4_SZ,
+		unsafe.Pointer(&createTime),
+	)
+
+	return nil
+}
+
+func SetBottomTotal(bid ptttype.Bid) error {
+	if !bid.IsValid() {
+		return ptttype.ErrInvalidBid
+	}
+
+	board, err := GetBCache(bid)
+	if err != nil {
+		return err
+	}
+	if board.Brdname[0] == 0 {
+		return nil
+	}
+
+	bottomFilename, err := path.SetBFile(&board.Brdname, ptttype.FN_DIR_BOTTOM)
+	if err != nil {
+		return err
+	}
+
+	bidInCache := bid.ToBidInStore()
+	zero8 := uint8(0)
+	const uint8sz = unsafe.Sizeof(zero8)
+	n := uint8(cmsys.GetNumRecords(bottomFilename, ptttype.FILE_HEADER_RAW_SZ))
+	if n > 5 {
+		_ = syscall.Unlink(bottomFilename)
+		Shm.WriteAt(
+			unsafe.Offsetof(Shm.Raw.NBottom)+uint8sz*uintptr(bidInCache),
+			uint8sz,
+			unsafe.Pointer(&zero8),
+		)
+
+		return nil
+	}
+
+	Shm.WriteAt(
+		unsafe.Offsetof(Shm.Raw.NBottom)+uint8sz*uintptr(bidInCache),
+		uint8sz,
+		unsafe.Pointer(&n),
+	)
+
+	return nil
+
 }
 
 func IsHiddenBoardFriend(bidInCache ptttype.BidInStore, uidInCache ptttype.UidInStore) bool {

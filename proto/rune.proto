@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+message Rune {
+  string char = 1;
+  uint32 color0 = 2;
+  uint32 color1 = 3;
+}
+
+message Content {
+  repeated Rune content = 1;
+}
+
+option go_package = "proto";

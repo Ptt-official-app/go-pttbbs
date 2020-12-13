@@ -21,7 +21,7 @@ func TestGetBCache(t *testing.T) {
 	)
 
 	type args struct {
-		bidInCache ptttype.BidInStore
+		bidInCache ptttype.Bid
 	}
 	tests := []struct {
 		name          string
@@ -31,15 +31,15 @@ func TestGetBCache(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{
-			args:          args{0},
+			args:          args{1},
 			expectedBoard: &testBoardHeader0,
 		},
 		{
-			args:          args{1},
+			args:          args{2},
 			expectedBoard: &testBoardHeader1,
 		},
 		{
-			args:          args{2},
+			args:          args{3},
 			expectedBoard: &testBoardHeader2,
 		},
 	}
@@ -177,7 +177,7 @@ func TestReloadBCache(t *testing.T) {
 			)
 
 			for idx := int32(0); idx < nBoard; idx++ {
-				board, _ := GetBCache(ptttype.BidInStore(idx))
+				board, _ := GetBCache(ptttype.Bid(idx + 1))
 				if types.Cstrcmp(board.Brdname[:], tt.expectedBCacheName[idx][:]) != 0 {
 					t.Errorf("bcacheName (%v/%v) = %v, want %v", idx, nBoard, string(board.Brdname[:]), string(tt.expectedBCacheName[idx][:]))
 				}
@@ -227,6 +227,137 @@ func Test_reloadCacheLoadBottom(t *testing.T) {
 			if nBottom != tt.expected {
 				t.Errorf("nBottom: %v want: %v", nBottom, tt.expected)
 			}
+		})
+	}
+}
+
+func TestGetBTotal(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	ReloadBCache()
+
+	bid1 := ptttype.Bid(3)
+	bid1InCache := bid1.ToBidInStore()
+	total1 := int32(5)
+
+	Shm.WriteAt(
+		unsafe.Offsetof(Shm.Raw.Total)+types.INT32_SZ*uintptr(bid1InCache),
+		types.INT32_SZ,
+		unsafe.Pointer(&total1),
+	)
+
+	type args struct {
+		bid ptttype.Bid
+	}
+	tests := []struct {
+		name          string
+		args          args
+		expectedTotal int32
+	}{
+		// TODO: Add test cases.
+		{
+			args:          args{bid1},
+			expectedTotal: total1,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if gotTotal := GetBTotal(tt.args.bid); gotTotal != tt.expectedTotal {
+				t.Errorf("GetBTotal() = %v, want %v", gotTotal, tt.expectedTotal)
+			}
+		})
+	}
+}
+
+func TestSetBTotal(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	ReloadBCache()
+
+	type args struct {
+		bid ptttype.Bid
+	}
+	tests := []struct {
+		name                 string
+		args                 args
+		wantErr              bool
+		expectedTotal        int32
+		expectedLastPostTime types.Time4
+	}{
+		// TODO: Add test cases.
+		{
+			args:                 args{10},
+			expectedTotal:        2,
+			expectedLastPostTime: 1607203395,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := SetBTotal(tt.args.bid); (err != nil) != tt.wantErr {
+				t.Errorf("SetBTotal() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			total := GetBTotal(tt.args.bid)
+			if total != tt.expectedTotal {
+				t.Errorf("SetBTotal: total: %v want: %v", total, tt.expectedTotal)
+			}
+
+			bidInCache := tt.args.bid.ToBidInStore()
+			lastPostTime := types.Time4(0)
+			Shm.ReadAt(
+				unsafe.Offsetof(Shm.Raw.LastPostTime)+types.TIME4_SZ*uintptr(bidInCache),
+				types.TIME4_SZ,
+				unsafe.Pointer(&lastPostTime),
+			)
+			if lastPostTime != tt.expectedLastPostTime {
+				t.Errorf("SetBTotal: lastPostTime: %v want: %v", lastPostTime, tt.expectedLastPostTime)
+			}
+		})
+	}
+}
+
+func TestSetBottomTotal(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	ReloadBCache()
+
+	type args struct {
+		bid ptttype.Bid
+	}
+	tests := []struct {
+		name          string
+		args          args
+		wantErr       bool
+		expectedTotal uint8
+	}{
+		// TODO: Add test cases.
+		{
+			args:          args{10},
+			expectedTotal: 1,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := SetBottomTotal(tt.args.bid); (err != nil) != tt.wantErr {
+				t.Errorf("SetBottomTotal() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			bidInCache := tt.args.bid.ToBidInStore()
+			total := uint8(0)
+			const uint8sz = unsafe.Sizeof(total)
+
+			Shm.ReadAt(
+				unsafe.Offsetof(Shm.Raw.NBottom)+uint8sz*uintptr(bidInCache),
+				uint8sz,
+				unsafe.Pointer(&total),
+			)
+			if total != tt.expectedTotal {
+				t.Errorf("SetBottomTotal: total: %v want: %v", total, tt.expectedTotal)
+			}
+
 		})
 	}
 }

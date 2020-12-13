@@ -16,7 +16,7 @@ const (
 	BRD_DEFAULTANONYMOUS BrdAttr = 0x00000080 /* 預設匿名板 */
 	BRD_NOCREDIT         BrdAttr = 0x00000100 /* 發文無獎勵看板 */
 	BRD_VOTEBOARD        BrdAttr = 0x00000200 /* 連署機看板 */
-	BRD_WARNEL           BrdAttr = 0x00000400 /* 連署機看板 */
+	BRD_WARNEL           BrdAttr = 0x00000400 /* 已警告要廢除 */
 	BRD_TOP              BrdAttr = 0x00000800 /* 熱門看板群組 */
 	BRD_NORECOMMEND      BrdAttr = 0x00001000 /* 不可推薦 */
 	BRD_ANGELANONYMOUS   BrdAttr = 0x00002000 /* 小天使可匿名 */

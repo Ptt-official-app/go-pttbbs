@@ -4,7 +4,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
 )
 
-const LOAD_GENERAL_BOARDS_R = "/board/boards"
+const LOAD_GENERAL_BOARDS_R = "/boards/all"
 
 type LoadGeneralBoardsParams struct {
 	StartIdx string `json:"start_idx"`
@@ -14,7 +14,7 @@ type LoadGeneralBoardsParams struct {
 
 type LoadGeneralBoardsResult struct {
 	Boards  []*bbs.BoardSummary `json:"boards"`
-	NextIdx string              `json:"next_bid"`
+	NextIdx string              `json:"next_idx"`
 }
 
 func LoadGeneralBoards(remoteAddr string, userID string, params interface{}) (interface{}, error) {

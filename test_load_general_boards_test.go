@@ -3,7 +3,6 @@ package main
 import (
 	"net/http"
 	"net/http/httptest"
-	"strconv"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/api"
@@ -14,7 +13,7 @@ func Test_LoadGeneralBoards(t *testing.T) {
 	defer teardownTest()
 
 	params := &api.LoadGeneralBoardsParams{
-		StartIdx: strconv.Itoa(0),
+		StartIdx: "",
 		NBoards:  4,
 	}
 

@@ -6,7 +6,7 @@ import (
 )
 
 type BoardSummary struct {
-	Bid          string                `json:"bid"`
+	BBoardID     BBoardID              `json:"bid"`
 	BrdAttr      ptttype.BrdAttr       `json:"brdAttr"`
 	StatAttr     ptttype.BoardStatAttr `json:"statAttr"`
 	Brdname      string                `json:"brdname"`
@@ -24,7 +24,7 @@ func NewBoardSummaryFromRaw(boardSummaryRaw *ptttype.BoardSummaryRaw) *BoardSumm
 
 	boardSummary := &BoardSummary{}
 
-	boardSummary.Bid = boardSummaryRaw.Bid.String()
+	boardSummary.BBoardID = ToBBoardID(boardSummaryRaw.Bid, boardSummaryRaw.Brdname)
 	boardSummary.BrdAttr = boardSummaryRaw.BrdAttr
 	boardSummary.StatAttr = boardSummaryRaw.StatAttr
 	boardSummary.Brdname = types.CstrToString(boardSummaryRaw.Brdname[:])

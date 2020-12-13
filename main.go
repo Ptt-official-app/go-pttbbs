@@ -30,19 +30,39 @@ func initGin() (*gin.Engine, error) {
 
 	router.POST(
 		withPrefix(api.INDEX_R),
-		NewLoginRequiredApi(api.Index, &api.IndexParams{}).LoginRequiredJson,
+		NewLoginRequiredApi(
+			api.Index,
+			&api.IndexParams{},
+		).Json,
 	)
 	router.POST(
 		withPrefix(api.LOGIN_R),
-		NewApi(api.Login, &api.LoginParams{}).Json,
+		NewApi(
+			api.Login,
+			&api.LoginParams{},
+		).Json,
 	)
 	router.POST(
 		withPrefix(api.REGISTER_R),
-		NewApi(api.Register, &api.RegisterParams{}).Json,
+		NewApi(
+			api.Register,
+			&api.RegisterParams{},
+		).Json,
 	)
 	router.POST(
 		withPrefix(api.LOAD_GENERAL_BOARDS_R),
-		NewLoginRequiredApi(api.LoadGeneralBoards, &api.LoadGeneralBoardsParams{}).LoginRequiredJson,
+		NewLoginRequiredApi(
+			api.LoadGeneralBoards,
+			&api.LoadGeneralBoardsParams{},
+		).Json,
+	)
+	router.POST(
+		withPrefix(api.LOAD_GENERAL_ARTICLES_R),
+		NewLoginRequiredPathApi(
+			api.LoadGeneralArticles,
+			&api.LoadGeneralArticlesParams{},
+			&api.LoadGeneralArticlesPath{},
+		).Json,
 	)
 
 	return router, nil

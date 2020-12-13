@@ -1,11 +1,16 @@
 #!/bin/bash
 
-if [ ! -d cache/testcase/boards ]; then
-  echo "to extract cache/testcase/boards"
-  tar -zxvf cache/testcase/boards.tar.gz -C cache/testcase
-else
-  echo "cache/testcase/boards exists"
-fi
+dirs=("cache/testcase" "ptt/testcase")
+
+for eachDir in ${dirs[@]}; do
+  echo "eachDir: ${eachDir}"
+  if [ ! -d ${eachDir}/boards ]; then
+    echo "to extract ${eachDir}"
+    tar -zxvf cache/testcase/boards.tar.gz -C "${eachDir}"
+  else
+    echo "${eachDir}/boards exists"
+  fi
+done
 
 go build ./...
 gotest -v ./... -cover

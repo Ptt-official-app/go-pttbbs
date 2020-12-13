@@ -1,12 +1,14 @@
 package main
 
 import (
+	"reflect"
 	"strings"
 	"time"
 
 	"github.com/Ptt-official-app/go-pttbbs/api"
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	"gopkg.in/square/go-jose.v2/jwt"
 )
 
@@ -20,16 +22,18 @@ type LoginRequiredApi struct {
 	Params interface{}
 }
 
+type LoginRequiredPathApi struct {
+	Func   api.LoginRequiredPathApiFunc
+	Path   interface{}
+	Params interface{}
+}
+
 func NewApi(f api.ApiFunc, params interface{}) *Api {
 	return &Api{Func: f, Params: params}
 }
 
-func NewLoginRequiredApi(f api.LoginRequiredApiFunc, params interface{}) *LoginRequiredApi {
-	return &LoginRequiredApi{Func: f, Params: params}
-}
-
-func (api *Api) Json(c *gin.Context) {
-	err := c.ShouldBindJSON(api.Params)
+func (a *Api) Json(c *gin.Context) {
+	err := c.ShouldBindJSON(a.Params)
 	if err != nil {
 		processResult(c, nil, err)
 		return
@@ -48,12 +52,16 @@ func (api *Api) Json(c *gin.Context) {
 		return
 	}
 
-	result, err := api.Func(remoteAddr, api.Params)
+	result, err := a.Func(remoteAddr, a.Params)
 	processResult(c, result, err)
 }
 
-func (api *LoginRequiredApi) LoginRequiredJson(c *gin.Context) {
-	err := c.ShouldBindJSON(api.Params)
+func NewLoginRequiredApi(f api.LoginRequiredApiFunc, params interface{}) *LoginRequiredApi {
+	return &LoginRequiredApi{Func: f, Params: params}
+}
+
+func (a *LoginRequiredApi) Json(c *gin.Context) {
+	err := c.ShouldBindJSON(a.Params)
 	if err != nil {
 		processResult(c, nil, err)
 		return
@@ -86,7 +94,56 @@ func (api *LoginRequiredApi) LoginRequiredJson(c *gin.Context) {
 		return
 	}
 
-	result, err := api.Func(remoteAddr, userID, api.Params)
+	result, err := a.Func(remoteAddr, userID, a.Params)
+	processResult(c, result, err)
+}
+
+func NewLoginRequiredPathApi(f api.LoginRequiredPathApiFunc, params interface{}, path interface{}) *LoginRequiredPathApi {
+	return &LoginRequiredPathApi{Func: f, Params: params, Path: path}
+}
+
+func (a *LoginRequiredPathApi) Json(c *gin.Context) {
+	err := c.ShouldBindJSON(a.Params)
+	if err != nil {
+		processResult(c, nil, err)
+		return
+	}
+
+	err = c.ShouldBindUri(a.Path)
+	logrus.Infof("LogRequiredPathApi.Json: after BindUri: path: %v uri: %v a.Path: (%v/%v), e: %v", c.FullPath(), c.Request.URL, a.Path, reflect.TypeOf(a.Path), err)
+	if err != nil {
+		processResult(c, nil, err)
+		return
+	}
+
+	host := strings.TrimSpace(c.GetHeader("Host"))
+	if !isValidHost(host) {
+		processResult(c, nil, ErrInvalidHost)
+		return
+	}
+
+	//https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For
+	remoteAddr := strings.TrimSpace(c.GetHeader("X-Forwarded-For"))
+	if !isValidRemoteAddr(remoteAddr) {
+		processResult(c, nil, ErrInvalidRemoteAddr)
+		return
+	}
+
+	tokenStr := strings.TrimSpace(c.GetHeader("Authorization"))
+	tokenList := strings.Split(tokenStr, " ")
+	if len(tokenList) != 2 {
+		processResult(c, nil, ErrInvalidToken)
+		return
+	}
+	jwt := tokenList[1]
+
+	userID, err := verifyJwt(jwt)
+	if err != nil {
+		processResult(c, nil, err)
+		return
+	}
+
+	result, err := a.Func(remoteAddr, userID, a.Params, a.Path)
 	processResult(c, result, err)
 }
 
