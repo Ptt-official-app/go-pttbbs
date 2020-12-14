@@ -11,6 +11,7 @@ import (
 )
 
 func TestLoadGeneralBoards(t *testing.T) {
+	//move setupTest in for-loop
 	type args struct {
 		user     *ptttype.UserecRaw
 		uid      ptttype.Uid

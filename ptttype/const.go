@@ -76,3 +76,8 @@ var (
 	FN_FRESH_POSTFIX = ".fresh"
 	FN_FRESH         = BBSHOME + string(os.PathSeparator) + FN_FRESH_POSTFIX
 )
+
+var (
+	//ptt/article_list.go
+	N_SCREEN_BUFFER = 100 //to determine whether we should provide bottom.
+)

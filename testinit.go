@@ -38,6 +38,7 @@ func setupTest() {
 	_ = types.CopyFileToFile("./testcase/.PASSWDS1", "./testcase/.PASSWDS")
 
 	_ = types.CopyDirToDir("./testcase/home1", "./testcase/home")
+	_ = types.CopyDirToDir("./testcase/board1", "./testcase/boards")
 
 	_ = cache.NewSHM(types.Key_t(cache.TestShmKey), ptttype.USE_HUGETLB, true)
 	_ = cache.AttachSHM()
@@ -58,8 +59,10 @@ func teardownTest() {
 	_ = cache.CloseSHM()
 
 	os.Remove("./testcase/.fresh")
-	os.Remove("./testcase/.PASSWDS")
+	os.RemoveAll("./testcase/boards")
 	os.RemoveAll("./testcase/home")
+	os.Remove("./testcase/.PASSWDS")
+
 	ptttype.SetBBSHOME(origBBSHOME)
 
 	cmbbs.UnsetIsTest()

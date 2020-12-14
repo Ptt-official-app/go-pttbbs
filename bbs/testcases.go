@@ -154,7 +154,7 @@ var (
 	}
 
 	testBoardSummary6 = &BoardSummary{
-		Bid:        "6",
+		BBoardID:   BBoardID("6_ALLPOST"),
 		BrdAttr:    ptttype.BRD_POSTMASK,
 		StatAttr:   ptttype.NBRD_FAV,
 		Brdname:    "ALLPOST",
@@ -164,7 +164,7 @@ var (
 		BM:         []string{},
 	}
 	testBoardSummary7 = &BoardSummary{
-		Bid:        "7",
+		BBoardID:   BBoardID("7_deleted"),
 		StatAttr:   ptttype.NBRD_FAV,
 		Brdname:    "deleted",
 		BoardClass: "嘰哩",
@@ -173,7 +173,7 @@ var (
 		BM:         []string{},
 	}
 	testBoardSummary11 = &BoardSummary{
-		Bid:        "11",
+		BBoardID:   BBoardID("11_EditExp"),
 		StatAttr:   ptttype.NBRD_FAV,
 		Brdname:    "EditExp",
 		BoardClass: "嘰哩",
@@ -182,13 +182,36 @@ var (
 		BM:         []string{},
 	}
 	testBoardSummary8 = &BoardSummary{
-		Bid:        "8",
+		BBoardID:   BBoardID("8_Note"),
 		StatAttr:   ptttype.NBRD_FAV,
 		Brdname:    "Note",
 		BoardClass: "嘰哩",
 		RealTitle:  "動態看板及歌曲投稿",
 		BoardType:  "◎",
 		BM:         []string{},
+	}
+
+	testArticleSummary0 = &ArticleSummary{
+		ArticleID:  "1_1Vo_M_CD",
+		IsDeleted:  false,
+		Filename:   "M.1607202239.A.30D",
+		CreateTime: 1607202239,
+		Mtime:      1607202238,
+		Owner:      "SYSOP",
+		Date:       "12/06",
+		Title:      "[問題] 我是誰？～",
+	}
+
+	testArticleSummary1 = &ArticleSummary{
+		ArticleID:  "2_1Vo_f30D",
+		IsDeleted:  false,
+		Filename:   "M.1607203395.A.00D",
+		CreateTime: 1607203395,
+		Mtime:      1607203394,
+		Owner:      "SYSOP",
+		Date:       "12/06",
+		Title:      "[心得] 然後呢？～",
+		Filemode:   ptttype.FILE_MARKED,
 	}
 )
 

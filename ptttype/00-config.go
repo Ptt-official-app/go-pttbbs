@@ -486,9 +486,10 @@ var (
 	SZ_RECENTLOGIN = 16000 // size of max recent log before rotation
 	SZ_RECENTPAY   = 16000
 
-	// XXX FN_SAFEDEL
 	// https://github.com/ptt/pttbbs/blob/master/include/common.h#L68
 	// pttbbs commit: 6bdd36898bde207683a441cdffe2981e95de5b20
+	//
+	// FN_SAFEDEL_PREFIX_LEN is used in strncmp. we don' need this in go.
 	USE_EDIT_HISTORY      = false
 	FN_SAFEDEL            = ".deleted"
 	FN_SAFEDEL_PREFIX_LEN = 8 // must match FN_SAFEDEL

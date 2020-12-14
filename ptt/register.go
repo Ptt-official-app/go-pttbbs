@@ -60,8 +60,6 @@ func NewRegister(
 
 	// line: 857
 	passwdHash, err := cmbbs.GenPasswd(passwd)
-	log.Infof("register.NewRegister: after GenPasswd: userID: %v e: %v", userID, err)
-
 	if err != nil {
 		return nil, err
 	}

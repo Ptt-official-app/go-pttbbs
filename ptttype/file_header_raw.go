@@ -38,13 +38,13 @@ type FileHeaderRaw struct {
 	//} refer;
 	//}	    multi;		    /* rocker: if bit32 on ==> reference */
 	/* XXX dirty, split into flag and money if money of each file is less than 16bit? */
-	Filemode uint8 /* must be last field @ boards.c */
+	Filemode FileMode /* must be last field @ boards.c */
 	Pad3     [3]byte
 }
 
-var emptyFileHeaderRaw = FileHeaderRaw{}
+var EMPTY_FILE_HEADER_RAW = FileHeaderRaw{}
 
-const FILE_HEADER_RAW_SZ = unsafe.Sizeof(emptyFileHeaderRaw)
+const FILE_HEADER_RAW_SZ = unsafe.Sizeof(EMPTY_FILE_HEADER_RAW)
 
 //XXX need to ensure Multi.
 type VoteLimits struct {
@@ -95,4 +95,8 @@ func (f *FileHeaderRaw) VoteLimitRegTime() uint8 {
 
 func (f *FileHeaderRaw) VoteLimitBadpost() uint8 {
 	return f.Multi[3]
+}
+
+func (f *FileHeaderRaw) IsDeleted() bool {
+	return f.Filename[0] == '.' || f.Owner[0] == '-'
 }
