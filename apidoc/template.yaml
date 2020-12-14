@@ -4,3 +4,8 @@ info:
 definitions:
   !include defs/board_summary.yaml
   !include defs/board_list_params.yaml
+  !include defs/host.yaml
+  !include defs/x_forwarded_for.yaml
+  !include defs/authorization.yaml
+  !include defs/article_list_params.yaml
+  !include defs/article_summary.yaml

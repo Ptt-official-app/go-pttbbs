@@ -3,21 +3,9 @@ loadBoardsByClass
 tags:
   - board
 parameters:
-  - name: Host
-    in: header
-    required: true
-    description: ip of the middleware
-    type: string
-  - name: X-Forwarded-For
-    in: header
-    required: true
-    description: ip of the frontend (requiring using ip for now to fit in Userec)
-    type: string
-  - name: Authorization
-    in: header
-    require: true
-    description: bearer [token]
-    type: string
+  - '$ref': '#/definitions/Host'
+  - '$ref': '#/definitions/XForwardedFor'
+  - '$ref': '#/definitions/Authorization'
   - name: class_id
     in: path
     type: string

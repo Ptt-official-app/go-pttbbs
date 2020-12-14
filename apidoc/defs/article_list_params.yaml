@@ -1,0 +1,11 @@
+ArticleListParams:
+  type: object
+  properties:
+    start_idx:
+      type: string
+      description: 起始的 idx, "" 從最小 idx 開始列出.
+      default: ""
+    max:
+      type: integer
+      description: max number of the items
+      required: true

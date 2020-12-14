@@ -3,16 +3,8 @@ register
 tags:
   - user
 parameters:
-  - name: Host
-    in: header
-    required: true
-    description: ip of the middleware
-    type: string
-  - name: X-Forwarded-For
-    in: header
-    required: true
-    description: ip of the frontend (requiring using ip for now to fit in Userec)
-    type: string
+  - '$ref': '#/definitions/Host'
+  - '$ref': '#/definitions/XForwardedFor'
   - name: params
     in: body
     required: true

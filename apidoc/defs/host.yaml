@@ -1,0 +1,6 @@
+Host:
+  name: Host
+  in: header
+  required: true
+  description: ip of the middleware
+  type: string

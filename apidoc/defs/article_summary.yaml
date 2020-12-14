@@ -1,0 +1,28 @@
+ArticleSummary:
+  type: object
+  properties:
+    aid:
+      type: string
+    deleted:
+      type: boolean
+    filename:
+      type: string
+    create_time:
+      type: number
+    mtime:
+      type: number
+      description: last updated-time
+    recommand:
+      type: number
+    owner:
+      type: string
+    date:
+      type: string
+      description: MM/DD
+    title:
+      type: string
+    money:
+      type: number
+    mode:
+      type: number
+      description: https://github.com/Ptt-official-app/go-pttbbs/blob/main/ptttype/file_mode.go
