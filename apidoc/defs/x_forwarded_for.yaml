@@ -1,0 +1,6 @@
+XForwardedFor:
+  name: X-Forwarded-For
+  in: header
+  required: true
+  description: ip of the frontend (requiring using ip for now to fit in Userec)
+  type: string

@@ -1,0 +1,6 @@
+Authorization:
+  name: Authorization
+  in: header
+  required: true
+  description: bearer [token]
+  type: string

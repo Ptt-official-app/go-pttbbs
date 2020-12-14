@@ -65,6 +65,15 @@ def _load_general_boards():
     """
     return ''
 
+
+@app.route(_with_app_prefix('/board/<bid>/articles'), methods=['POST'])
+def _load_general_articles(bid):
+    """
+    swagger_from_file: apidoc/load_general_articles.yaml
+    """
+    return ''
+
+
 @app.route(_with_app_prefix('/class/<class_id>'), methods=['POST'])
 def _load_boards_by_class(class_id):
     """

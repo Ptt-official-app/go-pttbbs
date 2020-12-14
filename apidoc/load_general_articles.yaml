@@ -1,23 +1,23 @@
-login
+loadGeneralArticles
 ---
 tags:
-  - user
+  - board
+  - article
 parameters:
   - '$ref': '#/definitions/Host'
   - '$ref': '#/definitions/XForwardedFor'
+  - '$ref': '#/definitions/Authorization'
+  - name: bid
+    in: path
+    type: string
+    required: true
+    description: bid is returned from board-list.
   - name: params
     in: body
     required: true
     schema:
       '$id': https://json-schema.org/draft/2019-09/output/schema
-      type: object
-      properties:
-        username:
-          type: string
-          required: true
-        password:
-          type: string
-          required: true
+      '$ref': '#/definitions/ArticleListParams'
 responses:
   200:
     description: index-response
@@ -25,11 +25,12 @@ responses:
       '$id': https://json-schema.org/draft/2019-09/output/schema
       type: object
       properties:
-        access_token:
-          type: string
-          description: access_token
+        boards:
+          type: array
+          description: article information (article-summary)
           required: true
-        token_type:
+          items:
+            '$ref': '#/definitions/ArticleSummary'
+        next_bid:
           type: string
-          description: token_type
-          required: true
+
