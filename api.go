@@ -1,14 +1,12 @@
 package main
 
 import (
-	"reflect"
 	"strings"
 	"time"
 
 	"github.com/Ptt-official-app/go-pttbbs/api"
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	"gopkg.in/square/go-jose.v2/jwt"
 )
 
@@ -110,7 +108,6 @@ func (a *LoginRequiredPathApi) Json(c *gin.Context) {
 	}
 
 	err = c.ShouldBindUri(a.Path)
-	logrus.Infof("LogRequiredPathApi.Json: after BindUri: path: %v uri: %v a.Path: (%v/%v), e: %v", c.FullPath(), c.Request.URL, a.Path, reflect.TypeOf(a.Path), err)
 	if err != nil {
 		processResult(c, nil, err)
 		return
