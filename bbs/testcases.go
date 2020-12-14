@@ -200,6 +200,7 @@ var (
 		Owner:      "SYSOP",
 		Date:       "12/06",
 		Title:      "[問題] 我是誰？～",
+		URL:        "http://localhost/bbs/WhoAmI/M.1607202239.A.30D.html",
 	}
 
 	testArticleSummary1 = &ArticleSummary{
@@ -212,6 +213,7 @@ var (
 		Date:       "12/06",
 		Title:      "[心得] 然後呢？～",
 		Filemode:   ptttype.FILE_MARKED,
+		URL:        "http://localhost/bbs/WhoAmI/M.1607203395.A.00D.html",
 	}
 )
 

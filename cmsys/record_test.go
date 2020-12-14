@@ -38,6 +38,8 @@ func TestGetNumRecords(t *testing.T) {
 }
 
 func TestGetRecords(t *testing.T) {
+	boardID := &ptttype.BoardID_t{}
+	copy(boardID[:], []byte("WhoAmI"))
 	filename0 := "./testcase/DIR"
 	n0 := 100
 	expected0 := []*ptttype.ArticleSummaryRaw{testArticleSummary0}
@@ -58,6 +60,7 @@ func TestGetRecords(t *testing.T) {
 	var expected3 []*ptttype.ArticleSummaryRaw
 
 	type args struct {
+		boardID  *ptttype.BoardID_t
 		filename string
 		startAid ptttype.Aid
 		n        int
@@ -70,25 +73,25 @@ func TestGetRecords(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{
-			args:     args{filename: filename0, startAid: 1, n: n0},
+			args:     args{boardID: boardID, filename: filename0, startAid: 1, n: n0},
 			expected: expected0,
 		},
 		{
-			args:     args{filename: filename1, startAid: startAid1, n: n1},
+			args:     args{boardID: boardID, filename: filename1, startAid: startAid1, n: n1},
 			expected: expected1,
 		},
 		{
-			args:     args{filename: filename2, startAid: startAid2, n: n2},
+			args:     args{boardID: boardID, filename: filename2, startAid: startAid2, n: n2},
 			expected: expected2,
 		},
 		{
-			args:     args{filename: filename3, startAid: startAid3, n: n3},
+			args:     args{boardID: boardID, filename: filename3, startAid: startAid3, n: n3},
 			expected: expected3,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := GetRecords(tt.args.filename, tt.args.startAid, tt.args.n)
+			got, err := GetRecords(tt.args.boardID, tt.args.filename, tt.args.startAid, tt.args.n)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetRecords() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -99,6 +102,7 @@ func TestGetRecords(t *testing.T) {
 					continue
 				}
 				logrus.Infof("GetRecords: (%v/%v) to DeepEqual", idx, len(got))
+				tt.expected[idx].BoardID = boardID
 				types.TDeepEqual(t, each.FileHeaderRaw, tt.expected[idx].FileHeaderRaw)
 			}
 		})

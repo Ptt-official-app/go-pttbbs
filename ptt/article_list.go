@@ -18,6 +18,7 @@ import (
 //
 //get bottom can be a separated api.
 func LoadGeneralArticles(user *ptttype.UserecRaw, uid ptttype.Uid, boardIDRaw *ptttype.BoardID_t, bid ptttype.Bid, startIdx ptttype.SortIdx, nArticles int) (summaryRaw []*ptttype.ArticleSummaryRaw, nextIdx ptttype.SortIdx, err error) {
+
 	//1. check perm.
 	board, err := cache.GetBCache(bid)
 	if err != nil {
@@ -40,11 +41,11 @@ func LoadGeneralArticles(user *ptttype.UserecRaw, uid ptttype.Uid, boardIDRaw *p
 		if err != nil {
 			return nil, -1, err
 		}
-	}
 
-	total = cache.GetBTotal(bid)
-	if total == 0 { //no data
-		return nil, -1, nil
+		total = cache.GetBTotal(bid)
+		if total == 0 { //no data
+			return nil, -1, nil
+		}
 	}
 
 	//3. get records
@@ -71,7 +72,7 @@ func LoadGeneralArticles(user *ptttype.UserecRaw, uid ptttype.Uid, boardIDRaw *p
 		return nil, -1, ErrInvalidParams
 	}
 
-	summaryRaw, err = cmsys.GetRecords(filename, recordStartAid, nArticles)
+	summaryRaw, err = cmsys.GetRecords(boardIDRaw, filename, recordStartAid, nArticles)
 	if err != nil {
 		return nil, -1, err
 	}

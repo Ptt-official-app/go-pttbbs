@@ -6,6 +6,7 @@ import (
 
 	"github.com/Ptt-official-app/go-pttbbs/api"
 	"github.com/Ptt-official-app/go-pttbbs/cache"
+	"github.com/Ptt-official-app/go-pttbbs/cmbbs"
 	"github.com/Ptt-official-app/go-pttbbs/ptt"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
@@ -49,20 +50,20 @@ func initGin() (*gin.Engine, error) {
 			&api.RegisterParams{},
 		).Json,
 	)
-	router.POST(
+	router.GET(
 		withPrefix(api.LOAD_GENERAL_BOARDS_R),
 		NewLoginRequiredApi(
 			api.LoadGeneralBoards,
 			&api.LoadGeneralBoardsParams{},
-		).Json,
+		).Query,
 	)
-	router.POST(
+	router.GET(
 		withPrefix(api.LOAD_GENERAL_ARTICLES_R),
 		NewLoginRequiredPathApi(
 			api.LoadGeneralArticles,
 			&api.LoadGeneralArticlesParams{},
 			&api.LoadGeneralArticlesPath{},
-		).Json,
+		).Query,
 	)
 
 	return router, nil
@@ -133,6 +134,7 @@ func initMain() error {
 		return err
 	}
 
+	//init shm
 	err = cache.NewSHM(types.Key_t(ptttype.SHM_KEY), ptttype.USE_HUGETLB, ptttype.IS_NEW_SHM)
 	if err != nil {
 		log.Errorf("unable to init SHM: e: %v", err)
@@ -151,6 +153,12 @@ func initMain() error {
 	err = cache.AttachCheckSHM()
 	if err != nil {
 		log.Errorf("unable to attach-check-shm: e: %v", err)
+		return err
+	}
+
+	//init sem
+	err = cmbbs.PasswdInit()
+	if err != nil {
 		return err
 	}
 

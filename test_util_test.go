@@ -31,7 +31,7 @@ func Test_setRequest(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := setRequest(tt.args.path, tt.args.params, tt.args.jwt, tt.args.headers)
+			got := setRequest(tt.args.path, tt.args.params, tt.args.jwt, tt.args.headers, "POST")
 			if got == nil {
 				t.Errorf("unable to setRequest")
 			}

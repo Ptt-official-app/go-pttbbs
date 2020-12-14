@@ -40,7 +40,7 @@ func Test_Index(t *testing.T) {
 
 			jwt := getJwt(router, tt.args.userID, tt.args.passwd)
 			w := httptest.NewRecorder()
-			req := setRequest(tt.args.path, params, jwt, nil)
+			req := setRequest(tt.args.path, params, jwt, nil, "POST")
 			router.ServeHTTP(w, req)
 
 			if w.Code != http.StatusOK {

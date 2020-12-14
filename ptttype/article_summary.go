@@ -1,6 +1,7 @@
 package ptttype
 
 type ArticleSummaryRaw struct {
-	Aid Aid
+	Aid     Aid
+	BoardID *BoardID_t
 	*FileHeaderRaw
 }

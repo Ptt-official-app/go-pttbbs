@@ -4,16 +4,16 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
 )
 
-const LOAD_GENERAL_BOARDS_R = "/boards/all"
+const LOAD_GENERAL_BOARDS_R = "/boards"
 
 type LoadGeneralBoardsParams struct {
-	StartIdx string `json:"start_idx"`
-	NBoards  int    `json:"max"`
-	Keyword  string `json:"keyword"`
+	StartIdx string `json:"start_idx,omitempty" form:"start_idx,omitempty" url:"start_idx,omitempty"`
+	NBoards  int    `json:"max,omitempty" form:"max,omitempty" url:"max,omitempty"`
+	Keyword  string `json:"keyword,omitempty" form:"keyword,omitempty" url:"keyword,omitempty`
 }
 
 type LoadGeneralBoardsResult struct {
-	Boards  []*bbs.BoardSummary `json:"boards"`
+	Boards  []*bbs.BoardSummary `json:"data"`
 	NextIdx string              `json:"next_idx"`
 }
 

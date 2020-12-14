@@ -34,7 +34,7 @@ parameters:
           type: string
           required: false
         over18:
-          type: bool
+          type: boolean
           required: true
 responses:
   200:

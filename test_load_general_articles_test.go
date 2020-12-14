@@ -30,7 +30,7 @@ func Test_LoadGeneralArticles(t *testing.T) {
 		// TODO: Add test cases.
 		{
 			args: args{
-				path:   "/board/10_WhoAmI/articles",
+				path:   "/boards/10_WhoAmI/articles",
 				userID: "SYSOP",
 				passwd: "123123",
 				params: params,
@@ -44,7 +44,7 @@ func Test_LoadGeneralArticles(t *testing.T) {
 
 			jwt := getJwt(router, tt.args.userID, tt.args.passwd)
 			w := httptest.NewRecorder()
-			req := setRequest(tt.args.path, params, jwt, nil)
+			req := setRequest(tt.args.path, params, jwt, nil, "GET")
 			router.ServeHTTP(w, req)
 
 			if w.Code != http.StatusOK {

@@ -60,6 +60,9 @@ func SetBTotal(bid ptttype.Bid) (err error) {
 
 	file, err := os.Open(dirFilename)
 	if err != nil { // we should always have .DIR
+		if os.IsNotExist(err) {
+			err = nil
+		}
 		return err
 	}
 	defer file.Close()
