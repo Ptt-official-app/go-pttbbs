@@ -5,6 +5,17 @@ This project intends to be the go implementation of pttbbs/pttbbs.
 Collaborating with Ptt-official-app middlewares.
 go-pttbbs intends to be web-based bbs.
 
+## Docker-Compose
+
+You can do the following to start with docker-compose:
+
+* copy `docker_compose.env.template` to `docker_compose.env` and modify the settings.
+* `./scripts/docker_initbbs.sh [BBSHOME] pttofficialapps/go-pttbbs:latest`
+* `docker-compose --env-file docker_compose.env -f docker-compose.yaml up -d`
+* register at `http://localhost:3456/register`
+* login at `http://localhost:3456/v1/login`
+* `telnet localhost 8888` and use the account that you registered.
+
 ## Testing
 
 ```

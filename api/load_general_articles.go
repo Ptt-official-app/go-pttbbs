@@ -17,6 +17,7 @@ type LoadGeneralArticlesPath struct {
 
 type LoadGeneralArticlesResult struct {
 	Articles []*bbs.ArticleSummary `json:"data"`
+	IsNewest bool                  `json:"is_newest"`
 	NextIdx  string                `json:"next_idx"`
 }
 
@@ -31,7 +32,7 @@ func LoadGeneralArticles(remoteAddr string, userID string, params interface{}, p
 		return nil, ErrInvalidPath
 	}
 
-	summary, nextIdx, err := bbs.LoadGeneralArticles(userID, loadGeneralArticlesPath.BBoardID, loadGeneralArticlesParams.StartIdx, loadGeneralArticlesParams.NArticles)
+	summary, nextIdx, isNewest, err := bbs.LoadGeneralArticles(userID, loadGeneralArticlesPath.BBoardID, loadGeneralArticlesParams.StartIdx, loadGeneralArticlesParams.NArticles)
 
 	if err != nil {
 		return nil, err
@@ -39,6 +40,7 @@ func LoadGeneralArticles(remoteAddr string, userID string, params interface{}, p
 
 	results := &LoadGeneralArticlesResult{
 		Articles: summary,
+		IsNewest: isNewest,
 		NextIdx:  nextIdx,
 	}
 

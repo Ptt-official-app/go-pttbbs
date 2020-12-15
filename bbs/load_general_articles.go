@@ -5,23 +5,23 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 )
 
-func LoadGeneralArticles(userID string, bboardID BBoardID, startIdxStr string, nArticles int) (summary []*ArticleSummary, nextIdxStr string, err error) {
+func LoadGeneralArticles(userID string, bboardID BBoardID, startIdxStr string, nArticles int) (summary []*ArticleSummary, nextIdxStr string, isNewest bool, err error) {
 
 	if nArticles < 1 {
-		return nil, "", ErrInvalidParams
+		return nil, "", false, ErrInvalidParams
 	}
 
 	startIdx, err := ptttype.ToSortIdx(startIdxStr)
 	if err != nil {
-		return nil, "", ErrInvalidParams
+		return nil, "", false, ErrInvalidParams
 	}
 	if startIdx < 0 {
-		return nil, "", ErrInvalidParams
+		return nil, "", false, ErrInvalidParams
 	}
 
 	bid, boardIDRaw, err := bboardID.ToRaw()
 	if err != nil {
-		return nil, "", ErrInvalidParams
+		return nil, "", false, ErrInvalidParams
 	}
 
 	userIDRaw := &ptttype.UserID_t{}
@@ -29,21 +29,21 @@ func LoadGeneralArticles(userID string, bboardID BBoardID, startIdxStr string, n
 
 	uid, userecRaw, err := ptt.InitCurrentUser(userIDRaw)
 	if err != nil {
-		return nil, "", err
+		return nil, "", false, err
 	}
 
-	summaryRaw, nextIdx, err := ptt.LoadGeneralArticles(userecRaw, uid, boardIDRaw, bid, startIdx, nArticles)
+	summaryRaw, nextIdx, isNewest, err := ptt.LoadGeneralArticles(userecRaw, uid, boardIDRaw, bid, startIdx, nArticles)
 	if err != nil {
-		return nil, "", err
+		return nil, "", false, err
 	}
 
 	summary = make([]*ArticleSummary, len(summaryRaw))
 	for idx, each := range summaryRaw {
-		eachSummary := NewArticleSummaryFromRaw(each)
+		eachSummary := NewArticleSummaryFromRaw(bboardID, each)
 		summary[idx] = eachSummary
 	}
 
 	nextIdxStr = nextIdx.String()
 
-	return summary, nextIdxStr, nil
+	return summary, nextIdxStr, isNewest, nil
 }

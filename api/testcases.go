@@ -45,11 +45,12 @@ var (
 	}
 
 	testArticleSummary0 = &bbs.ArticleSummary{
+		BBoardID:   bbs.BBoardID("10_WhoAmI"),
 		ArticleID:  "1_1Vo_M_CD",
 		IsDeleted:  false,
 		Filename:   "M.1607202239.A.30D",
 		CreateTime: 1607202239,
-		Mtime:      1607202238,
+		MTime:      1607202238,
 		Owner:      "SYSOP",
 		Date:       "12/06",
 		Title:      "[問題] 我是誰？～",
@@ -57,11 +58,12 @@ var (
 	}
 
 	testArticleSummary1 = &bbs.ArticleSummary{
+		BBoardID:   bbs.BBoardID("10_WhoAmI"),
 		ArticleID:  "2_1Vo_f30D",
 		IsDeleted:  false,
 		Filename:   "M.1607203395.A.00D",
 		CreateTime: 1607203395,
-		Mtime:      1607203394,
+		MTime:      1607203394,
 		Owner:      "SYSOP",
 		Date:       "12/06",
 		Title:      "[心得] 然後呢？～",

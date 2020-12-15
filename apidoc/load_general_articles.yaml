@@ -27,5 +27,7 @@ responses:
           required: true
           items:
             '$ref': '#/definitions/ArticleSummary'
+        is_newest:
+          type: boolean
         next_idx:
           type: string

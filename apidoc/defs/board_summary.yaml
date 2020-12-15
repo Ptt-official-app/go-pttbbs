@@ -35,3 +35,5 @@ BoardSummary:
       type: integer
     total:
       type: integer
+    read:
+      type: boolean

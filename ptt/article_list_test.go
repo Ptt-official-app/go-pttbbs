@@ -32,6 +32,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 		args               args
 		expectedSummaryRaw []*ptttype.ArticleSummaryRaw
 		expectedNextIdx    ptttype.SortIdx
+		expectedIsNewest   bool
 		wantErr            bool
 	}{
 		// TODO: Add test cases.
@@ -46,6 +47,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 			},
 			expectedSummaryRaw: []*ptttype.ArticleSummaryRaw{testArticleSummary1},
 			expectedNextIdx:    1,
+			expectedIsNewest:   true,
 		},
 		{
 			args: args{
@@ -58,6 +60,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 			},
 			expectedSummaryRaw: []*ptttype.ArticleSummaryRaw{testArticleSummary0, testArticleSummary1},
 			expectedNextIdx:    -1,
+			expectedIsNewest:   true,
 		},
 		{
 			args: args{
@@ -70,6 +73,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 			},
 			expectedSummaryRaw: []*ptttype.ArticleSummaryRaw{testArticleSummary0, testArticleSummary1},
 			expectedNextIdx:    -1,
+			expectedIsNewest:   true,
 		},
 		{
 			args: args{
@@ -82,6 +86,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 			},
 			expectedSummaryRaw: []*ptttype.ArticleSummaryRaw{testArticleSummary1},
 			expectedNextIdx:    1,
+			expectedIsNewest:   true,
 		},
 		{
 			args: args{
@@ -94,6 +99,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 			},
 			expectedSummaryRaw: []*ptttype.ArticleSummaryRaw{testArticleSummary0},
 			expectedNextIdx:    -1,
+			expectedIsNewest:   false,
 		},
 		{
 			args: args{
@@ -106,6 +112,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 			},
 			expectedSummaryRaw: nil,
 			expectedNextIdx:    -1,
+			expectedIsNewest:   false,
 		},
 	}
 	for _, tt := range tests {
@@ -115,7 +122,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 
 			cache.ReloadBCache()
 
-			gotSummaryRaw, gotNextIdx, err := LoadGeneralArticles(tt.args.user, tt.args.uid, tt.args.boardIDRaw, tt.args.bid, tt.args.startIdx, tt.args.nArticles)
+			gotSummaryRaw, gotNextIdx, gotIsNewest, err := LoadGeneralArticles(tt.args.user, tt.args.uid, tt.args.boardIDRaw, tt.args.bid, tt.args.startIdx, tt.args.nArticles)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadGeneralArticles() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -133,6 +140,9 @@ func TestLoadGeneralArticles(t *testing.T) {
 			}
 			if !reflect.DeepEqual(gotNextIdx, tt.expectedNextIdx) {
 				t.Errorf("LoadGeneralArticles() gotNextIdx = %v, want %v", gotNextIdx, tt.expectedNextIdx)
+			}
+			if !reflect.DeepEqual(gotIsNewest, tt.expectedIsNewest) {
+				t.Errorf("LoadGeneralArticles() isNewest = %v, want %v", gotIsNewest, tt.expectedIsNewest)
 			}
 		})
 	}

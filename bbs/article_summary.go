@@ -8,11 +8,12 @@ import (
 )
 
 type ArticleSummary struct {
+	BBoardID   BBoardID         `json:"bid"`
 	ArticleID  ArticleID        `json:"aid"`
 	IsDeleted  bool             `json:"deleted"`
 	Filename   string           `json:"filename"`
 	CreateTime types.Time4      `json:"create_time"`
-	Mtime      types.Time4      `json:"modified"`
+	MTime      types.Time4      `json:"modified"`
 	Recommend  int8             `json:"recommend"`
 	Owner      string           `json:"owner"`
 	Date       string           `json:"date"`
@@ -20,26 +21,30 @@ type ArticleSummary struct {
 	Money      int32            `json:"money"`
 	Filemode   ptttype.FileMode `json:"mode"`
 	URL        string           `json:"url"`
+	Read       bool             `json:"read"`
 }
 
-func NewArticleSummaryFromRaw(articleSummaryRaw *ptttype.ArticleSummaryRaw) *ArticleSummary {
-
-	articleSummary := &ArticleSummary{}
+func NewArticleSummaryFromRaw(bboardID BBoardID, articleSummaryRaw *ptttype.ArticleSummaryRaw) *ArticleSummary {
 
 	filename := types.CstrToString(articleSummaryRaw.Filename[:])
 	boardID := types.CstrToString(articleSummaryRaw.BoardID[:])
-	articleSummary.ArticleID = ToArticleID(articleSummaryRaw.Aid, articleSummaryRaw.Filename)
-	articleSummary.IsDeleted = articleSummaryRaw.IsDeleted()
-	articleSummary.Filename = filename
-	articleSummary.CreateTime, _ = articleSummaryRaw.Filename.CreateTime()
-	articleSummary.Mtime = articleSummaryRaw.Modified
-	articleSummary.Recommend = articleSummaryRaw.Recommend
-	articleSummary.Owner = types.CstrToString(articleSummaryRaw.Owner.ToUserID()[:])
-	articleSummary.Date = types.CstrToString(articleSummaryRaw.Date[:])
-	articleSummary.Title = types.Big5ToUtf8(articleSummaryRaw.Title[:])
-	articleSummary.Money = articleSummaryRaw.Money()
-	articleSummary.Filemode = articleSummaryRaw.Filemode
-	articleSummary.URL = fmt.Sprintf("%v/%v/%v.html", ptttype.URL_PREFIX, boardID, filename)
+	createTime, _ := articleSummaryRaw.Filename.CreateTime()
+
+	articleSummary := &ArticleSummary{
+		BBoardID:   bboardID,
+		ArticleID:  ToArticleID(articleSummaryRaw.Aid, articleSummaryRaw.Filename),
+		IsDeleted:  articleSummaryRaw.IsDeleted(),
+		Filename:   filename,
+		CreateTime: createTime,
+		MTime:      articleSummaryRaw.Modified,
+		Recommend:  articleSummaryRaw.Recommend,
+		Owner:      types.CstrToString(articleSummaryRaw.Owner.ToUserID()[:]),
+		Date:       types.CstrToString(articleSummaryRaw.Date[:]),
+		Title:      types.Big5ToUtf8(articleSummaryRaw.Title[:]),
+		Money:      articleSummaryRaw.Money(),
+		Filemode:   articleSummaryRaw.Filemode,
+		URL:        fmt.Sprintf("%v/%v/%v.html", ptttype.URL_PREFIX, boardID, filename),
+	}
 
 	return articleSummary
 }
