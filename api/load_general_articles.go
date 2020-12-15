@@ -4,19 +4,19 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
 )
 
-const LOAD_GENERAL_ARTICLES_R = "/board/:boardID/articles"
+const LOAD_GENERAL_ARTICLES_R = "/boards/:bid/articles"
 
 type LoadGeneralArticlesParams struct {
-	StartIdx  string `json:"start_idx"`
-	NArticles int    `json:"max"`
+	StartIdx  string `json:"start_idx,omitempty" form:"start_idx,omitempty" url:"start_idx,omitempty"`
+	NArticles int    `json:"max,omitempty" form:"max,omitempty" url:"max,omitempty"`
 }
 
 type LoadGeneralArticlesPath struct {
-	BBoardID bbs.BBoardID `uri:"boardID" binding:"required"`
+	BBoardID bbs.BBoardID `uri:"bid" binding:"required"`
 }
 
 type LoadGeneralArticlesResult struct {
-	Articles []*bbs.ArticleSummary `json:"articles"`
+	Articles []*bbs.ArticleSummary `json:"data"`
 	NextIdx  string                `json:"next_idx"`
 }
 

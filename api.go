@@ -37,6 +37,20 @@ func (a *Api) Json(c *gin.Context) {
 		return
 	}
 
+	a.process(c)
+}
+
+func (a *Api) Query(c *gin.Context) {
+	err := c.ShouldBindQuery(a.Params)
+	if err != nil {
+		processResult(c, nil, err)
+		return
+	}
+
+	a.process(c)
+}
+
+func (a *Api) process(c *gin.Context) {
 	host := strings.TrimSpace(c.GetHeader("Host"))
 	if !isValidHost(host) {
 		processResult(c, nil, ErrInvalidHost)
@@ -65,6 +79,20 @@ func (a *LoginRequiredApi) Json(c *gin.Context) {
 		return
 	}
 
+	a.process(c)
+}
+
+func (a *LoginRequiredApi) Query(c *gin.Context) {
+	err := c.ShouldBindQuery(a.Params)
+	if err != nil {
+		processResult(c, nil, err)
+		return
+	}
+
+	a.process(c)
+}
+
+func (a *LoginRequiredApi) process(c *gin.Context) {
 	host := strings.TrimSpace(c.GetHeader("Host"))
 	if !isValidHost(host) {
 		processResult(c, nil, ErrInvalidHost)
@@ -94,6 +122,7 @@ func (a *LoginRequiredApi) Json(c *gin.Context) {
 
 	result, err := a.Func(remoteAddr, userID, a.Params)
 	processResult(c, result, err)
+
 }
 
 func NewLoginRequiredPathApi(f api.LoginRequiredPathApiFunc, params interface{}, path interface{}) *LoginRequiredPathApi {
@@ -107,7 +136,21 @@ func (a *LoginRequiredPathApi) Json(c *gin.Context) {
 		return
 	}
 
-	err = c.ShouldBindUri(a.Path)
+	a.process(c)
+}
+
+func (a *LoginRequiredPathApi) Query(c *gin.Context) {
+	err := c.ShouldBindQuery(a.Params)
+	if err != nil {
+		processResult(c, nil, err)
+		return
+	}
+
+	a.process(c)
+}
+
+func (a *LoginRequiredPathApi) process(c *gin.Context) {
+	err := c.ShouldBindUri(a.Path)
 	if err != nil {
 		processResult(c, nil, err)
 		return
@@ -142,6 +185,7 @@ func (a *LoginRequiredPathApi) Json(c *gin.Context) {
 
 	result, err := a.Func(remoteAddr, userID, a.Params, a.Path)
 	processResult(c, result, err)
+
 }
 
 func verifyJwt(raw string) (userID string, err error) {

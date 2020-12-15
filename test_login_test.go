@@ -39,7 +39,7 @@ func Test_Login(t *testing.T) {
 			router, _ := initGin()
 
 			w := httptest.NewRecorder()
-			req := setRequest(tt.args.path, tt.args.params, "", nil)
+			req := setRequest(tt.args.path, tt.args.params, "", nil, "POST")
 			router.ServeHTTP(w, req)
 
 			if w.Code != http.StatusOK {

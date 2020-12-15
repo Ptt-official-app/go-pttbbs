@@ -1,6 +1,8 @@
 package bbs
 
 import (
+	"fmt"
+
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
@@ -10,22 +12,25 @@ type ArticleSummary struct {
 	IsDeleted  bool             `json:"deleted"`
 	Filename   string           `json:"filename"`
 	CreateTime types.Time4      `json:"create_time"`
-	Mtime      types.Time4      `json:"mtime"`
+	Mtime      types.Time4      `json:"modified"`
 	Recommend  int8             `json:"recommend"`
 	Owner      string           `json:"owner"`
 	Date       string           `json:"date"`
 	Title      string           `json:"title"`
 	Money      int32            `json:"money"`
 	Filemode   ptttype.FileMode `json:"mode"`
+	URL        string           `json:"url"`
 }
 
 func NewArticleSummaryFromRaw(articleSummaryRaw *ptttype.ArticleSummaryRaw) *ArticleSummary {
 
 	articleSummary := &ArticleSummary{}
 
+	filename := types.CstrToString(articleSummaryRaw.Filename[:])
+	boardID := types.CstrToString(articleSummaryRaw.BoardID[:])
 	articleSummary.ArticleID = ToArticleID(articleSummaryRaw.Aid, articleSummaryRaw.Filename)
 	articleSummary.IsDeleted = articleSummaryRaw.IsDeleted()
-	articleSummary.Filename = types.CstrToString(articleSummaryRaw.Filename[:])
+	articleSummary.Filename = filename
 	articleSummary.CreateTime, _ = articleSummaryRaw.Filename.CreateTime()
 	articleSummary.Mtime = articleSummaryRaw.Modified
 	articleSummary.Recommend = articleSummaryRaw.Recommend
@@ -34,6 +39,7 @@ func NewArticleSummaryFromRaw(articleSummaryRaw *ptttype.ArticleSummaryRaw) *Art
 	articleSummary.Title = types.Big5ToUtf8(articleSummaryRaw.Title[:])
 	articleSummary.Money = articleSummaryRaw.Money()
 	articleSummary.Filemode = articleSummaryRaw.Filemode
+	articleSummary.URL = fmt.Sprintf("%v/%v/%v.html", ptttype.URL_PREFIX, boardID, filename)
 
 	return articleSummary
 }

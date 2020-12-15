@@ -7,16 +7,16 @@ import (
 
 type BoardSummary struct {
 	BBoardID     BBoardID              `json:"bid"`
-	BrdAttr      ptttype.BrdAttr       `json:"brdAttr"`
-	StatAttr     ptttype.BoardStatAttr `json:"statAttr"`
+	BrdAttr      ptttype.BrdAttr       `json:"attr"`
+	StatAttr     ptttype.BoardStatAttr `json:"user_attr"`
 	Brdname      string                `json:"brdname"`
 	RealTitle    string                `json:"title"` //Require to separate RealTitle, BoardClass, BoardType, because it's hard to parse in utf8
 	BoardClass   string                `json:"class"`
-	BoardType    string                `json:"boardType"` //□, ◎, Σ
+	BoardType    string                `json:"type"` //□, ◎, Σ
 	BM           []string              `json:"moderators"`
 	Reason       string                `json:"reason"`
-	LastPostTime types.Time4           `json:"lastPostTime"`
-	NUser        int32                 `json:"nUser"`
+	LastPostTime types.Time4           `json:"last_post_time"`
+	NUser        int32                 `json:"number_of_user"`
 	Total        int32                 `json:"total"`
 }
 

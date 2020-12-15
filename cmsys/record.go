@@ -18,13 +18,16 @@ func GetNumRecords(filename string, size uintptr) int {
 	return int(stat.Size() / int64(size))
 }
 
-func GetRecords(filename string, startAid ptttype.Aid, n int) ([]*ptttype.ArticleSummaryRaw, error) {
+func GetRecords(boardID *ptttype.BoardID_t, filename string, startAid ptttype.Aid, n int) ([]*ptttype.ArticleSummaryRaw, error) {
 	if !startAid.IsValid() {
 		return nil, ptttype.ErrInvalidAid
 	}
 
 	file, err := os.Open(filename)
 	if err != nil {
+		if os.IsNotExist(err) {
+			err = nil
+		}
 		return nil, err
 	}
 	defer file.Close()
@@ -58,6 +61,7 @@ func GetRecords(filename string, startAid ptttype.Aid, n int) ([]*ptttype.Articl
 	for idx := 0; idx < len(headers); idx++ {
 		headers_p[idx] = &ptttype.ArticleSummaryRaw{
 			Aid:           startAid + ptttype.Aid(idx),
+			BoardID:       boardID,
 			FileHeaderRaw: &headers[idx],
 		}
 	}

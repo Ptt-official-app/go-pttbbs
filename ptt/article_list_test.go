@@ -106,7 +106,6 @@ func TestLoadGeneralArticles(t *testing.T) {
 			},
 			expectedSummaryRaw: nil,
 			expectedNextIdx:    -1,
-			wantErr:            true,
 		},
 	}
 	for _, tt := range tests {

@@ -3,10 +3,10 @@ BoardSummary:
   properties:
     bid:
       type: string
-    brdAttr:
+    attr:
       type: integer
       description: board-flag. https://github.com/Ptt-official-app/go-pttbbs/blob/main/ptttype/brdattr.go
-    statAttr:
+    user_attr:
       type: integer
       description: state-flag. https://github.com/Ptt-official-app/go-pttbbs/blob/main/ptttype/board_stat.go
     brdname:
@@ -17,7 +17,7 @@ BoardSummary:
     class:
       type: string
       description: the board class
-    boardType:
+    type:
       type: string
       description: the board-type (□, ◎, Σ, ...)
     moderators:
@@ -28,10 +28,10 @@ BoardSummary:
     reason:
       type: string
       description: reason unable to see the board.
-    lastPostTime:
+    last_post_time:
       type: integer
       description: last post time
-    nUser:
+    number_of_user:
       type: integer
     total:
       type: integer

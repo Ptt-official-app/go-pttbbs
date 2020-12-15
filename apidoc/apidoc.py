@@ -34,7 +34,7 @@ def _index():
     return ''
 
 
-@app.route(_with_app_prefix('/users/me/information'), methods=['POST'])
+@app.route(_with_app_prefix('/users/me/information'), methods=['GET'])
 def _me():
     """
     swagger_from_file: apidoc/me.yaml
@@ -58,7 +58,7 @@ def _register():
     return ''
 
 
-@app.route(_with_app_prefix('/board/boards'), methods=['POST'])
+@app.route(_with_app_prefix('/boards'), methods=['GET'])
 def _load_general_boards():
     """
     swagger_from_file: apidoc/load_general_boards.yaml
@@ -66,7 +66,7 @@ def _load_general_boards():
     return ''
 
 
-@app.route(_with_app_prefix('/board/<bid>/articles'), methods=['POST'])
+@app.route(_with_app_prefix('/board/<bid>/articles'), methods=['GET'])
 def _load_general_articles(bid):
     """
     swagger_from_file: apidoc/load_general_articles.yaml
@@ -74,7 +74,7 @@ def _load_general_articles(bid):
     return ''
 
 
-@app.route(_with_app_prefix('/class/<class_id>'), methods=['POST'])
+@app.route(_with_app_prefix('/class/<class_id>'), methods=['GET'])
 def _load_boards_by_class(class_id):
     """
     swagger_from_file: apidoc/load_boards_by_class.yaml

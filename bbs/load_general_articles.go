@@ -7,6 +7,10 @@ import (
 
 func LoadGeneralArticles(userID string, bboardID BBoardID, startIdxStr string, nArticles int) (summary []*ArticleSummary, nextIdxStr string, err error) {
 
+	if nArticles < 1 {
+		return nil, "", ErrInvalidParams
+	}
+
 	startIdx, err := ptttype.ToSortIdx(startIdxStr)
 	if err != nil {
 		return nil, "", ErrInvalidParams
