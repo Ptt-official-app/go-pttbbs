@@ -66,7 +66,7 @@ def _load_general_boards():
     return ''
 
 
-@app.route(_with_app_prefix('/board/<bid>/articles'), methods=['GET'])
+@app.route(_with_app_prefix('/boards/<bid>/articles'), methods=['GET'])
 def _load_general_articles(bid):
     """
     swagger_from_file: apidoc/load_general_articles.yaml
