@@ -1,6 +1,8 @@
 ArticleSummary:
   type: object
   properties:
+    bid:
+      type: string
     aid:
       type: string
     deleted:

@@ -39,6 +39,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 			},
 			expectedResult: &LoadGeneralArticlesResult{
 				Articles: []*bbs.ArticleSummary{testArticleSummary1},
+				IsNewest: true,
 				NextIdx:  "1",
 			},
 		},
@@ -53,6 +54,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 			},
 			expectedResult: &LoadGeneralArticlesResult{
 				Articles: []*bbs.ArticleSummary{testArticleSummary0, testArticleSummary1},
+				IsNewest: true,
 				NextIdx:  "",
 			},
 		},
@@ -67,6 +69,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 			},
 			expectedResult: &LoadGeneralArticlesResult{
 				Articles: []*bbs.ArticleSummary{testArticleSummary1},
+				IsNewest: true,
 				NextIdx:  "1",
 			},
 		},

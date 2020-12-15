@@ -17,17 +17,17 @@ import (
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/read.c#L1106
 //
 //get bottom can be a separated api.
-func LoadGeneralArticles(user *ptttype.UserecRaw, uid ptttype.Uid, boardIDRaw *ptttype.BoardID_t, bid ptttype.Bid, startIdx ptttype.SortIdx, nArticles int) (summaryRaw []*ptttype.ArticleSummaryRaw, nextIdx ptttype.SortIdx, err error) {
+func LoadGeneralArticles(user *ptttype.UserecRaw, uid ptttype.Uid, boardIDRaw *ptttype.BoardID_t, bid ptttype.Bid, startIdx ptttype.SortIdx, nArticles int) (summaryRaw []*ptttype.ArticleSummaryRaw, nextIdx ptttype.SortIdx, isNewest bool, err error) {
 
 	//1. check perm.
 	board, err := cache.GetBCache(bid)
 	if err != nil {
-		return nil, -1, err
+		return nil, -1, false, err
 	}
 
 	statAttr := boardPermStat(user, uid, board, bid)
 	if statAttr == ptttype.NBRD_INVALID {
-		return nil, -1, ErrNotPermitted
+		return nil, -1, false, ErrNotPermitted
 	}
 
 	//2. bcache preparation.
@@ -35,23 +35,23 @@ func LoadGeneralArticles(user *ptttype.UserecRaw, uid ptttype.Uid, boardIDRaw *p
 	if total == 0 {
 		err = cache.SetBTotal(bid)
 		if err != nil {
-			return nil, -1, err
+			return nil, -1, false, err
 		}
 		err = cache.SetBottomTotal(bid)
 		if err != nil {
-			return nil, -1, err
+			return nil, -1, false, err
 		}
 
 		total = cache.GetBTotal(bid)
 		if total == 0 { //no data
-			return nil, -1, nil
+			return nil, -1, false, nil
 		}
 	}
 
 	//3. get records
 	filename, err := setBDir(boardIDRaw)
 	if err != nil {
-		return nil, -1, err
+		return nil, -1, false, err
 	}
 	//3.1. ensure recordStartAid and startAid
 	if startIdx == 0 {
@@ -69,12 +69,12 @@ func LoadGeneralArticles(user *ptttype.UserecRaw, uid ptttype.Uid, boardIDRaw *p
 	nArticles = int(startAid - recordStartAid + 1) //startAid is included
 
 	if nArticles < 1 {
-		return nil, -1, ErrInvalidParams
+		return nil, -1, false, ErrInvalidParams
 	}
 
 	summaryRaw, err = cmsys.GetRecords(boardIDRaw, filename, recordStartAid, nArticles)
 	if err != nil {
-		return nil, -1, err
+		return nil, -1, false, err
 	}
 
 	//4. return
@@ -82,5 +82,7 @@ func LoadGeneralArticles(user *ptttype.UserecRaw, uid ptttype.Uid, boardIDRaw *p
 	if recordStartAid > 1 {
 		nextIdx = ptttype.SortIdx(recordStartAid) - 1
 	}
-	return summaryRaw, nextIdx, nil
+
+	isNewest = startAid == ptttype.Aid(total)
+	return summaryRaw, nextIdx, isNewest, nil
 }

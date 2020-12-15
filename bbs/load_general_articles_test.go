@@ -20,6 +20,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 		args               args
 		expectedSummary    []*ArticleSummary
 		expectedNextIdxStr string
+		expectedIsNewest   bool
 		wantErr            bool
 	}{
 		// TODO: Add test cases.
@@ -32,6 +33,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 			},
 			expectedSummary:    []*ArticleSummary{testArticleSummary1},
 			expectedNextIdxStr: "1",
+			expectedIsNewest:   true,
 		},
 		{
 			args: args{
@@ -42,6 +44,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 			},
 			expectedSummary:    []*ArticleSummary{testArticleSummary0, testArticleSummary1},
 			expectedNextIdxStr: "",
+			expectedIsNewest:   true,
 		},
 	}
 	for _, tt := range tests {
@@ -49,7 +52,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 			setupTest()
 			defer teardownTest()
 
-			gotSummary, gotNextIdxStr, err := LoadGeneralArticles(tt.args.userID, tt.args.bboardID, tt.args.startIdxStr, tt.args.nArticles)
+			gotSummary, gotNextIdxStr, gotIsNewest, err := LoadGeneralArticles(tt.args.userID, tt.args.bboardID, tt.args.startIdxStr, tt.args.nArticles)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadGeneralArticles() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -63,6 +66,10 @@ func TestLoadGeneralArticles(t *testing.T) {
 			}
 			if gotNextIdxStr != tt.expectedNextIdxStr {
 				t.Errorf("LoadGeneralArticles() gotNextIdxStr = %v, want %v", gotNextIdxStr, tt.expectedNextIdxStr)
+			}
+
+			if gotIsNewest != tt.expectedIsNewest {
+				t.Errorf("LoadGeneralArticles() isNewest = %v, want %v", gotIsNewest, tt.expectedIsNewest)
 			}
 		})
 	}
