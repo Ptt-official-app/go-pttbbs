@@ -1,11 +1,11 @@
 version: '2'
 services:
   go-pttbbs:
-    image: pttofficialapps/go-pttbbs:v0.3.0
+    image: pttofficialapps/go-pttbbs:v0.3.1
     ports:
       - "127.0.0.1:3456:3456"
-      - "127.0.0.1:8888:8888"
-      - "127.0.0.1:48763:48763"
+      - "127.0.0.1:8889:8888"
+      - "127.0.0.1:48764:48763"
     restart: always
     volumes:
       - ${BBSHOME}:/home/bbs
