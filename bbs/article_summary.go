@@ -21,6 +21,7 @@ type ArticleSummary struct {
 	Money      int32            `json:"money"`
 	Filemode   ptttype.FileMode `json:"mode"`
 	URL        string           `json:"url"`
+	Read       bool             `json:"read"`
 }
 
 func NewArticleSummaryFromRaw(bboardID BBoardID, articleSummaryRaw *ptttype.ArticleSummaryRaw) *ArticleSummary {

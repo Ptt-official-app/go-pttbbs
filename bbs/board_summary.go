@@ -18,6 +18,7 @@ type BoardSummary struct {
 	LastPostTime types.Time4           `json:"last_post_time"`
 	NUser        int32                 `json:"number_of_user"`
 	Total        int32                 `json:"total"`
+	Read         bool                  `json:"read"`
 }
 
 func NewBoardSummaryFromRaw(boardSummaryRaw *ptttype.BoardSummaryRaw) *BoardSummary {

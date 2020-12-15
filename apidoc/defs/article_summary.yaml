@@ -30,3 +30,5 @@ ArticleSummary:
       description: https://github.com/Ptt-official-app/go-pttbbs/blob/main/ptttype/file_mode.go
     url:
       type: string
+    read:
+      type: boolean
