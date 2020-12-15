@@ -1,0 +1,8 @@
+ParamsKeyword:
+  name: keyword
+  in: query
+  required: false
+  description: search keyword
+  type: string
+  default: ''
+

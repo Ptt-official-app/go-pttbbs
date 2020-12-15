@@ -13,12 +13,8 @@ parameters:
     type: string
     required: true
     description: bid is returned from board-list.
-  - name: params
-    in: body
-    required: true
-    schema:
-      '$id': https://json-schema.org/draft/2019-09/output/schema
-      '$ref': '#/definitions/ArticleListParams'
+  - '$ref': '#/definitions/ParamsStartIdx'
+  - '$ref': '#/definitions/ParamsMax'
 responses:
   200:
     schema:
@@ -31,5 +27,5 @@ responses:
           required: true
           items:
             '$ref': '#/definitions/ArticleSummary'
-        next_bid:
+        next_idx:
           type: string
