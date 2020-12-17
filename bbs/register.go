@@ -6,7 +6,7 @@ import (
 )
 
 func Register(
-	userID string,
+	username string,
 	passwd string,
 	ip string,
 	email string,
@@ -18,7 +18,7 @@ func Register(
 	over18 bool,
 ) (user *Userec, err error) {
 	userIDRaw := &ptttype.UserID_t{}
-	copy(userIDRaw[:], []byte(userID))
+	copy(userIDRaw[:], []byte(username))
 
 	passwdRaw := []byte(passwd)
 

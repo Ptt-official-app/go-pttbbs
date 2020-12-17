@@ -283,6 +283,10 @@ func (f *Filename_t) ToAidu() Aidu {
 	return Aidu(aidu_u64)
 }
 
+func (f *Filename_t) String() string {
+	return types.CstrToString(f[:])
+}
+
 //Type
 //
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/aids.c#L82
@@ -315,7 +319,7 @@ func (a Aidu) ToFN() *Filename_t {
 	theTime := a.Time()
 	postfix := a.Postfix()
 
-	fnStr := fmt.Sprintf("%v.%d.A.%03x", theType, theTime, postfix)
+	fnStr := fmt.Sprintf("%v.%d.A.%03X", theType, theTime, postfix)
 	fn := &Filename_t{}
 	copy(fn[:], fnStr)
 	return fn

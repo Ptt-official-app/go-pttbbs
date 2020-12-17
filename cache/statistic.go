@@ -7,13 +7,13 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
-func StatInc(stats uintptr) error {
+func StatInc(stats ptttype.Stat) error {
 	err := validateStats(stats)
 	if err != nil {
 		return err
 	}
 
-	Shm.IncUint32(unsafe.Offsetof(Shm.Raw.Statistic) + types.UINT32_SZ*stats)
+	Shm.IncUint32(unsafe.Offsetof(Shm.Raw.Statistic) + types.UINT32_SZ*uintptr(stats))
 
 	return nil
 }
@@ -27,7 +27,7 @@ func CleanStat() {
 	)
 }
 
-func ReadStat(stats uintptr) (uint32, error) {
+func ReadStat(stats ptttype.Stat) (uint32, error) {
 	err := validateStats(stats)
 	if err != nil {
 		return 0, err
@@ -35,7 +35,7 @@ func ReadStat(stats uintptr) (uint32, error) {
 
 	out := uint32(0)
 	Shm.ReadAt(
-		unsafe.Offsetof(Shm.Raw.Statistic)+types.UINT32_SZ*stats,
+		unsafe.Offsetof(Shm.Raw.Statistic)+types.UINT32_SZ*uintptr(stats),
 		types.UINT32_SZ,
 		unsafe.Pointer(&out),
 	)
@@ -43,7 +43,7 @@ func ReadStat(stats uintptr) (uint32, error) {
 	return out, nil
 }
 
-func validateStats(stats uintptr) error {
+func validateStats(stats ptttype.Stat) error {
 	if Shm == nil {
 		return ErrShmNotInit
 	}

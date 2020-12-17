@@ -8,14 +8,11 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/api"
 )
 
-func Test_LoadGeneralBoards(t *testing.T) {
+func Test_GetArticle(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	params := &api.LoadGeneralBoardsParams{
-		StartIdx: "",
-		NBoards:  4,
-	}
+	params1 := &api.GetArticleParams{}
 
 	type args struct {
 		path     string
@@ -27,13 +24,12 @@ func Test_LoadGeneralBoards(t *testing.T) {
 		name string
 		args args
 	}{
-		// TODO: Add test cases.
 		{
 			args: args{
-				path:     api.LOAD_GENERAL_BOARDS_R,
+				path:     "/boards/10_WhoAmI/articles/1Vo_M_CD",
 				username: "SYSOP",
 				passwd:   "123123",
-				params:   params,
+				params:   params1,
 			},
 		},
 	}
@@ -44,7 +40,7 @@ func Test_LoadGeneralBoards(t *testing.T) {
 
 			jwt := getJwt(router, tt.args.username, tt.args.passwd)
 			w := httptest.NewRecorder()
-			req := setRequest(tt.args.path, params, jwt, nil, "GET")
+			req := setRequest(tt.args.path, tt.args.params, jwt, nil, "GET")
 			router.ServeHTTP(w, req)
 
 			if w.Code != http.StatusOK {

@@ -16,7 +16,7 @@ func TestRegister(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{
-			args: args{params: &RegisterParams{UserID: "C1", Passwd: "567"}},
+			args: args{params: &RegisterParams{Username: "C1", Passwd: "567"}},
 		},
 	}
 	for _, tt := range tests {

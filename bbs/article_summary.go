@@ -33,7 +33,7 @@ func NewArticleSummaryFromRaw(bboardID BBoardID, articleSummaryRaw *ptttype.Arti
 	ownerID := ToUUserID(articleSummaryRaw.Owner.ToUserID())
 	articleSummary := &ArticleSummary{
 		BBoardID:   bboardID,
-		ArticleID:  ToArticleID(articleSummaryRaw.Filename),
+		ArticleID:  ToArticleID(&articleSummaryRaw.Filename),
 		IsDeleted:  articleSummaryRaw.IsDeleted(),
 		Filename:   filename,
 		CreateTime: createTime,

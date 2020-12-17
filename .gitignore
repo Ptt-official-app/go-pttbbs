@@ -10,3 +10,4 @@
 /swagger
 **/boards
 /02-config.run.ini
+**/cover.out

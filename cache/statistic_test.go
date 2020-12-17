@@ -22,7 +22,7 @@ func TestStatInc(t *testing.T) {
 	defer CloseSHM()
 
 	type args struct {
-		stats uintptr
+		stats ptttype.Stat
 	}
 	tests := []struct {
 		name     string
@@ -49,7 +49,7 @@ func TestStatInc(t *testing.T) {
 
 		out := uint32(0)
 		Shm.ReadAt(
-			unsafe.Offsetof(Shm.Raw.Statistic)+types.UINT32_SZ*ptttype.STAT_BOARDREC,
+			unsafe.Offsetof(Shm.Raw.Statistic)+types.UINT32_SZ*uintptr(ptttype.STAT_BOARDREC),
 			unsafe.Sizeof(Shm.Raw.Statistic[ptttype.STAT_BOARDREC]),
 			unsafe.Pointer(&out),
 		)
@@ -78,7 +78,7 @@ func TestReadStat(t *testing.T) {
 	_ = StatInc(ptttype.STAT_GAMBLE)
 
 	type args struct {
-		stats uintptr
+		stats ptttype.Stat
 	}
 	tests := []struct {
 		name     string

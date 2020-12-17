@@ -5,9 +5,9 @@ import "github.com/Ptt-official-app/go-pttbbs/bbs"
 const REGISTER_R = "/register"
 
 type RegisterParams struct {
-	UserID string `json:"username"`
-	Passwd string `json:"password"`
-	Email  string `json:"email,omitempty"`
+	Username string `json:"username"`
+	Passwd   string `json:"password"`
+	Email    string `json:"email,omitempty"`
 
 	Nickname string `json:"nickname,omitempty"`
 	Realname string `json:"realname,omitempty"`
@@ -28,7 +28,7 @@ func Register(remoteAddr string, params interface{}) (interface{}, error) {
 	}
 
 	user, err := bbs.Register(
-		registerParams.UserID,
+		registerParams.Username,
 		registerParams.Passwd,
 		remoteAddr,
 		registerParams.Email,
