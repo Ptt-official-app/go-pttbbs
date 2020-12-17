@@ -17,13 +17,13 @@ type LoadGeneralBoardsResult struct {
 	NextIdx string              `json:"next_idx"`
 }
 
-func LoadGeneralBoards(remoteAddr string, userID string, params interface{}) (interface{}, error) {
+func LoadGeneralBoards(remoteAddr string, uuserID bbs.UUserID, params interface{}) (interface{}, error) {
 	loadGeneralBoardsParams, ok := params.(*LoadGeneralBoardsParams)
 	if !ok {
 		return nil, ErrInvalidParams
 	}
 
-	summary, nextIdx, err := bbs.LoadGeneralBoards(userID, loadGeneralBoardsParams.StartIdx, loadGeneralBoardsParams.NBoards, loadGeneralBoardsParams.Keyword)
+	summary, nextIdx, err := bbs.LoadGeneralBoards(uuserID, loadGeneralBoardsParams.StartIdx, loadGeneralBoardsParams.NBoards, loadGeneralBoardsParams.Keyword)
 	if err != nil {
 		return nil, err
 	}

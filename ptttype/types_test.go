@@ -604,3 +604,99 @@ func TestOwner_t_ToUserID(t *testing.T) {
 		})
 	}
 }
+
+func TestUserID_t_IsValid(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	userID0 := UserID_t{}
+
+	userID1 := UserID_t{}
+	copy(userID1[:], []byte("S"))
+
+	userID2 := UserID_t{}
+	copy(userID2[:], []byte("SYSOP"))
+
+	userID3 := UserID_t{}
+	copy(userID3[:], []byte("S1234567891234"))
+
+	userID4 := UserID_t{}
+	copy(userID4[:], []byte("SYSOP,-"))
+
+	userID5 := UserID_t{}
+	copy(userID5[:], []byte("SYSOP1"))
+
+	userID6 := UserID_t{}
+	copy(userID6[:], []byte("1SYSOP"))
+
+	userID7 := UserID_t{}
+	copy(userID7[:], []byte("S1"))
+
+	userID8 := UserID_t{}
+	copy(userID8[:], []byte("Ss"))
+
+	tests := []struct {
+		name     string
+		u        *UserID_t
+		expected bool
+	}{
+		// TODO: Add test cases.
+		{
+			name:     "nil",
+			u:        nil,
+			expected: false,
+		},
+		{
+			name:     "",
+			u:        &userID0,
+			expected: false,
+		},
+		{
+			name:     "S",
+			u:        &userID1,
+			expected: false,
+		},
+		{
+			name:     "SYSOP",
+			u:        &userID2,
+			expected: true,
+		},
+		{
+			name:     "too long",
+			u:        &userID3,
+			expected: false,
+		},
+		{
+			name:     "not alnum",
+			u:        &userID4,
+			expected: false,
+		},
+		{
+			name:     "SYSOP1",
+			u:        &userID5,
+			expected: true,
+		},
+		{
+			name:     "1SYSOP (not alpha in 0st char)",
+			u:        &userID6,
+			expected: false,
+		},
+		{
+			name:     "S1 (alnum)",
+			u:        &userID7,
+			expected: true,
+		},
+		{
+			name:     "Ss (all alpha)",
+			u:        &userID7,
+			expected: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.u.IsValid(); got != tt.expected {
+				t.Errorf("UserID_t.IsValid() = %v, want %v", got, tt.expected)
+			}
+		})
+	}
+}

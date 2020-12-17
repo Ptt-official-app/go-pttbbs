@@ -16,7 +16,7 @@ func Test_Index(t *testing.T) {
 
 	type args struct {
 		path   string
-		userID string
+		userID string //this is for user-login
 		passwd string
 		params interface{}
 	}

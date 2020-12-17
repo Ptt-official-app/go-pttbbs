@@ -8,6 +8,7 @@ import (
 // https://github.com/ptt/pttbbs/blob/master/include/pttstruct.h
 type Userec struct {
 	Version  uint32
+	UUserID  UUserID
 	Userid   string
 	Realname string
 	Nickname string
@@ -77,8 +78,9 @@ type Userec struct {
 	//Pad3    byte
 }
 
-func NewUserecFromRaw(userecRaw *ptttype.UserecRaw) *Userec {
+func NewUserecFromRaw(uid ptttype.Uid, userecRaw *ptttype.UserecRaw) *Userec {
 	user := &Userec{}
+	user.UUserID = ToUUserID(uid, &userecRaw.UserID)
 	user.Version = userecRaw.Version
 	user.Userid = types.CstrToString(userecRaw.UserID[:])
 	user.Realname = types.Big5ToUtf8(userecRaw.RealName[:])

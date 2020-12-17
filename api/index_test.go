@@ -3,6 +3,8 @@ package api
 import (
 	"reflect"
 	"testing"
+
+	"github.com/Ptt-official-app/go-pttbbs/bbs"
 )
 
 func TestIndex(t *testing.T) {
@@ -10,8 +12,8 @@ func TestIndex(t *testing.T) {
 	//teardownTest moves inside for-loop
 
 	type args struct {
-		userID string
-		params interface{}
+		uuserID bbs.UUserID
+		params  interface{}
 	}
 	tests := []struct {
 		name     string
@@ -21,7 +23,7 @@ func TestIndex(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{
-			args:     args{"SYSOP", nil},
+			args:     args{"1_SYSOP", nil},
 			expected: &IndexResult{Data: "index"},
 		},
 	}
@@ -30,7 +32,7 @@ func TestIndex(t *testing.T) {
 			setupTest()
 			defer teardownTest()
 
-			got, err := Index(testIP, tt.args.userID, tt.args.params)
+			got, err := Index(testIP, tt.args.uuserID, tt.args.params)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Index() error = %v, wantErr %v", err, tt.wantErr)
 				return

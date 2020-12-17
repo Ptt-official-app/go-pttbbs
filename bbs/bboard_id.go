@@ -15,6 +15,12 @@ type BBoardID string //The integrated bid-boardID, concat with _, safe because b
 //concat bid and boardID as BBoardID, concat with _
 //because bid and boardIDRaw are from ptt, no need to check the validity
 func ToBBoardID(bid ptttype.Bid, boardIDRaw *ptttype.BoardID_t) BBoardID {
+	if !bid.IsValid() {
+		return BBoardID("")
+	}
+	if !boardIDRaw.IsValid() {
+		return BBoardID("")
+	}
 	return BBoardID(bid.String() + "_" + types.CstrToString(boardIDRaw[:]))
 }
 
@@ -29,6 +35,9 @@ func (b BBoardID) ToRaw() (bid ptttype.Bid, boardIDRaw *ptttype.BoardID_t, err e
 
 	// check bid validity
 	bid_i, err := strconv.Atoi(bList[0])
+	if err != nil {
+		return 0, nil, err
+	}
 	bid = ptttype.Bid(bid_i)
 	if !bid.IsValid() {
 		return 0, nil, ErrInvalidBBoardID

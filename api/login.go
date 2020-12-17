@@ -53,8 +53,8 @@ func createToken(userec *bbs.Userec) (string, error) {
 	}
 
 	cl := &JwtClaim{
-		UserID: userec.Userid,
-		Expire: jwt.NewNumericDate(time.Now().Add(time.Hour * 72)),
+		UUserID: userec.UUserID,
+		Expire:  jwt.NewNumericDate(time.Now().Add(time.Hour * 72)),
 	}
 
 	raw, err := jwt.Signed(sig).Claims(cl).CompactSerialize()

@@ -10,8 +10,12 @@ func InitCurrentUser(userID *ptttype.UserID_t) (uid ptttype.Uid, user *ptttype.U
 	return cmbbs.PasswdLoadUser(userID)
 }
 
+func InitCurrentUserByUid(uid ptttype.Uid) (user *ptttype.UserecRaw, err error) {
+	return cmbbs.PasswdQuery(uid)
+}
+
 func passwdSyncUpdate(uid ptttype.Uid, user *ptttype.UserecRaw) error {
-	if uid < 1 || uid > ptttype.MAX_USERS {
+	if !uid.IsValid() {
 		return cache.ErrInvalidUID
 	}
 

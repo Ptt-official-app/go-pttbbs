@@ -5,4 +5,5 @@ import "errors"
 var (
 	ErrInvalidParams   = errors.New("invalid params")
 	ErrInvalidBBoardID = errors.New("invalid bboardID")
+	ErrInvalidUUserID  = errors.New("invalid uuserID")
 )

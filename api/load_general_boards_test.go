@@ -23,8 +23,8 @@ func TestLoadGeneralBoards(t *testing.T) {
 	}
 
 	type args struct {
-		userID string
-		params interface{}
+		uuserID bbs.UUserID
+		params  interface{}
 	}
 	tests := []struct {
 		name     string
@@ -34,13 +34,13 @@ func TestLoadGeneralBoards(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{
-			args:     args{userID: "SYSOP", params: params},
+			args:     args{uuserID: "1_SYSOP", params: params},
 			expected: expected,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := LoadGeneralBoards(testIP, tt.args.userID, tt.args.params)
+			got, err := LoadGeneralBoards(testIP, tt.args.uuserID, tt.args.params)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadGeneralBoards() error = %v, wantErr %v", err, tt.wantErr)
 				return

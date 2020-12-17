@@ -107,3 +107,36 @@ func Test_passwdSyncQuery(t *testing.T) {
 		})
 	}
 }
+
+func TestInitCurrentUserByUid(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	type args struct {
+		uid ptttype.Uid
+	}
+	tests := []struct {
+		name         string
+		args         args
+		expectedUser *ptttype.UserecRaw
+		wantErr      bool
+	}{
+		// TODO: Add test cases.
+		{
+			args:         args{1},
+			expectedUser: testUserecRaw1,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotUser, err := InitCurrentUserByUid(tt.args.uid)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("InitCurrentUserByUid() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotUser, tt.expectedUser) {
+				t.Errorf("InitCurrentUserByUid() = %v, want %v", gotUser, tt.expectedUser)
+			}
+		})
+	}
+}

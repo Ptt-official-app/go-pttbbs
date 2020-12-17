@@ -10,7 +10,7 @@ func TestLoadGeneralBoards(t *testing.T) {
 	//setupTest moves in for-loop
 	//teardownTest moves in for-loop
 	type args struct {
-		userID      string
+		uuserID     UUserID
 		startIdxStr string
 		nBoards     int
 		keyword     string
@@ -24,7 +24,7 @@ func TestLoadGeneralBoards(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{
-			args:               args{userID: "SYSOP", startIdxStr: "", nBoards: 4},
+			args:               args{uuserID: "1_SYSOP", startIdxStr: "", nBoards: 4},
 			expectedSummary:    []*BoardSummary{testBoardSummary6, testBoardSummary7, testBoardSummary11, testBoardSummary8},
 			expectedNextIdxStr: "8",
 		},
@@ -34,7 +34,7 @@ func TestLoadGeneralBoards(t *testing.T) {
 			setupTest()
 			defer teardownTest()
 
-			gotSummary, gotNextIdx, err := LoadGeneralBoards(tt.args.userID, tt.args.startIdxStr, tt.args.nBoards, tt.args.keyword)
+			gotSummary, gotNextIdx, err := LoadGeneralBoards(tt.args.uuserID, tt.args.startIdxStr, tt.args.nBoards, tt.args.keyword)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadGeneralBoards() error = %v, wantErr %v", err, tt.wantErr)
 				return

@@ -4,7 +4,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Ptt-official-app/go-pttbbs/cmbbs/names"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
@@ -21,7 +20,7 @@ func SetHomePath(userID *ptttype.UserID_t) string {
 }
 
 func SetHomeFile(userID *ptttype.UserID_t, filename string) (string, error) {
-	if !names.IsValidUserID(userID) {
+	if !userID.IsValid() {
 		return "", ptttype.ErrInvalidUserID
 	}
 	if filename[0] == '\x00' || !IsValidFilename(filename) {

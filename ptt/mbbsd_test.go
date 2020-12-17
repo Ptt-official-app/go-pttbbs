@@ -18,15 +18,17 @@ func TestLoginQuery(t *testing.T) {
 		ip     *ptttype.IPv4_t
 	}
 	tests := []struct {
-		name     string
-		args     args
-		expected *ptttype.UserecRaw
-		wantErr  bool
+		name        string
+		args        args
+		expected    *ptttype.UserecRaw
+		expectedUid ptttype.Uid
+		wantErr     bool
 	}{
 		// TODO: Add test cases.
 		{
-			args:     args{userID: &userid1, passwd: []byte("123123")},
-			expected: testUserecRaw1,
+			args:        args{userID: &userid1, passwd: []byte("123123")},
+			expected:    testUserecRaw1,
+			expectedUid: 1,
 		},
 		{
 			args:     args{userID: &userid1, passwd: []byte("124")},
@@ -39,10 +41,13 @@ func TestLoginQuery(t *testing.T) {
 			setupTest()
 			defer teardownTest()
 
-			got, err := LoginQuery(tt.args.userID, tt.args.passwd, tt.args.ip)
+			gotUid, got, err := LoginQuery(tt.args.userID, tt.args.passwd, tt.args.ip)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoginQuery() error = %v, wantErr %v", err, tt.wantErr)
 				return
+			}
+			if gotUid != tt.expectedUid {
+				t.Errorf("LoginQuery() uid: %v expected: %v", gotUid, tt.expectedUid)
 			}
 			if !reflect.DeepEqual(got, tt.expected) {
 				t.Errorf("LoginQuery() = %v, expected %v", got, tt.expected)

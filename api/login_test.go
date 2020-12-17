@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/Ptt-official-app/go-pttbbs/bbs"
 	"gopkg.in/square/go-jose.v2/jwt"
 )
 
@@ -23,7 +24,7 @@ func TestLogin(t *testing.T) {
 				UserID: "SYSOP",
 				Passwd: "123123",
 			}},
-			expected: &JwtClaim{UserID: "SYSOP"},
+			expected: &JwtClaim{UUserID: bbs.UUserID("1_SYSOP")},
 		},
 	}
 
@@ -48,7 +49,7 @@ func TestLogin(t *testing.T) {
 			token, _ := jwt.ParseSigned(gotResult.Jwt)
 			_ = token.UnsafeClaimsWithoutVerification(claims)
 			wantJwt, _ := tt.expected.(*JwtClaim)
-			if !reflect.DeepEqual(claims.UserID, wantJwt.UserID) {
+			if !reflect.DeepEqual(claims.UUserID, wantJwt.UUserID) {
 				t.Errorf("Login() = %v claims: %v expected: %v", got, claims, tt.expected)
 				return
 			}

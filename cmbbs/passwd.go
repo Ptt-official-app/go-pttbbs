@@ -71,7 +71,7 @@ func PasswdLoadUser(userID *ptttype.UserID_t) (ptttype.Uid, *ptttype.UserecRaw, 
 		return 0, nil, err
 	}
 
-	if uid > ptttype.MAX_USERS {
+	if !uid.IsValid() {
 		return 0, nil, ptttype.ErrInvalidUserID
 	}
 
@@ -91,7 +91,7 @@ func PasswdLoadUser(userID *ptttype.UserID_t) (ptttype.Uid, *ptttype.UserecRaw, 
 //	*ptttype.UserecRaw: user.
 //	error: err.
 func PasswdQuery(uid ptttype.Uid) (*ptttype.UserecRaw, error) {
-	if uid < 1 || uid > ptttype.MAX_USERS {
+	if !uid.IsValid() {
 		return nil, ptttype.ErrInvalidUserID
 	}
 

@@ -5,7 +5,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 )
 
-func LoadGeneralArticles(userID string, bboardID BBoardID, startIdxStr string, nArticles int) (summary []*ArticleSummary, nextIdxStr string, isNewest bool, err error) {
+func LoadGeneralArticles(uuserID UUserID, bboardID BBoardID, startIdxStr string, nArticles int) (summary []*ArticleSummary, nextIdxStr string, isNewest bool, err error) {
 
 	if nArticles < 1 {
 		return nil, "", false, ErrInvalidParams
@@ -24,10 +24,12 @@ func LoadGeneralArticles(userID string, bboardID BBoardID, startIdxStr string, n
 		return nil, "", false, ErrInvalidParams
 	}
 
-	userIDRaw := &ptttype.UserID_t{}
-	copy(userIDRaw[:], []byte(userID))
+	uid, _, err := uuserID.ToRaw()
+	if err != nil {
+		return nil, "", false, ErrInvalidParams
+	}
 
-	uid, userecRaw, err := ptt.InitCurrentUser(userIDRaw)
+	userecRaw, err := ptt.InitCurrentUserByUid(uid)
 	if err != nil {
 		return nil, "", false, err
 	}
