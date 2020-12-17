@@ -5,7 +5,6 @@ import (
 	"os"
 	"unsafe"
 
-	"github.com/Ptt-official-app/go-pttbbs/cmbbs/names"
 	"github.com/Ptt-official-app/go-pttbbs/cmsys"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
@@ -121,7 +120,7 @@ func userecRawAddToUHash(uidInCache ptttype.UidInStore, userecRaw *ptttype.Usere
 	// uhash use userid="" to denote free slot for new register
 	// However, such entries will have the same hash key.
 	// So we skip most of invalid userid to prevent lots of hash collision.
-	if !names.IsValidUserID(&userecRaw.UserID) {
+	if !userecRaw.UserID.IsValid() {
 		// dirty hack, preserve few slot for new register
 		uHashLoaderInvalidUserID++
 		if uHashLoaderInvalidUserID > 1000 {

@@ -30,7 +30,7 @@ func NewRegister(
 	career *ptttype.Career_t,
 	address *ptttype.Address_t,
 	over18 bool,
-) (*ptttype.UserecRaw, error) {
+) (uid ptttype.Uid, user *ptttype.UserecRaw, err error) {
 
 	// line: 758
 	newUser := &ptttype.UserecRaw{}
@@ -61,7 +61,7 @@ func NewRegister(
 	// line: 857
 	passwdHash, err := cmbbs.GenPasswd(passwd)
 	if err != nil {
-		return nil, err
+		return 0, nil, err
 	}
 	copy(newUser.PasswdHash[:], passwdHash[:])
 
@@ -80,19 +80,19 @@ func NewRegister(
 	err = SetupNewUser(newUser)
 	if err != nil {
 		log.Errorf("register.NewRegister: unable to SetupNewUser: userID: %v e: %v", userID, err)
-		return nil, err
+		return 0, nil, err
 	}
 
 	// read and ensure that every works as expected.
-	uid, _, err := InitCurrentUser(userID)
+	uid, _, err = InitCurrentUser(userID)
 	if err != nil {
 		log.Errorf("register.NewRegister: unable to initCurrentUser: userID: %v e: %v", userID, err)
-		return nil, err
+		return 0, nil, err
 	}
 
 	err = ensureErasingOldUser(uid, userID)
 	if err != nil {
-		return nil, err
+		return 0, nil, err
 	}
 
 	// XXX no define of USE_REMOVEBM_ON_NEWREG (line: 985)
@@ -105,16 +105,16 @@ func NewRegister(
 			copy(justify[:ptttype.REGLEN], []byte(fmt.Sprintf("<E-Mail>: %v", types.NowTS().Cdate())))
 			err = pwcuRegCompleteJustify(uid, userID, &justify)
 			if err != nil {
-				return nil, err
+				return 0, nil, err
 			}
 		}
 	}
 
-	user, err := passwdSyncQuery(uid)
+	user, err = passwdSyncQuery(uid)
 	if err != nil {
-		return nil, err
+		return 0, nil, err
 	}
-	return user, nil
+	return uid, user, nil
 }
 
 func ensureErasingOldUser(uid ptttype.Uid, userID *ptttype.UserID_t) (err error) {

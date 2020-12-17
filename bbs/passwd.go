@@ -17,8 +17,9 @@ func OpenUserecFile(filename string) ([]*Userec, error) {
 
 	ret := []*Userec{}
 
-	for {
-		user, eachErr := NewUserecWithFile(file)
+	for uidInFile := ptttype.UidInStore(0); ; uidInFile++ {
+		uid := uidInFile.ToUid()
+		user, eachErr := NewUserecWithFile(uid, file)
 		if eachErr != nil {
 			// io.EOF is reading correctly to the end the file.
 			if eachErr == io.EOF {
@@ -35,13 +36,13 @@ func OpenUserecFile(filename string) ([]*Userec, error) {
 
 }
 
-func NewUserecWithFile(file *os.File) (*Userec, error) {
+func NewUserecWithFile(uid ptttype.Uid, file *os.File) (*Userec, error) {
 	userecRaw, err := ptttype.NewUserecRawWithFile(file)
 	if err != nil {
 		return nil, err
 	}
 
-	user := NewUserecFromRaw(userecRaw)
+	user := NewUserecFromRaw(uid, userecRaw)
 
 	return user, nil
 }

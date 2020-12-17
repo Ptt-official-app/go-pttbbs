@@ -290,10 +290,11 @@ func TestNewRegister(t *testing.T) {
 		over18          bool
 	}
 	tests := []struct {
-		name     string
-		args     args
-		expected *ptttype.UserecRaw
-		wantErr  bool
+		name        string
+		args        args
+		expected    *ptttype.UserecRaw
+		expectedUID ptttype.Uid
+		wantErr     bool
 	}{
 		// TODO: Add test cases.
 		{
@@ -308,12 +309,13 @@ func TestNewRegister(t *testing.T) {
 				address:  &testNewRegister1.Address,
 				over18:   testNewRegister1.Over18,
 			},
-			expected: testNewRegister1,
+			expected:    testNewRegister1,
+			expectedUID: 6,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := NewRegister(tt.args.userID, tt.args.passwd, tt.args.fromHost, tt.args.email, tt.args.isEmailVerified, tt.args.isAdbannerUSong, tt.args.nickname, tt.args.realname, tt.args.career, tt.args.address, tt.args.over18)
+			gotUid, got, err := NewRegister(tt.args.userID, tt.args.passwd, tt.args.fromHost, tt.args.email, tt.args.isEmailVerified, tt.args.isAdbannerUSong, tt.args.nickname, tt.args.realname, tt.args.career, tt.args.address, tt.args.over18)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("NewRegister() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -327,6 +329,10 @@ func TestNewRegister(t *testing.T) {
 			testNewRegister1.LastLogin = got.LastLogin
 			testNewRegister1.FirstLogin = got.FirstLogin
 			testNewRegister1.LastSeen = got.LastSeen
+
+			if gotUid != tt.expectedUID {
+				t.Errorf("NewRegister: uid: %v expected: %v", gotUid, tt.expectedUID)
+			}
 
 			types.TDeepEqual(t, got, tt.expected)
 		})

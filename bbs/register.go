@@ -40,7 +40,7 @@ func Register(
 	addressRaw := &ptttype.Address_t{}
 	copy(addressRaw[:], []byte(address))
 
-	userRaw, err := ptt.NewRegister(
+	uid, userRaw, err := ptt.NewRegister(
 		userIDRaw,
 		passwdRaw,
 		ipRaw,
@@ -58,7 +58,7 @@ func Register(
 		return nil, err
 	}
 
-	user = NewUserecFromRaw(userRaw)
+	user = NewUserecFromRaw(uid, userRaw)
 
 	return user, nil
 }

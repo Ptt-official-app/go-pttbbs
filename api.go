@@ -188,7 +188,7 @@ func (a *LoginRequiredPathApi) process(c *gin.Context) {
 
 }
 
-func verifyJwt(raw string) (userID string, err error) {
+func verifyJwt(raw string) (userID bbs.UUserID, err error) {
 	tok, err := jwt.ParseSigned(raw)
 	if err != nil {
 		return "", ErrInvalidToken
@@ -204,7 +204,7 @@ func verifyJwt(raw string) (userID string, err error) {
 		return "", ErrInvalidToken
 	}
 
-	return cl.UserID, nil
+	return cl.UUserID, nil
 }
 
 func processResult(c *gin.Context, result interface{}, err error) {

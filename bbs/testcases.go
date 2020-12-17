@@ -28,6 +28,7 @@ var (
 
 	testUserec1 = &Userec{
 		Version:      ptttype.PASSWD_VERSION,
+		UUserID:      UUserID("1_SYSOP"),
 		Userid:       "SYSOP",
 		Realname:     "CodingMan",
 		Nickname:     "神",
@@ -46,6 +47,7 @@ var (
 
 	testUserec2 = &Userec{
 		Version:      ptttype.PASSWD_VERSION,
+		UUserID:      UUserID("2_CodingMan"),
 		Userid:       "CodingMan",
 		Realname:     "朱元璋",
 		Nickname:     "程式俠",
@@ -66,6 +68,7 @@ var (
 
 	testUserec3 = &Userec{
 		Version:      ptttype.PASSWD_VERSION,
+		UUserID:      UUserID("3_pichu"),
 		Userid:       "pichu",
 		Realname:     "Pichu",
 		Nickname:     "Pichu",
@@ -86,6 +89,7 @@ var (
 
 	testUserec4 = &Userec{
 		Version:      ptttype.PASSWD_VERSION,
+		UUserID:      UUserID("4_Kahou"),
 		Userid:       "Kahou",
 		Realname:     "林嘉豪",
 		Nickname:     "Kahou",
@@ -106,6 +110,7 @@ var (
 
 	testUserec5 = &Userec{
 		Version:      ptttype.PASSWD_VERSION,
+		UUserID:      UUserID("5_Kahou2"),
 		Userid:       "Kahou2",
 		Realname:     "Kahou",
 		Nickname:     "kahou",
@@ -127,6 +132,7 @@ var (
 
 	testUserec6 = &Userec{
 		Version:      ptttype.PASSWD_VERSION,
+		UUserID:      UUserID("6_B1"),
 		Userid:       "B1",
 		Lasthost:     "127.0.0.1",
 		Uflag:        33557088,

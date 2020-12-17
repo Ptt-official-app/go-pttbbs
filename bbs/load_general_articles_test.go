@@ -10,7 +10,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 	//setupTest in for-loop
 
 	type args struct {
-		userID      string
+		uuserID     UUserID
 		bboardID    BBoardID
 		startIdxStr string
 		nArticles   int
@@ -26,7 +26,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 		// TODO: Add test cases.
 		{
 			args: args{
-				userID:      "SYSOP",
+				uuserID:     "1_SYSOP",
 				bboardID:    "10_WhoAmI",
 				startIdxStr: "2",
 				nArticles:   1,
@@ -37,7 +37,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 		},
 		{
 			args: args{
-				userID:      "SYSOP",
+				uuserID:     "1_SYSOP",
 				bboardID:    "10_WhoAmI",
 				startIdxStr: "2",
 				nArticles:   2,
@@ -52,7 +52,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 			setupTest()
 			defer teardownTest()
 
-			gotSummary, gotNextIdxStr, gotIsNewest, err := LoadGeneralArticles(tt.args.userID, tt.args.bboardID, tt.args.startIdxStr, tt.args.nArticles)
+			gotSummary, gotNextIdxStr, gotIsNewest, err := LoadGeneralArticles(tt.args.uuserID, tt.args.bboardID, tt.args.startIdxStr, tt.args.nArticles)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadGeneralArticles() error = %v, wantErr %v", err, tt.wantErr)
 				return

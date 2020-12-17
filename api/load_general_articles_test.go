@@ -17,7 +17,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 
 	type args struct {
 		remoteAddr string
-		userID     string
+		uuserID    bbs.UUserID
 		params     interface{}
 		path       interface{}
 	}
@@ -30,7 +30,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 		// TODO: Add test cases.
 		{
 			args: args{
-				userID: "SYSOP",
+				uuserID: "1_SYSOP",
 				params: &LoadGeneralArticlesParams{
 					StartIdx:  "",
 					NArticles: 1,
@@ -45,7 +45,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 		},
 		{
 			args: args{
-				userID: "SYSOP",
+				uuserID: "1_SYSOP",
 				params: &LoadGeneralArticlesParams{
 					StartIdx:  "2",
 					NArticles: 2,
@@ -60,7 +60,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 		},
 		{
 			args: args{
-				userID: "SYSOP",
+				uuserID: "1_SYSOP",
 				params: &LoadGeneralArticlesParams{
 					StartIdx:  "2",
 					NArticles: 1,
@@ -76,7 +76,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotResult, err := LoadGeneralArticles(tt.args.remoteAddr, tt.args.userID, tt.args.params, tt.args.path)
+			gotResult, err := LoadGeneralArticles(tt.args.remoteAddr, tt.args.uuserID, tt.args.params, tt.args.path)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadGeneralArticles() error = %v, wantErr %v", err, tt.wantErr)
 				return

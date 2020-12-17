@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 message Rune {
-  string char = 1;
+  string str = 1;
   uint32 color0 = 2;
   uint32 color1 = 3;
 }

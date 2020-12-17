@@ -2,7 +2,6 @@ package ptt
 
 import (
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs"
-	"github.com/Ptt-official-app/go-pttbbs/cmbbs/names"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 )
 
@@ -16,28 +15,28 @@ import (
 //Return
 //	*UserecRaw: user
 //  error: err
-func LoginQuery(userID *ptttype.UserID_t, passwd []byte, ip *ptttype.IPv4_t) (*ptttype.UserecRaw, error) {
-	if !names.IsValidUserID(userID) {
-		return nil, ptttype.ErrInvalidUserID
+func LoginQuery(userID *ptttype.UserID_t, passwd []byte, ip *ptttype.IPv4_t) (uid ptttype.Uid, user *ptttype.UserecRaw, err error) {
+	if !userID.IsValid() {
+		return 0, nil, ptttype.ErrInvalidUserID
 	}
 
-	_, cuser, err := InitCurrentUser(userID)
+	uid, user, err = InitCurrentUser(userID)
 	if err != nil {
-		return nil, err
+		return 0, nil, err
 	}
 
-	isValid, err := cmbbs.CheckPasswd(cuser.PasswdHash[:], passwd)
+	isValid, err := cmbbs.CheckPasswd(user.PasswdHash[:], passwd)
 	if err != nil {
 		cmbbs.LogAttempt(userID, ip, true)
-		return nil, err
+		return 0, nil, err
 	}
 
 	if !isValid {
 		cmbbs.LogAttempt(userID, ip, true)
-		return nil, ptttype.ErrInvalidUserID
+		return 0, nil, ptttype.ErrInvalidUserID
 	}
 
 	//XXX do post-user-login.
 
-	return cuser, nil
+	return uid, user, nil
 }

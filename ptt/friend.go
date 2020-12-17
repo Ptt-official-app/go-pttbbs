@@ -7,7 +7,6 @@ import (
 	"math/rand"
 	"os"
 
-	"github.com/Ptt-official-app/go-pttbbs/cmbbs/names"
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs/path"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
@@ -33,7 +32,7 @@ func friendDeleteAll(userID *ptttype.UserID_t, friendType ptttype.FriendType) er
 	for line, err := types.ReadLine(reader); err == nil; line, err = types.ReadLine(reader) {
 		friendID := &ptttype.UserID_t{}
 		copy(friendID[:], line)
-		if !names.IsValidUserID(friendID) {
+		if !friendID.IsValid() {
 			continue
 		}
 

@@ -85,6 +85,10 @@ func (u Uid) String() string {
 	return strconv.Itoa(int(u))
 }
 
+func (u Uid) IsValid() bool {
+	return u >= 1 && u <= MAX_USERS
+}
+
 func (b Bid) IsValid() bool {
 	return b >= 1 && b <= MAX_BOARD
 }
@@ -131,6 +135,35 @@ func ToSortIdx(str string) (SortIdx, error) {
 	}
 
 	return SortIdx(idx), nil
+}
+
+//valid UserID
+//
+//https://github.com/ptt/pttbbs/blob/master/common/bbs/names.c
+func (u *UserID_t) IsValid() bool {
+	if u == nil {
+		return false
+	}
+
+	theLen := types.Cstrlen(u[:])
+	if theLen < 2 || theLen > IDLEN {
+		return false
+	}
+
+	if !types.Isalpha(u[0]) {
+		return false
+	}
+
+	for idx, c := range u {
+		if idx == theLen {
+			break
+		}
+
+		if !types.Isalnum(c) {
+			return false
+		}
+	}
+	return true
 }
 
 //Valid BoardID

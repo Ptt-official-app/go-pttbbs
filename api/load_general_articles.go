@@ -21,7 +21,7 @@ type LoadGeneralArticlesResult struct {
 	NextIdx  string                `json:"next_idx"`
 }
 
-func LoadGeneralArticles(remoteAddr string, userID string, params interface{}, path interface{}) (result interface{}, err error) {
+func LoadGeneralArticles(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (result interface{}, err error) {
 	loadGeneralArticlesParams, ok := params.(*LoadGeneralArticlesParams)
 	if !ok {
 		return nil, ErrInvalidParams
@@ -32,7 +32,7 @@ func LoadGeneralArticles(remoteAddr string, userID string, params interface{}, p
 		return nil, ErrInvalidPath
 	}
 
-	summary, nextIdx, isNewest, err := bbs.LoadGeneralArticles(userID, loadGeneralArticlesPath.BBoardID, loadGeneralArticlesParams.StartIdx, loadGeneralArticlesParams.NArticles)
+	summary, nextIdx, isNewest, err := bbs.LoadGeneralArticles(uuserID, loadGeneralArticlesPath.BBoardID, loadGeneralArticlesParams.StartIdx, loadGeneralArticlesParams.NArticles)
 
 	if err != nil {
 		return nil, err
