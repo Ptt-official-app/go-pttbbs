@@ -46,7 +46,7 @@ var (
 
 	testArticleSummary0 = &bbs.ArticleSummary{
 		BBoardID:   bbs.BBoardID("10_WhoAmI"),
-		ArticleID:  "1_1Vo_M_CD",
+		ArticleID:  "1Vo_M_CD",
 		IsDeleted:  false,
 		Filename:   "M.1607202239.A.30D",
 		CreateTime: 1607202239,
@@ -59,7 +59,7 @@ var (
 
 	testArticleSummary1 = &bbs.ArticleSummary{
 		BBoardID:   bbs.BBoardID("10_WhoAmI"),
-		ArticleID:  "2_1Vo_f30D",
+		ArticleID:  "1Vo_f30D",
 		IsDeleted:  false,
 		Filename:   "M.1607203395.A.00D",
 		CreateTime: 1607203395,
