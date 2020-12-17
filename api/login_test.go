@@ -21,8 +21,8 @@ func TestLogin(t *testing.T) {
 		// TODO: Add test cases.
 		{
 			args: args{params: &LoginParams{
-				UserID: "SYSOP",
-				Passwd: "123123",
+				Username: "SYSOP",
+				Passwd:   "123123",
 			}},
 			expected: &JwtClaim{UUserID: bbs.UUserID("SYSOP")},
 		},

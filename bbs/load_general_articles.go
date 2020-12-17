@@ -24,12 +24,12 @@ func LoadGeneralArticles(uuserID UUserID, bboardID BBoardID, startIdxStr string,
 		return nil, "", false, ErrInvalidParams
 	}
 
-	userID, err := uuserID.ToRaw()
+	userIDRaw, err := uuserID.ToRaw()
 	if err != nil {
 		return nil, "", false, ErrInvalidParams
 	}
 
-	uid, userecRaw, err := ptt.InitCurrentUser(userID)
+	uid, userecRaw, err := ptt.InitCurrentUser(userIDRaw)
 	if err != nil {
 		return nil, "", false, err
 	}

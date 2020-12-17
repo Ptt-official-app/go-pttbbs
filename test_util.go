@@ -39,7 +39,7 @@ func setRequest(path string, params interface{}, jwt string, headers map[string]
 
 func getJwt(router *gin.Engine, userID string, passwd string) string {
 	w := httptest.NewRecorder()
-	loginParams := &api.LoginParams{UserID: userID, Passwd: passwd}
+	loginParams := &api.LoginParams{Username: userID, Passwd: passwd}
 	req := setRequest(api.LOGIN_R, loginParams, "", nil, "POST")
 	router.ServeHTTP(w, req)
 

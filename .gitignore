@@ -8,5 +8,7 @@
 /testcase/home
 /apidoc/template.json
 /swagger
-**/boards
+/cache/testcase/boards
+/ptt/testcase/boards
 /02-config.run.ini
+**/cover.out
