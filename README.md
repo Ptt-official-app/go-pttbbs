@@ -19,8 +19,42 @@ You can do the following to start with docker-compose:
 ## Testing
 
 ```
-go test ./...
+./scripts/test.sh
 ```
+
+## Coverage
+
+```
+./scripts/coverage.sh
+```
+
+## Running with run.sh
+
+You can do the following to run with ./scripts/run.sh:
+
+* On Mac: put the following lines in /etc/sysctl.conf and reboot for 16M shared-mem:
+    ```
+    kern.sysv.shmmax=16777216
+    kern.sysv.shmmin=1
+    kern.sysv.shmmni=128
+    kern.sysv.shmseg=32
+    kern.sysv.shmall=4096
+    ```
+* Check that we do have 16M shared-mem
+    ```
+    sysctl -a|grep shm
+    ```
+* Init your own BBSHOME:
+    ```
+    ./scripts/docker_initbbs.sh [BBSHOME] pttofficialapps/go-pttbbs:latest
+    ```
+* `cp 02-config-run.go.template ptttype/02-config-run.go`
+* `cp 02-config.run.template.ini 02-config.run.ini`
+* Setup BBSHOME in 02-config.run.ini
+* Do the following step ONLY IF you want to reset shared-mem:
+    `ipcrm -M 0x000004cc`
+    `ipcrm -S 0x000007da`
+* `./scripts/run.sh`
 
 ## Config
 
