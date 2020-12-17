@@ -78,9 +78,9 @@ type Userec struct {
 	//Pad3    byte
 }
 
-func NewUserecFromRaw(uid ptttype.Uid, userecRaw *ptttype.UserecRaw) *Userec {
+func NewUserecFromRaw(userecRaw *ptttype.UserecRaw) *Userec {
 	user := &Userec{}
-	user.UUserID = ToUUserID(uid, &userecRaw.UserID)
+	user.UUserID = ToUUserID(&userecRaw.UserID)
 	user.Version = userecRaw.Version
 	user.Userid = types.CstrToString(userecRaw.UserID[:])
 	user.Realname = types.Big5ToUtf8(userecRaw.RealName[:])

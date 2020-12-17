@@ -34,7 +34,7 @@ func TestLoadGeneralBoards(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{
-			args:     args{uuserID: "1_SYSOP", params: params},
+			args:     args{uuserID: "SYSOP", params: params},
 			expected: expected,
 		},
 	}

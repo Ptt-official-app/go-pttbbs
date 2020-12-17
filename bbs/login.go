@@ -15,12 +15,12 @@ func Login(userID string, passwd string, ip string) (*Userec, error) {
 	ipRaw := &ptttype.IPv4_t{}
 	copy(ipRaw[:], []byte(ip))
 
-	uid, userRaw, err := ptt.LoginQuery(userIDRaw, passwdRaw, ipRaw)
+	_, userRaw, err := ptt.LoginQuery(userIDRaw, passwdRaw, ipRaw)
 	if err != nil {
 		return nil, err
 	}
 
-	user := NewUserecFromRaw(uid, userRaw)
+	user := NewUserecFromRaw(userRaw)
 
 	return user, nil
 }

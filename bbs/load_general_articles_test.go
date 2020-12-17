@@ -26,7 +26,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 		// TODO: Add test cases.
 		{
 			args: args{
-				uuserID:     "1_SYSOP",
+				uuserID:     "SYSOP",
 				bboardID:    "10_WhoAmI",
 				startIdxStr: "2",
 				nArticles:   1,
@@ -37,7 +37,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 		},
 		{
 			args: args{
-				uuserID:     "1_SYSOP",
+				uuserID:     "SYSOP",
 				bboardID:    "10_WhoAmI",
 				startIdxStr: "2",
 				nArticles:   2,
