@@ -14,7 +14,7 @@ var (
 		BoardClass: "嘰哩",
 		RealTitle:  "跨板式LOCAL新文章",
 		BoardType:  "◎",
-		BM:         []string{},
+		BM:         []bbs.UUserID{},
 	}
 	testBoardSummary7 = &bbs.BoardSummary{
 		BBoardID:   bbs.BBoardID("7_deleted"),
@@ -23,7 +23,7 @@ var (
 		BoardClass: "嘰哩",
 		RealTitle:  "資源回收筒",
 		BoardType:  "◎",
-		BM:         []string{},
+		BM:         []bbs.UUserID{},
 	}
 	testBoardSummary11 = &bbs.BoardSummary{
 		BBoardID:   bbs.BBoardID("11_EditExp"),
@@ -32,7 +32,7 @@ var (
 		BoardClass: "嘰哩",
 		RealTitle:  "範本精靈投稿區",
 		BoardType:  "◎",
-		BM:         []string{},
+		BM:         []bbs.UUserID{},
 	}
 	testBoardSummary8 = &bbs.BoardSummary{
 		BBoardID:   bbs.BBoardID("8_Note"),
@@ -41,7 +41,7 @@ var (
 		BoardClass: "嘰哩",
 		RealTitle:  "動態看板及歌曲投稿",
 		BoardType:  "◎",
-		BM:         []string{},
+		BM:         []bbs.UUserID{},
 	}
 
 	testArticleSummary0 = &bbs.ArticleSummary{
@@ -51,7 +51,7 @@ var (
 		Filename:   "M.1607202239.A.30D",
 		CreateTime: 1607202239,
 		MTime:      1607202238,
-		Owner:      "SYSOP",
+		Owner:      bbs.UUserID("SYSOP"),
 		Date:       "12/06",
 		Title:      "[問題] 我是誰？～",
 		URL:        "http://localhost/bbs/WhoAmI/M.1607202239.A.30D.html",
@@ -64,7 +64,7 @@ var (
 		Filename:   "M.1607203395.A.00D",
 		CreateTime: 1607203395,
 		MTime:      1607203394,
-		Owner:      "SYSOP",
+		Owner:      bbs.UUserID("SYSOP"),
 		Date:       "12/06",
 		Title:      "[心得] 然後呢？～",
 		Filemode:   ptttype.FILE_MARKED,

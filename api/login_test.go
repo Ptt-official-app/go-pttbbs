@@ -24,7 +24,7 @@ func TestLogin(t *testing.T) {
 				UserID: "SYSOP",
 				Passwd: "123123",
 			}},
-			expected: &JwtClaim{UUserID: bbs.UUserID("1_SYSOP")},
+			expected: &JwtClaim{UUserID: bbs.UUserID("SYSOP")},
 		},
 	}
 

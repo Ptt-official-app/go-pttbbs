@@ -15,7 +15,7 @@ type ArticleSummary struct {
 	CreateTime types.Time4      `json:"create_time"`
 	MTime      types.Time4      `json:"modified"`
 	Recommend  int8             `json:"recommend"`
-	Owner      string           `json:"owner"`
+	Owner      UUserID          `json:"owner"`
 	Date       string           `json:"date"`
 	Title      string           `json:"title"`
 	Money      int32            `json:"money"`
@@ -30,6 +30,7 @@ func NewArticleSummaryFromRaw(bboardID BBoardID, articleSummaryRaw *ptttype.Arti
 	boardID := types.CstrToString(articleSummaryRaw.BoardID[:])
 	createTime, _ := articleSummaryRaw.Filename.CreateTime()
 
+	ownerID := ToUUserID(articleSummaryRaw.Owner.ToUserID())
 	articleSummary := &ArticleSummary{
 		BBoardID:   bboardID,
 		ArticleID:  ToArticleID(articleSummaryRaw.Filename),
@@ -38,7 +39,7 @@ func NewArticleSummaryFromRaw(bboardID BBoardID, articleSummaryRaw *ptttype.Arti
 		CreateTime: createTime,
 		MTime:      articleSummaryRaw.Modified,
 		Recommend:  articleSummaryRaw.Recommend,
-		Owner:      types.CstrToString(articleSummaryRaw.Owner.ToUserID()[:]),
+		Owner:      ownerID,
 		Date:       types.CstrToString(articleSummaryRaw.Date[:]),
 		Title:      types.Big5ToUtf8(articleSummaryRaw.Title[:]),
 		Money:      articleSummaryRaw.Money(),

@@ -28,7 +28,7 @@ var (
 
 	testUserec1 = &Userec{
 		Version:      ptttype.PASSWD_VERSION,
-		UUserID:      UUserID("1_SYSOP"),
+		UUserID:      UUserID("SYSOP"),
 		Userid:       "SYSOP",
 		Realname:     "CodingMan",
 		Nickname:     "神",
@@ -47,7 +47,7 @@ var (
 
 	testUserec2 = &Userec{
 		Version:      ptttype.PASSWD_VERSION,
-		UUserID:      UUserID("2_CodingMan"),
+		UUserID:      UUserID("CodingMan"),
 		Userid:       "CodingMan",
 		Realname:     "朱元璋",
 		Nickname:     "程式俠",
@@ -68,7 +68,7 @@ var (
 
 	testUserec3 = &Userec{
 		Version:      ptttype.PASSWD_VERSION,
-		UUserID:      UUserID("3_pichu"),
+		UUserID:      UUserID("pichu"),
 		Userid:       "pichu",
 		Realname:     "Pichu",
 		Nickname:     "Pichu",
@@ -89,7 +89,7 @@ var (
 
 	testUserec4 = &Userec{
 		Version:      ptttype.PASSWD_VERSION,
-		UUserID:      UUserID("4_Kahou"),
+		UUserID:      UUserID("Kahou"),
 		Userid:       "Kahou",
 		Realname:     "林嘉豪",
 		Nickname:     "Kahou",
@@ -110,7 +110,7 @@ var (
 
 	testUserec5 = &Userec{
 		Version:      ptttype.PASSWD_VERSION,
-		UUserID:      UUserID("5_Kahou2"),
+		UUserID:      UUserID("Kahou2"),
 		Userid:       "Kahou2",
 		Realname:     "Kahou",
 		Nickname:     "kahou",
@@ -132,7 +132,7 @@ var (
 
 	testUserec6 = &Userec{
 		Version:      ptttype.PASSWD_VERSION,
-		UUserID:      UUserID("6_B1"),
+		UUserID:      UUserID("B1"),
 		Userid:       "B1",
 		Lasthost:     "127.0.0.1",
 		Uflag:        33557088,
@@ -167,7 +167,7 @@ var (
 		BoardClass: "嘰哩",
 		RealTitle:  "跨板式LOCAL新文章",
 		BoardType:  "◎",
-		BM:         []string{},
+		BM:         []UUserID{},
 	}
 	testBoardSummary7 = &BoardSummary{
 		BBoardID:   BBoardID("7_deleted"),
@@ -176,7 +176,7 @@ var (
 		BoardClass: "嘰哩",
 		RealTitle:  "資源回收筒",
 		BoardType:  "◎",
-		BM:         []string{},
+		BM:         []UUserID{},
 	}
 	testBoardSummary11 = &BoardSummary{
 		BBoardID:   BBoardID("11_EditExp"),
@@ -185,7 +185,7 @@ var (
 		BoardClass: "嘰哩",
 		RealTitle:  "範本精靈投稿區",
 		BoardType:  "◎",
-		BM:         []string{},
+		BM:         []UUserID{},
 	}
 	testBoardSummary8 = &BoardSummary{
 		BBoardID:   BBoardID("8_Note"),
@@ -194,7 +194,7 @@ var (
 		BoardClass: "嘰哩",
 		RealTitle:  "動態看板及歌曲投稿",
 		BoardType:  "◎",
-		BM:         []string{},
+		BM:         []UUserID{},
 	}
 
 	testArticleSummary0 = &ArticleSummary{

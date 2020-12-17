@@ -30,7 +30,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 		// TODO: Add test cases.
 		{
 			args: args{
-				uuserID: "1_SYSOP",
+				uuserID: "SYSOP",
 				params: &LoadGeneralArticlesParams{
 					StartIdx:  "",
 					NArticles: 1,
@@ -45,7 +45,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 		},
 		{
 			args: args{
-				uuserID: "1_SYSOP",
+				uuserID: "SYSOP",
 				params: &LoadGeneralArticlesParams{
 					StartIdx:  "2",
 					NArticles: 2,
@@ -60,7 +60,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 		},
 		{
 			args: args{
-				uuserID: "1_SYSOP",
+				uuserID: "SYSOP",
 				params: &LoadGeneralArticlesParams{
 					StartIdx:  "2",
 					NArticles: 1,

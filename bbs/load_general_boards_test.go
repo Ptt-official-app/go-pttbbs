@@ -24,7 +24,7 @@ func TestLoadGeneralBoards(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{
-			args:               args{uuserID: "1_SYSOP", startIdxStr: "", nBoards: 4},
+			args:               args{uuserID: "SYSOP", startIdxStr: "", nBoards: 4},
 			expectedSummary:    []*BoardSummary{testBoardSummary6, testBoardSummary7, testBoardSummary11, testBoardSummary8},
 			expectedNextIdxStr: "8",
 		},

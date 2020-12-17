@@ -13,7 +13,7 @@ type BoardSummary struct {
 	RealTitle    string                `json:"title"` //Require to separate RealTitle, BoardClass, BoardType, because it's hard to parse in utf8
 	BoardClass   string                `json:"class"`
 	BoardType    string                `json:"type"` //□, ◎, Σ
-	BM           []string              `json:"moderators"`
+	BM           []UUserID             `json:"moderators"`
 	Reason       string                `json:"reason"`
 	LastPostTime types.Time4           `json:"last_post_time"`
 	NUser        int32                 `json:"number_of_user"`
@@ -33,10 +33,10 @@ func NewBoardSummaryFromRaw(boardSummaryRaw *ptttype.BoardSummaryRaw) *BoardSumm
 	boardSummary.BoardClass = types.Big5ToUtf8(boardSummaryRaw.Title[:4])
 	boardSummary.BoardType = types.Big5ToUtf8(boardSummaryRaw.Title[5:7])
 	boardSummary.RealTitle = types.Big5ToUtf8(boardSummaryRaw.Title[7:])
-	boardSummary.BM = make([]string, len(boardSummaryRaw.BM))
+	boardSummary.BM = make([]UUserID, len(boardSummaryRaw.BM))
 	if len(boardSummaryRaw.BM) > 0 {
 		for idx, each := range boardSummaryRaw.BM {
-			boardSummary.BM[idx] = types.CstrToString(each[:])
+			boardSummary.BM[idx] = UUserID(types.CstrToString(each[:]))
 		}
 	}
 	boardSummary.Reason = boardSummaryRaw.Reason.String()

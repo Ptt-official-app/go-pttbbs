@@ -15,12 +15,12 @@ func LoadGeneralBoards(uuserID UUserID, startIdxStr string, nBoards int, keyword
 		return nil, "", ErrInvalidParams
 	}
 
-	uid, _, err := uuserID.ToRaw()
+	userID, err := uuserID.ToRaw()
 	if err != nil {
 		return nil, "", ErrInvalidParams
 	}
 
-	userecRaw, err := ptt.InitCurrentUserByUid(uid)
+	uid, userecRaw, err := ptt.InitCurrentUser(userID)
 	if err != nil {
 		return nil, "", err
 	}
