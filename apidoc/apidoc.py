@@ -80,3 +80,11 @@ def _load_boards_by_class(class_id):
     swagger_from_file: apidoc/load_boards_by_class.yaml
     """
     return ''
+
+
+@app.route(_with_app_prefix('/boards/<bid>/articles/<aid>'), methods=['GET'])
+def _get_article(bid, aid):
+    """
+    swagger_from_file: apidoc/get_article.yaml
+    """
+    return ''

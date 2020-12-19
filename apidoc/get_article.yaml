@@ -1,0 +1,32 @@
+get_article
+---
+tags:
+  - board
+  - article
+description: get the raw content and the mtime of the article.
+parameters:
+  - '$ref': '#/definitions/Host'
+  - '$ref': '#/definitions/XForwardedFor'
+  - '$ref': '#/definitions/Authorization'
+  - name: bid
+    in: path
+    type: string
+    required: true
+    description: board-id
+  - name: aid
+    in: path
+    type: string
+    required: true
+    description: article-id (returned from /boards/{bid}/articles)
+responses:
+  200:
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      type: object
+      properties:
+        content:
+          type: string
+          description: base64-encoded bytes representing the DBCS-content.
+          required: true
+        mtime:
+          type: number
