@@ -1,7 +1,9 @@
 package ptttype
 
+type Stat int
+
 const ( // XXX description in shmctl.c
-	STAT_LOGIN = iota
+	STAT_LOGIN Stat = iota
 	STAT_SHELLLOGIN
 	STAT_VEDIT
 	STAT_TALKREQUEST
@@ -59,5 +61,5 @@ const ( // XXX description in shmctl.c
 	STAT_MBBSD_ABORTED
 	/* insert here. don't forget update shmctl.c */
 	STAT_NUM
-	STAT_MAX = 512
+	STAT_MAX Stat = 512
 )

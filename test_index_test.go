@@ -15,10 +15,10 @@ func Test_Index(t *testing.T) {
 	params := &api.IndexParams{}
 
 	type args struct {
-		path   string
-		userID string //this is for user-login
-		passwd string
-		params interface{}
+		path     string
+		username string //this is for user-login
+		passwd   string
+		params   interface{}
 	}
 	tests := []struct {
 		name string
@@ -27,10 +27,10 @@ func Test_Index(t *testing.T) {
 		// TODO: Add test cases.
 		{
 			args: args{
-				path:   api.INDEX_R,
-				userID: "SYSOP",
-				passwd: "123123",
-				params: params,
+				path:     api.INDEX_R,
+				username: "SYSOP",
+				passwd:   "123123",
+				params:   params,
 			}, // json: input: {}, output: {"Data": "index"}
 		},
 	}
@@ -38,7 +38,7 @@ func Test_Index(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			router, _ := initGin()
 
-			jwt := getJwt(router, tt.args.userID, tt.args.passwd)
+			jwt := getJwt(router, tt.args.username, tt.args.passwd)
 			w := httptest.NewRecorder()
 			req := setRequest(tt.args.path, params, jwt, nil, "POST")
 			router.ServeHTTP(w, req)

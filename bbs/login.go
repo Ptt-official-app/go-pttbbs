@@ -8,9 +8,9 @@ import (
 //Login
 //
 //XXX need to check for the permission
-func Login(userID string, passwd string, ip string) (*Userec, error) {
+func Login(username string, passwd string, ip string) (*Userec, error) {
 	userIDRaw := &ptttype.UserID_t{}
-	copy(userIDRaw[:], []byte(userID))
+	copy(userIDRaw[:], []byte(username))
 	passwdRaw := []byte(passwd)
 	ipRaw := &ptttype.IPv4_t{}
 	copy(ipRaw[:], []byte(ip))

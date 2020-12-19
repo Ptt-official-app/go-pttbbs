@@ -11,8 +11,8 @@ import (
 const LOGIN_R = "/token"
 
 type LoginParams struct {
-	UserID string `json:"username"`
-	Passwd string `json:"password"`
+	Username string `json:"username"`
+	Passwd   string `json:"password"`
 }
 
 type LoginResult struct {
@@ -26,7 +26,7 @@ func Login(remoteAddr string, params interface{}) (interface{}, error) {
 		return nil, ErrInvalidParams
 	}
 
-	user, err := bbs.Login(loginParams.UserID, loginParams.Passwd, remoteAddr)
+	user, err := bbs.Login(loginParams.Username, loginParams.Passwd, remoteAddr)
 	if err != nil {
 		return nil, ErrLoginFailed
 	}

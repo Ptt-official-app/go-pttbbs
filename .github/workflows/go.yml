@@ -34,8 +34,8 @@ jobs:
 
     - name: extract testcases
       run: |
-        tar -zxvf cache/testcase/boards.tar.gz -C cache/testcase
-        tar -zxvf cache/testcase/boards.tar.gz -C ptt/testcase
+        cd cache/testcase; tar -zxvf boards.tar.gz; cd ../..
+        cd ptt/testcase; tar -zxvf boards.tar.gz; cd ../..
 
     - name: Test
       run: go test -v ./... -cover

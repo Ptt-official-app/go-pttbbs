@@ -22,3 +22,8 @@ func (u UUserID) ToRaw() (userIDRaw *ptttype.UserID_t, err error) {
 	}
 	return userIDRaw, nil
 }
+
+func (u UUserID) ToUsername() string {
+	userIDRaw, _ := u.ToRaw()
+	return types.CstrToString(userIDRaw[:])
+}

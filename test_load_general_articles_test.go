@@ -18,10 +18,10 @@ func Test_LoadGeneralArticles(t *testing.T) {
 	}
 
 	type args struct {
-		path   string
-		userID string
-		passwd string
-		params interface{}
+		path     string
+		username string
+		passwd   string
+		params   interface{}
 	}
 	tests := []struct {
 		name string
@@ -30,10 +30,10 @@ func Test_LoadGeneralArticles(t *testing.T) {
 		// TODO: Add test cases.
 		{
 			args: args{
-				path:   "/boards/10_WhoAmI/articles",
-				userID: "SYSOP",
-				passwd: "123123",
-				params: params,
+				path:     "/boards/10_WhoAmI/articles",
+				username: "SYSOP",
+				passwd:   "123123",
+				params:   params,
 			},
 		},
 	}
@@ -42,9 +42,9 @@ func Test_LoadGeneralArticles(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			router, _ := initGin()
 
-			jwt := getJwt(router, tt.args.userID, tt.args.passwd)
+			jwt := getJwt(router, tt.args.username, tt.args.passwd)
 			w := httptest.NewRecorder()
-			req := setRequest(tt.args.path, params, jwt, nil, "GET")
+			req := setRequest(tt.args.path, tt.args.params, jwt, nil, "GET")
 			router.ServeHTTP(w, req)
 
 			if w.Code != http.StatusOK {

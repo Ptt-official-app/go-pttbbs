@@ -52,3 +52,8 @@ func (b BBoardID) ToRaw() (bid ptttype.Bid, boardIDRaw *ptttype.BoardID_t, err e
 
 	return bid, boardIDRaw, nil
 }
+
+func (b BBoardID) ToBrdname() string {
+	_, boardIDRaw, _ := b.ToRaw()
+	return types.CstrToString(boardIDRaw[:])
+}

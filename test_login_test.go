@@ -28,8 +28,8 @@ func Test_Login(t *testing.T) {
 			args: args{
 				path: api.LOGIN_R,
 				params: &api.LoginParams{
-					UserID: "SYSOP",
-					Passwd: "123123",
+					Username: "SYSOP",
+					Passwd:   "123123",
 				},
 			}, // json: {}
 		},

@@ -66,6 +66,15 @@ func initGin() (*gin.Engine, error) {
 		).Query,
 	)
 
+	router.GET(
+		withPrefix(api.GET_ARTICLE_R),
+		NewLoginRequiredPathApi(
+			api.GetArticle,
+			&api.GetArticleParams{},
+			&api.GetArticlePath{},
+		).Query,
+	)
+
 	return router, nil
 }
 

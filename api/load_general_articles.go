@@ -38,11 +38,11 @@ func LoadGeneralArticles(remoteAddr string, uuserID bbs.UUserID, params interfac
 		return nil, err
 	}
 
-	results := &LoadGeneralArticlesResult{
+	result = &LoadGeneralArticlesResult{
 		Articles: summary,
 		IsNewest: isNewest,
 		NextIdx:  nextIdx,
 	}
 
-	return results, nil
+	return result, nil
 }

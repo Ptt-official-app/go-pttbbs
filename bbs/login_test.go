@@ -10,9 +10,9 @@ func TestLogin(t *testing.T) {
 	defer teardownTest()
 
 	type args struct {
-		userID string
-		passwd string
-		ip     string
+		username string
+		passwd   string
+		ip       string
 	}
 	tests := []struct {
 		name     string
@@ -28,7 +28,7 @@ func TestLogin(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := Login(tt.args.userID, tt.args.passwd, tt.args.ip)
+			got, err := Login(tt.args.username, tt.args.passwd, tt.args.ip)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Login() error = %v, wantErr %v", err, tt.wantErr)
 				return
