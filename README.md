@@ -5,6 +5,14 @@ This project intends to be the go implementation of pttbbs/pttbbs.
 Collaborating with Ptt-official-app middlewares.
 go-pttbbs intends to be web-based bbs.
 
+## Getting Started
+
+You can start with the [swagger api](http://173.255.216.176:8080)
+and try the api.
+
+You can copy the curl command from the link if you encounter
+CORS issue.
+
 ## Docker-Compose
 
 You can do the following to start with docker-compose:
