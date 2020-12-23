@@ -3,7 +3,7 @@ package ptttype
 import (
 	"testing"
 
-	"github.com/Ptt-official-app/go-pttbbs/types"
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 )
 
 func TestNewArticleSummaryRaw(t *testing.T) {
@@ -30,7 +30,7 @@ func TestNewArticleSummaryRaw(t *testing.T) {
 			got := NewArticleSummaryRaw(tt.args.aid, tt.args.boardID, tt.args.header)
 			got.BoardID = tt.args.boardID
 
-			types.TDeepEqual(t, "summary", got, tt.expected)
+			testutil.TDeepEqual(t, "summary", got, tt.expected)
 		})
 	}
 }

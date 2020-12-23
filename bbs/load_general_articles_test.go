@@ -3,7 +3,7 @@ package bbs
 import (
 	"testing"
 
-	"github.com/Ptt-official-app/go-pttbbs/types"
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 )
 
 func TestLoadGeneralArticles(t *testing.T) {
@@ -57,13 +57,9 @@ func TestLoadGeneralArticles(t *testing.T) {
 				t.Errorf("LoadGeneralArticles() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			for idx, each := range gotSummary {
-				if idx >= len(tt.expectedSummary) {
-					t.Errorf("LoadGeneralArticles: (%v/%v) %v", idx, len(gotSummary), each)
-					continue
-				}
-				types.TDeepEqual(t, "articles", each, tt.expectedSummary[idx])
-			}
+
+			testutil.TDeepEqual(t, "summary", gotSummary, tt.expectedSummary)
+
 			if gotNextIdxStr != tt.expectedNextIdxStr {
 				t.Errorf("LoadGeneralArticles() gotNextIdxStr = %v, want %v", gotNextIdxStr, tt.expectedNextIdxStr)
 			}

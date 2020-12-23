@@ -3,7 +3,7 @@ package bbs
 import (
 	"testing"
 
-	"github.com/Ptt-official-app/go-pttbbs/types"
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 )
 
 func TestLogin(t *testing.T) {
@@ -35,7 +35,7 @@ func TestLogin(t *testing.T) {
 				return
 			}
 
-			types.TDeepEqual(t, "login", got, tt.expected)
+			testutil.TDeepEqual(t, "login", got, tt.expected)
 		})
 	}
 }

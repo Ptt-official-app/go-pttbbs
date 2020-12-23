@@ -3,7 +3,7 @@ package bbs
 import (
 	"testing"
 
-	"github.com/Ptt-official-app/go-pttbbs/types"
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 )
 
 func TestRegister(t *testing.T) {
@@ -43,7 +43,7 @@ func TestRegister(t *testing.T) {
 			gotUser.Firstlogin = 0
 			gotUser.Lastlogin = 0
 
-			types.TDeepEqual(t, "register", gotUser, tt.expectedUser)
+			testutil.TDeepEqual(t, "register", gotUser, tt.expectedUser)
 		})
 	}
 }

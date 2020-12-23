@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
-	"github.com/Ptt-official-app/go-pttbbs/types"
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 )
 
 func TestGetNumRecords(t *testing.T) {
@@ -101,7 +101,7 @@ func TestGetRecords(t *testing.T) {
 					continue
 				}
 				tt.expected[idx].BoardID = boardID
-				types.TDeepEqual(t, "fileheader", each.FileHeaderRaw, tt.expected[idx].FileHeaderRaw)
+				testutil.TDeepEqual(t, "fileheader", each.FileHeaderRaw, tt.expected[idx].FileHeaderRaw)
 			}
 		})
 	}

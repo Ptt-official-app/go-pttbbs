@@ -6,7 +6,7 @@ import (
 
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
-	"github.com/Ptt-official-app/go-pttbbs/types"
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 )
 
 func TestLoadGeneralArticles(t *testing.T) {
@@ -128,7 +128,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 				return
 			}
 
-			types.TDeepEqual(t, "summary", gotSummaryRaw, tt.expectedSummaryRaw)
+			testutil.TDeepEqual(t, "summary", gotSummaryRaw, tt.expectedSummaryRaw)
 
 			if !reflect.DeepEqual(gotNextIdx, tt.expectedNextIdx) {
 				t.Errorf("LoadGeneralArticles() gotNextIdx = %v, want %v", gotNextIdx, tt.expectedNextIdx)
