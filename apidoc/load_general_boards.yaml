@@ -2,6 +2,7 @@ loadGeneralBoards
 ---
 tags:
   - board
+description: get board-summary in asecnding mode.
 parameters:
   - '$ref': '#/definitions/Host'
   - '$ref': '#/definitions/XForwardedFor'

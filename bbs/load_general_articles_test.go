@@ -42,7 +42,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 				startIdxStr: "2",
 				nArticles:   2,
 			},
-			expectedSummary:    []*ArticleSummary{testArticleSummary0, testArticleSummary1},
+			expectedSummary:    []*ArticleSummary{testArticleSummary1, testArticleSummary0},
 			expectedNextIdxStr: "",
 			expectedIsNewest:   true,
 		},

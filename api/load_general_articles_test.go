@@ -53,7 +53,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 				path: path,
 			},
 			expectedResult: &LoadGeneralArticlesResult{
-				Articles: []*bbs.ArticleSummary{testArticleSummary0, testArticleSummary1},
+				Articles: []*bbs.ArticleSummary{testArticleSummary1, testArticleSummary0},
 				IsNewest: true,
 				NextIdx:  "",
 			},

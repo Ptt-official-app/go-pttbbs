@@ -3,7 +3,7 @@ loadGeneralArticles
 tags:
   - board
   - article
-description: given start-idx. 往前拉 max 筆 article-summaries. start-idx 不指定時, 從最新的開始往以前拉 data.
+description: given start-idx. 往前拉 max 筆 article-summaries. start-idx 不指定時, 從最新的開始往以前拉 data. (descending)
 parameters:
   - '$ref': '#/definitions/Host'
   - '$ref': '#/definitions/XForwardedFor'
