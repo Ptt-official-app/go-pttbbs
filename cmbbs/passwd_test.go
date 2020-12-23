@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
-	"github.com/Ptt-official-app/go-pttbbs/types"
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 	"github.com/sirupsen/logrus"
 )
 
@@ -46,7 +46,7 @@ func TestPasswdLoadUser(t *testing.T) {
 			if got != tt.expected {
 				t.Errorf("PasswdLoadUser() got = %v, expected %v", got, tt.expected)
 			}
-			types.TDeepEqual(t, got1, tt.expected1)
+			testutil.TDeepEqual(t, "userec", got1, tt.expected1)
 		})
 	}
 }
@@ -287,7 +287,7 @@ func TestPasswdUpdate(t *testing.T) {
 			}
 
 			_, userecRaw, _ := PasswdLoadUser(&testUserecRaw1Updated.UserID)
-			types.TDeepEqual(t, userecRaw, tt.expected)
+			testutil.TDeepEqual(t, "userec", userecRaw, tt.expected)
 
 		})
 	}

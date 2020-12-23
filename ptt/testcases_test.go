@@ -181,6 +181,7 @@ var (
 				0xe3,
 			},
 		},
+		Class: []byte{0xb0, 0xdd, 0xc3, 0x44},
 	}
 	testArticleSummary1 = &ptttype.ArticleSummaryRaw{
 		Aid: 2,
@@ -200,6 +201,7 @@ var (
 			},
 			Filemode: ptttype.FILE_MARKED,
 		},
+		Class: []byte{0xa4, 0xdf, 0xb1, 0x6f},
 	}
 
 	testContent1 = []byte{

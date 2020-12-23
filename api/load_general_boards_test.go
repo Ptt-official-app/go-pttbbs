@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
-	"github.com/Ptt-official-app/go-pttbbs/types"
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 )
 
 func TestLoadGeneralBoards(t *testing.T) {
@@ -49,13 +49,7 @@ func TestLoadGeneralBoards(t *testing.T) {
 			theGot, _ := got.(*LoadGeneralBoardsResult)
 			theExpected, _ := tt.expected.(*LoadGeneralBoardsResult)
 
-			for idx, each := range theGot.Boards {
-				if idx >= len(theExpected.Boards) {
-					break
-				}
-
-				types.TDeepEqual(t, each, theExpected.Boards[idx])
-			}
+			testutil.TDeepEqual(t, "boards", theGot.Boards, theExpected.Boards)
 		})
 	}
 }

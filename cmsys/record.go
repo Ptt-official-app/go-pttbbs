@@ -59,11 +59,8 @@ func GetRecords(boardID *ptttype.BoardID_t, filename string, startAid ptttype.Ai
 	}
 	headers_p := make([]*ptttype.ArticleSummaryRaw, len(headers))
 	for idx := 0; idx < len(headers); idx++ {
-		headers_p[idx] = &ptttype.ArticleSummaryRaw{
-			Aid:           startAid + ptttype.Aid(idx),
-			BoardID:       boardID,
-			FileHeaderRaw: &headers[idx],
-		}
+		aid := startAid + ptttype.Aid(idx)
+		headers_p[idx] = ptttype.NewArticleSummaryRaw(aid, boardID, &headers[idx])
 	}
 
 	return headers_p, nil

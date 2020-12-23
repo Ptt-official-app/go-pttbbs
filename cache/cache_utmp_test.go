@@ -5,6 +5,7 @@ import (
 	"unsafe"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
@@ -82,7 +83,7 @@ func TestSearchUListUserID(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := SearchUListUserID(tt.args.userID)
-			types.TDeepEqual(t, got, tt.expected)
+			testutil.TDeepEqual(t, "userinfo", got, tt.expected)
 		})
 	}
 }

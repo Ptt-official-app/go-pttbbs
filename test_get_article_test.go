@@ -26,7 +26,7 @@ func Test_GetArticle(t *testing.T) {
 	}{
 		{
 			args: args{
-				path:     "/boards/10_WhoAmI/articles/1Vo_M_CD",
+				path:     "/boards/10_WhoAmI/articles/1Vo_M_CD:SYSOP",
 				username: "SYSOP",
 				passwd:   "123123",
 				params:   params1,

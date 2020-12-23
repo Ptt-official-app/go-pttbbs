@@ -1,8 +1,6 @@
 package bbs
 
 import (
-	"fmt"
-
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
@@ -16,35 +14,32 @@ type ArticleSummary struct {
 	MTime      types.Time4      `json:"modified"`
 	Recommend  int8             `json:"recommend"`
 	Owner      UUserID          `json:"owner"`
-	Date       string           `json:"date"`
-	Title      string           `json:"title"`
+	Title      []byte           `json:"title"`
 	Money      int32            `json:"money"`
 	Filemode   ptttype.FileMode `json:"mode"`
-	URL        string           `json:"url"`
+	Class      []byte           `json:"class"`
 	Read       bool             `json:"read"`
 }
 
 func NewArticleSummaryFromRaw(bboardID BBoardID, articleSummaryRaw *ptttype.ArticleSummaryRaw) *ArticleSummary {
 
 	filename := types.CstrToString(articleSummaryRaw.Filename[:])
-	boardID := types.CstrToString(articleSummaryRaw.BoardID[:])
 	createTime, _ := articleSummaryRaw.Filename.CreateTime()
 
 	ownerID := ToUUserID(articleSummaryRaw.Owner.ToUserID())
 	articleSummary := &ArticleSummary{
 		BBoardID:   bboardID,
-		ArticleID:  ToArticleID(&articleSummaryRaw.Filename),
+		ArticleID:  ToArticleID(&articleSummaryRaw.Filename, ownerID),
 		IsDeleted:  articleSummaryRaw.IsDeleted(),
 		Filename:   filename,
 		CreateTime: createTime,
 		MTime:      articleSummaryRaw.Modified,
 		Recommend:  articleSummaryRaw.Recommend,
 		Owner:      ownerID,
-		Date:       types.CstrToString(articleSummaryRaw.Date[:]),
-		Title:      types.Big5ToUtf8(articleSummaryRaw.Title[:]),
+		Title:      types.CstrToBytes(articleSummaryRaw.Title[:]),
 		Money:      articleSummaryRaw.Money(),
+		Class:      articleSummaryRaw.Class,
 		Filemode:   articleSummaryRaw.Filemode,
-		URL:        fmt.Sprintf("%v/%v/%v.html", ptttype.URL_PREFIX, boardID, filename),
 	}
 
 	return articleSummary

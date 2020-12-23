@@ -200,7 +200,7 @@ func (t *BoardTitle_t) RealTitle() []byte {
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1517
 func (t *BoardTitle_t) BoardClass() []byte {
 	result := t[:5]
-	if result[4] == ' ' {
+	if result[4] == ' ' { //no ' ' in big5-encoding, we can safely remove ' '.
 		result = result[:4]
 	}
 	return result
@@ -379,6 +379,8 @@ func (a *Aidc) ToAidu() (aidu Aidu) {
 //////////
 //Owner
 //////////
+
+//ToUserID
 func (o *Owner_t) ToUserID() *UserID_t {
 	userID := &UserID_t{}
 	oBytes := types.CstrToBytes(o[:])
@@ -387,4 +389,35 @@ func (o *Owner_t) ToUserID() *UserID_t {
 	}
 	copy(userID[:], oBytes[:])
 	return userID
+}
+
+//////////
+//Title
+//////////
+
+//ToClass
+//
+//https://github.com/ptt/pttbbs/blob/master/common/bbs/string.c#L58
+func (t *Title_t) ToClass() []byte {
+	//reply
+	if bytes.HasPrefix(t[:], STR_REPLY) {
+		return ARTICLE_CLASS_REPLY
+	}
+
+	//forward
+	if bytes.HasPrefix(t[:], STR_FORWARD) {
+		return ARTICLE_CLASS_FORWARD
+	}
+
+	//legacy-forward
+	if bytes.HasPrefix(t[:], STR_LEGACY_FORWARD) {
+		return ARTICLE_CLASS_FORWARD
+	}
+
+	//class
+	if t[0] == '[' && t[5] == ']' {
+		return t[1:5]
+	}
+
+	return []byte{}
 }

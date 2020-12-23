@@ -8,6 +8,7 @@ import (
 
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 	"github.com/Ptt-official-app/go-pttbbs/types"
 	log "github.com/sirupsen/logrus"
 )
@@ -334,7 +335,7 @@ func TestNewRegister(t *testing.T) {
 				t.Errorf("NewRegister: uid: %v expected: %v", gotUid, tt.expectedUID)
 			}
 
-			types.TDeepEqual(t, got, tt.expected)
+			testutil.TDeepEqual(t, "userec", got, tt.expected)
 		})
 	}
 }

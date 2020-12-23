@@ -16,7 +16,7 @@ func TestGetArticle(t *testing.T) {
 	params1 := &GetArticleParams{}
 	path1 := &GetArticlePath{
 		BBoardID:  bbs.BBoardID("10_WhoAmI"),
-		ArticleID: bbs.ArticleID("1Vo_M_CD"),
+		ArticleID: bbs.ArticleID("1Vo_M_CDSYSOP"),
 	}
 
 	filename := "testcase/boards/W/WhoAmI/M.1607202239.A.30D"

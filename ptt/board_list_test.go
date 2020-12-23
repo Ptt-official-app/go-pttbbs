@@ -6,7 +6,7 @@ import (
 
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
-	"github.com/Ptt-official-app/go-pttbbs/types"
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -69,13 +69,9 @@ func TestLoadGeneralBoards(t *testing.T) {
 				t.Errorf("LoadGeneralBoards() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			for idx, each := range gotSummary {
-				if idx >= len(tt.expectedSummary) {
-					t.Errorf("(%v/%v) got: %v tt: nil", idx, len(gotSummary), each)
-					continue
-				}
-				types.TDeepEqual(t, each, tt.expectedSummary[idx])
-			}
+
+			testutil.TDeepEqual(t, "summary", gotSummary, tt.expectedSummary)
+
 			if gotNextIdx != tt.expectedNextIdx {
 				t.Errorf("LoadGeneralBoards() gotNextIdx = %v, want %v", gotNextIdx, tt.expectedNextIdx)
 			}

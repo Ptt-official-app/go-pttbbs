@@ -11,16 +11,17 @@ type RegisterParams struct {
 	Passwd   string `json:"password"`
 	Email    string `json:"email,omitempty"`
 
-	Nickname string `json:"nickname,omitempty"`
-	Realname string `json:"realname,omitempty"`
-	Career   string `json:"career,omitempty"`
-	Address  string `json:"address,omitempty"`
+	Nickname []byte `json:"nickname,omitempty"` //sending utf8-bytes from middleware.
+	Realname []byte `json:"realname,omitempty"`
+	Career   []byte `json:"career,omitempty"`
+	Address  []byte `json:"address,omitempty"`
 	Over18   bool   `json:"over18"`
 }
 
 type RegisterResult struct {
-	Jwt       string `json:"access_token"`
-	TokenType string `json:"token_type"`
+	UserID    bbs.UUserID `json:"user_id"`
+	Jwt       string      `json:"access_token"`
+	TokenType string      `json:"token_type"`
 }
 
 func Register(remoteAddr string, params interface{}) (interface{}, error) {
@@ -51,6 +52,7 @@ func Register(remoteAddr string, params interface{}) (interface{}, error) {
 	}
 
 	result := &RegisterResult{
+		UserID:    user.UUserID,
 		Jwt:       token,
 		TokenType: "bearer",
 	}

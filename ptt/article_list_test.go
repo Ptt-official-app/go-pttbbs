@@ -6,7 +6,7 @@ import (
 
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
-	"github.com/Ptt-official-app/go-pttbbs/types"
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 )
 
 func TestLoadGeneralArticles(t *testing.T) {
@@ -128,16 +128,8 @@ func TestLoadGeneralArticles(t *testing.T) {
 				return
 			}
 
-			if len(gotSummaryRaw) != len(tt.expectedSummaryRaw) {
-				t.Errorf("LoadGeneralArticles: len(got): %v expected: %v", len(gotSummaryRaw), len(tt.expectedSummaryRaw))
-			}
-			for idx, each := range gotSummaryRaw {
-				if idx >= len(tt.expectedSummaryRaw) {
-					t.Errorf("LoadGeneralArticles: (%v/%v) %v", idx, len(gotSummaryRaw), each)
-					continue
-				}
-				types.TDeepEqual(t, each.FileHeaderRaw, tt.expectedSummaryRaw[idx].FileHeaderRaw)
-			}
+			testutil.TDeepEqual(t, "summary", gotSummaryRaw, tt.expectedSummaryRaw)
+
 			if !reflect.DeepEqual(gotNextIdx, tt.expectedNextIdx) {
 				t.Errorf("LoadGeneralArticles() gotNextIdx = %v, want %v", gotNextIdx, tt.expectedNextIdx)
 			}

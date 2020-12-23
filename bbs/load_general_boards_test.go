@@ -3,7 +3,7 @@ package bbs
 import (
 	"testing"
 
-	"github.com/Ptt-official-app/go-pttbbs/types"
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 )
 
 func TestLoadGeneralBoards(t *testing.T) {
@@ -13,7 +13,7 @@ func TestLoadGeneralBoards(t *testing.T) {
 		uuserID     UUserID
 		startIdxStr string
 		nBoards     int
-		keyword     string
+		keyword     []byte
 	}
 	tests := []struct {
 		name               string
@@ -44,7 +44,7 @@ func TestLoadGeneralBoards(t *testing.T) {
 					t.Errorf("LoadGeneralBoards: (%v/%v): %v", idx, len(gotSummary), each)
 					continue
 				}
-				types.TDeepEqual(t, each, tt.expectedSummary[idx])
+				testutil.TDeepEqual(t, "summary", each, tt.expectedSummary[idx])
 			}
 			if gotNextIdx != tt.expectedNextIdxStr {
 				t.Errorf("LoadGeneralBoards() gotNextIdx = %v, want %v", gotNextIdx, tt.expectedNextIdxStr)

@@ -1,6 +1,8 @@
 package cache
 
-import "github.com/Ptt-official-app/go-pttbbs/ptttype"
+import (
+	"github.com/Ptt-official-app/go-pttbbs/ptttype"
+)
 
 var (
 	testUserInfo1 = ptttype.UserInfoRaw{

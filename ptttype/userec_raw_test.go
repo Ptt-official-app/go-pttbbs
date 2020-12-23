@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/Ptt-official-app/go-pttbbs/types"
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 )
 
 func TestNewUserecRawWithFile(t *testing.T) {
@@ -34,7 +34,7 @@ func TestNewUserecRawWithFile(t *testing.T) {
 				return
 			}
 
-			types.TDeepEqual(t, got, tt.expected)
+			testutil.TDeepEqual(t, "userec", got, tt.expected)
 		})
 	}
 }

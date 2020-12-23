@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
-	"github.com/Ptt-official-app/go-pttbbs/types"
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 )
 
 func TestNewUserecFromRaw(t *testing.T) {
@@ -29,7 +29,7 @@ func TestNewUserecFromRaw(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got := NewUserecFromRaw(tt.args.userecraw)
 
-			types.TDeepEqual(t, got, tt.expected)
+			testutil.TDeepEqual(t, "userec", got, tt.expected)
 		})
 	}
 }

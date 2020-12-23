@@ -93,17 +93,31 @@ func TestBoardTitle_t_RealTitle(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	boardTitle0 := &BoardTitle_t{}
-	copy(boardTitle0[:], types.Utf8ToBig5("CPBL ◎四海之內皆兄弟"))
-	expected0 := types.Utf8ToBig5("四海之內皆兄弟")
+	boardTitle0 := &BoardTitle_t{ //CPBL ◎四海之內皆兄弟
+		0x43, 0x50, 0x42, 0x4c, 0x20, 0xa1, 0xb7, 0xa5, 0x7c, 0xae,
+		0xfc, 0xa4, 0xa7, 0xa4, 0xba, 0xac, 0xd2, 0xa5, 0x53, 0xa7,
+		0xcc,
+	}
+	expected0 := []byte{ //四海之內皆兄弟
+		0xa5, 0x7c, 0xae, 0xfc, 0xa4, 0xa7, 0xa4, 0xba, 0xac, 0xd2,
+		0xa5, 0x53, 0xa7, 0xcc,
+	}
 
-	boardTitle1 := &BoardTitle_t{}
-	copy(boardTitle1[:], types.Utf8ToBig5("*CPBL◎四海之內皆兄弟"))
-	expected1 := types.Utf8ToBig5("四海之內皆兄弟")
+	boardTitle1 := &BoardTitle_t{ //*CPBL◎四海之內皆兄弟
+		0x2a, 0x43, 0x50, 0x42, 0x4c, 0xa1, 0xb7, 0xa5, 0x7c, 0xae,
+		0xfc, 0xa4, 0xa7, 0xa4, 0xba, 0xac, 0xd2, 0xa5, 0x53, 0xa7,
+		0xcc,
+	}
+	expected1 := []byte{ //四海之內皆兄弟
+		0xa5, 0x7c, 0xae, 0xfc, 0xa4, 0xa7, 0xa4, 0xba, 0xac, 0xd2,
+		0xa5, 0x53, 0xa7, 0xcc,
+	}
 
-	boardTitle2 := &BoardTitle_t{}
-	copy(boardTitle2[:], types.Utf8ToBig5("里肌 ◎SYSOP"))
-	expected2 := types.Utf8ToBig5("SYSOP")
+	boardTitle2 := &BoardTitle_t{ //里肌 ◎SYSOP
+		0xa8, 0xbd, 0xa6, 0xd9, 0x20, 0xa1, 0xb7, 0x53, 0x59, 0x53,
+		0x4f, 0x50,
+	}
+	expected2 := []byte("SYSOP")
 
 	tests := []struct {
 		name     string
@@ -137,21 +151,31 @@ func TestBoardTitle_t_BoardClass(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	boardTitle0 := &BoardTitle_t{}
-	copy(boardTitle0[:], types.Utf8ToBig5("CPBL ◎四海之內皆兄弟"))
+	boardTitle0 := &BoardTitle_t{ //CPBL ◎四海之內皆兄弟
+		0x43, 0x50, 0x42, 0x4c, 0x20, 0xa1, 0xb7, 0xa5, 0x7c, 0xae,
+		0xfc, 0xa4, 0xa7, 0xa4, 0xba, 0xac, 0xd2, 0xa5, 0x53, 0xa7,
+		0xcc,
+	}
 	expected0 := []byte("CPBL")
 
-	boardTitle1 := &BoardTitle_t{}
-	copy(boardTitle1[:], types.Utf8ToBig5("*CPBL◎四海之內皆兄弟"))
+	boardTitle1 := &BoardTitle_t{ //*CPBL◎四海之內皆兄弟
+		0x2a, 0x43, 0x50, 0x42, 0x4c, 0xa1, 0xb7, 0xa5, 0x7c, 0xae,
+		0xfc, 0xa4, 0xa7, 0xa4, 0xba, 0xac, 0xd2, 0xa5, 0x53, 0xa7,
+		0xcc,
+	}
 	expected1 := []byte("*CPBL")
 
-	boardTitle2 := &BoardTitle_t{}
-	copy(boardTitle2[:], types.Utf8ToBig5("里肌 ◎SYSOP"))
-	expected2 := types.Utf8ToBig5("里肌")
+	boardTitle2 := &BoardTitle_t{ //里肌 ◎SYSOP
+		0xa8, 0xbd, 0xa6, 0xd9, 0x20, 0xa1, 0xb7, 0x53, 0x59, 0x53,
+		0x4f, 0x50,
+	}
+	expected2 := []byte{0xa8, 0xbd, 0xa6, 0xd9}
 
-	boardTitle3 := &BoardTitle_t{}
-	copy(boardTitle3[:], types.Utf8ToBig5("里CP ◎SYSOP"))
-	expected3 := types.Utf8ToBig5("里CP")
+	boardTitle3 := &BoardTitle_t{ //里CP ◎SYSOP
+		0xa8, 0xbd, 0x43, 0x50, 0x20, 0xa1, 0xb7, 0x53, 0x59, 0x53,
+		0x4f, 0x50,
+	}
+	expected3 := []byte{0xa8, 0xbd, 0x43, 0x50}
 
 	tests := []struct {
 		name     string
@@ -189,17 +213,31 @@ func TestBoardTitle_t_BoardType(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	boardTitle0 := &BoardTitle_t{}
-	copy(boardTitle0[:], types.Utf8ToBig5("CPBL ◎四海之內皆兄弟"))
-	expected0 := types.Utf8ToBig5("◎")
+	boardTitle0 := &BoardTitle_t{ //CPBL ◎四海之內皆兄弟
+		0x43, 0x50, 0x42, 0x4c, 0x20, 0xa1, 0xb7, 0xa5, 0x7c, 0xae,
+		0xfc, 0xa4, 0xa7, 0xa4, 0xba, 0xac, 0xd2, 0xa5, 0x53, 0xa7,
+		0xcc,
+	}
+	expected0 := []byte{0xa1, 0xb7}
 
-	boardTitle1 := &BoardTitle_t{}
-	copy(boardTitle1[:], types.Utf8ToBig5("*CPBL◎四海之內皆兄弟"))
-	expected1 := types.Utf8ToBig5("◎")
+	boardTitle1 := &BoardTitle_t{ //*CPBL◎四海之內皆兄弟
+		0x2a, 0x43, 0x50, 0x42, 0x4c, 0xa1, 0xb7, 0xa5, 0x7c, 0xae,
+		0xfc, 0xa4, 0xa7, 0xa4, 0xba, 0xac, 0xd2, 0xa5, 0x53, 0xa7,
+		0xcc,
+	}
+	expected1 := []byte{0xa1, 0xb7}
 
-	boardTitle2 := &BoardTitle_t{}
-	copy(boardTitle2[:], types.Utf8ToBig5("里肌 ◎SYSOP"))
-	expected2 := types.Utf8ToBig5("◎")
+	boardTitle2 := &BoardTitle_t{ //里肌 ◎SYSOP
+		0xa8, 0xbd, 0xa6, 0xd9, 0x20, 0xa1, 0xb7, 0x53, 0x59, 0x53,
+		0x4f, 0x50,
+	}
+	expected2 := []byte{0xa1, 0xb7}
+
+	boardTitle3 := &BoardTitle_t{ //里CP ◎SYSOP
+		0xa8, 0xbd, 0x43, 0x50, 0x20, 0xa1, 0xb7, 0x53, 0x59, 0x53,
+		0x4f, 0x50,
+	}
+	expected3 := []byte{0xa1, 0xb7}
 
 	tests := []struct {
 		name     string
@@ -218,6 +256,10 @@ func TestBoardTitle_t_BoardType(t *testing.T) {
 		{
 			tr:       boardTitle2,
 			expected: expected2,
+		},
+		{
+			tr:       boardTitle3,
+			expected: expected3,
 		},
 	}
 	for _, tt := range tests {
@@ -533,9 +575,17 @@ func TestAidu_ToAidc(t *testing.T) {
 	expected1 := &Aidc{}
 	copy(expected1[:], []byte("1VrooM21"))
 
-	a2 := Aidu(0x5fcbf5bf30d)
+	a2 := Aidu(0x05fcbf5bf30d)
 	expected2 := &Aidc{}
 	copy(expected2[:], []byte("1Vo_M_CD"))
+
+	a3 := Aidu(0xffffffffffff)
+	expected3 := &Aidc{}
+	copy(expected3[:], []byte("________"))
+
+	a4 := Aidu(0x010000000000) //1978-07-04 21:24:16 UTC
+	expected4 := &Aidc{}
+	copy(expected4[:], []byte("0G000000"))
 
 	tests := []struct {
 		name     string
@@ -554,6 +604,14 @@ func TestAidu_ToAidc(t *testing.T) {
 		{
 			a:        a2,
 			expected: expected2,
+		},
+		{
+			a:        a3,
+			expected: expected3,
+		},
+		{
+			a:        a4,
+			expected: expected4,
 		},
 	}
 	for _, tt := range tests {
@@ -721,6 +779,59 @@ func TestUserID_t_IsValid(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := tt.u.IsValid(); got != tt.expected {
 				t.Errorf("UserID_t.IsValid() = %v, want %v", got, tt.expected)
+			}
+		})
+	}
+}
+
+func TestTitle_t_ToClass(t *testing.T) {
+	title0 := &Title_t{}
+	copy(title0[:], []byte("Re:[and] then?"))
+
+	title1 := &Title_t{}
+	copy(title1[:], []byte("Fw:[a] then?"))
+
+	title2 := &Title_t{}
+	copy(title2[:], []byte{0x5b, 0xc2, 0xe0, 0xbf, 0xfd, 0x5d, 'a', 'n', 'd', ' ', 't', 'h', 'e', 'n', '?'})
+
+	title3 := &Title_t{}
+	copy(title3[:], []byte("and then?"))
+
+	title4 := &Title_t{}
+	copy(title4[:], []byte("[\xa4\xbd\xa7\x69] and then?"))
+
+	tests := []struct {
+		name     string
+		tr       *Title_t
+		expected []byte
+	}{
+		// TODO: Add test cases.
+		{
+			tr:       title0,
+			expected: ARTICLE_CLASS_REPLY,
+		},
+		{
+			tr:       title1,
+			expected: ARTICLE_CLASS_FORWARD,
+		},
+		{
+			tr:       title2,
+			expected: ARTICLE_CLASS_FORWARD,
+		},
+		{
+			tr:       title3,
+			expected: []byte{},
+		},
+
+		{
+			tr:       title4,
+			expected: []byte("\xa4\xbd\xa7\x69"),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.tr.ToClass(); !reflect.DeepEqual(got, tt.expected) {
+				t.Errorf("Title_t.ToClass() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
