@@ -3,10 +3,9 @@ package bbs
 import (
 	"github.com/Ptt-official-app/go-pttbbs/ptt"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
-	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
-func LoadGeneralBoards(uuserID UUserID, startIdxStr string, nBoards int, keyword string) (summary []*BoardSummary, nextIdxStr string, err error) {
+func LoadGeneralBoards(uuserID UUserID, startIdxStr string, nBoards int, keywordBytes []byte) (summary []*BoardSummary, nextIdxStr string, err error) {
 	startIdx, err := ptttype.ToSortIdx(startIdxStr)
 	if err != nil {
 		return nil, "", ErrInvalidParams
@@ -24,8 +23,6 @@ func LoadGeneralBoards(uuserID UUserID, startIdxStr string, nBoards int, keyword
 	if err != nil {
 		return nil, "", err
 	}
-
-	keywordBytes := types.Utf8ToBig5(keyword)
 
 	summaryRaw, nextIdx, err := ptt.LoadGeneralBoards(userecRaw, uid, startIdx, nBoards, keywordBytes)
 	if err != nil {

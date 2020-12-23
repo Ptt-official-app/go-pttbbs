@@ -11,10 +11,10 @@ func Register(
 	ip string,
 	email string,
 
-	nickname string,
-	realname string,
-	career string,
-	address string,
+	nickname []byte,
+	realname []byte,
+	career []byte,
+	address []byte,
 	over18 bool,
 ) (user *Userec, err error) {
 	userIDRaw := &ptttype.UserID_t{}
@@ -29,10 +29,10 @@ func Register(
 	copy(emailRaw[:], []byte(email))
 
 	nicknameRaw := &ptttype.Nickname_t{}
-	copy(nicknameRaw[:], []byte(nickname))
+	copy(nicknameRaw[:], nickname)
 
 	realnameRaw := &ptttype.RealName_t{}
-	copy(realnameRaw[:], []byte(realname))
+	copy(realnameRaw[:], realname)
 
 	careerRaw := &ptttype.Career_t{}
 	copy(careerRaw[:], []byte(career))

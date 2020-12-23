@@ -82,7 +82,7 @@ func TestSearchUListUserID(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := SearchUListUserID(tt.args.userID)
-			types.TDeepEqual(t, got, tt.expected)
+			types.TDeepEqual(t, "userinfo", got, tt.expected)
 		})
 	}
 }

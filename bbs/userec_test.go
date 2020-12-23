@@ -29,7 +29,7 @@ func TestNewUserecFromRaw(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got := NewUserecFromRaw(tt.args.userecraw)
 
-			types.TDeepEqual(t, got, tt.expected)
+			types.TDeepEqual(t, "userec", got, tt.expected)
 		})
 	}
 }

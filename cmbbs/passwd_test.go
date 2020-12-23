@@ -46,7 +46,7 @@ func TestPasswdLoadUser(t *testing.T) {
 			if got != tt.expected {
 				t.Errorf("PasswdLoadUser() got = %v, expected %v", got, tt.expected)
 			}
-			types.TDeepEqual(t, got1, tt.expected1)
+			types.TDeepEqual(t, "userec", got1, tt.expected1)
 		})
 	}
 }
@@ -287,7 +287,7 @@ func TestPasswdUpdate(t *testing.T) {
 			}
 
 			_, userecRaw, _ := PasswdLoadUser(&testUserecRaw1Updated.UserID)
-			types.TDeepEqual(t, userecRaw, tt.expected)
+			types.TDeepEqual(t, "userec", userecRaw, tt.expected)
 
 		})
 	}

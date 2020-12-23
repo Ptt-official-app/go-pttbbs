@@ -334,7 +334,7 @@ func TestNewRegister(t *testing.T) {
 				t.Errorf("NewRegister: uid: %v expected: %v", gotUid, tt.expectedUID)
 			}
 
-			types.TDeepEqual(t, got, tt.expected)
+			types.TDeepEqual(t, "userec", got, tt.expected)
 		})
 	}
 }

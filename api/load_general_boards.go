@@ -9,7 +9,7 @@ const LOAD_GENERAL_BOARDS_R = "/boards"
 type LoadGeneralBoardsParams struct {
 	StartIdx string `json:"start_idx,omitempty" form:"start_idx,omitempty" url:"start_idx,omitempty"`
 	NBoards  int    `json:"max,omitempty" form:"max,omitempty" url:"max,omitempty"`
-	Keyword  string `json:"keyword,omitempty" form:"keyword,omitempty" url:"keyword,omitempty"`
+	Keyword  []byte `json:"keyword,omitempty" form:"keyword,omitempty" url:"keyword,omitempty"` //sending utf8-bytes from middleware
 }
 
 type LoadGeneralBoardsResult struct {

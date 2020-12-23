@@ -136,7 +136,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 					t.Errorf("LoadGeneralArticles: (%v/%v) %v", idx, len(gotSummaryRaw), each)
 					continue
 				}
-				types.TDeepEqual(t, each.FileHeaderRaw, tt.expectedSummaryRaw[idx].FileHeaderRaw)
+				types.TDeepEqual(t, "fileheader", each.FileHeaderRaw, tt.expectedSummaryRaw[idx].FileHeaderRaw)
 			}
 			if !reflect.DeepEqual(gotNextIdx, tt.expectedNextIdx) {
 				t.Errorf("LoadGeneralArticles() gotNextIdx = %v, want %v", gotNextIdx, tt.expectedNextIdx)

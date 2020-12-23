@@ -1,8 +1,9 @@
 package bbs
 
 import (
-	"reflect"
 	"testing"
+
+	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
 func TestLogin(t *testing.T) {
@@ -33,9 +34,8 @@ func TestLogin(t *testing.T) {
 				t.Errorf("Login() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.expected) {
-				t.Errorf("Login() = %v, want %v", got, tt.expected)
-			}
+
+			types.TDeepEqual(t, "login", got, tt.expected)
 		})
 	}
 }

@@ -49,13 +49,7 @@ func TestLoadGeneralBoards(t *testing.T) {
 			theGot, _ := got.(*LoadGeneralBoardsResult)
 			theExpected, _ := tt.expected.(*LoadGeneralBoardsResult)
 
-			for idx, each := range theGot.Boards {
-				if idx >= len(theExpected.Boards) {
-					break
-				}
-
-				types.TDeepEqual(t, each, theExpected.Boards[idx])
-			}
+			types.TDeepEqual(t, "boards", theGot.Boards, theExpected.Boards)
 		})
 	}
 }

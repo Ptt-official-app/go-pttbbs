@@ -62,7 +62,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 					t.Errorf("LoadGeneralArticles: (%v/%v) %v", idx, len(gotSummary), each)
 					continue
 				}
-				types.TDeepEqual(t, each, tt.expectedSummary[idx])
+				types.TDeepEqual(t, "articles", each, tt.expectedSummary[idx])
 			}
 			if gotNextIdxStr != tt.expectedNextIdxStr {
 				t.Errorf("LoadGeneralArticles() gotNextIdxStr = %v, want %v", gotNextIdxStr, tt.expectedNextIdxStr)

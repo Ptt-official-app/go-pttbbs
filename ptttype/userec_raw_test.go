@@ -34,7 +34,7 @@ func TestNewUserecRawWithFile(t *testing.T) {
 				return
 			}
 
-			types.TDeepEqual(t, got, tt.expected)
+			types.TDeepEqual(t, "userec", got, tt.expected)
 		})
 	}
 }

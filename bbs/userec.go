@@ -9,9 +9,9 @@ import (
 type Userec struct {
 	Version  uint32
 	UUserID  UUserID
-	Userid   string
-	Realname string
-	Nickname string
+	Username string
+	Realname []byte
+	Nickname []byte
 	//Pad1       byte
 
 	Uflag ptttype.UFlag
@@ -21,13 +21,13 @@ type Userec struct {
 	Numposts     uint32
 	Firstlogin   types.Time4
 	Lastlogin    types.Time4
-	Lasthost     string
+	Lasthost     string //last IPv4.
 	Money        int32
 	//Unused2      [4]byte
 
 	Email   string
-	Address string
-	Justify string
+	Address []byte
+	Justify []byte
 	//UnusedBirth [3]uint8  /* 生日 月日年 */
 	Over18      bool
 	PagerUIType uint8             /* 呼叫器界面類別 (was: WATER_*) */
@@ -38,7 +38,7 @@ type Userec struct {
 
 	// r3968 移出 sizeof(chicken_t)=128 bytes
 	//Unused5       [4]byte
-	Career string
+	Career []byte
 	//UnusedPhone   Phone_t  /* 電話 */
 	//Unused6       uint32   /* 從前放轉換前的 numlogins, 使用前請先清0 */
 	//Chkpad1       [44]byte
@@ -82,9 +82,9 @@ func NewUserecFromRaw(userecRaw *ptttype.UserecRaw) *Userec {
 	user := &Userec{}
 	user.UUserID = ToUUserID(&userecRaw.UserID)
 	user.Version = userecRaw.Version
-	user.Userid = types.CstrToString(userecRaw.UserID[:])
-	user.Realname = types.Big5ToUtf8(userecRaw.RealName[:])
-	user.Nickname = types.Big5ToUtf8(userecRaw.Nickname[:])
+	user.Username = types.CstrToString(userecRaw.UserID[:])
+	user.Realname = types.CstrToBytes(userecRaw.RealName[:])
+	user.Nickname = types.CstrToBytes(userecRaw.Nickname[:])
 
 	user.Uflag = userecRaw.UFlag
 	user.Userlevel = userecRaw.UserLevel
@@ -95,15 +95,15 @@ func NewUserecFromRaw(userecRaw *ptttype.UserecRaw) *Userec {
 	user.Lasthost = types.CstrToString(userecRaw.LastHost[:])
 	user.Money = userecRaw.Money
 	user.Email = types.CstrToString(userecRaw.Email[:])
-	user.Address = types.Big5ToUtf8(userecRaw.Address[:])
-	user.Justify = types.Big5ToUtf8(userecRaw.Justify[:])
+	user.Address = types.CstrToBytes(userecRaw.Address[:])
+	user.Justify = types.CstrToBytes(userecRaw.Justify[:])
 	user.Over18 = userecRaw.Over18
 	user.PagerUIType = userecRaw.PagerUIType
 	user.Pager = userecRaw.Pager
 	user.Invisible = userecRaw.Invisible
 	user.Exmailbox = userecRaw.Exmailbox
 
-	user.Career = types.Big5ToUtf8(userecRaw.Career[:])
+	user.Career = types.CstrToBytes(userecRaw.Career[:])
 
 	return user
 }

@@ -5,7 +5,6 @@ import (
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
-	"github.com/sirupsen/logrus"
 )
 
 func TestGetNumRecords(t *testing.T) {
@@ -101,9 +100,8 @@ func TestGetRecords(t *testing.T) {
 					t.Errorf("GetRecords: (%v/%v) %v", idx, len(got), each)
 					continue
 				}
-				logrus.Infof("GetRecords: (%v/%v) to DeepEqual", idx, len(got))
 				tt.expected[idx].BoardID = boardID
-				types.TDeepEqual(t, each.FileHeaderRaw, tt.expected[idx].FileHeaderRaw)
+				types.TDeepEqual(t, "fileheader", each.FileHeaderRaw, tt.expected[idx].FileHeaderRaw)
 			}
 		})
 	}

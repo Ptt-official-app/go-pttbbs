@@ -69,13 +69,16 @@ func TestLoadGeneralBoards(t *testing.T) {
 				t.Errorf("LoadGeneralBoards() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			for idx, each := range gotSummary {
-				if idx >= len(tt.expectedSummary) {
-					t.Errorf("(%v/%v) got: %v tt: nil", idx, len(gotSummary), each)
-					continue
+
+			types.TDeepEqual(t, "summary", gotSummary, tt.expectedSummary)
+			/*
+				for idx, each := range gotSummary {
+					if idx >= len(tt.expectedSummary) {
+						t.Errorf("(%v/%v) got: %v tt: nil", idx, len(gotSummary), each)
+						continue
+					}
 				}
-				types.TDeepEqual(t, each, tt.expectedSummary[idx])
-			}
+			*/
 			if gotNextIdx != tt.expectedNextIdx {
 				t.Errorf("LoadGeneralBoards() gotNextIdx = %v, want %v", gotNextIdx, tt.expectedNextIdx)
 			}
