@@ -2,12 +2,11 @@ package main
 
 import (
 	"strings"
-	"time"
 
 	"github.com/Ptt-official-app/go-pttbbs/api"
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
+	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/gin-gonic/gin"
-	"gopkg.in/square/go-jose.v2/jwt"
 )
 
 type Api struct {
@@ -114,7 +113,7 @@ func (a *LoginRequiredApi) process(c *gin.Context) {
 	}
 	jwt := tokenList[1]
 
-	userID, err := verifyJwt(jwt)
+	userID, err := api.VerifyJwt(jwt)
 	if err != nil {
 		processResult(c, nil, err)
 		return
@@ -177,7 +176,7 @@ func (a *LoginRequiredPathApi) process(c *gin.Context) {
 	}
 	jwt := tokenList[1]
 
-	userID, err := verifyJwt(jwt)
+	userID, err := api.VerifyJwt(jwt)
 	if err != nil {
 		processResult(c, nil, err)
 		return
@@ -186,25 +185,6 @@ func (a *LoginRequiredPathApi) process(c *gin.Context) {
 	result, err := a.Func(remoteAddr, userID, a.Params, a.Path)
 	processResult(c, result, err)
 
-}
-
-func verifyJwt(raw string) (userID bbs.UUserID, err error) {
-	tok, err := jwt.ParseSigned(raw)
-	if err != nil {
-		return "", ErrInvalidToken
-	}
-
-	cl := &api.JwtClaim{}
-	if err := tok.Claims(api.JWT_SECRET, cl); err != nil {
-		return "", ErrInvalidToken
-	}
-
-	currentNanoTS := jwt.NewNumericDate(time.Now())
-	if *currentNanoTS > *cl.Expire {
-		return "", ErrInvalidToken
-	}
-
-	return cl.UUserID, nil
 }
 
 func processResult(c *gin.Context, result interface{}, err error) {
@@ -216,15 +196,27 @@ func processResult(c *gin.Context, result interface{}, err error) {
 		c.JSON(400, &errResult{err.Error()})
 	case ErrInvalidRemoteAddr:
 		c.JSON(400, &errResult{err.Error()})
+
 	case api.ErrInvalidParams:
 		c.JSON(400, &errResult{err.Error()})
+	case api.ErrInvalidPath:
+		c.JSON(400, &errResult{err.Error()})
+
 	case bbs.ErrInvalidParams:
 		c.JSON(400, &errResult{err.Error()})
 
+	case ptttype.ErrUserIDAlreadyExists:
+		c.JSON(400, &errResult{err.Error()})
+
+	//401
 	case ErrInvalidToken:
+		c.JSON(401, &errResult{err.Error()})
+
+	case api.ErrInvalidToken:
 		c.JSON(401, &errResult{err.Error()})
 	case api.ErrLoginFailed:
 		c.JSON(401, &errResult{err.Error()})
+
 	default:
 		c.JSON(500, &errResult{err.Error()})
 	}

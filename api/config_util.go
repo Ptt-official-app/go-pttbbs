@@ -2,7 +2,7 @@ package api
 
 import "github.com/Ptt-official-app/go-pttbbs/config_util"
 
-const configPrefix = "api"
+const configPrefix = "go-pttbbs:api"
 
 func InitConfig() error {
 	config()

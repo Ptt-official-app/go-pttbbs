@@ -1,6 +1,8 @@
 package api
 
-import "github.com/Ptt-official-app/go-pttbbs/bbs"
+import (
+	"github.com/Ptt-official-app/go-pttbbs/bbs"
+)
 
 const REGISTER_R = "/register"
 

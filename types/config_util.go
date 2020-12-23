@@ -6,7 +6,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/config_util"
 )
 
-const configPrefix = "types"
+const configPrefix = "go-pttbbs:types"
 
 func InitConfig() error {
 	config()

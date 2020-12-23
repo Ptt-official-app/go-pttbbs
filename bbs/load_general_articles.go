@@ -5,6 +5,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 )
 
+//LoadGeneralArticles in descending mode.
 func LoadGeneralArticles(uuserID UUserID, bboardID BBoardID, startIdxStr string, nArticles int) (summary []*ArticleSummary, nextIdxStr string, isNewest bool, err error) {
 
 	if nArticles < 1 {

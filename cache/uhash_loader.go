@@ -85,6 +85,7 @@ func fillUHash(isOnfly bool) error {
 	uidInCache := ptttype.UidInStore(0)
 
 	uHashLoaderInvalidUserID = 0
+	log.Infof("fillUHash: to for-loop: MAX_USERS: %v", ptttype.MAX_USERS)
 	for ; ; uidInCache++ {
 		userecRaw, eachErr := ptttype.NewUserecRawWithFile(file)
 		if eachErr != nil {
@@ -123,7 +124,7 @@ func userecRawAddToUHash(uidInCache ptttype.UidInStore, userecRaw *ptttype.Usere
 	if !userecRaw.UserID.IsValid() {
 		// dirty hack, preserve few slot for new register
 		uHashLoaderInvalidUserID++
-		if uHashLoaderInvalidUserID > 1000 {
+		if uHashLoaderInvalidUserID > PRE_ALLOCATED_USERS {
 			return
 		}
 	}
@@ -329,9 +330,9 @@ func checkHash(h uint32) {
 
 		// line: 87
 		deep++
-		if deep == 100 {
+		if deep == PRE_ALLOCATED_USERS+10 { //need to be larger than the pre-allocated users.
 			//warn if it's too deep, we may need to consider enlarge the hash-table.
-			log.Warnf("checkHash deadlock: deep: %v h: %v p: %v val: %v isFirst: %v", deep, h, p, val, isFirst)
+			log.Warnf("checkHash deep: %v h: %v p: %v val: %v isFirst: %v", deep, h, p, val, isFirst)
 		}
 	}
 }

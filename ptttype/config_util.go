@@ -8,7 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-const configPrefix = "ptttype"
+const configPrefix = "go-pttbbs:ptttype"
 
 func InitConfig() error {
 	config()

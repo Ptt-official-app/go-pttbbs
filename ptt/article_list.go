@@ -77,6 +77,8 @@ func LoadGeneralArticles(user *ptttype.UserecRaw, uid ptttype.Uid, boardIDRaw *p
 		return nil, -1, false, err
 	}
 
+	reverseArticleSummaryList(summaryRaw)
+
 	//4. return
 	nextIdx = -1
 	if recordStartAid > 1 {
@@ -85,4 +87,10 @@ func LoadGeneralArticles(user *ptttype.UserecRaw, uid ptttype.Uid, boardIDRaw *p
 
 	isNewest = startAid == ptttype.Aid(total)
 	return summaryRaw, nextIdx, isNewest, nil
+}
+
+func reverseArticleSummaryList(s []*ptttype.ArticleSummaryRaw) {
+	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
+		s[i], s[j] = s[j], s[i]
+	}
 }
