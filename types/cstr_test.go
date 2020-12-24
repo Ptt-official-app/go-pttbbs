@@ -28,7 +28,7 @@ func TestCstrToBytes(t *testing.T) {
 		{
 			name:     "init",
 			args:     args{str1[:]},
-			expected: []byte{},
+			expected: nil,
 		},
 		{
 			name:     "with only 3 letters",

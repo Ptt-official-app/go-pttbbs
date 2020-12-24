@@ -59,6 +59,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 			},
 		},
 		{
+			name: "start-idx: 2, n-articles: 1",
 			args: args{
 				uuserID: "SYSOP",
 				params: &LoadGeneralArticlesParams{

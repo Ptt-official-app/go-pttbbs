@@ -28,7 +28,7 @@ func TestNewArticleSummaryRaw(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := NewArticleSummaryRaw(tt.args.aid, tt.args.boardID, tt.args.header)
-			got.BoardID = tt.args.boardID
+			got.BoardID = tt.expected.BoardID
 
 			testutil.TDeepEqual(t, "summary", got, tt.expected)
 		})

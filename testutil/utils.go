@@ -19,6 +19,18 @@ func TDeepEqual(t *testing.T, prompt string, got interface{}, expected interface
 	}
 
 	if gotKind == reflect.Slice || gotKind == reflect.Array {
+		if gotKind == reflect.Slice {
+			if valueOfGot.IsNil() && !valueOfExpect.IsNil() {
+				t.Errorf("%v: is nil: %v expected: %v", prompt, got, expected)
+				return
+			}
+
+			if !valueOfGot.IsNil() && valueOfExpect.IsNil() {
+				t.Errorf("%v: not nil: %v expected: %v", prompt, got, expected)
+				return
+			}
+		}
+
 		lenGot := valueOfGot.Len()
 		lenExpect := valueOfExpect.Len()
 		if lenGot != lenExpect {
@@ -48,7 +60,7 @@ func TDeepEqual(t *testing.T, prompt string, got interface{}, expected interface
 
 			expectedVal := valueOfExpect.Index(i)
 
-			tDeepEqualValue(t, strconv.Itoa(i), gotVal, expectedVal)
+			tDeepEqualValue(t, prompt+":"+strconv.Itoa(i), gotVal, expectedVal)
 		}
 		return
 	}
@@ -57,6 +69,16 @@ func TDeepEqual(t *testing.T, prompt string, got interface{}, expected interface
 		if !reflect.DeepEqual(got, expected) {
 			t.Errorf("%v: (%v/%v) expected: (%v/%v)", prompt, got, gotKind, expected, expectedKind)
 		}
+		return
+	}
+
+	if valueOfGot.IsNil() && !valueOfExpect.IsNil() {
+		t.Errorf("%v: is nil: %v expected: %v", prompt, got, expected)
+		return
+	}
+
+	if !valueOfGot.IsNil() && valueOfExpect.IsNil() {
+		t.Errorf("%v: (ptr) not nil: %v expected: %v", prompt, got, expected)
 		return
 	}
 

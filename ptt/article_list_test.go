@@ -128,6 +128,10 @@ func TestLoadGeneralArticles(t *testing.T) {
 				return
 			}
 
+			for idx, each := range gotSummaryRaw {
+				each.BoardID = tt.expectedSummaryRaw[idx].BoardID
+			}
+
 			testutil.TDeepEqual(t, "summary", gotSummaryRaw, tt.expectedSummaryRaw)
 
 			if !reflect.DeepEqual(gotNextIdx, tt.expectedNextIdx) {

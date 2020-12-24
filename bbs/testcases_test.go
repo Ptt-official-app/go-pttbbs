@@ -65,6 +65,32 @@ func initTestVars() {
 		LastSeen: 1600681288,
 	}
 
+	testUserec1 = &Userec{
+		Version:  4194,
+		UUserID:  UUserID("SYSOP"),
+		Username: "SYSOP",
+		Realname: []byte{ // CodingMan
+			0x43, 0x6f, 0x64, 0x69, 0x6e, 0x67, 0x4d, 0x61, 0x6e,
+		},
+		Nickname: []byte{0xaf, 0xab}, // 神
+
+		Uflag:        33557088,
+		Userlevel:    536871943,
+		Numlogindays: 2,
+		Numposts:     0,
+		Firstlogin:   1600681288,
+		Lastlogin:    1600756094,
+		Lasthost:     "59.124.167.226",
+		Address: []byte{ //新竹縣子虛鄉烏有村543號
+			0xb7, 0x73, 0xa6, 0xcb, 0xbf, 0xa4, 0xa4, 0x6c, 0xb5, 0xea,
+			0xb6, 0x6d, 0xaf, 0x51, 0xa6, 0xb3, 0xa7, 0xf8, 0x35, 0x34,
+			0x33, 0xb8, 0xb9,
+		},
+		Over18: true,
+		Pager:  ptttype.PAGER_ON,
+		Career: []byte{0xa5, 0xfe, 0xb4, 0xba, 0xb3, 0x6e, 0xc5, 0xe9}, //全景軟體
+	}
+
 	testUserec6 = &Userec{
 		Version:      ptttype.PASSWD_VERSION,
 		UUserID:      UUserID("B1"),
