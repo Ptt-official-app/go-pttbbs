@@ -52,6 +52,9 @@ func CstrToString(cstr Cstr) string {
 //	[]byte: bytes
 func CstrToBytes(cstr Cstr) []byte {
 	theLen := Cstrlen(cstr)
+	if theLen == 0 {
+		return nil
+	}
 	return cstr[:theLen]
 }
 

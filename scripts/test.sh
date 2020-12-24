@@ -15,6 +15,6 @@ if [ -f cache/testcase/boards.tar.gz ]; then
 fi
 
 go build ./...
-gotest -v . -cover
+gotest -v ./... -cover
 ipcrm -S 0x00007ffb
 ipcrm -M 0x0000fffe
