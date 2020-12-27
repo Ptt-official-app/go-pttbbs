@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
+	"github.com/gin-gonic/gin"
 )
 
 const LOAD_GENERAL_ARTICLES_R = "/boards/:bid/articles"
@@ -19,6 +20,12 @@ type LoadGeneralArticlesResult struct {
 	Articles []*bbs.ArticleSummary `json:"data"`
 	IsNewest bool                  `json:"is_newest"`
 	NextIdx  string                `json:"next_idx"`
+}
+
+func LoadGeneralArticlesWrapper(c *gin.Context) {
+	params := &LoadGeneralArticlesParams{}
+	path := &LoadGeneralArticlesPath{}
+	LoginRequiredPathQuery(LoadGeneralArticles, params, path, c)
 }
 
 func LoadGeneralArticles(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (result interface{}, err error) {

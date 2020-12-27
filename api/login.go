@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
+	"github.com/gin-gonic/gin"
 )
 
 const LOGIN_R = "/token"
@@ -15,6 +16,11 @@ type LoginResult struct {
 	UserID    bbs.UUserID `json:"user_id"`
 	Jwt       string      `json:"access_token"`
 	TokenType string      `json:"token_type"`
+}
+
+func LoginWrapper(c *gin.Context) {
+	params := &LoginParams{}
+	JSON(Login, params, c)
 }
 
 func Login(remoteAddr string, params interface{}) (interface{}, error) {

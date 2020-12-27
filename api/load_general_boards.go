@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
+	"github.com/gin-gonic/gin"
 )
 
 const LOAD_GENERAL_BOARDS_R = "/boards"
@@ -15,6 +16,11 @@ type LoadGeneralBoardsParams struct {
 type LoadGeneralBoardsResult struct {
 	Boards  []*bbs.BoardSummary `json:"data"`
 	NextIdx string              `json:"next_idx"`
+}
+
+func LoadGeneralBoardsWrapper(c *gin.Context) {
+	params := &LoadGeneralBoardsParams{}
+	LoginRequiredQuery(LoadGeneralBoards, params, c)
 }
 
 func LoadGeneralBoards(remoteAddr string, uuserID bbs.UUserID, params interface{}) (interface{}, error) {

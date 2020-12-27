@@ -1,4 +1,4 @@
-package main
+package api
 
 func isValidHost(host string) bool {
 	return true
