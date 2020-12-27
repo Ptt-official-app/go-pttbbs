@@ -28,51 +28,14 @@ func withPrefix(path string) string {
 func initGin() (*gin.Engine, error) {
 	router := gin.Default()
 
-	router.POST(
-		withPrefix(api.INDEX_R),
-		NewLoginRequiredApi(
-			api.Index,
-			&api.IndexParams{},
-		).Json,
-	)
-	router.POST(
-		withPrefix(api.LOGIN_R),
-		NewApi(
-			api.Login,
-			&api.LoginParams{},
-		).Json,
-	)
-	router.POST(
-		withPrefix(api.REGISTER_R),
-		NewApi(
-			api.Register,
-			&api.RegisterParams{},
-		).Json,
-	)
-	router.GET(
-		withPrefix(api.LOAD_GENERAL_BOARDS_R),
-		NewLoginRequiredApi(
-			api.LoadGeneralBoards,
-			&api.LoadGeneralBoardsParams{},
-		).Query,
-	)
-	router.GET(
-		withPrefix(api.LOAD_GENERAL_ARTICLES_R),
-		NewLoginRequiredPathApi(
-			api.LoadGeneralArticles,
-			&api.LoadGeneralArticlesParams{},
-			&api.LoadGeneralArticlesPath{},
-		).Query,
-	)
+	router.POST(withPrefix(api.INDEX_R), api.IndexWrapper)
+	router.POST(withPrefix(api.LOGIN_R), api.LoginWrapper)
+	router.POST(withPrefix(api.REGISTER_R), api.RegisterWrapper)
 
-	router.GET(
-		withPrefix(api.GET_ARTICLE_R),
-		NewLoginRequiredPathApi(
-			api.GetArticle,
-			&api.GetArticleParams{},
-			&api.GetArticlePath{},
-		).Query,
-	)
+	router.GET(withPrefix(api.LOAD_GENERAL_BOARDS_R), api.LoadGeneralBoardsWrapper)
+	router.GET(withPrefix(api.LOAD_GENERAL_ARTICLES_R), api.LoadGeneralArticlesWrapper)
+
+	router.GET(withPrefix(api.GET_ARTICLE_R), api.GetArticleWrapper)
 
 	return router, nil
 }

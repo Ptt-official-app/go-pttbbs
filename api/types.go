@@ -15,3 +15,7 @@ type JwtClaim struct {
 	UUserID bbs.UUserID
 	Expire  *jwt.NumericDate
 }
+
+type errResult struct {
+	Msg string
+}

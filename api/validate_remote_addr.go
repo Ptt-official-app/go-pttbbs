@@ -1,4 +1,4 @@
-package main
+package api
 
 func isValidRemoteAddr(remoteAddr string) bool {
 	switch remoteAddr {

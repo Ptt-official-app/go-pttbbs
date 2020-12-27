@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
+	"github.com/gin-gonic/gin"
 )
 
 const REGISTER_R = "/register"
@@ -22,6 +23,11 @@ type RegisterResult struct {
 	UserID    bbs.UUserID `json:"user_id"`
 	Jwt       string      `json:"access_token"`
 	TokenType string      `json:"token_type"`
+}
+
+func RegisterWrapper(c *gin.Context) {
+	params := &RegisterParams{}
+	JSON(Register, params, c)
 }
 
 func Register(remoteAddr string, params interface{}) (interface{}, error) {

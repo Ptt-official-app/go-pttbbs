@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
 	"github.com/Ptt-official-app/go-pttbbs/types"
+	"github.com/gin-gonic/gin"
 )
 
 const GET_ARTICLE_R = "/boards/:bid/articles/:aid"
@@ -19,6 +20,13 @@ type GetArticlePath struct {
 type GetArticleResult struct {
 	MTime   types.Time4 `json:"mtime"`
 	Content []byte      `json:"content"` //content contains all the necessary information.
+}
+
+func GetArticleWrapper(c *gin.Context) {
+	params := &GetArticleParams{}
+	path := &GetArticlePath{}
+
+	LoginRequiredPathQuery(GetArticle, params, path, c)
 }
 
 //GetArticle
