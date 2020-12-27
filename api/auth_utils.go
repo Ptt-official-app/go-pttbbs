@@ -1,12 +1,24 @@
 package api
 
 import (
+	"strings"
 	"time"
 
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
+	"github.com/gin-gonic/gin"
 	"gopkg.in/square/go-jose.v2"
 	"gopkg.in/square/go-jose.v2/jwt"
 )
+
+func GetJwt(c *gin.Context) (jwt string) {
+	tokenStr := strings.TrimSpace(c.GetHeader("Authorization"))
+	tokenList := strings.Split(tokenStr, " ")
+	if len(tokenList) != 2 {
+		return ""
+	}
+
+	return tokenList[1]
+}
 
 func VerifyJwt(raw string) (userID bbs.UUserID, err error) {
 	if raw == "" {

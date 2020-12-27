@@ -47,13 +47,7 @@ func loginRequiredPathProcess(theFunc LoginRequiredPathApiFunc, params interface
 		return
 	}
 
-	tokenStr := strings.TrimSpace(c.GetHeader("Authorization"))
-	tokenList := strings.Split(tokenStr, " ")
-	if len(tokenList) != 2 {
-		processResult(c, nil, ErrInvalidToken)
-		return
-	}
-	jwt := tokenList[1]
+	jwt := GetJwt(c)
 
 	userID, err := VerifyJwt(jwt)
 	if err != nil {
