@@ -26,6 +26,7 @@ func initGin() (*gin.Engine, error) {
 	//board
 	router.GET(withPrefix(api.LOAD_GENERAL_BOARDS_R), api.LoadGeneralBoardsWrapper)
 	router.GET(withPrefix(api.LOAD_GENERAL_ARTICLES_R), api.LoadGeneralArticlesWrapper)
+	router.GET(withPrefix(api.LOAD_BOARD_SUMMARY_R), api.LoadBoardSummaryWrapper)
 
 	//article
 	router.GET(withPrefix(api.GET_ARTICLE_R), api.GetArticleWrapper)
