@@ -8,6 +8,45 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
+//LoadBoardSummary
+//
+//Load General Board Summary
+//
+//Params:
+//	user
+// 	uid
+//	bid
+
+//Return:
+//	summary
+//	err
+func LoadBoardSummary(user *ptttype.UserecRaw, uid ptttype.Uid, bid ptttype.Bid) (summary *ptttype.BoardSummaryRaw, err error) {
+	nBoardsInCache := cache.NumBoards()
+	var boardStat *ptttype.BoardStat
+	for currentIdx := ptttype.SortIdx(0); ; currentIdx++ {
+		if int32(currentIdx) >= nBoardsInCache {
+			break
+		}
+
+		eachBoardStat, err := loadGeneralBoardStat(user, uid, currentIdx, []byte(""))
+		if err != nil {
+			continue
+		}
+		if eachBoardStat == nil {
+			continue
+		}
+		boardStat = eachBoardStat
+		if eachBoardStat.Bid == bid {
+			break
+		}
+
+	}
+
+	summary = parseBoardSummary(user, uid, boardStat)
+
+	return summary, nil
+}
+
 //LoadGeneralBoards
 //
 //Load general boards by name.
