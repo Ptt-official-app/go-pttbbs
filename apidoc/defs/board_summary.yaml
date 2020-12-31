@@ -13,13 +13,13 @@ BoardSummary:
       type: string
     title:
       type: string
-      description: the title excluding board-class and board-type
+      description: base64 of big5, the title excluding board-class and board-type
     class:
       type: string
-      description: the board class
+      description: base64 of big5, the board class
     type:
       type: string
-      description: the board-type (□, ◎, Σ, ...)
+      description: base64 of big5, the board-type (□, ◎, Σ, ...)
     moderators:
       type: array
       items:

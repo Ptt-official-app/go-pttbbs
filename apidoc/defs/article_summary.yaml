@@ -23,6 +23,7 @@ ArticleSummary:
       description: MM/DD
     title:
       type: string
+      description: base64 of big5
     money:
       type: number
     mode:

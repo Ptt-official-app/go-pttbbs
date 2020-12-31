@@ -12,6 +12,10 @@ parameters:
       '$id': https://json-schema.org/draft/2019-09/output/schema
       type: object
       properties:
+        client_info:
+          type: string
+          required: false
+          default: ''
         username:
           type: string
           required: true
@@ -24,15 +28,19 @@ parameters:
         nickname:
           type: string
           required: false
+          description: base64 of big5
         realname:
           type: string
           required: false
+          description: base64 of big5
         career:
           type: string
           required: false
+          description: base64 of big5
         address:
           type: string
           required: false
+          description: base64 of big5
         over18:
           type: boolean
           required: true

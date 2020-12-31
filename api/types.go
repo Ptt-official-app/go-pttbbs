@@ -12,8 +12,9 @@ type LoginRequiredApiFunc func(remoteAddr string, uuserID bbs.UUserID, params in
 type LoginRequiredPathApiFunc func(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (interface{}, error)
 
 type JwtClaim struct {
-	UUserID bbs.UUserID
-	Expire  *jwt.NumericDate
+	ClientInfo string           `json:"cli"`
+	UUserID    bbs.UUserID      `json:"sub"`
+	Expire     *jwt.NumericDate `json:"exp"`
 }
 
 type errResult struct {
