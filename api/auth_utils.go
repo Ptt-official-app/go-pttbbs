@@ -35,6 +35,10 @@ func VerifyJwt(raw string) (userID bbs.UUserID, err error) {
 		return "", ErrInvalidToken
 	}
 
+	if cl.Expire == nil {
+		return "", ErrInvalidToken
+	}
+
 	currentNanoTS := jwt.NewNumericDate(time.Now())
 	if *currentNanoTS > *cl.Expire {
 		return "", ErrInvalidToken
@@ -43,7 +47,7 @@ func VerifyJwt(raw string) (userID bbs.UUserID, err error) {
 	return cl.UUserID, nil
 }
 
-func createToken(userec *bbs.Userec) (string, error) {
+func createToken(userec *bbs.Userec, clientInfo string) (string, error) {
 	var err error
 
 	sig, err := jose.NewSigner(jose.SigningKey{Algorithm: jose.HS256, Key: JWT_SECRET}, (&jose.SignerOptions{}).WithType("JWT"))
@@ -52,8 +56,9 @@ func createToken(userec *bbs.Userec) (string, error) {
 	}
 
 	cl := &JwtClaim{
-		UUserID: userec.UUserID,
-		Expire:  jwt.NewNumericDate(time.Now().Add(time.Hour * 72)),
+		ClientInfo: clientInfo,
+		UUserID:    userec.UUserID,
+		Expire:     jwt.NewNumericDate(time.Now().Add(time.Hour * 24 * 2)),
 	}
 
 	raw, err := jwt.Signed(sig).Claims(cl).CompactSerialize()

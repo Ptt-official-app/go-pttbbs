@@ -12,6 +12,10 @@ parameters:
       '$id': https://json-schema.org/draft/2019-09/output/schema
       type: object
       properties:
+        client_info:
+          type: string
+          required: false
+          default: ''
         username:
           type: string
           required: true

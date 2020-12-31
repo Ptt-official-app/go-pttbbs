@@ -20,7 +20,7 @@ You can do the following to start with docker-compose:
 * copy `docker_compose.env.template` to `docker_compose.env` and modify the settings.
 * `./scripts/docker_initbbs.sh [BBSHOME] pttofficialapps/go-pttbbs:latest`
 * `docker-compose --env-file docker_compose.env -f docker-compose.yaml up -d`
-* register SYSOP and pttguest (api.GUEST) at `http://localhost:3456/register`
+* register SYSOP and pttguest (api.GUEST) at `http://localhost:3456/v1/register`
 * register your account at `http://localhost:3456/register`
 * login at `http://localhost:3456/v1/login`
 * `telnet localhost 8888` and use the account that you registered.
@@ -93,6 +93,17 @@ We can customized ptttype/00-config-default.go with the following steps:
 1. Copy 00-config-production.go.template to ptttype/00-config-production.go and change the +build and variables accordingly.
 2. `cd go-pttbbs ; go build -tag [dev-mode]; cd ..`
 
+
+## Swagger.sh
+
+The swagger setup is based on [flask-swagger](https://github.com/gangverk/flask-swagger),
+which is a python-project.
+You can do following for the swagger-api:
+
+1. setup the python virtualenv.
+2. cd apidoc; pip install . && pip uninstall apidoc -y && python setup develop; cd ..
+3. ./scripts/swagger.sh
+4. connect to [http://localhost:8080](http://localhost:8080)
 
 ## Relationship with https://github.com/PichuChen/go-bbs
 

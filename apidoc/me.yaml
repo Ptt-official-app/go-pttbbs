@@ -34,14 +34,19 @@ responses:
       properties:
         nickname:
           type: string
+          description: base64 of big5
         realname:
           type: string
+          description: base64 of big5
         career:
           type: string
+          description: base64 of big5
         address:
           type: string
+          description: base64 of big5
         email:
           type: string
+          description: base64 of big5
         money:
           type: integer
         over18:
@@ -55,6 +60,7 @@ responses:
         justify:
           type: string
           description: 認證資料
+          description: base64 of big5
         lastlogin_ts:
           type: integer
           description: 最近 login timestamp in unix-time

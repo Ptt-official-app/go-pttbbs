@@ -8,8 +8,9 @@ import (
 const LOGIN_R = "/token"
 
 type LoginParams struct {
-	Username string `json:"username"`
-	Passwd   string `json:"password"`
+	ClientInfo string `json:"client_info"`
+	Username   string `json:"username"`
+	Passwd     string `json:"password"`
 }
 
 type LoginResult struct {
@@ -34,7 +35,7 @@ func Login(remoteAddr string, params interface{}) (interface{}, error) {
 		return nil, ErrLoginFailed
 	}
 
-	token, err := createToken(user)
+	token, err := createToken(user, loginParams.ClientInfo)
 	if err != nil {
 		return nil, err
 	}

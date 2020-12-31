@@ -8,9 +8,10 @@ import (
 const REGISTER_R = "/register"
 
 type RegisterParams struct {
-	Username string `json:"username"`
-	Passwd   string `json:"password"`
-	Email    string `json:"email,omitempty"`
+	ClientInfo string `json:"client_info"`
+	Username   string `json:"username"`
+	Passwd     string `json:"password"`
+	Email      string `json:"email,omitempty"`
 
 	Nickname []byte `json:"nickname,omitempty"` //sending utf8-bytes from middleware.
 	Realname []byte `json:"realname,omitempty"`
@@ -52,7 +53,7 @@ func Register(remoteAddr string, params interface{}) (interface{}, error) {
 		return nil, err
 	}
 
-	token, err := createToken(user)
+	token, err := createToken(user, registerParams.ClientInfo)
 	if err != nil {
 		return nil, err
 	}
