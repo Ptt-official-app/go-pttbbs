@@ -35,11 +35,16 @@ func LoadBoardSummary(user *ptttype.UserecRaw, uid ptttype.Uid, bid ptttype.Bid)
 		if eachBoardStat == nil {
 			continue
 		}
-		boardStat = eachBoardStat
+
 		if eachBoardStat.Bid == bid {
+			boardStat = eachBoardStat
 			break
 		}
 
+	}
+
+	if boardStat == nil {
+		return nil, err
 	}
 
 	summary = parseBoardSummary(user, uid, boardStat)
