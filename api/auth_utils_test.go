@@ -37,7 +37,7 @@ func TestVerifyJwt(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotUserID, err := VerifyJwt(tt.args.raw)
+			gotUserID, _, err := VerifyJwt(tt.args.raw)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("VerifyJwt() error = %v, wantErr %v", err, tt.wantErr)
 				return

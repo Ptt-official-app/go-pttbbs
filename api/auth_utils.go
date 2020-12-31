@@ -20,31 +20,31 @@ func GetJwt(c *gin.Context) (jwt string) {
 	return tokenList[1]
 }
 
-func VerifyJwt(raw string) (userID bbs.UUserID, err error) {
+func VerifyJwt(raw string) (userID bbs.UUserID, clientInfo string, err error) {
 	if raw == "" {
-		return bbs.UUserID(GUEST), nil
+		return bbs.UUserID(GUEST), "", nil
 	}
 
 	tok, err := jwt.ParseSigned(raw)
 	if err != nil {
-		return "", ErrInvalidToken
+		return "", "", ErrInvalidToken
 	}
 
 	cl := &JwtClaim{}
 	if err := tok.Claims(JWT_SECRET, cl); err != nil {
-		return "", ErrInvalidToken
+		return "", "", ErrInvalidToken
 	}
 
 	if cl.Expire == nil {
-		return "", ErrInvalidToken
+		return "", "", ErrInvalidToken
 	}
 
 	currentNanoTS := jwt.NewNumericDate(time.Now())
 	if *currentNanoTS > *cl.Expire {
-		return "", ErrInvalidToken
+		return "", "", ErrInvalidToken
 	}
 
-	return cl.UUserID, nil
+	return cl.UUserID, cl.ClientInfo, nil
 }
 
 func createToken(userec *bbs.Userec, clientInfo string) (string, error) {
