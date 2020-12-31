@@ -49,7 +49,7 @@ func loginRequiredPathProcess(theFunc LoginRequiredPathApiFunc, params interface
 
 	jwt := GetJwt(c)
 
-	userID, err := VerifyJwt(jwt)
+	userID, _, err := VerifyJwt(jwt)
 	if err != nil {
 		processResult(c, nil, err)
 		return

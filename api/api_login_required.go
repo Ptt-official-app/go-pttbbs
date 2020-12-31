@@ -43,7 +43,7 @@ func loginRequiredProcess(theFunc LoginRequiredApiFunc, params interface{}, c *g
 
 	jwt := GetJwt(c)
 
-	userID, err := VerifyJwt(jwt)
+	userID, _, err := VerifyJwt(jwt)
 	if err != nil {
 		processResult(c, nil, err)
 		return
