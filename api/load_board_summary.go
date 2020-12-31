@@ -20,17 +20,20 @@ func LoadBoardSummaryWrapper(c *gin.Context) {
 
 }
 
-func LoadBoardSummary(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (interface{}, error) {
+func LoadBoardSummary(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (results interface{}, err error) {
 	thePath, ok := path.(*LoadBoardSummaryPath)
 	if !ok {
 
 		return nil, ErrInvalidPath
 	}
 	summary, err := bbs.LoadBoardSummary(uuserID, thePath.BBoardID)
+	if summary == nil {
+		return nil, ErrInvalidParams
+	}
 	if err != nil {
 		return nil, err
 	}
-	results := LoadBoardSummaryResult(summary)
+	results = LoadBoardSummaryResult(summary)
 
 	return results, nil
 }
