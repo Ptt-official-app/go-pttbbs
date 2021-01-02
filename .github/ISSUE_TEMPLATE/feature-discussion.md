@@ -2,7 +2,7 @@
 name: Feature discussion
 about: Suggest an idea for this project
 title: ''
-labels: ''
+labels: discussion
 assignees: ''
 
 ---
