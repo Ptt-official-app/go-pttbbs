@@ -2,6 +2,7 @@ package ansi
 
 const (
 	ESC_STR = "\x1b"
+	ESC_CHR = '\x1b'
 )
 
 func ANSIColor(color string) string {

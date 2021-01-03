@@ -324,7 +324,8 @@ func config() {
 	USE_REGCHECKD = setBoolConfig("USE_REGCHECKD", USE_REGCHECKD)
 	USE_VERIFYDB = setBoolConfig("USE_VERIFYDB", USE_VERIFYDB)
 
-	//additional config
+	//go-pttbbs config
 	IS_NEW_SHM = setBoolConfig("IS_NEW_SHM", IS_NEW_SHM)
 
+	IS_UTMP = setBoolConfig("IS_UTMP", IS_UTMP)
 }

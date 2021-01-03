@@ -7,6 +7,7 @@ import (
 	"errors"
 	"io"
 	"io/ioutil"
+	"net"
 	"os"
 	"reflect"
 	"time"
@@ -132,5 +133,29 @@ func ReadLine(reader *bufio.Reader) ([]byte, error) {
 		line = line[:len(line)-1]
 	}
 
+	if line[len(line)-1] == '\r' {
+		line = line[:len(line)-1]
+	}
+
 	return line, nil
+}
+
+//InetAddr
+//
+//if unable to parse: return 0 (0.0.0.0)
+func InetAddr(ipStr string) InAddr_t {
+	ip := net.ParseIP(ipStr)
+	if ip == nil {
+		return 0
+	}
+
+	return InAddr_t(binary.BigEndian.Uint32(ip[len(ip)-4:]))
+}
+
+func Kill(pid Pid_t, sig os.Signal) (err error) {
+	proc, err := os.FindProcess(int(pid))
+	if err != nil {
+		return err
+	}
+	return proc.Signal(sig)
 }

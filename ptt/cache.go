@@ -4,7 +4,9 @@ import (
 	"unsafe"
 
 	"github.com/Ptt-official-app/go-pttbbs/cache"
+	"github.com/Ptt-official-app/go-pttbbs/cmsys"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
+	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
 func IsBMCache(user *ptttype.UserecRaw, uid ptttype.Uid, bid ptttype.Bid) bool {
@@ -41,4 +43,62 @@ func IsBMCache(user *ptttype.UserecRaw, uid ptttype.Uid, bid ptttype.Bid) bool {
 	}
 
 	return false
+}
+
+func getNewUtmpEnt(uinfo *ptttype.UserInfoRaw) (utmpID ptttype.UtmpID, err error) {
+	p := cmsys.StringHash(uinfo.UserID[:]) % ptttype.USHM_SIZE
+
+	var pid types.Pid_t
+	ppid := &pid
+
+	for idx := 0; idx < ptttype.USHM_SIZE; idx, p = idx+1, p+1 {
+		cache.Shm.ReadAt(
+			unsafe.Offsetof(cache.Shm.Raw.UInfo)+uintptr(p)*ptttype.USER_INFO_RAW_SZ+unsafe.Offsetof(ptttype.EMPTY_USER_INFO_RAW.Pid),
+			types.PID_SZ,
+			unsafe.Pointer(ppid),
+		)
+		//found same pid.
+		//update the newest status.
+		//XXX race condition with auto-logout.
+		//XXX c-pttbbs does not care the race-condition here.
+		//XXX we may not do anything with utmpID though.
+		if pid == uinfo.Pid {
+			cache.Shm.WriteAt(
+				unsafe.Offsetof(cache.Shm.Raw.UInfo)+uintptr(p)*ptttype.USER_INFO_RAW_SZ,
+				ptttype.USER_INFO_RAW_SZ,
+				unsafe.Pointer(uinfo),
+			)
+
+			//https://github.com/ptt/pttbbs/blob/master/mbbsd/mbbsd.c#L998
+			one := uint8(1)
+			cache.Shm.WriteAt(
+				unsafe.Offsetof(cache.Shm.Raw.UTMPNeedSort),
+				types.UINT8_SZ,
+				unsafe.Pointer(&one),
+			)
+
+			return ptttype.UtmpID(p), nil
+		}
+
+		//new pid
+		if pid == 0 {
+			cache.Shm.WriteAt(
+				unsafe.Offsetof(cache.Shm.Raw.UInfo)+uintptr(p)*ptttype.USER_INFO_RAW_SZ,
+				ptttype.USER_INFO_RAW_SZ,
+				unsafe.Pointer(uinfo),
+			)
+
+			//https://github.com/ptt/pttbbs/blob/master/mbbsd/mbbsd.c#L998
+			one := uint8(1)
+			cache.Shm.WriteAt(
+				unsafe.Offsetof(cache.Shm.Raw.UTMPNeedSort),
+				types.UINT8_SZ,
+				unsafe.Pointer(&one),
+			)
+
+			return ptttype.UtmpID(p), nil
+		}
+	}
+
+	return ptttype.UtmpID(-1), ErrNewUtmp
 }

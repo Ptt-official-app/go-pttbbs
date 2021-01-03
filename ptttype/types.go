@@ -26,6 +26,8 @@ type Reg_t [REGLEN + 1]byte
 type Career_t [CAREERSZ]byte
 type Phone_t [PHONESZ]byte
 
+type UtmpID int32 //starting from 0, idx in Shm.Raw.UInfo
+
 type ChatID_t [11]byte
 
 type From_t [27]byte
@@ -69,6 +71,7 @@ const USER_ID_SZ = unsafe.Sizeof(EMPTY_USER_ID)
 const BOARD_ID_SZ = unsafe.Sizeof(EMPTY_BOARD_ID)
 const BOARD_TITLE_SZ = unsafe.Sizeof(EMPTY_BOARD_TITLE)
 const UID_IN_STORE_SZ = unsafe.Sizeof(UidInStore(0))
+const UTMP_ID_SZ = unsafe.Sizeof(UtmpID(0))
 const UID_SZ = unsafe.Sizeof(Uid(0))
 const BID_IN_STORE_SZ = unsafe.Sizeof(BidInStore(0))
 const BID_SZ = unsafe.Sizeof(Bid(0))
@@ -164,6 +167,19 @@ func (u *UserID_t) IsValid() bool {
 		}
 	}
 	return true
+}
+
+func (u *UserID_t) CopyFrom(uBytes []byte) {
+	copy(u[:], uBytes)
+	if len(uBytes) < int(USER_ID_SZ) {
+		u[len(uBytes)] = 0
+	}
+}
+
+//IsGuest
+//guest as reserved user-account.
+func (u *UserID_t) IsGuest() bool {
+	return u[0] == 'g' && u[1] == 'u' && u[2] == 'e' && u[3] == 's' && u[4] == 't' && u[5] == 0
 }
 
 //Valid BoardID

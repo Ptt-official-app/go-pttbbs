@@ -293,3 +293,41 @@ func (s *SHM) QsortCmpBoardClass() {
     offsetBsorted := unsafe.Offsetof(s.Raw.BSorted) + bsorted0sz*uintptr(ptttype.BSORT_BY_CLASS)
     shm.QsortCmpBoardClass(s.Shmaddr, int(offsetBsorted), uint32(bnumber))
 }
+
+func (r *SHM) CheckMaxUser() {
+    utmpnumber := int32(0)
+    var utmpnumber_p = &utmpnumber
+    var utmpnumber_ptr = unsafe.Pointer(utmpnumber_p)
+    maxuser := int32(0)
+    var maxuser_p = &maxuser
+    var maxuser_ptr = unsafe.Pointer(maxuser_p)
+
+    r.ReadAt(
+        unsafe.Offsetof(r.Raw.UTMPNumber),
+        types.INT32_SZ,
+        utmpnumber_ptr,
+    )
+
+    r.ReadAt(
+        unsafe.Offsetof(r.Raw.MaxUser),
+        types.INT32_SZ,
+        maxuser_ptr,
+    )
+
+    if maxuser < utmpnumber {
+        *maxuser_p = utmpnumber
+        r.WriteAt(
+            unsafe.Offsetof(r.Raw.MaxUser),
+            types.INT32_SZ,
+            maxuser_ptr,
+        )
+
+        nowTS := types.NowTS()
+
+        r.WriteAt(
+            unsafe.Offsetof(r.Raw.MaxTime),
+            types.TIME4_SZ,
+            unsafe.Pointer(&nowTS),
+        )
+    }
+}

@@ -62,3 +62,7 @@ func (p PERM) HasUserPerm(perm PERM) bool {
 func (p PERM) HasBasicUserPerm(perm PERM) bool {
 	return p.HasUserPerm(PERM_BASIC) && p.HasUserPerm(perm)
 }
+
+func (p PERM) Hide() bool {
+	return p == PERM_SYSOPHIDE
+}

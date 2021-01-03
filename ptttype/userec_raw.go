@@ -36,7 +36,7 @@ type UserecRaw struct {
 	Over18      bool      /* 是否已滿18歲 */
 	PagerUIType uint8     /* 呼叫器界面類別 (was: WATER_*) */
 	Pager       PagerMode /* 呼叫器狀態 */
-	Invisible   uint8     /* 隱形狀態 */
+	Invisible   bool      /* 隱形狀態 */
 	Unused4     [2]byte
 	Exmailbox   uint32 /* 購買信箱數 */
 
@@ -83,7 +83,7 @@ type UserecRaw struct {
 	Pad3      byte
 
 	ChessEloRating    uint16      /* 象棋等級分 */
-	WithMe            uint32      /* 我想找人下棋，聊天.... */
+	WithMe            WithMe_t    /* 我想找人下棋，聊天.... */
 	TimeRemoveBadPost types.Time4 /* 上次刪除劣文時間 */
 	TimeViolateLaw    types.Time4 /* 被開罰單時間 */
 

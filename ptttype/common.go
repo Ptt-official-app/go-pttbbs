@@ -145,15 +145,6 @@ const (
 
 	EQUSTR = 0 /* for strcmp */
 
-	/* 好友關係 */
-	IRH       = 1  /* I reject him.		*/
-	HRM       = 2  /* He reject me.		*/
-	IBH       = 4  /* I am board friend of him.	*/
-	IFH       = 8  /* I friend him (He is one of my friends). */
-	HFM       = 16 /* He friends me (I am one of his friends). */
-	ST_FRIEND = IBH | IFH | HFM
-	ST_REJECT = IRH | HRM
-
 	//XXX not sure what it is. #define QCAST           int (*)(const void *, const void *)
 	//XXX replaced by ToUpper #define chartoupper(c)  ((c >= 'a' && c <= 'z') ? c+'A'-'a' : c)
 
@@ -272,3 +263,20 @@ var (
 
 	MSG_SELECT_BOARD = ansi.ANSIColor("7") + "【 選擇看板 】" + ansi.ANSIReset() + "\n" + "請輸入看板名稱(按空白鍵自動搜尋): "
 )
+
+type FriendStat uint8
+
+const (
+	/* 好友關係 */
+	FRIEND_STAT_IRH    = 1  /* I reject him.		*/
+	FRIEND_STAT_HRM    = 2  /* He reject me.		*/
+	FRIEND_STAT_IBH    = 4  /* I am board friend of him.	*/
+	FRIEND_STAT_IFH    = 8  /* I friend him (He is one of my friends). */
+	FRIEND_STAT_HFM    = 16 /* He friends me (I am one of his friends). */
+	FRIEND_STAT_FRIEND = FRIEND_STAT_IBH | FRIEND_STAT_IFH | FRIEND_STAT_HFM
+	FRIEND_STAT_REJECT = FRIEND_STAT_IRH | FRIEND_STAT_HRM
+)
+
+func (f FriendStat) HasPerm(f1 FriendStat) bool {
+	return f&f1 != 0
+}

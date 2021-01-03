@@ -32,7 +32,7 @@ type Userec struct {
 	Over18      bool
 	PagerUIType uint8             /* 呼叫器界面類別 (was: WATER_*) */
 	Pager       ptttype.PagerMode /* 呼叫器狀態 */
-	Invisible   uint8
+	Invisible   bool
 	//Unused4     [2]byte
 	Exmailbox uint32
 

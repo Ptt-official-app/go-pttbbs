@@ -1,13 +1,13 @@
 package ptttype
 
-type MsgMode uint8
+type MsgMode int32
 
 const (
-	MSGMODE_TALK MsgMode = iota
-	MSGMODE_WRITE
-	MSGMODE_FROMANGEL
-	MSGMODE_TOANGEL
-	MSGMODE_ALOHA
+	MSGMODE_TALK      MsgMode = 0
+	MSGMODE_WRITE     MsgMode = 1
+	MSGMODE_FROMANGEL MsgMode = 2
+	MSGMODE_TOANGEL   MsgMode = 3
+	MSGMODE_ALOHA     MsgMode = 4
 )
 
 func (m MsgMode) String() string {

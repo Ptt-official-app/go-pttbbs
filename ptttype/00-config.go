@@ -512,6 +512,8 @@ var (
 var (
 	IS_NEW_SHM = true // whether to create new shm (use only with ShmInit)
 
+	IS_UTMP = true //whether to do with utmp
+
 	HAVE_USERAGREEMENT_POSTFIX = "etc/UserAgreement"
 	HAVE_USERAGREEMENT         = BBSHOME +
 		string(os.PathSeparator) +
