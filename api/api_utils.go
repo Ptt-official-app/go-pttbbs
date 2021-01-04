@@ -36,6 +36,10 @@ func processResult(c *gin.Context, result interface{}, err error) {
 	case ErrLoginFailed:
 		c.JSON(401, &errResult{err.Error()})
 
+	//403
+	case ErrInvalidUser:
+		c.JSON(403, &errResult{err.Error()})
+
 	default:
 		c.JSON(500, &errResult{err.Error()})
 	}

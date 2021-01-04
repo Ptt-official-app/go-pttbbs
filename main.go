@@ -37,6 +37,8 @@ func initGin() (*gin.Engine, error) {
 
 	router.GET(withPrefix(api.GET_ARTICLE_R), api.GetArticleWrapper)
 
+	router.GET(withPrefix(api.GET_USER_R), api.GetUserWrapper)
+
 	return router, nil
 }
 

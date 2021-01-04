@@ -11,7 +11,6 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
 	"github.com/sirupsen/logrus"
-	log "github.com/sirupsen/logrus"
 )
 
 //LoginQuery
@@ -31,13 +30,11 @@ func LoginQuery(userID *ptttype.UserID_t, passwd []byte, ip *ptttype.IPv4_t) (ui
 	}
 
 	uid, user, err = InitCurrentUser(userID)
-	logrus.Infof("LoginQuery: after init-current-user: userID: %v uid: %v user: %v err: %v", userID, uid, user, err)
 	if err != nil {
 		return 0, nil, err
 	}
 
 	isValid, err := cmbbs.CheckPasswd(user.PasswdHash[:], passwd)
-	log.Infof("after CheckPasswd: isValid: %v  err: %v", isValid, err)
 	if err != nil {
 		cmbbs.LogAttempt(userID, ip, true)
 		return 0, nil, err
@@ -80,7 +77,6 @@ func Login(userID *ptttype.UserID_t, passwd []byte, ip *ptttype.IPv4_t) (uid ptt
 func userLogin(uid ptttype.Uid, user *ptttype.UserecRaw, ip *ptttype.IPv4_t) (err error) {
 
 	utmpID, uinfo, err := setupUtmp(uid, user, ip, ptttype.USER_OP_LOGIN)
-	logrus.Infof("userLogin: after setupUtmp: utmpID: %v uinfo: %v e: %v", utmpID, uinfo, err)
 	if err != nil {
 		return err
 	}
@@ -125,9 +121,7 @@ func setupUtmp(uid ptttype.Uid, user *ptttype.UserecRaw, ip *ptttype.IPv4_t, op 
 //with which newUserInfoRaw cannot be in ptttype.
 func newUserInfoRaw(uid ptttype.Uid, user *ptttype.UserecRaw, ip *ptttype.IPv4_t, op ptttype.UserOpMode) *ptttype.UserInfoRaw {
 
-	logrus.Infof("newUserInfoRaw: ip: %v", ip)
 	fromIP := types.InetAddr(types.CstrToString(ip[:]))
-	logrus.Infof("newUserInfoRaw: ip: %v fromIP: %v", string(ip[:]), fromIP)
 	nowTS := types.NowTS()
 
 	//XXX we can do stringNoneBig5 here.
@@ -178,7 +172,6 @@ func doAloha(utmpID ptttype.UtmpID, uinfo *ptttype.UserInfoRaw, hello []byte) {
 	}
 
 	filename, err := path.SetHomeFile(&uinfo.UserID, ptttype.FN_ALOHA)
-	logrus.Infof("doAloha: filename: %v e: %v userID: %v", filename, err, uinfo.UserID)
 	if err != nil {
 		return
 	}
