@@ -7,10 +7,15 @@ import (
 
 const LOAD_BOARD_SUMMARY_R = "/boards/:bid/summary"
 
+type LoadBoardSummaryParams struct{}
+
 type LoadBoardSummaryPath struct {
 	BBoardID bbs.BBoardID `uri:"bid" binding:"required"`
 }
 
+//XXX LoadBoardSummaryResult is a pointer
+//    It's possible that this is unavoidable,
+//    and we need to change all the result-type to be pointer-based.
 type LoadBoardSummaryResult *bbs.BoardSummary
 
 func LoadBoardSummaryWrapper(c *gin.Context) {
