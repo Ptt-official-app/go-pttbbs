@@ -836,3 +836,44 @@ func TestTitle_t_ToClass(t *testing.T) {
 		})
 	}
 }
+
+func TestUserID_t_IsGuest(t *testing.T) {
+	userID0Str := "guest"
+	userID0 := &UserID_t{}
+	copy(userID0[:], []byte(userID0Str))
+
+	userID1Str := "guest\x00123"
+	userID1 := &UserID_t{}
+	copy(userID1[:], []byte(userID1Str))
+
+	userID2Str := "st123123"
+	userID2 := &UserID_t{}
+	copy(userID2[:], []byte(userID2Str))
+
+	tests := []struct {
+		name     string
+		u        *UserID_t
+		expected bool
+	}{
+		// TODO: Add test cases.
+		{
+			u:        userID0,
+			expected: true,
+		},
+		{
+			u:        userID1,
+			expected: true,
+		},
+		{
+			u:        userID2,
+			expected: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.u.IsGuest(); got != tt.expected {
+				t.Errorf("UserID_t.IsGuest() = %v, want %v", got, tt.expected)
+			}
+		})
+	}
+}

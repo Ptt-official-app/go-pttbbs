@@ -311,3 +311,39 @@ func TestReadLine(t *testing.T) {
 		})
 	}
 }
+
+func TestInetAddr(t *testing.T) {
+	type args struct {
+		ipStr string
+	}
+	tests := []struct {
+		name     string
+		args     args
+		expected InAddr_t
+	}{
+		// TODO: Add test cases.
+		{
+			args:     args{ipStr: "192.168.0.1"},
+			expected: InAddr_t(0xc0a80001),
+		},
+		{
+			args:     args{ipStr: "255.255.255.255"},
+			expected: InAddr_t(0xffffffff),
+		},
+		{
+			args:     args{ipStr: "0.0.0.0"},
+			expected: InAddr_t(0x00000000),
+		},
+		{
+			args:     args{ipStr: "127.0.0.1"},
+			expected: InAddr_t(0x7f000001),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := InetAddr(tt.args.ipStr); got != tt.expected {
+				t.Errorf("InetAddr() = %v, want %v", got, tt.expected)
+			}
+		})
+	}
+}

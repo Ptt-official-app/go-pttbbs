@@ -66,6 +66,7 @@ func Test_getSystemUaVersion(t *testing.T) {
 }
 
 func TestSetupNewUser(t *testing.T) {
+	//setup/teardown move to for-loop
 
 	type args struct {
 		user *ptttype.UserecRaw
@@ -416,6 +417,68 @@ func Test_registerCheckAndUpdateEmaildb(t *testing.T) {
 			if err := registerCheckAndUpdateEmaildb(tt.args.user, tt.args.email); (err != nil) != tt.wantErr {
 				t.Errorf("registerCheckAndUpdateEmaildb() error = %v, wantErr %v", err, tt.wantErr)
 			}
+		})
+	}
+}
+
+func TestRegister(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	type args struct {
+		userID          *ptttype.UserID_t
+		passwd          []byte
+		fromHost        *ptttype.IPv4_t
+		email           *ptttype.Email_t
+		isEmailVerified bool
+		isAdbannerUSong bool
+		nickname        *ptttype.Nickname_t
+		realname        *ptttype.RealName_t
+		career          *ptttype.Career_t
+		address         *ptttype.Address_t
+		over18          bool
+	}
+	tests := []struct {
+		name         string
+		args         args
+		expectedUid  ptttype.Uid
+		expectedUser *ptttype.UserecRaw
+		wantErr      bool
+	}{
+		// TODO: Add test cases.
+		{
+			args: args{
+				userID:   &testNewRegister1.UserID,
+				passwd:   testNewRegister1Passwd,
+				fromHost: &testNewRegister1.LastHost,
+				email:    &testNewRegister1.Email,
+				nickname: &testNewRegister1.Nickname,
+				realname: &testNewRegister1.RealName,
+				career:   &testNewRegister1.Career,
+				address:  &testNewRegister1.Address,
+				over18:   testNewRegister1.Over18,
+			},
+			expectedUser: testNewRegister1,
+			expectedUid:  6,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotUid, gotUser, err := Register(tt.args.userID, tt.args.passwd, tt.args.fromHost, tt.args.email, tt.args.isEmailVerified, tt.args.isAdbannerUSong, tt.args.nickname, tt.args.realname, tt.args.career, tt.args.address, tt.args.over18)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Register() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotUid, tt.expectedUid) {
+				t.Errorf("Register() gotUid = %v, want %v", gotUid, tt.expectedUid)
+			}
+
+			copy(gotUser.PasswdHash[:], testNewRegister1.PasswdHash[:])
+			gotUser.LastLogin = testNewRegister1.LastLogin
+			gotUser.FirstLogin = testNewRegister1.FirstLogin
+			gotUser.LastSeen = testNewRegister1.LastSeen
+
+			testutil.TDeepEqual(t, "user", gotUser, tt.expectedUser)
 		})
 	}
 }

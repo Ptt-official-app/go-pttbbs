@@ -14,6 +14,50 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+//Login
+//
+//adopted from the original start_client with LOGINASNEW.
+//https://github.com/ptt/pttbbs/blob/master/mbbsd/mbbsd.c#L1399
+func Register(
+	userID *ptttype.UserID_t,
+	passwd []byte,
+	fromHost *ptttype.IPv4_t,
+	email *ptttype.Email_t,
+	isEmailVerified bool,
+	isAdbannerUSong bool,
+
+	nickname *ptttype.Nickname_t,
+	realname *ptttype.RealName_t,
+	career *ptttype.Career_t,
+	address *ptttype.Address_t,
+	over18 bool,
+) (uid ptttype.Uid, user *ptttype.UserecRaw, err error) {
+	uid, user, err = NewRegister(
+		userID,
+		passwd,
+		fromHost,
+		email,
+		isEmailVerified,
+		isAdbannerUSong,
+
+		nickname,
+		realname,
+		career,
+		address,
+		over18,
+	)
+	if err != nil {
+		return 0, nil, err
+	}
+
+	err = userLogin(uid, user, fromHost)
+	if err != nil {
+		return 0, nil, err
+	}
+
+	return uid, user, nil
+}
+
 //NewRegister
 //
 //XXX Assuming valid input. need to verify email at api.

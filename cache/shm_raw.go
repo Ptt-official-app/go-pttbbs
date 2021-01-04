@@ -33,7 +33,7 @@ type SHMRaw struct {
 	//     Require to discuss with admins about current settings.
 	UInfo  [ptttype.USHM_SIZE]ptttype.UserInfoRaw
 	Gap6   [ptttype.USER_INFO_RAW_SZ]byte
-	Sorted [2][ptttype.SORT_BY_MAX][ptttype.USHM_SIZE]ptttype.UidInStore
+	Sorted [2][ptttype.SORT_BY_MAX][ptttype.USHM_SIZE]ptttype.UtmpID
 	/* 第一維double buffer 由currsorted指向目前使用的
 	   第二維sort type */
 	Gap7          [types.INT32_SZ]byte

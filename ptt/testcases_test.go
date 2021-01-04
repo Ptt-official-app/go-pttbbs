@@ -1,6 +1,9 @@
 package ptt
 
-import "github.com/Ptt-official-app/go-pttbbs/ptttype"
+import (
+	"github.com/Ptt-official-app/go-pttbbs/ptttype"
+	"github.com/Ptt-official-app/go-pttbbs/types"
+)
 
 var (
 	testUserecRaw1 = &ptttype.UserecRaw{
@@ -78,6 +81,97 @@ var (
 		LastSeen:     1600681288,
 		UaVersion:    128,
 	}
+
+	testNewUserInfoRawUserecRaw = &ptttype.UserecRaw{
+		Version:    4194,
+		UserID:     ptttype.UserID_t{66, 49}, //B1
+		RealName:   ptttype.RealName_t{67, 111, 100, 105, 110, 103, 77, 97, 110},
+		Nickname:   ptttype.Nickname_t{0x1e, 0x80, 0x30, 0x40, 0x80, 0x40},
+		PasswdHash: ptttype.Passwd_t{98, 104, 119, 118, 79, 74, 116, 102, 84, 49, 84, 65, 73, 0},
+
+		UFlag:        33557088,
+		UserLevel:    7,
+		NumLoginDays: 1,
+		NumPosts:     0,
+		FirstLogin:   1600681288,
+		LastLogin:    1600756094,
+		LastHost:     ptttype.IPv4_t{53, 57, 46, 49, 50, 52, 46, 49, 54, 55, 46, 50, 50, 54},
+		Address:      ptttype.Address_t{183, 115, 166, 203, 191, 164, 164, 108, 181, 234, 182, 109, 175, 81, 166, 179, 167, 248, 53, 52, 51, 184, 185},
+		Over18:       true,
+		Pager:        ptttype.PAGER_ON,
+		Career:       ptttype.Career_t{165, 254, 180, 186, 179, 110, 197, 233},
+		LastSeen:     1600681288,
+		UaVersion:    128,
+	}
+
+	testNewUserInfoRawUserInfoRaw = &ptttype.UserInfoRaw{
+		Pid:  types.Pid_t(types.DEFAULT_PID_MAX + 10),
+		Uid:  10,
+		Mode: ptttype.USER_OP_LOGIN,
+
+		UserID:   ptttype.UserID_t{66, 49},
+		Nickname: ptttype.Nickname_t{0x30, 0x40, 0x80, 0x40, 0x00, 0x40},
+
+		UserLevel: 7,
+		FromIp:    0xc0a80001, //192.168.0.1
+		From:      ptttype.From_t{'1', '9', '2', '.', '1', '6', '8', '.', '0', '.', '1'},
+		Pager:     ptttype.PAGER_ON,
+	}
+
+	testGetNewUtmpEnt0 = &ptttype.UserInfoRaw{
+		Pid:  types.Pid_t(types.DEFAULT_PID_MAX + 10),
+		Uid:  10,
+		Mode: ptttype.USER_OP_LOGIN,
+
+		Nickname: ptttype.Nickname_t{0x30, 0x40, 0x80, 0x40, 0x00, 0x40},
+
+		UserLevel: 7,
+		FromIp:    0xc0a80001, //192.168.0.1
+		From:      ptttype.From_t{'1', '9', '2', '.', '1', '6', '8', '.', '0', '.', '1'},
+		Pager:     ptttype.PAGER_ON,
+	}
+
+	testUserInfo1 = ptttype.UserInfoRaw{
+		UserID: ptttype.UserID_t{'S', 'Y', 'S', 'O', 'P'},
+		Uid:    1,
+		From:   ptttype.From_t{'D'},
+		Pid:    3,
+	}
+
+	testUserInfo2 = ptttype.UserInfoRaw{
+		UserID: ptttype.UserID_t{'A', '1'},
+		Uid:    2,
+		From:   ptttype.From_t{'B'},
+		Pid:    2,
+	}
+
+	testUserInfo3 = ptttype.UserInfoRaw{
+		UserID: ptttype.UserID_t{'A', '0'},
+		Uid:    3,
+		From:   ptttype.From_t{'S'},
+		Pid:    1,
+	}
+	testUserInfo4 = ptttype.UserInfoRaw{
+		UserID: ptttype.UserID_t{'Z', '2'},
+		Uid:    5,
+		From:   ptttype.From_t{'K'},
+		Pid:    5,
+	}
+	testUserInfo5 = ptttype.UserInfoRaw{
+		UserID: ptttype.UserID_t{'Z', '1'},
+		Uid:    4,
+		From:   ptttype.From_t{'H'},
+		Pid:    4,
+	}
+
+	testUserInfo6 = ptttype.UserInfoRaw{
+		UserID: ptttype.UserID_t{'Z', '3'},
+		Uid:    6,
+		From:   ptttype.From_t{'K'},
+		Pid:    6,
+	}
+
+	testNewUserInfoRawNickname = ptttype.Nickname_t{0x1e, 0x80, 0x30, 0x40, 0x80, 0x40}
 
 	testNewRegister1Passwd = []byte("!@Ab86")
 

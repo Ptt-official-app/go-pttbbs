@@ -4,7 +4,7 @@ import "testing"
 
 func TestValidUSHMEntry(t *testing.T) {
 	type args struct {
-		x int
+		x UtmpID
 	}
 	tests := []struct {
 		name     string

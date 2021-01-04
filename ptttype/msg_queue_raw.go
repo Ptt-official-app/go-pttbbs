@@ -11,7 +11,7 @@ type MsgQueueRaw struct {
 	Pid        types.Pid_t
 	UserID     UserID_t
 	LastCallIn [76]byte
-	MsgMode    int32
+	MsgMode    MsgMode
 }
 
 //Require updating SHM_VERSION if MSG_QUEUE_RAW_SZ is changed.
