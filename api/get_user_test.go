@@ -1,10 +1,10 @@
 package api
 
 import (
-	"reflect"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 )
 
 func TestGetUser(t *testing.T) {
@@ -41,9 +41,7 @@ func TestGetUser(t *testing.T) {
 			}
 
 			got := gotResult.(GetUserResult)
-			if !reflect.DeepEqual(got, tt.expectedResult) {
-				t.Errorf("GetUser() = %v, want %v", gotResult, tt.expectedResult)
-			}
+			testutil.TDeepEqual(t, "got", got, tt.expectedResult)
 		})
 	}
 }
