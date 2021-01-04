@@ -25,8 +25,8 @@ type Userec struct {
 	Money        int32
 	//Unused2      [4]byte
 
-	Email   string
-	Address []byte
+	Email string
+	//Address []byte
 	Justify []byte
 	//UnusedBirth [3]uint8  /* 生日 月日年 */
 	Over18      bool
@@ -95,7 +95,6 @@ func NewUserecFromRaw(userecRaw *ptttype.UserecRaw) *Userec {
 	user.Lasthost = types.CstrToString(userecRaw.LastHost[:])
 	user.Money = userecRaw.Money
 	user.Email = types.CstrToString(userecRaw.Email[:])
-	user.Address = types.CstrToBytes(userecRaw.Address[:])
 	user.Justify = types.CstrToBytes(userecRaw.Justify[:])
 	user.Over18 = userecRaw.Over18
 	user.PagerUIType = userecRaw.PagerUIType
