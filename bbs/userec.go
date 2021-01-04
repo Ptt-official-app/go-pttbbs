@@ -68,41 +68,81 @@ type Userec struct {
 	GoTie     uint16
 	DarkWin   uint16
 	DarkLose  uint16
+	DarkTie   uint16 /* 暗棋戰績 和 */
 	UaVersion uint8
 
 	Signature uint8 /* 慣用簽名檔 */
 	//Unused10  uint8    /* 從前放好文章數, 使用前請先清0 */
-	BadPost uint8  /* 評價為壞文章數 */
-	DarkTie uint16 /* 暗棋戰績 和 */
-	MyAngel string /* 我的小天使 */
+	BadPost uint8   /* 評價為壞文章數 */
+	MyAngel UUserID /* 我的小天使 */
 	//Pad3    byte
+
+	ChessEloRating    uint16
+	WithMe            ptttype.WithMe_t
+	TimeRemoveBadPost types.Time4
+	TimeViolateLaw    types.Time4
 }
 
-func NewUserecFromRaw(userecRaw *ptttype.UserecRaw) *Userec {
-	user := &Userec{}
-	user.UUserID = ToUUserID(&userecRaw.UserID)
-	user.Version = userecRaw.Version
-	user.Username = types.CstrToString(userecRaw.UserID[:])
-	user.Realname = types.CstrToBytes(userecRaw.RealName[:])
-	user.Nickname = types.CstrToBytes(userecRaw.Nickname[:])
+func NewUserecFromRaw(userecRaw *ptttype.UserecRaw) (user *Userec) {
+	return &Userec{
+		UUserID:  ToUUserID(&userecRaw.UserID),
+		Version:  userecRaw.Version,
+		Username: types.CstrToString(userecRaw.UserID[:]),
+		Realname: types.CstrToBytes(userecRaw.RealName[:]),
+		Nickname: types.CstrToBytes(userecRaw.Nickname[:]),
 
-	user.Uflag = userecRaw.UFlag
-	user.Userlevel = userecRaw.UserLevel
-	user.Numlogindays = userecRaw.NumLoginDays
-	user.Numposts = userecRaw.NumPosts
-	user.Firstlogin = userecRaw.FirstLogin
-	user.Lastlogin = userecRaw.LastLogin
-	user.Lasthost = types.CstrToString(userecRaw.LastHost[:])
-	user.Money = userecRaw.Money
-	user.Email = types.CstrToString(userecRaw.Email[:])
-	user.Justify = types.CstrToBytes(userecRaw.Justify[:])
-	user.Over18 = userecRaw.Over18
-	user.PagerUIType = userecRaw.PagerUIType
-	user.Pager = userecRaw.Pager
-	user.Invisible = userecRaw.Invisible
-	user.Exmailbox = userecRaw.Exmailbox
+		Uflag:        userecRaw.UFlag,
+		Userlevel:    userecRaw.UserLevel,
+		Numlogindays: userecRaw.NumLoginDays,
+		Numposts:     userecRaw.NumPosts,
+		Firstlogin:   userecRaw.FirstLogin,
+		Lastlogin:    userecRaw.LastLogin,
+		Lasthost:     types.CstrToString(userecRaw.LastHost[:]),
+		Money:        userecRaw.Money,
+		Email:        types.CstrToString(userecRaw.Email[:]),
+		Justify:      types.CstrToBytes(userecRaw.Justify[:]),
+		Over18:       userecRaw.Over18,
+		PagerUIType:  userecRaw.PagerUIType,
+		Pager:        userecRaw.Pager,
+		Invisible:    userecRaw.Invisible,
+		Exmailbox:    userecRaw.Exmailbox,
 
-	user.Career = types.CstrToBytes(userecRaw.Career[:])
+		Career: types.CstrToBytes(userecRaw.Career[:]),
 
-	return user
+		Role:          userecRaw.Role,
+		LastSeen:      userecRaw.LastSeen,
+		TimeSetAngel:  userecRaw.TimeSetAngel,
+		TimePlayAngel: userecRaw.TimePlayAngel,
+
+		LastSong:  userecRaw.LastSong,
+		LoginView: userecRaw.LoginView,
+
+		Vlcount:   userecRaw.VlCount,
+		FiveWin:   userecRaw.FiveWin,
+		FiveLose:  userecRaw.FiveLose,
+		FiveTie:   userecRaw.FiveTie,
+		ChcWin:    userecRaw.ChcWin,
+		ChcLose:   userecRaw.ChcLose,
+		ChcTie:    userecRaw.ChcTie,
+		Conn6Win:  userecRaw.Conn6Win,
+		Conn6Lose: userecRaw.Conn6Lose,
+		Conn6Tie:  userecRaw.Conn6Tie,
+		GoWin:     userecRaw.GoWin,
+		GoLose:    userecRaw.GoLose,
+		GoTie:     userecRaw.GoTie,
+		DarkWin:   userecRaw.DarkWin,
+		DarkLose:  userecRaw.DarkLose,
+		DarkTie:   userecRaw.DarkTie,
+
+		UaVersion: userecRaw.UaVersion,
+
+		Signature: userecRaw.Signature,
+		BadPost:   userecRaw.BadPost,
+		MyAngel:   ToUUserID(&userecRaw.MyAngel),
+
+		ChessEloRating:    userecRaw.ChessEloRating,
+		WithMe:            userecRaw.WithMe,
+		TimeRemoveBadPost: userecRaw.TimeRemoveBadPost,
+		TimeViolateLaw:    userecRaw.TimeViolateLaw,
+	}
 }
