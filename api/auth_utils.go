@@ -47,7 +47,7 @@ func VerifyJwt(raw string) (userID bbs.UUserID, clientInfo string, err error) {
 	return cl.UUserID, cl.ClientInfo, nil
 }
 
-func createToken(userec *bbs.Userec, clientInfo string) (string, error) {
+func createToken(userID bbs.UUserID, clientInfo string) (string, error) {
 	var err error
 
 	sig, err := jose.NewSigner(jose.SigningKey{Algorithm: jose.HS256, Key: JWT_SECRET}, (&jose.SignerOptions{}).WithType("JWT"))
@@ -57,7 +57,7 @@ func createToken(userec *bbs.Userec, clientInfo string) (string, error) {
 
 	cl := &JwtClaim{
 		ClientInfo: clientInfo,
-		UUserID:    userec.UUserID,
+		UUserID:    userID,
 		Expire:     jwt.NewNumericDate(time.Now().Add(time.Hour * 24 * 2)),
 	}
 

@@ -29,15 +29,21 @@ func initGin() (*gin.Engine, error) {
 	router := gin.Default()
 
 	router.POST(withPrefix(api.INDEX_R), api.IndexWrapper)
+
+	//login/register
 	router.POST(withPrefix(api.LOGIN_R), api.LoginWrapper)
 	router.POST(withPrefix(api.REGISTER_R), api.RegisterWrapper)
 
+	//board
 	router.GET(withPrefix(api.LOAD_GENERAL_BOARDS_R), api.LoadGeneralBoardsWrapper)
 	router.GET(withPrefix(api.LOAD_GENERAL_ARTICLES_R), api.LoadGeneralArticlesWrapper)
 
+	//article
 	router.GET(withPrefix(api.GET_ARTICLE_R), api.GetArticleWrapper)
 
+	//user
 	router.GET(withPrefix(api.GET_USER_R), api.GetUserWrapper)
+	router.POST(withPrefix(api.CHANGE_PASSWD_R), api.ChangePasswdWrapper)
 
 	return router, nil
 }

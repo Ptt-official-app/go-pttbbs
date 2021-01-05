@@ -6,6 +6,7 @@ import (
 	"encoding/binary"
 	"math/rand"
 	"os"
+	"unsafe"
 
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/crypt"
@@ -114,8 +115,40 @@ func PasswdQuery(uid ptttype.Uid) (*ptttype.UserecRaw, error) {
 	return user, nil
 }
 
+//PasswdQueryPasswd
+//Params
+//	uid: uid
+//
+//Return
+//	*ptttype.UserecRaw: user.
+//	error: err.
+func PasswdQueryPasswd(uid ptttype.Uid) (passwdHash *ptttype.Passwd_t, err error) {
+	if !uid.IsValid() {
+		return nil, ptttype.ErrInvalidUserID
+	}
+
+	file, err := os.Open(ptttype.FN_PASSWD)
+	if err != nil {
+		return nil, err
+	}
+
+	passwdHash = &ptttype.Passwd_t{}
+	uidInFile := uid.ToUidInStore()
+	offset := int64(ptttype.USEREC_RAW_SZ)*int64(uidInFile) + int64(unsafe.Offsetof(ptttype.USEREC_RAW.PasswdHash))
+	_, err = file.Seek(offset, 0)
+	if err != nil {
+		return nil, err
+	}
+	err = binary.Read(file, binary.LittleEndian, passwdHash)
+	if err != nil {
+		return nil, err
+	}
+
+	return passwdHash, nil
+}
+
 func PasswdUpdate(uid ptttype.Uid, user *ptttype.UserecRaw) error {
-	if uid < 1 || uid > ptttype.MAX_USERS {
+	if !uid.IsValid() {
 		return cache.ErrInvalidUID
 	}
 
@@ -132,6 +165,32 @@ func PasswdUpdate(uid ptttype.Uid, user *ptttype.UserecRaw) error {
 	}
 
 	err = binary.Write(file, binary.LittleEndian, user)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func PasswdUpdatePasswd(uid ptttype.Uid, passwdHash *ptttype.Passwd_t) error {
+	if !uid.IsValid() {
+		return cache.ErrInvalidUID
+	}
+
+	file, err := os.OpenFile(ptttype.FN_PASSWD, os.O_WRONLY, 0600)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	uidInFile := uid.ToUidInStore()
+	offset := int64(ptttype.USEREC_RAW_SZ)*int64(uidInFile) + int64(unsafe.Offsetof(ptttype.USEREC_RAW.PasswdHash))
+	_, err = file.Seek(offset, 0)
+	if err != nil {
+		return err
+	}
+
+	err = binary.Write(file, binary.LittleEndian, passwdHash)
 	if err != nil {
 		return err
 	}

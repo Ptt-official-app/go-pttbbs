@@ -45,6 +45,24 @@ func IsBMCache(user *ptttype.UserecRaw, uid ptttype.Uid, bid ptttype.Bid) bool {
 	return false
 }
 
+func GetUser(userID *ptttype.UserID_t) (user *ptttype.UserecRaw, err error) {
+	uid, err := cache.SearchUserRaw(userID, nil)
+	if err != nil {
+		return nil, err
+	}
+	if !uid.IsValid() {
+		return nil, ptttype.ErrInvalidUserID
+	}
+
+	//passwdSyncQuery includes cache.MoneyOf
+	user, err = passwdSyncQuery(uid)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
 func getNewUtmpEnt(uinfo *ptttype.UserInfoRaw) (utmpID ptttype.UtmpID, err error) {
 	p := cmsys.StringHash(uinfo.UserID[:]) % ptttype.USHM_SIZE
 
