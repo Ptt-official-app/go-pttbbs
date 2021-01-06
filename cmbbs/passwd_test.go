@@ -2,6 +2,7 @@ package cmbbs
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 	"time"
 
@@ -290,5 +291,49 @@ func TestPasswdUpdate(t *testing.T) {
 			testutil.TDeepEqual(t, "userec", userecRaw, tt.expected)
 
 		})
+	}
+}
+
+func TestPasswdUpdatePasswd(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	passwd0 := []byte("123125")
+	passwdHash0, _ := GenPasswd(passwd0)
+
+	passwd1 := []byte("123123")
+	passwdHash1, _ := GenPasswd(passwd1)
+
+	type args struct {
+		uid        ptttype.Uid
+		passwdHash *ptttype.Passwd_t
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+		{
+			args: args{uid: 1, passwdHash: passwdHash0},
+		},
+		{
+			args: args{uid: 1, passwdHash: passwdHash1},
+		},
+	}
+
+	var wg sync.WaitGroup
+	for _, tt := range tests {
+		wg.Add(1)
+		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
+			if err := PasswdUpdatePasswd(tt.args.uid, tt.args.passwdHash); (err != nil) != tt.wantErr {
+				t.Errorf("PasswdUpdatePasswd() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			passwdHash, _ := PasswdQueryPasswd(tt.args.uid)
+			testutil.TDeepEqual(t, "passwdHash", passwdHash, tt.args.passwdHash)
+		})
+		wg.Wait()
 	}
 }

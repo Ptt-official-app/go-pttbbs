@@ -53,7 +53,7 @@ func Register(remoteAddr string, params interface{}) (interface{}, error) {
 		return nil, err
 	}
 
-	token, err := createToken(user, registerParams.ClientInfo)
+	token, err := createToken(user.UUserID, registerParams.ClientInfo)
 	if err != nil {
 		return nil, err
 	}

@@ -8,7 +8,7 @@ func GetUser(uuserID UUserID) (user *Userec, err error) {
 		return nil, ErrInvalidParams
 	}
 
-	_, userecRaw, err := ptt.InitCurrentUser(userIDRaw)
+	userecRaw, err := ptt.GetUser(userIDRaw)
 	if err != nil {
 		return nil, err
 	}

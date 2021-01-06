@@ -4,6 +4,8 @@ import (
 	"os"
 	"strings"
 
+	"github.com/Ptt-official-app/go-pttbbs/cache"
+	"github.com/Ptt-official-app/go-pttbbs/cmbbs"
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs/path"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
@@ -51,6 +53,47 @@ func tryDeleteHomePath(userID *ptttype.UserID_t) error {
 	}
 
 	if err := os.RemoveAll(homePath); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+//https://github.com/ptt/pttbbs/blob/master/mbbsd/user.c#L961
+//https://github.com/ptt/pttbbs/blob/master/mbbsd/user.c#L1194
+func ChangePasswd(userID *ptttype.UserID_t, origPasswd []byte, passwd []byte, ip *ptttype.IPv4_t) (err error) {
+	if userID == nil || userID[0] == 0 {
+		return ptttype.ErrInvalidUserID
+	}
+
+	uid, err := cache.SearchUserRaw(userID, nil)
+	if err != nil {
+		return err
+	}
+
+	userPasswdHash, err := cmbbs.PasswdQueryPasswd(uid)
+	if err != nil {
+		return err
+	}
+
+	isValid, err := cmbbs.CheckPasswd(userPasswdHash[:], origPasswd)
+	if err != nil {
+		cmbbs.LogAttempt(userID, ip, true)
+		return err
+	}
+
+	if !isValid {
+		cmbbs.LogAttempt(userID, ip, true)
+		return ptttype.ErrInvalidUserID
+	}
+
+	genNewPasswdHash, err := cmbbs.GenPasswd(passwd)
+	if err != nil {
+		return ErrInvalidParams
+	}
+
+	err = cmbbs.PasswdUpdatePasswd(uid, genNewPasswdHash)
+	if err != nil {
 		return err
 	}
 
