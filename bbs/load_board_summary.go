@@ -1,14 +1,12 @@
 package bbs
 
 import (
-	"fmt"
-
 	"github.com/Ptt-official-app/go-pttbbs/ptt"
 )
 
 func LoadBoardSummary(uuserID UUserID, bboardID BBoardID) (summary *BoardSummary, err error) {
-	bid, bbb, err := bboardID.ToRaw()
-	fmt.Println(string(bbb[:]))
+	bid, _, err := bboardID.ToRaw()
+
 	if err != nil {
 		return nil, ErrInvalidParams
 	}
