@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
+	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/gin-gonic/gin"
 )
@@ -37,6 +38,8 @@ func processResult(c *gin.Context, result interface{}, err error) {
 		c.JSON(401, &errResult{err.Error()})
 
 	//403
+	case cache.ErrInvalidUID:
+		c.JSON(403, &errResult{err.Error()})
 	case ErrInvalidUser:
 		c.JSON(403, &errResult{err.Error()})
 	case ptttype.ErrInvalidUserID:

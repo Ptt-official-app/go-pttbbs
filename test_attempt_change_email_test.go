@@ -8,14 +8,15 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/api"
 )
 
-func Test_ChangePasswd(t *testing.T) {
+func Test_AttemptChangeEmail(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	params1 := &api.ChangePasswdParams{
+	//until Fri Nov 14 01:28:37 EST 2245
+	params0 := &api.AttemptChangeEmailParams{
 		ClientInfo: "test_clientinfo",
-		OrigPasswd: "123123",
-		Passwd:     "123124",
+		Passwd:     "123123",
+		Email:      "test@ptt.test",
 	}
 
 	type args struct {
@@ -30,10 +31,10 @@ func Test_ChangePasswd(t *testing.T) {
 	}{
 		{
 			args: args{
-				path:     "/users/SYSOP/changepasswd",
+				path:     "/users/SYSOP/attemptchangeemail",
 				username: "SYSOP",
 				passwd:   "123123",
-				params:   params1,
+				params:   params0,
 			},
 		},
 	}
@@ -52,5 +53,4 @@ func Test_ChangePasswd(t *testing.T) {
 			}
 		})
 	}
-
 }

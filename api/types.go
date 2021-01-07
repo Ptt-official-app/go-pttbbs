@@ -17,6 +17,13 @@ type JwtClaim struct {
 	Expire     *jwt.NumericDate `json:"exp"`
 }
 
+type EmailJwtClaim struct {
+	ClientInfo string           `json:"cli"`
+	UUserID    bbs.UUserID      `json:"sub"`
+	Email      string           `json:"eml"`
+	Expire     *jwt.NumericDate `json:"exp"`
+}
+
 type errResult struct {
 	Msg string
 }

@@ -8,6 +8,7 @@ import (
 
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs/path"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 )
 
 func Test_killUser(t *testing.T) {
@@ -157,5 +158,86 @@ func TestChangePasswd(t *testing.T) {
 
 		})
 		wg.Wait()
+	}
+}
+
+func TestChangeEmail(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	userID0 := &ptttype.UserID_t{}
+	copy(userID0[:], []byte("SYSOP"))
+
+	email0 := &ptttype.Email_t{}
+	copy(email0[:], "test@ptt.test")
+
+	type args struct {
+		userID *ptttype.UserID_t
+		email  *ptttype.Email_t
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+		{
+			args: args{
+				userID: userID0,
+				email:  email0,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := ChangeEmail(tt.args.userID, tt.args.email); (err != nil) != tt.wantErr {
+				t.Errorf("ChangeEmail() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			user, _ := GetUser(tt.args.userID)
+			testutil.TDeepEqual(t, "email", &user.Email, tt.args.email)
+		})
+	}
+}
+
+func TestCheckPasswd(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	userID0 := &ptttype.UserID_t{}
+	copy(userID0[:], []byte("SYSOP"))
+
+	ip := &ptttype.IPv4_t{}
+	copy(ip[:], []byte("localhost"))
+
+	passwd0 := []byte("123123")
+
+	passwd1 := []byte("123124")
+
+	type args struct {
+		userID *ptttype.UserID_t
+		passwd []byte
+		ip     *ptttype.IPv4_t
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+		{
+			args: args{userID: userID0, passwd: passwd0, ip: ip},
+		},
+		{
+			args:    args{userID: userID0, passwd: passwd1, ip: ip},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := CheckPasswd(tt.args.userID, tt.args.passwd, tt.args.ip); (err != nil) != tt.wantErr {
+				t.Errorf("CheckPasswd() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
 	}
 }
