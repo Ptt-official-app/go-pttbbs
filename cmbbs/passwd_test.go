@@ -337,3 +337,37 @@ func TestPasswdUpdatePasswd(t *testing.T) {
 		wg.Wait()
 	}
 }
+
+func TestPasswdUpdateEmail(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	email0 := &ptttype.Email_t{}
+	copy(email0[:], []byte("test@ptt.test"))
+
+	type args struct {
+		uid   ptttype.Uid
+		email *ptttype.Email_t
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+		{
+			args: args{uid: 1, email: email0},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := PasswdUpdateEmail(tt.args.uid, tt.args.email); (err != nil) != tt.wantErr {
+				t.Errorf("PasswdUpdateEmail() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			user, _ := PasswdQuery(tt.args.uid)
+
+			testutil.TDeepEqual(t, "email", &user.Email, tt.args.email)
+		})
+	}
+}

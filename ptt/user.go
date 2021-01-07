@@ -99,3 +99,50 @@ func ChangePasswd(userID *ptttype.UserID_t, origPasswd []byte, passwd []byte, ip
 
 	return nil
 }
+
+func CheckPasswd(userID *ptttype.UserID_t, passwd []byte, ip *ptttype.IPv4_t) (err error) {
+	if userID == nil || userID[0] == 0 {
+		return ptttype.ErrInvalidUserID
+	}
+
+	uid, err := cache.SearchUserRaw(userID, nil)
+	if err != nil {
+		return err
+	}
+
+	userPasswdHash, err := cmbbs.PasswdQueryPasswd(uid)
+	if err != nil {
+		return err
+	}
+
+	isValid, err := cmbbs.CheckPasswd(userPasswdHash[:], passwd)
+	if err != nil {
+		cmbbs.LogAttempt(userID, ip, true)
+		return err
+	}
+
+	if !isValid {
+		cmbbs.LogAttempt(userID, ip, true)
+		return ptttype.ErrInvalidUserID
+	}
+
+	return nil
+}
+
+func ChangeEmail(userID *ptttype.UserID_t, email *ptttype.Email_t) (err error) {
+	if userID == nil || userID[0] == 0 {
+		return ptttype.ErrInvalidUserID
+	}
+
+	uid, err := cache.SearchUserRaw(userID, nil)
+	if err != nil {
+		return err
+	}
+
+	err = cmbbs.PasswdUpdateEmail(uid, email)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

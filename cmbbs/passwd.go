@@ -198,6 +198,32 @@ func PasswdUpdatePasswd(uid ptttype.Uid, passwdHash *ptttype.Passwd_t) error {
 	return nil
 }
 
+func PasswdUpdateEmail(uid ptttype.Uid, email *ptttype.Email_t) error {
+	if !uid.IsValid() {
+		return cache.ErrInvalidUID
+	}
+
+	file, err := os.OpenFile(ptttype.FN_PASSWD, os.O_WRONLY, 0600)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	uidInFile := uid.ToUidInStore()
+	offset := int64(ptttype.USEREC_RAW_SZ)*int64(uidInFile) + int64(unsafe.Offsetof(ptttype.USEREC_RAW.Email))
+	_, err = file.Seek(offset, 0)
+	if err != nil {
+		return err
+	}
+
+	err = binary.Write(file, binary.LittleEndian, email)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func PasswdInit() error {
 	if Sem != nil {
 		return nil
