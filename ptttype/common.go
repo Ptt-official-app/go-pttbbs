@@ -264,6 +264,10 @@ var (
 	MSG_SELECT_BOARD = ansi.ANSIColor("7") + "【 選擇看板 】" + ansi.ANSIReset() + "\n" + "請輸入看板名稱(按空白鍵自動搜尋): "
 )
 
+const (
+	FN_PASSWD2 = ".PASSWD2" //passwd2 in per-user directories.
+)
+
 type FriendStat uint8
 
 const (

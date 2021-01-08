@@ -39,7 +39,7 @@ func AttemptChangeEmail(remoteAddr string, uuserID bbs.UUserID, params interface
 		return nil, ErrInvalidPath
 	}
 
-	if uuserID != thePath.UserID {
+	if !userIsValidUser(uuserID, thePath.UserID) {
 		return nil, ErrInvalidUser
 	}
 

@@ -18,13 +18,13 @@ func TestLogin(t *testing.T) {
 	tests := []struct {
 		name     string
 		args     args
-		expected *Userec
+		expected UUserID
 		wantErr  bool
 	}{
 		// TODO: Add test cases.
 		{
 			args:     args{"SYSOP", "123123", "127.0.0.1"},
-			expected: testUserec1,
+			expected: testUserec1.UUserID,
 		},
 	}
 	for _, tt := range tests {

@@ -5,15 +5,21 @@ import (
 	"regexp"
 
 	"github.com/Ptt-official-app/go-pttbbs/config_util"
+	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
 )
 
 const configPrefix = "go-pttbbs:ptttype"
 
-func InitConfig() error {
+func InitConfig() (err error) {
 	config()
 
-	return postInitConfig()
+	err = postInitConfig()
+	if err != nil {
+		return err
+	}
+
+	return checkTypes()
 }
 
 func setStringConfig(idx string, orig string) string {
@@ -207,6 +213,16 @@ func postInitConfig() error {
 	_ = setCAPTCHAInsertServerAddr(CAPTCHA_INSERT_SERVER_ADDR)
 	_ = setMyHostname(MYHOSTNAME)
 	_ = setRecycleBinName(RECYCLE_BIN_NAME)
+
+	return nil
+}
+
+func checkTypes() (err error) {
+	if USEREC2_RAW_SZ != DEFAULT_USEREC2_RAW_SZ {
+		logrus.Errorf("userec2 is not aligned: userec2: %v default-userec2: %v", USEREC2_RAW_SZ, DEFAULT_USEREC2_RAW_SZ)
+
+		return ErrInvalidType
+	}
 
 	return nil
 }

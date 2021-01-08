@@ -146,3 +146,16 @@ func ChangeEmail(userID *ptttype.UserID_t, email *ptttype.Email_t) (err error) {
 
 	return nil
 }
+
+func ChangeUserLevel2(userID *ptttype.UserID_t, perm ptttype.PERM2, isSet bool) (userLevel2 ptttype.PERM2, err error) {
+	if userID == nil || userID[0] == 0 {
+		return ptttype.PERM2_INVALID, ptttype.ErrInvalidUserID
+	}
+
+	err = cmbbs.PasswdUpdateUserLevel2(userID, perm, isSet)
+	if err != nil {
+		return ptttype.PERM2_INVALID, err
+	}
+
+	return cmbbs.PasswdGetUserLevel2(userID)
+}

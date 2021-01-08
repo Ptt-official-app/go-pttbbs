@@ -13,7 +13,12 @@ func GetUser(uuserID UUserID) (user *Userec, err error) {
 		return nil, err
 	}
 
-	user = NewUserecFromRaw(userecRaw)
+	userec2Raw, err := ptt.GetUser2(userIDRaw)
+	if err != nil {
+		return nil, err
+	}
+
+	user = NewUserecFromRaw(userecRaw, userec2Raw)
 
 	return user, nil
 }

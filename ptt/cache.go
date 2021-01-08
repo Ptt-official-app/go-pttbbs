@@ -4,6 +4,7 @@ import (
 	"unsafe"
 
 	"github.com/Ptt-official-app/go-pttbbs/cache"
+	"github.com/Ptt-official-app/go-pttbbs/cmbbs"
 	"github.com/Ptt-official-app/go-pttbbs/cmsys"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
@@ -56,6 +57,35 @@ func GetUser(userID *ptttype.UserID_t) (user *ptttype.UserecRaw, err error) {
 
 	//passwdSyncQuery includes cache.MoneyOf
 	user, err = passwdSyncQuery(uid)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+func GetUserLevel(userID *ptttype.UserID_t) (userLevel ptttype.PERM, err error) {
+	uid, err := cache.SearchUserRaw(userID, nil)
+	if err != nil {
+		return 0, err
+	}
+	if !uid.IsValid() {
+		return 0, ptttype.ErrInvalidUserID
+	}
+
+	return cmbbs.PasswdQueryUserLevel(uid)
+}
+
+func GetUser2(userID *ptttype.UserID_t) (user *ptttype.Userec2Raw, err error) {
+	uid, err := cache.SearchUserRaw(userID, nil)
+	if err != nil {
+		return nil, err
+	}
+	if !uid.IsValid() {
+		return nil, ptttype.ErrInvalidUserID
+	}
+
+	user, err = cmbbs.PasswdGetUser2(userID)
 	if err != nil {
 		return nil, err
 	}

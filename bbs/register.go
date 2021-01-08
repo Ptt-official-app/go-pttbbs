@@ -16,7 +16,7 @@ func Register(
 	career []byte,
 	address []byte,
 	over18 bool,
-) (user *Userec, err error) {
+) (uuserID UUserID, err error) {
 	userIDRaw := &ptttype.UserID_t{}
 	copy(userIDRaw[:], []byte(username))
 
@@ -55,10 +55,10 @@ func Register(
 		over18,
 	)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	user = NewUserecFromRaw(userRaw)
+	uuserID = ToUUserID(&userRaw.UserID)
 
-	return user, nil
+	return uuserID, nil
 }

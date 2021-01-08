@@ -48,3 +48,47 @@ func TestVerifyJwt(t *testing.T) {
 		})
 	}
 }
+
+func TestVerifyEmailJwt(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	token, _ := createEmailToken("SYSOP", "", "test@ptt.test")
+
+	type args struct {
+		raw string
+	}
+	tests := []struct {
+		name               string
+		args               args
+		expectedUserID     bbs.UUserID
+		expectedClientInfo string
+		expectedEmail      string
+		wantErr            bool
+	}{
+		// TODO: Add test cases.
+		{
+			args:           args{raw: token},
+			expectedUserID: "SYSOP",
+			expectedEmail:  "test@ptt.test",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotUserID, gotClientInfo, gotEmail, err := VerifyEmailJwt(tt.args.raw)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("VerifyEmailJwt() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotUserID, tt.expectedUserID) {
+				t.Errorf("VerifyEmailJwt() gotUserID = %v, want %v", gotUserID, tt.expectedUserID)
+			}
+			if gotClientInfo != tt.expectedClientInfo {
+				t.Errorf("VerifyEmailJwt() gotClientInfo = %v, want %v", gotClientInfo, tt.expectedClientInfo)
+			}
+			if gotEmail != tt.expectedEmail {
+				t.Errorf("VerifyEmailJwt() gotEmail = %v, want %v", gotEmail, tt.expectedEmail)
+			}
+		})
+	}
+}

@@ -40,7 +40,7 @@ func ChangePasswd(remoteAddr string, uuserID bbs.UUserID, params interface{}, pa
 		return nil, ErrInvalidPath
 	}
 
-	if uuserID != thePath.UserID {
+	if !userIsValidUser(uuserID, thePath.UserID) {
 		return nil, ErrInvalidUser
 	}
 

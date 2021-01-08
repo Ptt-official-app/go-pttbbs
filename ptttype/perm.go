@@ -3,6 +3,7 @@ package ptttype
 type PERM uint32
 
 const (
+	PERM_INVALID       PERM = 000000000000
 	PERM_BASIC         PERM = 000000000001 /* 基本權力       */
 	PERM_CHAT          PERM = 000000000002 /* 進入聊天室     */
 	PERM_PAGE          PERM = 000000000004 /* 找人聊天       */

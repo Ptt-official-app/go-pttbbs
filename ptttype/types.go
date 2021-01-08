@@ -65,6 +65,7 @@ var (
 	EMPTY_USER_ID     = UserID_t{}
 	EMPTY_BOARD_ID    = BoardID_t{}
 	EMPTY_BOARD_TITLE = BoardTitle_t{}
+	EMPTY_EMAIL       = Email_t{}
 )
 
 const USER_ID_SZ = unsafe.Sizeof(EMPTY_USER_ID)
@@ -75,6 +76,7 @@ const UTMP_ID_SZ = unsafe.Sizeof(UtmpID(0))
 const UID_SZ = unsafe.Sizeof(Uid(0))
 const BID_IN_STORE_SZ = unsafe.Sizeof(BidInStore(0))
 const BID_SZ = unsafe.Sizeof(Bid(0))
+const EMAIL_SZ = unsafe.Sizeof(EMPTY_EMAIL)
 
 func (u UidInStore) ToUid() Uid {
 	return Uid(u + 1)
