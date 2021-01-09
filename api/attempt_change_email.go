@@ -48,13 +48,13 @@ func AttemptChangeEmail(remoteAddr string, uuserID bbs.UUserID, params interface
 		return nil, err
 	}
 
-	token, err := CreateEmailToken(thePath.UserID, theParams.ClientInfo, theParams.Email)
+	token, err := CreateEmailToken(thePath.UserID, theParams.ClientInfo, theParams.Email, CONTEXT_CHANGE_EMAIL)
 	if err != nil {
 		return nil, err
 	}
 
 	result = &AttemptChangeEmailResult{
-		UserID: uuserID,
+		UserID: thePath.UserID,
 		Jwt:    token,
 	}
 

@@ -1,6 +1,7 @@
 package ptt
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"time"
@@ -396,4 +397,97 @@ func computeUserExpireValue(user *ptttype.UserecRaw) int {
 	}
 
 	return ptttype.KEEP_DAYS_UNREGGED*24*60 - valMinute
+}
+
+func CheckEmailAllowRejectLists(email string) (err error) {
+	err = ensureNewestAllowRejectLists()
+	if err != nil {
+		return err
+	}
+
+	//allow
+	isAllow := false
+	for _, each := range ptttype.ALLOW_EMAIL_LIST {
+		isValid, err := each.IsValid(email)
+		if err != nil {
+			return err
+		}
+		if isValid {
+			isAllow = true
+			break
+		}
+	}
+	if !isAllow {
+		return ErrInvalidEmail
+	}
+
+	for _, each := range ptttype.REJECT_EMAIL_LIST {
+		isValid, err := each.IsValid(email)
+		if err != nil {
+			return err
+		}
+
+		if isValid {
+			return ErrInvalidEmail
+		}
+	}
+
+	return nil
+}
+
+func ensureNewestAllowRejectLists() (err error) {
+	ptttype.ALLOW_EMAIL_LIST, ptttype.ALLOW_EMAIL_LIST_UPDATE_TS, err = ensureNewestAllowRejectListCore(ptttype.FN_ALLOW_EMAIL_LIST, ptttype.ALLOW_EMAIL_LIST, ptttype.ALLOW_EMAIL_LIST_UPDATE_TS)
+	if err != nil {
+		return err
+	}
+
+	ptttype.REJECT_EMAIL_LIST, ptttype.REJECT_EMAIL_LIST_UPDATE_TS, err = ensureNewestAllowRejectListCore(ptttype.FN_REJECT_EMAIL_LIST, ptttype.REJECT_EMAIL_LIST, ptttype.REJECT_EMAIL_LIST_UPDATE_TS)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func ensureNewestAllowRejectListCore(filename string, origList []*ptttype.AllowRejectEmail, origUpdateTS types.Time4) (newList []*ptttype.AllowRejectEmail, newUpdateNanoTS types.Time4, err error) {
+	theStat, err := os.Stat(filename)
+
+	if err != nil {
+		if os.IsNotExist(err) {
+			err = nil
+		}
+		return nil, 0, err
+	}
+
+	mTime := types.TimeToTime4(theStat.ModTime())
+	if mTime <= origUpdateTS {
+		return origList, origUpdateTS, nil
+	}
+
+	file, err := os.Open(filename)
+	if err != nil {
+		if os.IsNotExist(err) {
+			err = nil
+		}
+		return nil, 0, err
+	}
+	defer file.Close()
+
+	reader := bufio.NewReader(file)
+
+	for line, err := types.ReadLine(reader); err == nil; line, err = types.ReadLine(reader) {
+		if len(line) == 0 {
+			continue
+		}
+		if line[0] == '#' {
+			continue
+		}
+		each := ptttype.NewAllowRejectEmail(string(line))
+
+		if each == nil {
+			continue
+		}
+		newList = append(newList, each)
+	}
+	return newList, mTime, nil
 }

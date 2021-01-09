@@ -5,7 +5,6 @@ import (
 	"regexp"
 
 	"github.com/Ptt-official-app/go-pttbbs/config_util"
-	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -98,6 +97,9 @@ func SetBBSHOME(bbshome string) string {
 	FN_FRESH = BBSHOME +
 		string(os.PathSeparator) +
 		FN_FRESH_POSTFIX /* mbbsd/register.c line: 381 */
+
+	FN_ALLOW_EMAIL_LIST = BBSHOME + string(os.PathSeparator) + FN_ALLOW_EMAIL_LIST_POSTFIX
+	FN_REJECT_EMAIL_LIST = BBSHOME + string(os.PathSeparator) + FN_REJECT_EMAIL_LIST_POSTFIX
 
 	return origBBSHome
 }
@@ -219,7 +221,7 @@ func postInitConfig() error {
 
 func checkTypes() (err error) {
 	if USEREC2_RAW_SZ != DEFAULT_USEREC2_RAW_SZ {
-		logrus.Errorf("userec2 is not aligned: userec2: %v default-userec2: %v", USEREC2_RAW_SZ, DEFAULT_USEREC2_RAW_SZ)
+		log.Errorf("userec2 is not aligned: userec2: %v default-userec2: %v", USEREC2_RAW_SZ, DEFAULT_USEREC2_RAW_SZ)
 
 		return ErrInvalidType
 	}

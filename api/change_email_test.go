@@ -11,9 +11,10 @@ func TestChangeEmail(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	//until Fri Nov 14 01:28:37 EST 2245
+	jwt, _ := CreateEmailToken("SYSOP", "", "test@ptt.test", CONTEXT_CHANGE_EMAIL)
+
 	params0 := &ChangeEmailParams{
-		Jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGkiOiJ0ZXN0X2NsaWVudGluZm8iLCJlbWwiOiJ0ZXN0QHB0dC50ZXN0IiwiZXhwIjo4NzA1NjAwOTE3LCJzdWIiOiJTWVNPUCJ9.IPa_yF9BYbnnrjwguwPnE7fxpV13bhfgex74-ok-VzE",
+		Jwt: jwt,
 	}
 	path0 := &ChangeEmailPath{
 		UserID: "SYSOP",

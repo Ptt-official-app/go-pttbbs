@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -8,15 +9,15 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/api"
 )
 
-func Test_SetIDEmail(t *testing.T) {
+func Test_AttemptSetIDEmail(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	jwt, _ := api.CreateEmailToken("SYSOP", "", "test@ptt.test", api.CONTEXT_SET_ID_EMAIL)
-
-	params0 := &api.SetIDEmailParams{
-		Jwt:   jwt,
-		IsSet: true,
+	//until Fri Nov 14 01:28:37 EST 2245
+	params0 := &api.AttemptSetIDEmailParams{
+		ClientInfo: "test_clientinfo",
+		Passwd:     "123123",
+		Email:      "test@ptt.test",
 	}
 
 	type args struct {
@@ -31,7 +32,7 @@ func Test_SetIDEmail(t *testing.T) {
 	}{
 		{
 			args: args{
-				path:     "/users/SYSOP/setidemail",
+				path:     "/users/SYSOP/attemptsetidemail",
 				username: "SYSOP",
 				passwd:   "123123",
 				params:   params0,
@@ -49,9 +50,9 @@ func Test_SetIDEmail(t *testing.T) {
 			router.ServeHTTP(w, req)
 
 			if w.Code != http.StatusOK {
-				t.Errorf("code: %v", w.Code)
+				body, _ := ioutil.ReadAll(w.Body)
+				t.Errorf("code: %v body: %v", w.Code, string(body))
 			}
 		})
 	}
-
 }

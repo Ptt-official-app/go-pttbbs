@@ -18,7 +18,11 @@ const TIME4_SZ = unsafe.Sizeof(Time4(0))
 
 func NowTS() Time4 {
 	// We don't need to worry about time-zone when using unix-timestamp.
-	return Time4(time.Now().Unix())
+	return TimeToTime4(time.Now())
+}
+
+func TimeToTime4(t time.Time) Time4 {
+	return Time4(t.Unix())
 }
 
 //ToLocal

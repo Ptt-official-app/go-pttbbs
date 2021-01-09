@@ -36,6 +36,7 @@ func initGin() (*gin.Engine, error) {
 	router.POST(withPrefix(api.CHANGE_PASSWD_R), api.ChangePasswdWrapper)
 	router.POST(withPrefix(api.CHANGE_EMAIL_R), api.ChangeEmailWrapper)
 	router.POST(withPrefix(api.ATTEMPT_CHANGE_EMAIL_R), api.AttemptChangeEmailWrapper)
+	router.POST(withPrefix(api.ATTEMPT_SET_ID_EMAIL_R), api.AttemptSetIDEmailWrapper)
 	router.POST(withPrefix(api.SET_ID_EMAIL_R), api.SetIDEmailWrapper)
 	router.POST(withPrefix(api.GET_TOKEN_INFO_R), api.GetTokenInfoWrapper)
 	router.POST(withPrefix(api.GET_EMAIL_TOKEN_INFO_R), api.GetEmailTokenInfoWrapper)

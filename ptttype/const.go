@@ -1,6 +1,10 @@
 package ptttype
 
-import "os"
+import (
+	"os"
+
+	"github.com/Ptt-official-app/go-pttbbs/types"
+)
 
 const (
 	//////////
@@ -93,4 +97,19 @@ var (
 
 const (
 	PASSWD2_VERSION = 1
+)
+
+var (
+	ALLOW_EMAIL_LIST  []*AllowRejectEmail
+	REJECT_EMAIL_LIST []*AllowRejectEmail
+
+	ALLOW_EMAIL_LIST_UPDATE_TS  types.Time4
+	REJECT_EMAIL_LIST_UPDATE_TS types.Time4
+
+	//https://github.com/ptt/pttbbs/blob/master/mbbsd/register.c#L958
+	FN_ALLOW_EMAIL_LIST_POSTFIX  = "etc/whitemail"
+	FN_REJECT_EMAIL_LIST_POSTFIX = "etc/banemail"
+
+	FN_ALLOW_EMAIL_LIST  = BBSHOME + string(os.PathSeparator) + FN_ALLOW_EMAIL_LIST_POSTFIX
+	FN_REJECT_EMAIL_LIST = BBSHOME + string(os.PathSeparator) + FN_REJECT_EMAIL_LIST_POSTFIX
 )
