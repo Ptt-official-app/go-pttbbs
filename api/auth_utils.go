@@ -47,7 +47,7 @@ func VerifyJwt(raw string) (userID bbs.UUserID, clientInfo string, err error) {
 	return cl.UUserID, cl.ClientInfo, nil
 }
 
-func createToken(userID bbs.UUserID, clientInfo string) (string, error) {
+func CreateToken(userID bbs.UUserID, clientInfo string) (string, error) {
 	var err error
 
 	sig, err := jose.NewSigner(jose.SigningKey{Algorithm: jose.HS256, Key: JWT_SECRET}, (&jose.SignerOptions{}).WithType("JWT"))
@@ -96,7 +96,7 @@ func VerifyEmailJwt(raw string) (userID bbs.UUserID, clientInfo string, email st
 	return cl.UUserID, cl.ClientInfo, cl.Email, nil
 }
 
-func createEmailToken(userID bbs.UUserID, clientInfo string, email string) (string, error) {
+func CreateEmailToken(userID bbs.UUserID, clientInfo string, email string) (string, error) {
 	var err error
 
 	sig, err := jose.NewSigner(jose.SigningKey{Algorithm: jose.HS256, Key: EMAIL_JWT_SECRET}, (&jose.SignerOptions{}).WithType("JWT"))

@@ -12,7 +12,7 @@ func TestSetIDEmail(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	jwt, _ := createEmailToken("SYSOP", "", "test@ptt.test")
+	jwt, _ := CreateEmailToken("SYSOP", "", "test@ptt.test")
 
 	params0 := &SetIDEmailParams{
 		IsSet: true,
@@ -25,6 +25,7 @@ func TestSetIDEmail(t *testing.T) {
 
 	result0 := &SetIDEmailResult{
 		UserID:     "SYSOP",
+		Email:      "test@ptt.test",
 		UserLevel2: ptttype.PERM2_ID_EMAIL,
 	}
 

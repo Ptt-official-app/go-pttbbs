@@ -2,6 +2,7 @@ package cache
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 	"unsafe"
 
@@ -87,6 +88,7 @@ func TestLoadUHash(t *testing.T) {
 }
 
 func Test_fillUHash(t *testing.T) {
+	//move setupTest in for-loop
 	wantHashHead := [1 << ptttype.HASH_BITS]int32{}
 	wantNextInHash := [ptttype.MAX_USERS]int32{}
 	for idx := range wantHashHead {
@@ -126,8 +128,13 @@ func Test_fillUHash(t *testing.T) {
 			args: args{false},
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
+
 			setupTest()
 			defer teardownTest()
 
@@ -170,6 +177,7 @@ func Test_fillUHash(t *testing.T) {
 
 			}
 		})
+		wg.Wait()
 	}
 }
 

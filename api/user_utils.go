@@ -16,9 +16,9 @@ func userIsValidUser(uuserID bbs.UUserID, queryUUserID bbs.UUserID) (isValid boo
 }
 
 //valid users to see/change email / user-level2
-func userIsValidEmailUser(uuserID bbs.UUserID, queryUUserID bbs.UUserID, jwt string, isSysop bool) (isValid bool, email string) {
+func userIsValidEmailUser(uuserID bbs.UUserID, queryUUserID bbs.UUserID, jwt string, isAllowSysop bool) (isValid bool, email string) {
 
-	if isSysop {
+	if isAllowSysop {
 		permSysop := ptttype.PERM_ACCOUNTS | ptttype.PERM_SYSOP | ptttype.PERM_ACCTREG
 		if bbs.IsSysop(uuserID, permSysop) {
 			return true, ""
