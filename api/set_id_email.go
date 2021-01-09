@@ -19,6 +19,7 @@ type SetIDEmailPath struct {
 
 type SetIDEmailResult struct {
 	UserID     bbs.UUserID   `json:"user_id"`
+	Email      string        `json:"email"`
 	UserLevel2 ptttype.PERM2 `json:"user_level2"`
 }
 
@@ -40,7 +41,7 @@ func SetIDEmail(remoteAddr string, uuserID bbs.UUserID, params interface{}, path
 		return nil, ErrInvalidPath
 	}
 
-	isValid, _ := userIsValidEmailUser(uuserID, thePath.UserID, theParams.Jwt, true)
+	isValid, email := userIsValidEmailUser(uuserID, thePath.UserID, theParams.Jwt, true)
 	if !isValid {
 		return nil, ErrInvalidUser
 	}
@@ -52,6 +53,7 @@ func SetIDEmail(remoteAddr string, uuserID bbs.UUserID, params interface{}, path
 
 	result = &SetIDEmailResult{
 		UserID:     thePath.UserID,
+		Email:      email,
 		UserLevel2: userLevel2,
 	}
 

@@ -35,7 +35,7 @@ func Login(remoteAddr string, params interface{}) (interface{}, error) {
 		return nil, ErrLoginFailed
 	}
 
-	token, err := createToken(uuserID, loginParams.ClientInfo)
+	token, err := CreateToken(uuserID, loginParams.ClientInfo)
 	if err != nil {
 		return nil, err
 	}

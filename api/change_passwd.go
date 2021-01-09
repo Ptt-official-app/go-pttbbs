@@ -49,7 +49,7 @@ func ChangePasswd(remoteAddr string, uuserID bbs.UUserID, params interface{}, pa
 		return nil, err
 	}
 
-	token, err := createToken(uuserID, theParams.ClientInfo)
+	token, err := CreateToken(uuserID, theParams.ClientInfo)
 	if err != nil {
 		return nil, err
 	}

@@ -53,7 +53,7 @@ func TestVerifyEmailJwt(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	token, _ := createEmailToken("SYSOP", "", "test@ptt.test")
+	token, _ := CreateEmailToken("SYSOP", "", "test@ptt.test")
 
 	type args struct {
 		raw string
