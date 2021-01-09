@@ -21,27 +21,19 @@ import (
 //	summary
 //	err
 func LoadBoardSummary(user *ptttype.UserecRaw, uid ptttype.Uid, bid ptttype.Bid) (summary *ptttype.BoardSummaryRaw, err error) {
-	nBoardsInCache := cache.NumBoards()
-	var boardStat *ptttype.BoardStat
-	for currentIdx := ptttype.SortIdx(0); ; currentIdx++ {
-		if int32(currentIdx) >= nBoardsInCache {
-			break
-		}
 
-		eachBoardStat, err := loadGeneralBoardStat(user, uid, currentIdx, []byte(""))
-		if err != nil {
-			continue
-		}
-		if eachBoardStat == nil {
-			continue
-		}
+	bidInCache := bid.ToBidInStore()
 
-		if eachBoardStat.Bid == bid {
-			boardStat = eachBoardStat
-			break
-		}
-
+	if bidInCache < 0 {
+		return nil, nil
 	}
+	board, err := cache.GetBCache(bid)
+	if err != nil {
+		return nil, err
+	}
+	isGroupOp := groupOp(user, board)
+	state := boardPermStat(user, uid, board, bid)
+	boardStat := newBoardStat(bidInCache, state, board, isGroupOp)
 
 	if boardStat == nil {
 		return nil, err
