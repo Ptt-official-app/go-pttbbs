@@ -65,6 +65,29 @@ You can do the following to run with ./scripts/run.sh:
     `ipcrm -S 0x000007da`
 * `./scripts/run.sh`
 
+## Running in docker
+
+You can do the following do run updated-code in docker:
+
+* Modify the docker-compose.yaml and add the expected ports and mount directory in volumes:
+
+    ```
+    ports:
+      - "127.0.0.1:3456:3456"
+      - "127.0.0.1:8889:8888"
+      - "127.0.0.1:48764:48763"
+      - "127.0.0.1:[local-port]:[docker-port]"
+    volumes:
+      - ${BBSHOME}:/home/bbs
+      - [local absolute directory]:/home/[username]/go-pttbbs
+    ```
+
+* do docker-compose
+* `docker container ls` and find the corresponding docker container
+* `docker exec -it [container] /bin/bash`
+* `cd /home/[username]/go-pttbbs`
+* `./scripts/run-in-docker.sh [docker-port]`
+
 ## Config
 
 Some config-variables are required const in ptttype,

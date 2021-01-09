@@ -81,6 +81,7 @@ func fillUHash(isOnfly bool) error {
 		log.Errorf("fillUHash: unable to open passwd: file: %v e: %v", ptttype.FN_PASSWD, err)
 		return err
 	}
+	defer file.Close()
 
 	uidInCache := ptttype.UidInStore(0)
 

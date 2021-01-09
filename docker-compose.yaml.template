@@ -6,6 +6,10 @@ services:
       - "127.0.0.1:3456:3456"
       - "127.0.0.1:8889:8888"
       - "127.0.0.1:48764:48763"
+      - "127.0.0.1:4456:4456"
+      - "127.0.0.1:[local-port]:[docker-port]"
     restart: always
     volumes:
       - ${BBSHOME}:/home/bbs
+      - /Users/chhsiao/projects/go-pttbbs:/home/chhsiao/go-pttbbs
+      - [local absolute directory]:/home/[username]/go-pttbbs

@@ -12,4 +12,8 @@
 /ptt/testcase/boards
 /02-config.run.ini
 /ptttype/02-config-run.go
+/ptttype/00-config-production.go
+/03-config.run-in-docker.ini
 **/cover.out
+/docker-compose.yaml
+/docker_compose.env
