@@ -15,5 +15,4 @@
 /ptttype/00-config-production.go
 /03-config.run-in-docker.ini
 **/cover.out
-/docker-compose.yaml
 /docker_compose.env
