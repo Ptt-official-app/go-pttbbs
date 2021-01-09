@@ -5,28 +5,25 @@ import (
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
-	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 )
 
-func TestSetIDEmail(t *testing.T) {
+func TestAttemptSetIDEmail(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	jwt, _ := CreateEmailToken("SYSOP", "", "test@ptt.test", CONTEXT_SET_ID_EMAIL)
-
-	params0 := &SetIDEmailParams{
-		IsSet: true,
-		Jwt:   jwt,
+	params0 := &AttemptSetIDEmailParams{
+		ClientInfo: "test_clientinfo",
+		Passwd:     "123123",
+		Email:      "test@ptt.test",
 	}
 
-	path0 := &SetIDEmailPath{
+	path0 := &AttemptSetIDEmailPath{
 		UserID: "SYSOP",
 	}
 
-	result0 := &SetIDEmailResult{
-		UserID:     "SYSOP",
-		Email:      "test@ptt.test",
-		UserLevel2: ptttype.PERM2_ID_EMAIL,
+	result0 := &AttemptSetIDEmailResult{
+		UserID: "SYSOP",
+		Jwt:    "",
 	}
 
 	type args struct {
@@ -38,7 +35,7 @@ func TestSetIDEmail(t *testing.T) {
 	tests := []struct {
 		name           string
 		args           args
-		expectedResult interface{}
+		expectedResult *AttemptSetIDEmailResult
 		wantErr        bool
 	}{
 		// TODO: Add test cases.
@@ -49,13 +46,16 @@ func TestSetIDEmail(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotResult, err := SetIDEmail(tt.args.remoteAddr, tt.args.uuserID, tt.args.params, tt.args.path)
+			gotResult, err := AttemptSetIDEmail(tt.args.remoteAddr, tt.args.uuserID, tt.args.params, tt.args.path)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("SetIDEmail() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("AttemptSetIDEmail() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
+
+			result := gotResult.(*AttemptSetIDEmailResult)
+			tt.expectedResult.Jwt = result.Jwt
 			if !reflect.DeepEqual(gotResult, tt.expectedResult) {
-				t.Errorf("SetIDEmail() = %v, want %v", gotResult, tt.expectedResult)
+				t.Errorf("AttemptSetIDEmail() = %v, want %v", gotResult, tt.expectedResult)
 			}
 		})
 	}

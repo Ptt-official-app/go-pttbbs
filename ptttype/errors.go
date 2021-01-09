@@ -9,4 +9,6 @@ var (
 	ErrInvalidBid          = errors.New("invalid bid")
 	ErrInvalidAid          = errors.New("invalid aid")
 	ErrInvalidType         = errors.New("invalid type")
+
+	ErrInvalidAllowRejectEmailOp = errors.New("invalid allow-reject-email op")
 )

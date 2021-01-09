@@ -8,7 +8,8 @@ import (
 const GET_EMAIL_TOKEN_INFO_R = "/emailtoken/info"
 
 type GetEmailTokenInfoParams struct {
-	Jwt string `json:"token" form:"token" url:"token"`
+	Jwt     string            `json:"token" form:"token" url:"token"`
+	Context EmailTokenContext `json:"context" form:"context" url:"context"`
 }
 
 type GetEmailTokenInfoResult struct {
@@ -29,7 +30,7 @@ func GetEmailTokenInfo(remoteAddr string, uuserID bbs.UUserID, params interface{
 		return nil, ErrInvalidParams
 	}
 
-	userID, clientInfo, email, err := VerifyEmailJwt(theParams.Jwt)
+	userID, clientInfo, email, err := VerifyEmailJwt(theParams.Jwt, CONTEXT_CHANGE_EMAIL)
 	if err != nil {
 		return nil, err
 	}

@@ -13,9 +13,9 @@ func Test_GetEmailTokenInfo(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	theJwt, err := api.CreateEmailToken("SYSOP", "", "test@ptt.test")
+	theJwt, err := api.CreateEmailToken("SYSOP", "", "test@ptt.test", api.CONTEXT_CHANGE_EMAIL)
 	logrus.Infof("Test_GetEmailTokenInfo: after CreateEmailToken: theJwt: %v e: %v", theJwt, err)
-	params0 := &api.GetEmailTokenInfoParams{Jwt: theJwt}
+	params0 := &api.GetEmailTokenInfoParams{Jwt: theJwt, Context: api.CONTEXT_CHANGE_EMAIL}
 
 	type args struct {
 		path     string

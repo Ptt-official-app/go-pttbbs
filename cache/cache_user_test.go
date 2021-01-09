@@ -2,6 +2,7 @@ package cache
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 	"unsafe"
 
@@ -38,8 +39,11 @@ func TestDoSearchUser(t *testing.T) {
 			want1:    "SYSOP",
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			got, got1, err := DoSearchUser(tt.args.userID, tt.args.isReturn)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("DoSearchUser() error = %v, wantErr %v", err, tt.wantErr)
@@ -52,6 +56,7 @@ func TestDoSearchUser(t *testing.T) {
 				t.Errorf("DoSearchUser() got1 = %v, expected%v", got1, tt.want1)
 			}
 		})
+		wg.Wait()
 	}
 }
 
@@ -90,8 +95,12 @@ func TestAddToUHash(t *testing.T) {
 			args: args{2, user3},
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if err := AddToUHash(tt.args.uidInCache, tt.args.userID); (err != nil) != tt.wantErr {
 				t.Errorf("AddToUHash() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -105,6 +114,7 @@ func TestAddToUHash(t *testing.T) {
 			}
 
 		})
+		wg.Wait()
 	}
 }
 
@@ -189,8 +199,12 @@ func TestRemoveFromUHash(t *testing.T) {
 			wantNextInHash: nextInHash3,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if err := RemoveFromUHash(tt.args.uidInHash); (err != nil) != tt.wantErr {
 				t.Errorf("RemoveFromUHash() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -215,6 +229,7 @@ func TestRemoveFromUHash(t *testing.T) {
 				t.Errorf("RemoveFromHash() nextInHash: %v wantNextInHash: %v", nextInHash, tt.wantNextInHash)
 			}
 		})
+		wg.Wait()
 	}
 }
 
@@ -326,8 +341,11 @@ func TestSetUserID(t *testing.T) {
 			wantNextInHash: nextInHash2,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			err := SetUserID(tt.args.uid, tt.args.userID)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("SetUserID() error = %v, wantErr %v", err, tt.wantErr)
@@ -350,5 +368,6 @@ func TestSetUserID(t *testing.T) {
 			)
 			assert.Equalf(t, nextInHash, tt.wantNextInHash, "SetUserID() nextInHash: %v want: %v", nextInHash, tt.wantNextInHash)
 		})
+		wg.Wait()
 	}
 }

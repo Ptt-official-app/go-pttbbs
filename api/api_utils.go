@@ -28,6 +28,9 @@ func processResult(c *gin.Context, result interface{}, err error) {
 	case ptttype.ErrUserIDAlreadyExists:
 		c.JSON(400, &errResult{err.Error()})
 
+	case ErrInvalidIDEmail:
+		c.JSON(400, &errResult{err.Error()})
+
 	//401
 	case ErrInvalidToken:
 		c.JSON(401, &errResult{err.Error()})

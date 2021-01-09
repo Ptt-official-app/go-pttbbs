@@ -69,7 +69,7 @@ func CreateToken(userID bbs.UUserID, clientInfo string) (string, error) {
 	return raw, nil
 }
 
-func VerifyEmailJwt(raw string) (userID bbs.UUserID, clientInfo string, email string, err error) {
+func VerifyEmailJwt(raw string, context EmailTokenContext) (userID bbs.UUserID, clientInfo string, email string, err error) {
 	if raw == "" {
 		return "", "", "", ErrInvalidToken
 	}
@@ -93,10 +93,14 @@ func VerifyEmailJwt(raw string) (userID bbs.UUserID, clientInfo string, email st
 		return "", "", "", ErrInvalidToken
 	}
 
+	if cl.Context != context {
+		return "", "", "", ErrInvalidToken
+	}
+
 	return cl.UUserID, cl.ClientInfo, cl.Email, nil
 }
 
-func CreateEmailToken(userID bbs.UUserID, clientInfo string, email string) (string, error) {
+func CreateEmailToken(userID bbs.UUserID, clientInfo string, email string, context EmailTokenContext) (string, error) {
 	var err error
 
 	sig, err := jose.NewSigner(jose.SigningKey{Algorithm: jose.HS256, Key: EMAIL_JWT_SECRET}, (&jose.SignerOptions{}).WithType("JWT"))
@@ -109,6 +113,7 @@ func CreateEmailToken(userID bbs.UUserID, clientInfo string, email string) (stri
 		UUserID:    userID,
 		Email:      email,
 		Expire:     jwt.NewNumericDate(time.Now().Add(EMAIL_JWT_TOKEN_EXPIRE_DURATION)),
+		Context:    context,
 	}
 
 	raw, err := jwt.Signed(sig).Claims(cl).CompactSerialize()

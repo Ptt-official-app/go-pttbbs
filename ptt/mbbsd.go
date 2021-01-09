@@ -10,7 +10,6 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/cmsys"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
-	"github.com/sirupsen/logrus"
 )
 
 //LoginQuery
@@ -25,7 +24,7 @@ import (
 //  error: err
 func LoginQuery(userID *ptttype.UserID_t, passwd []byte, ip *ptttype.IPv4_t) (uid ptttype.Uid, user *ptttype.UserecRaw, err error) {
 	if !userID.IsValid() {
-		logrus.Errorf("LoginQuery: invalid user id: userID: %v", userID)
+		//log.Errorf("LoginQuery: invalid user id: userID: %v", userID)
 		return 0, nil, ptttype.ErrInvalidUserID
 	}
 

@@ -53,7 +53,7 @@ func TestVerifyEmailJwt(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	token, _ := CreateEmailToken("SYSOP", "", "test@ptt.test")
+	token, _ := CreateEmailToken("SYSOP", "", "test@ptt.test", CONTEXT_CHANGE_EMAIL)
 
 	type args struct {
 		raw string
@@ -75,7 +75,7 @@ func TestVerifyEmailJwt(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotUserID, gotClientInfo, gotEmail, err := VerifyEmailJwt(tt.args.raw)
+			gotUserID, gotClientInfo, gotEmail, err := VerifyEmailJwt(tt.args.raw, CONTEXT_CHANGE_EMAIL)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("VerifyEmailJwt() error = %v, wantErr %v", err, tt.wantErr)
 				return

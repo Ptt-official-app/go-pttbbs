@@ -12,9 +12,10 @@ func Test_ChangeEmail(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	//until Fri Nov 14 01:28:37 EST 2245
+	jwt, _ := api.CreateEmailToken("SYSOP", "", "test@ptt.test", api.CONTEXT_CHANGE_EMAIL)
+
 	params0 := &api.ChangeEmailParams{
-		Jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGkiOiJ0ZXN0X2NsaWVudGluZm8iLCJlbWwiOiJ0ZXN0QHB0dC50ZXN0IiwiZXhwIjo4NzA1NjAwOTE3LCJzdWIiOiJTWVNPUCJ9.IPa_yF9BYbnnrjwguwPnE7fxpV13bhfgex74-ok-VzE",
+		Jwt: jwt,
 	}
 
 	type args struct {
