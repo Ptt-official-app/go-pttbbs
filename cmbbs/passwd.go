@@ -9,9 +9,11 @@ import (
 	"unsafe"
 
 	"github.com/Ptt-official-app/go-pttbbs/cache"
+	"github.com/Ptt-official-app/go-pttbbs/cmbbs/path"
 	"github.com/Ptt-official-app/go-pttbbs/crypt"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/sem"
+	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
 //GenPasswd
@@ -147,6 +149,37 @@ func PasswdQueryPasswd(uid ptttype.Uid) (passwdHash *ptttype.Passwd_t, err error
 	return passwdHash, nil
 }
 
+//PasswdQueryUserLevel
+//Params
+//	uid: uid
+//
+//Return
+//	userLevel: userLevel.
+//	error: err.
+func PasswdQueryUserLevel(uid ptttype.Uid) (userLevel ptttype.PERM, err error) {
+	if !uid.IsValid() {
+		return ptttype.PERM_INVALID, ptttype.ErrInvalidUserID
+	}
+
+	file, err := os.Open(ptttype.FN_PASSWD)
+	if err != nil {
+		return ptttype.PERM_INVALID, err
+	}
+
+	uidInFile := uid.ToUidInStore()
+	offset := int64(ptttype.USEREC_RAW_SZ)*int64(uidInFile) + int64(unsafe.Offsetof(ptttype.USEREC_RAW.UserLevel))
+	_, err = file.Seek(offset, 0)
+	if err != nil {
+		return ptttype.PERM_INVALID, err
+	}
+	err = binary.Read(file, binary.LittleEndian, &userLevel)
+	if err != nil {
+		return ptttype.PERM_INVALID, err
+	}
+
+	return userLevel, nil
+}
+
 func PasswdUpdate(uid ptttype.Uid, user *ptttype.UserecRaw) error {
 	if !uid.IsValid() {
 		return cache.ErrInvalidUID
@@ -221,6 +254,159 @@ func PasswdUpdateEmail(uid ptttype.Uid, email *ptttype.Email_t) error {
 		return err
 	}
 
+	return nil
+}
+
+func PasswdGetUser2(userID *ptttype.UserID_t) (user *ptttype.Userec2Raw, err error) {
+	filename, err := path.SetHomeFile(userID, ptttype.FN_PASSWD2)
+	if err != nil {
+		return nil, err
+	}
+
+	file, err := os.Open(filename)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return &ptttype.Userec2Raw{}, nil
+		}
+
+		return nil, err
+	}
+	defer file.Close()
+
+	user = &ptttype.Userec2Raw{}
+
+	err = binary.Read(file, binary.LittleEndian, user)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+func PasswdGetUserLevel2(userID *ptttype.UserID_t) (userLevel2 ptttype.PERM2, err error) {
+	filename, err := path.SetHomeFile(userID, ptttype.FN_PASSWD2)
+	if err != nil {
+		return ptttype.PERM2_INVALID, err
+	}
+
+	file, err := os.Open(filename)
+	if err != nil {
+		if os.IsNotExist(err) {
+			err = nil
+		}
+		return ptttype.PERM2_INVALID, err
+	}
+	defer file.Close()
+
+	offset := int64(unsafe.Offsetof(ptttype.USEREC2_RAW.UserLevel2))
+	_, err = file.Seek(offset, 0)
+	if err != nil {
+		return ptttype.PERM2_INVALID, err
+	}
+
+	err = binary.Read(file, binary.LittleEndian, &userLevel2)
+	if err != nil {
+		return ptttype.PERM2_INVALID, err
+	}
+
+	return userLevel2, nil
+}
+
+func PasswdUpdateUserLevel2(userID *ptttype.UserID_t, perm ptttype.PERM2, isSet bool) (err error) {
+	filename, err := path.SetHomeFile(userID, ptttype.FN_PASSWD2)
+	if err != nil {
+		return err
+	}
+
+	err = passwdCheckPasswd2(filename)
+	if err != nil {
+		return err
+	}
+
+	file, err := os.OpenFile(filename, os.O_RDWR, 0600)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	offset := int64(unsafe.Offsetof(ptttype.USEREC2_RAW.UserLevel2))
+	_, err = file.Seek(offset, 0)
+	if err != nil {
+		return err
+	}
+
+	userLevel2 := ptttype.PERM2(0)
+	err = binary.Read(file, binary.LittleEndian, &userLevel2)
+	if isSet {
+		userLevel2 |= perm
+	} else {
+		userLevel2 &= ^perm
+	}
+
+	offset = int64(unsafe.Offsetof(ptttype.USEREC2_RAW.UserLevel2))
+	_, err = file.Seek(offset, 0)
+	if err != nil {
+		return err
+	}
+	err = binary.Write(file, binary.LittleEndian, &userLevel2)
+	if err != nil {
+		return err
+	}
+
+	offset = int64(unsafe.Offsetof(ptttype.USEREC2_RAW.UpdateTS))
+	_, err = file.Seek(offset, 0)
+	if err != nil {
+		return err
+	}
+
+	updateTS := types.NowTS()
+	err = binary.Write(file, binary.LittleEndian, &updateTS)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func passwdCheckPasswd2(filename string) (err error) {
+	stat, err := os.Stat(filename)
+	if err != nil {
+		if !os.IsNotExist(err) {
+			return err
+		}
+
+		file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, 0600)
+		if err != nil {
+			return err
+		}
+		defer file.Close()
+
+		userec2 := &ptttype.Userec2Raw{
+			Version: ptttype.PASSWD2_VERSION,
+		}
+
+		return binary.Write(file, binary.LittleEndian, userec2)
+	}
+
+	diffSize := int64(ptttype.USEREC2_RAW_SZ) - stat.Size()
+	if diffSize == 0 {
+		return nil
+	}
+	if diffSize < 0 {
+		return ErrInvalidPasswd2Size
+	}
+
+	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_APPEND, 0600)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	theBytes := make([]byte, diffSize)
+	_, err = file.Write(theBytes)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

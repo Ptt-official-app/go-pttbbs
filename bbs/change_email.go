@@ -5,8 +5,8 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 )
 
-func ChangeEmail(userID UUserID, email string) (err error) {
-	userIDRaw, err := userID.ToRaw()
+func ChangeEmail(uuserID UUserID, email string) (err error) {
+	userIDRaw, err := uuserID.ToRaw()
 	if err != nil {
 		return err
 	}

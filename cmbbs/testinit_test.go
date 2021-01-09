@@ -17,6 +17,8 @@ func setupTest() {
 
 	_ = types.CopyFileToFile("./testcase/.PASSWDS1", "./testcase/.PASSWDS")
 
+	_ = types.CopyDirToDir("./testcase/home1", "./testcase/home")
+
 	err := cache.NewSHM(cache.TestShmKey, ptttype.USE_HUGETLB, true)
 	if err != nil {
 		log.Errorf("setupTest: unable to NewSHM: e: %v", err)
@@ -31,7 +33,9 @@ func setupTest() {
 func teardownTest() {
 	_ = cache.CloseSHM()
 
+	os.Remove("./testcase/.fresh")
 	os.Remove("./testcase/.PASSWDS")
+	os.RemoveAll("./testcase/home")
 
 	ptttype.SetBBSHOME(origBBSHOME)
 

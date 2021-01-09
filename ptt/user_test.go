@@ -3,6 +3,7 @@ package ptt
 import (
 	"bytes"
 	"os"
+	"reflect"
 	"sync"
 	"testing"
 
@@ -239,5 +240,57 @@ func TestCheckPasswd(t *testing.T) {
 				t.Errorf("CheckPasswd() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
+	}
+}
+
+func TestChangeUserLevel2(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	type args struct {
+		userID *ptttype.UserID_t
+		perm   ptttype.PERM2
+		isSet  bool
+	}
+	tests := []struct {
+		name               string
+		args               args
+		expectedUserLevel2 ptttype.PERM2
+		wantErr            bool
+	}{
+		// TODO: Add test cases.
+		{
+			args: args{
+				userID: &testUserecRaw1.UserID,
+				perm:   ptttype.PERM2_ID_EMAIL,
+				isSet:  true,
+			},
+			expectedUserLevel2: ptttype.PERM2_ID_EMAIL,
+		},
+		{
+			args: args{
+				userID: &testUserecRaw1.UserID,
+				perm:   ptttype.PERM2_ID_EMAIL,
+				isSet:  false,
+			},
+			expectedUserLevel2: ptttype.PERM2_INVALID,
+		},
+	}
+
+	var wg sync.WaitGroup
+	for _, tt := range tests {
+		wg.Add(1)
+		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
+			gotUserLevel2, err := ChangeUserLevel2(tt.args.userID, tt.args.perm, tt.args.isSet)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ChangeUserLevel2() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotUserLevel2, tt.expectedUserLevel2) {
+				t.Errorf("ChangeUserLevel2() = %v, want %v", gotUserLevel2, tt.expectedUserLevel2)
+			}
+		})
+		wg.Wait()
 	}
 }

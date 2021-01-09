@@ -90,3 +90,7 @@ var (
 		0xa8, 0xd3, 0xa1, 0xe3,
 	}
 )
+
+const (
+	PASSWD2_VERSION = 1
+)

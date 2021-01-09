@@ -371,3 +371,124 @@ func TestPasswdUpdateEmail(t *testing.T) {
 		})
 	}
 }
+
+func TestPasswdQueryUserLevel(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	type args struct {
+		uid ptttype.Uid
+	}
+	tests := []struct {
+		name              string
+		args              args
+		expectedUserLevel ptttype.PERM
+		wantErr           bool
+	}{
+		// TODO: Add test cases.
+		{
+			args:              args{uid: 1},
+			expectedUserLevel: 536871943,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotUserLevel, err := PasswdQueryUserLevel(tt.args.uid)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("PasswdQueryUserLevel() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotUserLevel, tt.expectedUserLevel) {
+				t.Errorf("PasswdQueryUserLevel() = %v, want %v", gotUserLevel, tt.expectedUserLevel)
+			}
+		})
+	}
+}
+
+func TestPasswdUpdateUserLevel2(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	userID := &ptttype.UserID_t{}
+	copy(userID[:], []byte("CodingMan"))
+
+	type args struct {
+		userID *ptttype.UserID_t
+		perm   ptttype.PERM2
+		isSet  bool
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+		{
+			args: args{userID: userID, perm: ptttype.PERM2_ID_EMAIL, isSet: true},
+		},
+		{
+			args: args{userID: userID, perm: ptttype.PERM2_ID_EMAIL, isSet: false},
+		},
+	}
+
+	var wg sync.WaitGroup
+	for _, tt := range tests {
+		wg.Add(1)
+		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
+			if err := PasswdUpdateUserLevel2(tt.args.userID, tt.args.perm, tt.args.isSet); (err != nil) != tt.wantErr {
+				t.Errorf("PasswdUpdateUserLevel2() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			userLevel2, err := PasswdGetUserLevel2(tt.args.userID)
+			if err != nil {
+				t.Errorf("PasswdUpdateUserLevel2: e: %v", err)
+			}
+			if (tt.args.isSet && userLevel2&tt.args.perm == 0) || (!tt.args.isSet && userLevel2&tt.args.perm != 0) {
+				t.Errorf("PasswdUpdateUserLevel2: isSet: %v userLevel2: (%v/%v/%v)", tt.args.isSet, userLevel2, tt.args.perm, userLevel2&tt.args.perm)
+			}
+
+			user2, err := PasswdGetUser2(tt.args.userID)
+			if err != nil {
+				t.Errorf("PasswdUpdateUserLevel2: e: %v", err)
+			}
+
+			if (tt.args.isSet && user2.UserLevel2&tt.args.perm == 0) || (!tt.args.isSet && user2.UserLevel2&tt.args.perm != 0) {
+				t.Errorf("PasswdUpdateUserLevel2: isSet: %v userLevel2: (%v/%v/%v)", tt.args.isSet, userLevel2, tt.args.perm, userLevel2&tt.args.perm)
+			}
+		})
+		wg.Wait()
+	}
+}
+
+func TestPasswdGetUserLevel2(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	type args struct {
+		userID *ptttype.UserID_t
+	}
+	tests := []struct {
+		name               string
+		args               args
+		expectedUserLevel2 ptttype.PERM2
+		wantErr            bool
+	}{
+		// TODO: Add test cases.
+		{
+			args: args{&testUserecRaw1.UserID},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotUserLevel2, err := PasswdGetUserLevel2(tt.args.userID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("PasswdGetUserLevel2() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotUserLevel2, tt.expectedUserLevel2) {
+				t.Errorf("PasswdGetUserLevel2() = %v, want %v", gotUserLevel2, tt.expectedUserLevel2)
+			}
+		})
+	}
+}

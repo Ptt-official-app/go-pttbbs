@@ -2,6 +2,7 @@ package cache
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 	"unsafe"
 
@@ -49,8 +50,11 @@ func TestNewSHM(t *testing.T) {
 			wantSize:    int32(SHM_RAW_SZ),
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			err := NewSHM(tt.args.key, tt.args.isUseHugeTlb, tt.args.isCreate)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("NewSHM() error = %v, wantErr %v", err, tt.wantErr)
@@ -72,6 +76,7 @@ func TestNewSHM(t *testing.T) {
 				Shm = nil
 			}
 		})
+		wg.Wait()
 	}
 }
 
@@ -182,15 +187,18 @@ func TestSHM_ReadAt(t *testing.T) {
 			expected: &want3,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
-
+			defer wg.Done()
 			Shm.ReadAt(tt.args.offsetOfSHMRawComponent, tt.args.size, tt.args.outptr)
 
 			if !reflect.DeepEqual(tt.out, tt.expected) {
 				t.Errorf("SHM.ReadAt() out: %v expected: %v", tt.out, tt.expected)
 			}
 		})
+		wg.Wait()
 	}
 }
 
@@ -319,8 +327,12 @@ func TestSHM_WriteAt(t *testing.T) {
 			expected:   &want4,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			Shm.WriteAt(
 				tt.args.offsetOfSHMRawComponent,
 				tt.args.size,
@@ -336,5 +348,6 @@ func TestSHM_WriteAt(t *testing.T) {
 				t.Errorf("SHM.WriteAt() out: %v expected: %v", tt.out, tt.expected)
 			}
 		})
+		wg.Wait()
 	}
 }

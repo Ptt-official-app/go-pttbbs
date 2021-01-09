@@ -30,18 +30,18 @@ func Login(remoteAddr string, params interface{}) (interface{}, error) {
 		return nil, ErrInvalidParams
 	}
 
-	user, err := bbs.Login(loginParams.Username, loginParams.Passwd, remoteAddr)
+	uuserID, err := bbs.Login(loginParams.Username, loginParams.Passwd, remoteAddr)
 	if err != nil {
 		return nil, ErrLoginFailed
 	}
 
-	token, err := createToken(user.UUserID, loginParams.ClientInfo)
+	token, err := createToken(uuserID, loginParams.ClientInfo)
 	if err != nil {
 		return nil, err
 	}
 
 	result := &LoginResult{
-		UserID:    user.UUserID,
+		UserID:    uuserID,
 		Jwt:       token,
 		TokenType: "bearer",
 	}

@@ -81,9 +81,12 @@ type Userec struct {
 	WithMe            ptttype.WithMe_t
 	TimeRemoveBadPost types.Time4
 	TimeViolateLaw    types.Time4
+
+	UserLevel2 ptttype.PERM2
+	UpdateTS2  types.Time4
 }
 
-func NewUserecFromRaw(userecRaw *ptttype.UserecRaw) (user *Userec) {
+func NewUserecFromRaw(userecRaw *ptttype.UserecRaw, userec2Raw *ptttype.Userec2Raw) (user *Userec) {
 	return &Userec{
 		UUserID:  ToUUserID(&userecRaw.UserID),
 		Version:  userecRaw.Version,
@@ -144,5 +147,8 @@ func NewUserecFromRaw(userecRaw *ptttype.UserecRaw) (user *Userec) {
 		WithMe:            userecRaw.WithMe,
 		TimeRemoveBadPost: userecRaw.TimeRemoveBadPost,
 		TimeViolateLaw:    userecRaw.TimeViolateLaw,
+
+		UserLevel2: userec2Raw.UserLevel2,
+		UpdateTS2:  userec2Raw.UpdateTS,
 	}
 }
