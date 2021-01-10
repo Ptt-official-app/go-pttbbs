@@ -10,7 +10,7 @@ import (
 func TestGetEmailTokenInfo(t *testing.T) {
 
 	jwt, _ := CreateEmailToken("SYSOP", "", "test@ptt.test", CONTEXT_CHANGE_EMAIL)
-	params0 := &GetEmailTokenInfoParams{Jwt: jwt}
+	params0 := &GetEmailTokenInfoParams{Jwt: jwt, Context: CONTEXT_CHANGE_EMAIL}
 	result0 := &GetEmailTokenInfoResult{UserID: "SYSOP", Email: "test@ptt.test"}
 
 	type args struct {
