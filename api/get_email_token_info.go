@@ -30,11 +30,13 @@ func GetEmailTokenInfo(remoteAddr string, uuserID bbs.UUserID, params interface{
 		return nil, ErrInvalidParams
 	}
 
-	userID, clientInfo, email, err := VerifyEmailJwt(theParams.Jwt, CONTEXT_CHANGE_EMAIL)
+	userID, clientInfo, email, err := VerifyEmailJwt(theParams.Jwt, theParams.Context)
 	if err != nil {
 		return nil, err
 	}
-	if userID != uuserID {
+
+	isValid, _ := userIsValidEmailUser(uuserID, userID, theParams.Jwt, theParams.Context, true)
+	if !isValid {
 		return nil, ErrInvalidUser
 	}
 
