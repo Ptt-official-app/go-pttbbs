@@ -10,15 +10,14 @@ import (
 )
 
 var (
-	origBBSHOME = ""
-	testIP      = "127.0.0.1"
+	testIP = "127.0.0.1"
 )
 
 func setupTest() {
 	cache.SetIsTest()
 	cmbbs.SetIsTest()
 
-	origBBSHOME = ptttype.SetBBSHOME("./testcase")
+	ptttype.SetIsTest()
 
 	_ = types.CopyFileToFile("./testcase/.PASSWDS1", "./testcase/.PASSWDS")
 
@@ -48,7 +47,7 @@ func teardownTest() {
 	os.RemoveAll("./testcase/home")
 	os.Remove("./testcase/.PASSWDS")
 
-	ptttype.SetBBSHOME(origBBSHOME)
+	ptttype.UnsetIsTest()
 
 	cmbbs.UnsetIsTest()
 	cache.UnsetIsTest()

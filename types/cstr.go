@@ -148,3 +148,33 @@ func CcharToupper(ch byte) byte {
 	}
 	return ch
 }
+
+func CstrTokenR(cstr Cstr, sep []byte) (first Cstr, theRest []byte) {
+	minIdx := bytes.IndexByte(cstr, 0x00)
+	if minIdx == -1 {
+		minIdx = len(cstr)
+	}
+
+	for _, each := range sep {
+		eachIdx := bytes.IndexByte(cstr, each)
+		if eachIdx == -1 {
+			continue
+		}
+		if eachIdx < minIdx {
+			minIdx = eachIdx
+		}
+	}
+	if minIdx == 0 {
+		first = nil
+	} else {
+		first = cstr[:minIdx]
+	}
+
+	if minIdx >= len(cstr)-1 {
+		theRest = nil
+	} else {
+		theRest = cstr[minIdx+1:]
+	}
+
+	return first, theRest
+}

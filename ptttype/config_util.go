@@ -1,10 +1,13 @@
 package ptttype
 
 import (
+	"bufio"
 	"os"
 	"regexp"
 
 	"github.com/Ptt-official-app/go-pttbbs/config_util"
+	"github.com/Ptt-official-app/go-pttbbs/types"
+	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -18,7 +21,12 @@ func InitConfig() (err error) {
 		return err
 	}
 
-	return checkTypes()
+	err = checkTypes()
+	if err != nil {
+		return err
+	}
+
+	return initVars()
 }
 
 func setStringConfig(idx string, orig string) string {
@@ -94,12 +102,12 @@ func SetBBSHOME(bbshome string) string {
 		FN_BOARD_POSTFIX
 
 	//const.go
-	FN_FRESH = BBSHOME +
-		string(os.PathSeparator) +
-		FN_FRESH_POSTFIX /* mbbsd/register.c line: 381 */
+	FN_FRESH = BBSHOME + string(os.PathSeparator) + FN_FRESH_POSTFIX /* mbbsd/register.c line: 381 */
 
 	FN_ALLOW_EMAIL_LIST = BBSHOME + string(os.PathSeparator) + FN_ALLOW_EMAIL_LIST_POSTFIX
 	FN_REJECT_EMAIL_LIST = BBSHOME + string(os.PathSeparator) + FN_REJECT_EMAIL_LIST_POSTFIX
+
+	FN_DEFAULT_FAVS = BBSHOME + string(os.PathSeparator) + FN_DEFAULT_FAVS_POSTFIX
 
 	return origBBSHome
 }
@@ -227,4 +235,35 @@ func checkTypes() (err error) {
 	}
 
 	return nil
+}
+
+func initVars() (err error) {
+	initReservedUserIDs()
+
+	return nil
+}
+
+func initReservedUserIDs() {
+	ReservedUserIDs = []types.Cstr{}
+
+	filename := SetBBSHomePath(FN_CONF_RESERVED_ID)
+	file, err := os.Open(filename)
+	if err != nil {
+		return
+	}
+	defer file.Close()
+
+	reader := bufio.NewReader(file)
+	for theBytes, err := types.ReadLine(reader); err == nil; theBytes, err = types.ReadLine(reader) {
+		first, _ := types.CstrTokenR(theBytes, BYTES_SPACE)
+		if len(first) == 0 {
+			continue
+		}
+		logrus.Infof("initReservedUserIDs: theBytes: %v first: %v", string(theBytes), string(first))
+
+		firstBytes := types.CstrToBytes(first)
+		ReservedUserIDs = append(ReservedUserIDs, firstBytes)
+	}
+
+	return
 }

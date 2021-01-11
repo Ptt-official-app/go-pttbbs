@@ -113,3 +113,14 @@ var (
 	FN_ALLOW_EMAIL_LIST  = BBSHOME + string(os.PathSeparator) + FN_ALLOW_EMAIL_LIST_POSTFIX
 	FN_REJECT_EMAIL_LIST = BBSHOME + string(os.PathSeparator) + FN_REJECT_EMAIL_LIST_POSTFIX
 )
+
+var (
+	//https://github.com/ptt/pttbbs/blob/master/mbbsd/fav.c#L1202
+	FN_DEFAULT_FAVS_POSTFIX = "etc/myfav_defaults"
+	FN_DEFAULT_FAVS         = BBSHOME + string(os.PathSeparator) + FN_DEFAULT_FAVS_POSTFIX
+)
+
+var (
+	STR_SPACE   = " \t\n\r"
+	BYTES_SPACE = []byte(STR_SPACE)
+)

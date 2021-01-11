@@ -204,3 +204,20 @@ func doAloha(utmpID ptttype.UtmpID, uinfo *ptttype.UserInfoRaw, hello []byte) {
 		myWrite(utmpID, uinfo, friendInfo.Pid, hello, ptttype.WATERBALL_ALOHA, friendUtmpID, friendInfo)
 	}
 }
+
+func mkUserDir(userID *ptttype.UserID_t) (err error) {
+
+	dirname := path.SetHomePath(userID)
+
+	_, err = os.Stat(dirname)
+	if err == nil {
+		return nil
+	}
+
+	if !os.IsNotExist(err) {
+		return err
+	}
+
+	err = types.Mkdir(dirname)
+	return err
+}

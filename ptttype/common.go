@@ -3,6 +3,7 @@ package ptttype
 import (
 	"os"
 
+	"github.com/Ptt-official-app/go-pttbbs/types"
 	"github.com/Ptt-official-app/go-pttbbs/types/ansi"
 )
 
@@ -266,6 +267,10 @@ var (
 
 const (
 	FN_PASSWD2 = ".PASSWD2" //passwd2 in per-user directories.
+)
+
+var (
+	ReservedUserIDs []types.Cstr
 )
 
 type FriendStat uint8

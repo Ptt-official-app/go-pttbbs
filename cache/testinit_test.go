@@ -30,11 +30,12 @@ func teardownTest() {
 func shmSetupTest() {
 	SetIsTest()
 
-	origBBSHome = ptttype.SetBBSHOME("./testcase")
+	ptttype.SetIsTest()
+
 }
 
 func shmTeardownTest() {
-	ptttype.SetBBSHOME(origBBSHome)
+	ptttype.UnsetIsTest()
 
 	UnsetIsTest()
 	time.Sleep(1 * time.Millisecond)

@@ -14,8 +14,7 @@ var (
 var (
 	IsTest = false
 
-	origBBSHome = ""
-	origShmKey  = types.Key_t(0)
+	origShmKey = types.Key_t(0)
 
 	TestMutex     sync.Mutex
 	TestEachMutex sync.Mutex

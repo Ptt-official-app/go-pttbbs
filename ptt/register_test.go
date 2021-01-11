@@ -3,6 +3,7 @@ package ptt
 import (
 	"os"
 	"reflect"
+	"sync"
 	"testing"
 	"time"
 
@@ -425,6 +426,18 @@ func TestRegister(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
+	testNewUserID := &ptttype.UserID_t{}
+	copy(testNewUserID[:], []byte(ptttype.STR_REGNEW))
+
+	testGuestUserID := &ptttype.UserID_t{}
+	copy(testGuestUserID[:], []byte(ptttype.STR_GUEST))
+
+	testReserve0UserID := &ptttype.UserID_t{}
+	copy(testReserve0UserID[:], []byte("reserve0"))
+
+	testReserve1UserID := &ptttype.UserID_t{}
+	copy(testReserve1UserID[:], []byte("reserve1"))
+
 	type args struct {
 		userID          *ptttype.UserID_t
 		passwd          []byte
@@ -461,12 +474,53 @@ func TestRegister(t *testing.T) {
 			expectedUser: testNewRegister1,
 			expectedUid:  6,
 		},
+		{
+			args: args{
+				userID: testNewUserID,
+				passwd: testNewRegister1Passwd,
+				over18: true,
+			},
+			wantErr: true,
+		},
+		{
+			args: args{
+				userID: testGuestUserID,
+				passwd: testNewRegister1Passwd,
+				over18: true,
+			},
+			wantErr: true,
+		},
+		{
+			name: "reserve0",
+			args: args{
+				userID: testReserve0UserID,
+				passwd: testNewRegister1Passwd,
+				over18: true,
+			},
+			wantErr: true,
+		},
+		{
+			args: args{
+				userID: testReserve1UserID,
+				passwd: testNewRegister1Passwd,
+				over18: true,
+			},
+			wantErr: true,
+		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotUid, gotUser, err := Register(tt.args.userID, tt.args.passwd, tt.args.fromHost, tt.args.email, tt.args.isEmailVerified, tt.args.isAdbannerUSong, tt.args.nickname, tt.args.realname, tt.args.career, tt.args.address, tt.args.over18)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Register() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			if err != nil {
 				return
 			}
 			if !reflect.DeepEqual(gotUid, tt.expectedUid) {
@@ -480,6 +534,7 @@ func TestRegister(t *testing.T) {
 
 			testutil.TDeepEqual(t, "user", gotUser, tt.expectedUser)
 		})
+		wg.Wait()
 	}
 }
 
