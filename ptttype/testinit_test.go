@@ -10,7 +10,10 @@ func setupTest() {
 	jww.SetLogOutput(os.Stderr)
 	jww.SetLogThreshold(jww.LevelDebug)
 	jww.SetStdoutThreshold(jww.LevelDebug)
+
+	SetIsTest()
 }
 
 func teardownTest() {
+	UnsetIsTest()
 }

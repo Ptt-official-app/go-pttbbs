@@ -430,3 +430,42 @@ func TestCcharToupper(t *testing.T) {
 		})
 	}
 }
+
+func TestCstrTokenR(t *testing.T) {
+	type args struct {
+		cstr Cstr
+		sep  []byte
+	}
+	tests := []struct {
+		name            string
+		args            args
+		expectedFirst   Cstr
+		expectedTheRest []byte
+	}{
+		// TODO: Add test cases.
+		{
+			args:            args{cstr: []byte("reserve0\t456"), sep: []byte(" \t\n\r")},
+			expectedFirst:   []byte("reserve0"),
+			expectedTheRest: []byte("456"),
+		},
+		{
+			args:            args{cstr: []byte("\t456"), sep: []byte(" \t\n\r")},
+			expectedTheRest: []byte("456"),
+		},
+		{
+			args:          args{cstr: []byte("reserve0\t"), sep: []byte(" \t\n\r")},
+			expectedFirst: []byte("reserve0"),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotFirst, gotTheRest := CstrTokenR(tt.args.cstr, tt.args.sep)
+			if !reflect.DeepEqual(gotFirst, tt.expectedFirst) {
+				t.Errorf("CstrTokenR() gotFirst = %v, want %v", gotFirst, tt.expectedFirst)
+			}
+			if !reflect.DeepEqual(gotTheRest, tt.expectedTheRest) {
+				t.Errorf("CstrTokenR() gotTheRest = %v, want %v", gotTheRest, tt.expectedTheRest)
+			}
+		})
+	}
+}

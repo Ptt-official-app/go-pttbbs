@@ -9,15 +9,11 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
-var (
-	origBBSHOME = ""
-)
-
 func setupTest() {
 	cache.SetIsTest()
 	cmbbs.SetIsTest()
 
-	origBBSHOME = ptttype.SetBBSHOME("./testcase")
+	ptttype.SetIsTest()
 
 	_ = types.CopyFileToFile("./testcase/.PASSWDS1", "./testcase/.PASSWDS")
 
@@ -41,8 +37,10 @@ func teardownTest() {
 	os.Remove("./testcase/.fresh")
 	os.Remove("./testcase/.PASSWDS")
 	os.RemoveAll("./testcase/home")
-	ptttype.SetBBSHOME(origBBSHOME)
+
+	ptttype.UnsetIsTest()
 
 	cmbbs.UnsetIsTest()
 	cache.UnsetIsTest()
+
 }

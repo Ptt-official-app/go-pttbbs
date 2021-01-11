@@ -119,3 +119,8 @@ var (
 	FN_DEFAULT_FAVS_POSTFIX = "etc/myfav_defaults"
 	FN_DEFAULT_FAVS         = BBSHOME + string(os.PathSeparator) + FN_DEFAULT_FAVS_POSTFIX
 )
+
+var (
+	STR_SPACE   = " \t\n\r"
+	BYTES_SPACE = []byte(STR_SPACE)
+)

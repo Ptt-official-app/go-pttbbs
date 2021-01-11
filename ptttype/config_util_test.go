@@ -2,6 +2,8 @@ package ptttype
 
 import (
 	"testing"
+
+	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
 func Test_regexReplace(t *testing.T) {
@@ -39,18 +41,43 @@ func Test_regexReplace(t *testing.T) {
 }
 
 func TestInitConfig(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	expected := []types.Cstr{
+		[]byte("test0"),
+		[]byte("123123"),
+	}
+
 	tests := []struct {
-		name    string
-		wantErr bool
+		name     string
+		wantErr  bool
+		expected []types.Cstr
 	}{
 		// TODO: Add test cases.
-		{},
+		{
+			expected: expected,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if err := InitConfig(); (err != nil) != tt.wantErr {
 				t.Errorf("InitConfig() error = %v, wantErr %v", err, tt.wantErr)
 			}
+		})
+	}
+}
+
+func Test_initReservedUserIDs(t *testing.T) {
+	tests := []struct {
+		name string
+	}{
+		// TODO: Add test cases.
+		{},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			initReservedUserIDs()
 		})
 	}
 }

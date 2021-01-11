@@ -58,5 +58,5 @@ func SetBFile(boardID *ptttype.BoardID_t, filename string) (string, error) {
 }
 
 func SetBBSHomePath(filename string) string {
-	return ptttype.BBSHOME + string(os.PathSeparator) + filename
+	return ptttype.SetBBSHomePath(filename)
 }

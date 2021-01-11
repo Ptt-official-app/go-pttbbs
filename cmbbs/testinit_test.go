@@ -13,7 +13,7 @@ func setupTest() {
 	SetIsTest()
 	cache.SetIsTest()
 
-	origBBSHOME = ptttype.SetBBSHOME("./testcase")
+	ptttype.SetIsTest()
 
 	_ = types.CopyFileToFile("./testcase/.PASSWDS1", "./testcase/.PASSWDS")
 
@@ -37,8 +37,7 @@ func teardownTest() {
 	os.Remove("./testcase/.PASSWDS")
 	os.RemoveAll("./testcase/home")
 
-	ptttype.SetBBSHOME(origBBSHOME)
-
+	ptttype.UnsetIsTest()
 	cache.UnsetIsTest()
 	UnsetIsTest()
 }

@@ -12,6 +12,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
 
+	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -87,6 +88,17 @@ func NewRegister(
 	address *ptttype.Address_t,
 	over18 bool,
 ) (uid ptttype.Uid, user *ptttype.UserecRaw, err error) {
+
+	//https://github.com/ptt/pttbbs/blob/master/mbbsd/register.c#L723
+	if isBadUserID(userID) {
+		return 0, nil, ptttype.ErrInvalidUserID
+	}
+
+	if isReservedUserID(userID) {
+		return 0, nil, ptttype.ErrInvalidUserID
+	}
+
+	logrus.Infof("NewRegister: good userID: %v", string(userID[:]))
 
 	// line: 758
 	newUser := &ptttype.UserecRaw{}
@@ -501,4 +513,29 @@ func ensureNewestAllowRejectListCore(filename string, origList []*ptttype.AllowR
 		newList = append(newList, each)
 	}
 	return newList, mTime, nil
+}
+
+func isBadUserID(userID *ptttype.UserID_t) bool {
+	if !userID.IsValid() {
+		return true
+	}
+	if types.Cstrcmp(userID[:], []byte(ptttype.STR_REGNEW)) == 0 {
+		return true
+	}
+	if types.Cstrcmp(userID[:], []byte(ptttype.STR_GUEST)) == 0 {
+		return true
+	}
+
+	return false
+}
+
+func isReservedUserID(userID *ptttype.UserID_t) bool {
+	for _, each := range ptttype.ReservedUserIDs {
+		logrus.Infof("to compare: each: %v userID: %v", string(each), string(userID[:]))
+		if types.Cstrcasecmp(userID[:], each[:]) == 0 {
+			return true
+		}
+	}
+
+	return false
 }

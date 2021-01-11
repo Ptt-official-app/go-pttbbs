@@ -1,6 +1,7 @@
 package bbs
 
 import (
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/testutil"
@@ -8,6 +9,8 @@ import (
 
 func TestLoadGeneralArticles(t *testing.T) {
 	//setupTest in for-loop
+	setupTest()
+	defer teardownTest()
 
 	type args struct {
 		uuserID     UUserID
@@ -47,11 +50,12 @@ func TestLoadGeneralArticles(t *testing.T) {
 			expectedIsNewest:   true,
 		},
 	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			setupTest()
-			defer teardownTest()
 
+	var wg sync.WaitGroup
+	for _, tt := range tests {
+		wg.Add(1)
+		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotSummary, gotNextIdxStr, gotIsNewest, err := LoadGeneralArticles(tt.args.uuserID, tt.args.bboardID, tt.args.startIdxStr, tt.args.nArticles)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadGeneralArticles() error = %v, wantErr %v", err, tt.wantErr)
@@ -68,5 +72,6 @@ func TestLoadGeneralArticles(t *testing.T) {
 				t.Errorf("LoadGeneralArticles() isNewest = %v, want %v", gotIsNewest, tt.expectedIsNewest)
 			}
 		})
+		wg.Wait()
 	}
 }

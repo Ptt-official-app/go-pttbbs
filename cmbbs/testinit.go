@@ -8,9 +8,8 @@ import (
 )
 
 var (
-	origBBSHOME = ""
-	IsTest      = false
-	TestMutex   sync.Mutex
+	IsTest    = false
+	TestMutex sync.Mutex
 
 	TestPASSWDSEM_KEY = 32763
 
