@@ -74,7 +74,7 @@ func CopyFile(src string, dst string) (err error) {
 }
 
 func Mkdir(path string) error {
-	return os.Mkdir(path, DEFAULT_FOLDER_CREATE_PERM)
+	return os.MkdirAll(path, DEFAULT_FOLDER_CREATE_PERM)
 }
 
 func CopyDirToDir(src string, dst string) (err error) {

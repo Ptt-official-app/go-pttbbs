@@ -94,12 +94,12 @@ func SetBBSHOME(bbshome string) string {
 		FN_BOARD_POSTFIX
 
 	//const.go
-	FN_FRESH = BBSHOME +
-		string(os.PathSeparator) +
-		FN_FRESH_POSTFIX /* mbbsd/register.c line: 381 */
+	FN_FRESH = BBSHOME + string(os.PathSeparator) + FN_FRESH_POSTFIX /* mbbsd/register.c line: 381 */
 
 	FN_ALLOW_EMAIL_LIST = BBSHOME + string(os.PathSeparator) + FN_ALLOW_EMAIL_LIST_POSTFIX
 	FN_REJECT_EMAIL_LIST = BBSHOME + string(os.PathSeparator) + FN_REJECT_EMAIL_LIST_POSTFIX
+
+	FN_DEFAULT_FAVS = BBSHOME + string(os.PathSeparator) + FN_DEFAULT_FAVS_POSTFIX
 
 	return origBBSHome
 }

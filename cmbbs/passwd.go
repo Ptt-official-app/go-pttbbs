@@ -323,7 +323,7 @@ func PasswdUpdateUserLevel2(userID *ptttype.UserID_t, perm ptttype.PERM2, isSet 
 		return err
 	}
 
-	file, err := os.OpenFile(filename, os.O_RDWR, 0600)
+	file, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE, 0600)
 	if err != nil {
 		return err
 	}

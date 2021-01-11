@@ -19,6 +19,7 @@ import (
 //
 //adopted from the original start_client with LOGINASNEW.
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/mbbsd.c#L1399
+//https://github.com/ptt/pttbbs/blob/master/mbbsd/mbbsd.c#L714
 func Register(
 	userID *ptttype.UserID_t,
 	passwd []byte,
@@ -47,6 +48,16 @@ func Register(
 		address,
 		over18,
 	)
+	if err != nil {
+		return 0, nil, err
+	}
+
+	err = mkUserDir(&user.UserID)
+	if err != nil {
+		return 0, nil, err
+	}
+
+	err = reginitFav(uid, user)
 	if err != nil {
 		return 0, nil, err
 	}
