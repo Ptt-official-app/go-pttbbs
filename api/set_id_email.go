@@ -41,7 +41,7 @@ func SetIDEmail(remoteAddr string, uuserID bbs.UUserID, params interface{}, path
 		return nil, ErrInvalidPath
 	}
 
-	isValid, email := userIsValidEmailUser(uuserID, thePath.UserID, theParams.Jwt, CONTEXT_SET_ID_EMAIL, true)
+	isValid, email := userInfoIsValidEmailUser(uuserID, thePath.UserID, theParams.Jwt, CONTEXT_SET_ID_EMAIL, true)
 	if !isValid {
 		return nil, ErrInvalidUser
 	}

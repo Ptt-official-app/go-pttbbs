@@ -12,41 +12,6 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
-//LoginQuery
-//
-//Params
-//	userID: userID
-//	passwd: passwd
-//	ip: ip
-//
-//Return
-//	*UserecRaw: user
-//  error: err
-func LoginQuery(userID *ptttype.UserID_t, passwd []byte, ip *ptttype.IPv4_t) (uid ptttype.Uid, user *ptttype.UserecRaw, err error) {
-	if !userID.IsValid() {
-		//log.Errorf("LoginQuery: invalid user id: userID: %v", userID)
-		return 0, nil, ptttype.ErrInvalidUserID
-	}
-
-	uid, user, err = InitCurrentUser(userID)
-	if err != nil {
-		return 0, nil, err
-	}
-
-	isValid, err := cmbbs.CheckPasswd(user.PasswdHash[:], passwd)
-	if err != nil {
-		cmbbs.LogAttempt(userID, ip, true)
-		return 0, nil, err
-	}
-
-	if !isValid {
-		cmbbs.LogAttempt(userID, ip, true)
-		return 0, nil, ptttype.ErrInvalidUserID
-	}
-
-	return uid, user, nil
-}
-
 //Login
 //
 //adopted from the original start_client.
@@ -69,6 +34,46 @@ func Login(userID *ptttype.UserID_t, passwd []byte, ip *ptttype.IPv4_t) (uid ptt
 
 	//XXX we don't do auto-close-polls here.
 	//we should have another goroutine to do auto-close-polls.
+
+	return uid, user, nil
+}
+
+//LoginQuery
+//
+//Params
+//	userID: userID
+//	passwd: passwd
+//	ip: ip
+//
+//Return
+//	*UserecRaw: user
+//  error: err
+func LoginQuery(userID *ptttype.UserID_t, passwd []byte, ip *ptttype.IPv4_t) (uid ptttype.Uid, user *ptttype.UserecRaw, err error) {
+	if !userID.IsValid() {
+		//log.Errorf("LoginQuery: invalid user id: userID: %v", userID)
+		return 0, nil, ptttype.ErrInvalidUserID
+	}
+
+	uid, user, err = InitCurrentUser(userID)
+	if err != nil {
+		return 0, nil, err
+	}
+
+	//no need to check password for guest.
+	if types.Cstrcmp(user.UserID[:], []byte(ptttype.STR_GUEST)) == 0 {
+		return uid, user, nil
+	}
+
+	isValid, err := cmbbs.CheckPasswd(user.PasswdHash[:], passwd)
+	if err != nil {
+		cmbbs.LogAttempt(userID, ip, true)
+		return 0, nil, err
+	}
+
+	if !isValid {
+		cmbbs.LogAttempt(userID, ip, true)
+		return 0, nil, ptttype.ErrInvalidUserID
+	}
 
 	return uid, user, nil
 }

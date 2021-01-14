@@ -7,7 +7,6 @@ import (
 
 	"github.com/Ptt-official-app/go-pttbbs/config_util"
 	"github.com/Ptt-official-app/go-pttbbs/types"
-	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -259,7 +258,7 @@ func initReservedUserIDs() {
 		if len(first) == 0 {
 			continue
 		}
-		logrus.Infof("initReservedUserIDs: theBytes: %v first: %v", string(theBytes), string(first))
+		log.Infof("initReservedUserIDs: theBytes: %v first: %v", string(theBytes), string(first))
 
 		firstBytes := types.CstrToBytes(first)
 		ReservedUserIDs = append(ReservedUserIDs, firstBytes)

@@ -4,14 +4,32 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
+	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
 func InitCurrentUser(userID *ptttype.UserID_t) (uid ptttype.Uid, user *ptttype.UserecRaw, err error) {
-	return cmbbs.PasswdLoadUser(userID)
+	uid, user, err = cmbbs.PasswdLoadUser(userID)
+	if err != nil {
+		return uid, user, err
+	}
+
+	if types.Cstrcmp(user.UserID[:], []byte(ptttype.STR_GUEST)) == 0 {
+		pwcuInitGuestPerm(user)
+	}
+
+	return uid, user, nil
 }
 
 func InitCurrentUserByUid(uid ptttype.Uid) (user *ptttype.UserecRaw, err error) {
-	return cmbbs.PasswdQuery(uid)
+	user, err = cmbbs.PasswdQuery(uid)
+	if err != nil {
+		return nil, err
+	}
+	if types.Cstrcmp(user.UserID[:], []byte(ptttype.STR_GUEST)) == 0 {
+		pwcuInitGuestPerm(user)
+	}
+
+	return user, nil
 }
 
 func passwdSyncUpdate(uid ptttype.Uid, user *ptttype.UserecRaw) error {
