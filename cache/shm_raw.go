@@ -54,7 +54,7 @@ type SHMRaw struct {
 	// XXX NHOTs and HBcache are affected with HOTBOARDCACHE
 	//     Require to discuss with admins about current settings.
 	NHOTs         uint8
-	HBcache       [ptttype.HOTBOARDCACHE]int32
+	HBcache       [ptttype.HOTBOARDCACHE]ptttype.BidInStore
 	Gap12         [types.INT32_SZ]byte
 	BusyStateB    [ptttype.MAX_BOARD]types.Time4
 	Gap13         [types.INT32_SZ]byte

@@ -27,7 +27,7 @@ func Test_LoadBoardSummary(t *testing.T) {
 		// TODO: Add test cases.
 		{
 			args: args{
-				path:     "/boards/6_ALLPOST/summary",
+				path:     "/board/6_ALLPOST/summary",
 				username: "SYSOP",
 				passwd:   "123123",
 				params:   params,

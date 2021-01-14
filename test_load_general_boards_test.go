@@ -44,7 +44,7 @@ func Test_LoadGeneralBoards(t *testing.T) {
 
 			jwt := getJwt(router, tt.args.username, tt.args.passwd)
 			w := httptest.NewRecorder()
-			req := setRequest(tt.args.path, params, jwt, nil, "GET")
+			req := setRequest(tt.args.path, tt.args.params, jwt, nil, "GET")
 			router.ServeHTTP(w, req)
 
 			if w.Code != http.StatusOK {

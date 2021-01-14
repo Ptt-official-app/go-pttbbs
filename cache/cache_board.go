@@ -287,6 +287,16 @@ func NumBoards() int32 {
 	return nboards
 }
 
+func NHots() (nhots uint8) {
+	Shm.ReadAt(
+		unsafe.Offsetof(Shm.Raw.NHOTs),
+		types.UINT8_SZ,
+		unsafe.Pointer(&nhots),
+	)
+
+	return nhots
+}
+
 //Reload BCache
 //
 //https://github.com/ptt/pttbbs/blob/master/common/bbs/cache.c#L458

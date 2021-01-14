@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const ATTEMPT_CHANGE_EMAIL_R = "/users/:uid/attemptchangeemail"
+const ATTEMPT_CHANGE_EMAIL_R = "/user/:uid/attemptchangeemail"
 
 type AttemptChangeEmailParams struct {
 	ClientInfo string `json:"client_info"`

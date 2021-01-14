@@ -429,6 +429,9 @@ func TestRegister(t *testing.T) {
 	testNewUserID := &ptttype.UserID_t{}
 	copy(testNewUserID[:], []byte(ptttype.STR_REGNEW))
 
+	testGuestUserID := &ptttype.UserID_t{}
+	copy(testGuestUserID[:], []byte(ptttype.STR_GUEST))
+
 	testReserve0UserID := &ptttype.UserID_t{}
 	copy(testReserve0UserID[:], []byte("reserve0"))
 
@@ -474,6 +477,14 @@ func TestRegister(t *testing.T) {
 		{
 			args: args{
 				userID: testNewUserID,
+				passwd: testNewRegister1Passwd,
+				over18: true,
+			},
+			wantErr: true,
+		},
+		{
+			args: args{
+				userID: testGuestUserID,
 				passwd: testNewRegister1Passwd,
 				over18: true,
 			},

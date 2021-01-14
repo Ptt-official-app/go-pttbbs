@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const GET_ARTICLE_R = "/boards/:bid/articles/:aid"
+const GET_ARTICLE_R = "/board/:bid/article/:aid"
 
 type GetArticleParams struct {
 	RetrieveTS types.Time4 `json:"last_ts,omitempty" form:"last_ts,omitempty" url:"last_ts,omitempty"`

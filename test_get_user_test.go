@@ -24,7 +24,7 @@ func Test_GetUser(t *testing.T) {
 	}{
 		{
 			args: args{
-				path:     "/users/SYSOP/information",
+				path:     "/user/SYSOP/information",
 				username: "SYSOP",
 				passwd:   "123123",
 				params:   &api.GetUserParams{},

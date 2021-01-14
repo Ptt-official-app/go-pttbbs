@@ -44,6 +44,73 @@ func LoadBoardSummary(user *ptttype.UserecRaw, uid ptttype.Uid, bid ptttype.Bid)
 	return summary, nil
 }
 
+//LoadHotBoards
+//
+//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1125
+func LoadHotBoards(user *ptttype.UserecRaw, uid ptttype.Uid) (summary []*ptttype.BoardSummaryRaw, err error) {
+	nBoards := cache.NHots()
+
+	boardStats := make([]*ptttype.BoardStat, 0, nBoards)
+
+	for idx := uint8(0); idx < nBoards; idx++ {
+		eachBoardStat, err := loadHotBoardStat(user, uid, idx)
+		if err != nil {
+			continue
+		}
+		if eachBoardStat == nil {
+			continue
+		}
+
+		boardStats = append(boardStats, eachBoardStat)
+	}
+
+	summary, err = showBoardList(user, uid, boardStats)
+	if err != nil {
+		return nil, err
+	}
+
+	return summary, nil
+}
+
+//loadHotBoardStat
+//
+//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1147
+func loadHotBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idx uint8) (*ptttype.BoardStat, error) {
+
+	//read bid-in-cache
+	var bidInCache ptttype.BidInStore
+
+	cache.Shm.ReadAt(
+		unsafe.Offsetof(cache.Shm.Raw.HBcache)+uintptr(idx)*ptttype.BID_IN_STORE_SZ,
+		ptttype.BID_IN_STORE_SZ,
+		unsafe.Pointer(&bidInCache),
+	)
+	if bidInCache < 0 {
+		return nil, nil
+	}
+
+	//get board
+	board := &ptttype.BoardHeaderRaw{}
+	cache.Shm.ReadAt(
+		unsafe.Offsetof(cache.Shm.Raw.BCache)+ptttype.BOARD_HEADER_RAW_SZ*uintptr(bidInCache),
+		ptttype.BOARD_HEADER_RAW_SZ,
+		unsafe.Pointer(board),
+	)
+
+	//board-stat
+	//assuming that the hot-boards can be accessed by the public.
+	bid := bidInCache.ToBid()
+	isGroupOp := groupOp(user, board)
+	state := boardPermStat(user, uid, board, bid)
+	if state == ptttype.NBRD_INVALID {
+		return nil, nil
+	}
+
+	boardStat := newBoardStat(bidInCache, state, board, isGroupOp)
+
+	return boardStat, nil
+}
+
 //LoadGeneralBoards
 //
 //Load general boards by name.

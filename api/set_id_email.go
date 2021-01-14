@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const SET_ID_EMAIL_R = "/users/:uid/setidemail"
+const SET_ID_EMAIL_R = "/user/:uid/setidemail"
 
 type SetIDEmailParams struct {
 	IsSet bool   `json:"is_set"`

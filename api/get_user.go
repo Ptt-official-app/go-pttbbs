@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const GET_USER_R = "/users/:uid/information"
+const GET_USER_R = "/user/:uid/information"
 
 type GetUserParams struct{}
 
