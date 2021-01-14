@@ -522,7 +522,10 @@ func isBadUserID(userID *ptttype.UserID_t) bool {
 
 	//XXX looks like bug in c-pttbbs.
 	//https://github.com/ptt/pttbbs/blob/master/mbbsd/register.c#L104
-	if ptttype.STR_GUEST != "" && ptttype.NO_GUEST_ACCOUNT_REG {
+	//We shouldn't allow guest directly being registered.
+	//refer https://github.com/ptt/pttbbs/wiki/INSTALL#%EF%BC%98-%E5%8F%96%E5%BE%97%E7%AB%99%E9%95%B7%E6%AC%8A%E9%99%90
+	//  to have guest.
+	if ptttype.STR_GUEST != "" {
 		if types.Cstrcasecmp(userID[:], []byte(ptttype.STR_GUEST)) == 0 {
 			return true
 		}

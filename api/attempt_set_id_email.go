@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const ATTEMPT_SET_ID_EMAIL_R = "/users/:uid/attemptsetidemail"
+const ATTEMPT_SET_ID_EMAIL_R = "/user/:uid/attemptsetidemail"
 
 type AttemptSetIDEmailParams struct {
 	ClientInfo string `json:"client_info"`

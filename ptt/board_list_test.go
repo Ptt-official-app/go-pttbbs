@@ -1,6 +1,7 @@
 package ptt
 
 import (
+	"reflect"
 	"testing"
 	"unsafe"
 
@@ -118,6 +119,54 @@ func TestLoadBoardSummary(t *testing.T) {
 			}
 
 			testutil.TDeepEqual(t, "summary", gotSummary, tt.expectedSummary)
+		})
+	}
+}
+
+func TestLoadHotBoards(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	cache.ReloadBCache()
+
+	hbcache := []ptttype.BidInStore{9, 0, 7}
+	cache.Shm.WriteAt(
+		unsafe.Offsetof(cache.Shm.Raw.HBcache),
+		unsafe.Sizeof(hbcache),
+		unsafe.Pointer(&hbcache[0]),
+	)
+	nhots := uint8(3)
+	cache.Shm.WriteAt(
+		unsafe.Offsetof(cache.Shm.Raw.NHOTs),
+		unsafe.Sizeof(uint8(0)),
+		unsafe.Pointer(&nhots),
+	)
+	type args struct {
+		user *ptttype.UserecRaw
+		uid  ptttype.Uid
+	}
+	tests := []struct {
+		name            string
+		args            args
+		expectedSummary []*ptttype.BoardSummaryRaw
+		wantErr         bool
+	}{
+		// TODO: Add test cases.
+		{
+			args:            args{user: testUserecRaw1, uid: 1},
+			expectedSummary: []*ptttype.BoardSummaryRaw{testBoardSummary10, testBoardSummary1, testBoardSummary8},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotSummary, err := LoadHotBoards(tt.args.user, tt.args.uid)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("LoadHotBoards() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotSummary, tt.expectedSummary) {
+				t.Errorf("LoadHotBoards() = %v, want %v", gotSummary, tt.expectedSummary)
+			}
 		})
 	}
 }

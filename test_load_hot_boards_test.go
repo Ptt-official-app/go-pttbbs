@@ -8,14 +8,9 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/api"
 )
 
-func Test_LoadGeneralArticles(t *testing.T) {
+func Test_LoadHotBoards(t *testing.T) {
 	setupTest()
 	defer teardownTest()
-
-	params := &api.LoadGeneralArticlesParams{
-		StartIdx:  "",
-		NArticles: 4,
-	}
 
 	type args struct {
 		path     string
@@ -27,13 +22,12 @@ func Test_LoadGeneralArticles(t *testing.T) {
 		name string
 		args args
 	}{
-		// TODO: Add test cases.
 		{
 			args: args{
-				path:     "/board/10_WhoAmI/articles",
+				path:     api.LOAD_HOT_BOARDS_R,
 				username: "SYSOP",
 				passwd:   "123123",
-				params:   params,
+				params:   nil,
 			},
 		},
 	}

@@ -31,7 +31,7 @@ func Test_AttemptChangeEmail(t *testing.T) {
 	}{
 		{
 			args: args{
-				path:     "/users/SYSOP/attemptchangeemail",
+				path:     "/user/SYSOP/attemptchangeemail",
 				username: "SYSOP",
 				passwd:   "123123",
 				params:   params0,

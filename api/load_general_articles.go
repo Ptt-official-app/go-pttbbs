@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const LOAD_GENERAL_ARTICLES_R = "/boards/:bid/articles"
+const LOAD_GENERAL_ARTICLES_R = "/board/:bid/articles"
 
 type LoadGeneralArticlesParams struct {
 	StartIdx  string `json:"start_idx,omitempty" form:"start_idx,omitempty" url:"start_idx,omitempty"`

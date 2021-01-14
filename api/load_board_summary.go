@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const LOAD_BOARD_SUMMARY_R = "/boards/:bid/summary"
+const LOAD_BOARD_SUMMARY_R = "/board/:bid/summary"
 
 type LoadBoardSummaryParams struct{}
 

@@ -35,7 +35,7 @@ RUN ./scripts/rebuild_pttbbs.sh
 
 # mkdir -p /opt/bbs
 USER root
-RUN mkdir -p /opt/bbs && cp -R /home/bbs/bin /home/bbs/etc /home/bbs/wsproxy /opt/bbs
+RUN mkdir -p /opt/bbs && cp -R /home/bbs/pttbbs /home/bbs/bin /home/bbs/etc /home/bbs/wsproxy /opt/bbs
 
 # cmd
 WORKDIR /home/bbs

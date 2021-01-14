@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const CHANGE_EMAIL_R = "/users/:uid/changeemail"
+const CHANGE_EMAIL_R = "/user/:uid/changeemail"
 
 type ChangeEmailParams struct {
 	Jwt string `json:"email_token"`

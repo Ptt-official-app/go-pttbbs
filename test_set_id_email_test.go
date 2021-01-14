@@ -31,7 +31,7 @@ func Test_SetIDEmail(t *testing.T) {
 	}{
 		{
 			args: args{
-				path:     "/users/SYSOP/setidemail",
+				path:     "/user/SYSOP/setidemail",
 				username: "SYSOP",
 				passwd:   "123123",
 				params:   params0,
