@@ -28,7 +28,7 @@ func GetUser(remoteAddr string, uuserID bbs.UUserID, params interface{}, path in
 		return nil, ErrInvalidPath
 	}
 
-	if !userIsValidUser(uuserID, thePath.UserID) {
+	if !userInfoIsValidUser(uuserID, thePath.UserID) {
 		return nil, ErrInvalidUser
 	}
 

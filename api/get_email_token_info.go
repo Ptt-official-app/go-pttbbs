@@ -35,7 +35,7 @@ func GetEmailTokenInfo(remoteAddr string, uuserID bbs.UUserID, params interface{
 		return nil, err
 	}
 
-	isValid, _ := userIsValidEmailUser(uuserID, userID, theParams.Jwt, theParams.Context, true)
+	isValid, _ := userInfoIsValidEmailUser(uuserID, userID, theParams.Jwt, theParams.Context, true)
 	if !isValid {
 		return nil, ErrInvalidUser
 	}

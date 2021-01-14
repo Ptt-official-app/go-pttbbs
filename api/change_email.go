@@ -41,7 +41,7 @@ func ChangeEmail(remoteAddr string, uuserID bbs.UUserID, params interface{}, pat
 		return nil, ErrInvalidPath
 	}
 
-	isValid, email := userIsValidEmailUser(uuserID, thePath.UserID, theParams.Jwt, CONTEXT_CHANGE_EMAIL, false)
+	isValid, email := userInfoIsValidEmailUser(uuserID, thePath.UserID, theParams.Jwt, CONTEXT_CHANGE_EMAIL, false)
 	if !isValid {
 		return nil, ErrInvalidUser
 	}

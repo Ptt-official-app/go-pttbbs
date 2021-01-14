@@ -13,6 +13,10 @@ func pwcuDisableBit(perm ptttype.PERM, mask ptttype.PERM) ptttype.PERM {
 	return perm & ^mask
 }
 
+func pwcuEnableUFlagBit(uflag ptttype.UFlag, mask ptttype.UFlag) ptttype.UFlag {
+	return uflag | mask
+}
+
 func pwcuSetByBit(perm ptttype.PERM, mask ptttype.PERM, isSet bool) ptttype.PERM {
 	if isSet {
 		return pwcuEnableBit(perm, mask)
@@ -87,4 +91,16 @@ func pwcuBitDisableLevel(uid ptttype.Uid, userID *ptttype.UserID_t, perm ptttype
 	_ = pwcuDisableBit(user.UserLevel, perm)
 
 	return nil
+}
+
+func pwcuInitGuestPerm(user *ptttype.UserecRaw) {
+	user.UserLevel = 0
+	user.UFlag = ptttype.UF_BRDSORT
+	user.Pager = ptttype.PAGER_OFF
+	if ptttype.DBCSAWARE {
+		user.UFlag = pwcuEnableUFlagBit(user.UFlag, ptttype.UF_DBCS_AWARE|ptttype.UF_DBCS_DROP_REPEAT)
+		if ptttype.GUEST_DEFAULT_DBCS_NOINTRESC {
+			user.UFlag = pwcuEnableUFlagBit(user.UFlag, ptttype.UF_DBCS_NOINTRESC)
+		}
+	}
 }
