@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
+	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,12 +25,16 @@ func LoadGeneralBoardsWrapper(c *gin.Context) {
 }
 
 func LoadGeneralBoards(remoteAddr string, uuserID bbs.UUserID, params interface{}) (interface{}, error) {
+	return loadGeneralBoardsCore(remoteAddr, uuserID, params, ptttype.BSORT_BY_NAME)
+}
+
+func loadGeneralBoardsCore(remoteAddr string, uuserID bbs.UUserID, params interface{}, bsortBy ptttype.BSortBy) (interface{}, error) {
 	loadGeneralBoardsParams, ok := params.(*LoadGeneralBoardsParams)
 	if !ok {
 		return nil, ErrInvalidParams
 	}
 
-	summary, nextIdx, err := bbs.LoadGeneralBoards(uuserID, loadGeneralBoardsParams.StartIdx, loadGeneralBoardsParams.NBoards, loadGeneralBoardsParams.Keyword)
+	summary, nextIdx, err := bbs.LoadGeneralBoards(uuserID, loadGeneralBoardsParams.StartIdx, loadGeneralBoardsParams.NBoards, loadGeneralBoardsParams.Keyword, bsortBy)
 	if err != nil {
 		return nil, err
 	}

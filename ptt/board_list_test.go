@@ -2,16 +2,40 @@ package ptt
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 	"unsafe"
 
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/testutil"
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 )
 
 func TestLoadGeneralBoards(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	cache.ReloadBCache()
+
+	bsorted := [12]ptttype.BidInStore{}
+	cache.Shm.ReadAt(
+		unsafe.Offsetof(cache.Shm.Raw.BSorted),
+		unsafe.Sizeof(bsorted),
+		unsafe.Pointer(&bsorted),
+	)
+
+	logrus.Infof("bsorted (by-name): %v", bsorted)
+	const bsort0sz = unsafe.Sizeof(cache.Shm.Raw.BSorted[0])
+
+	cache.Shm.ReadAt(
+		unsafe.Offsetof(cache.Shm.Raw.BSorted)+bsort0sz*uintptr(ptttype.BSORT_BY_CLASS),
+		unsafe.Sizeof(bsorted),
+		unsafe.Pointer(&bsorted),
+	)
+
+	logrus.Infof("bsorted (by-class): %v", bsorted)
+
 	//move setupTest in for-loop
 	type args struct {
 		user     *ptttype.UserecRaw
@@ -19,6 +43,7 @@ func TestLoadGeneralBoards(t *testing.T) {
 		startIdx ptttype.SortIdx
 		nBoards  int
 		keyword  []byte
+		bsortBy  ptttype.BSortBy
 	}
 	tests := []struct {
 		name            string
@@ -34,6 +59,7 @@ func TestLoadGeneralBoards(t *testing.T) {
 				uid:      1,
 				startIdx: 0,
 				nBoards:  4,
+				bsortBy:  ptttype.BSORT_BY_NAME,
 			},
 			expectedSummary: []*ptttype.BoardSummaryRaw{testBoardSummary6, testBoardSummary7, testBoardSummary11, testBoardSummary8},
 			expectedNextIdx: 8,
@@ -44,28 +70,31 @@ func TestLoadGeneralBoards(t *testing.T) {
 				uid:      1,
 				startIdx: 10,
 				nBoards:  4,
+				bsortBy:  ptttype.BSORT_BY_NAME,
 			},
 			expectedSummary: []*ptttype.BoardSummaryRaw{testBoardSummary1, testBoardSummary10},
 			expectedNextIdx: -1,
 		},
+		{
+			name: "sort-by-class",
+			args: args{
+				user:     testUserecRaw1,
+				uid:      1,
+				startIdx: 0,
+				nBoards:  4,
+				bsortBy:  ptttype.BSORT_BY_CLASS,
+			},
+			expectedSummary: []*ptttype.BoardSummaryRaw{testBoardSummary6, testBoardSummary7, testBoardSummary11, testBoardSummary8},
+			expectedNextIdx: 9,
+		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
-			setupTest()
-			defer teardownTest()
-
-			cache.ReloadBCache()
-
-			bsorted := [12]ptttype.BidInStore{}
-			cache.Shm.ReadAt(
-				unsafe.Offsetof(cache.Shm.Raw.BSorted),
-				unsafe.Sizeof(bsorted),
-				unsafe.Pointer(&bsorted),
-			)
-
-			log.Infof("bsorted: %v", bsorted)
-
-			gotSummary, gotNextIdx, err := LoadGeneralBoards(tt.args.user, tt.args.uid, tt.args.startIdx, tt.args.nBoards, tt.args.keyword)
+			defer wg.Done()
+			gotSummary, gotNextIdx, err := LoadGeneralBoards(tt.args.user, tt.args.uid, tt.args.startIdx, tt.args.nBoards, tt.args.keyword, tt.args.bsortBy)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadGeneralBoards() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -77,6 +106,7 @@ func TestLoadGeneralBoards(t *testing.T) {
 				t.Errorf("LoadGeneralBoards() gotNextIdx = %v, want %v", gotNextIdx, tt.expectedNextIdx)
 			}
 		})
+		wg.Wait()
 	}
 }
 
