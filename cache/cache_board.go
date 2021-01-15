@@ -277,14 +277,7 @@ func HbflReload(bidInCache ptttype.BidInStore) {
 //
 //https://github.com/ptt/pttbbs/blob/master/common/bbs/cache.c#L512
 func NumBoards() int32 {
-	var nboards int32
-	Shm.ReadAt(
-		unsafe.Offsetof(Shm.Raw.BNumber),
-		types.INT32_SZ,
-		unsafe.Pointer(&nboards),
-	)
-
-	return nboards
+	return Shm.GetBNumber()
 }
 
 func NHots() (nhots uint8) {
@@ -476,4 +469,65 @@ func reloadBCacheReadFile() ([]byte, error) {
 	}
 
 	return theBytes, nil
+}
+
+func GetBid(boardID *ptttype.BoardID_t) (bid ptttype.Bid, err error) {
+	//wait 1 second for bbusystate
+	bbusystate := int32(0)
+	Shm.ReadAt(
+		unsafe.Offsetof(Shm.Raw.BBusyState),
+		types.INT32_SZ,
+		unsafe.Pointer(&bbusystate),
+	)
+	if bbusystate != 0 {
+		time.Sleep(1 * time.Second)
+	}
+
+	//start and end
+	start := int32(0)
+	end := Shm.GetBNumber()
+	end--
+	if end < 0 { //unable to get bid
+		return 0, nil
+	}
+
+	const bsort0sz = unsafe.Sizeof(Shm.Raw.BSorted[0])
+	const bsortedOffset = unsafe.Offsetof(Shm.Raw.BSorted) + bsort0sz*uintptr(ptttype.BSORT_BY_NAME)
+	const bcacheOffset = unsafe.Offsetof(Shm.Raw.BCache)
+	bidInCache := ptttype.BidInStore(0)
+	bidInCache_ptr := unsafe.Pointer(&bidInCache)
+	boardIDInCache := &ptttype.BoardID_t{}
+	boardIDInCache_ptr := unsafe.Pointer(boardIDInCache)
+	for idx := (start + end) / 2; ; idx = (start + end) / 2 {
+		Shm.ReadAt(
+			bsortedOffset+uintptr(idx)*ptttype.BID_IN_STORE_SZ,
+			ptttype.BID_IN_STORE_SZ,
+			bidInCache_ptr,
+		)
+
+		Shm.ReadAt(
+			bcacheOffset+uintptr(bidInCache)*ptttype.BOARD_HEADER_RAW_SZ+ptttype.BOARD_HEADER_BRDNAME_OFFSET,
+			ptttype.BOARD_ID_SZ,
+			boardIDInCache_ptr,
+		)
+
+		j := types.Cstrcasecmp(boardID[:], boardIDInCache[:])
+		if j == 0 {
+			bid = bidInCache.ToBid()
+			return bid, nil
+		}
+
+		if end == start {
+			break
+		} else if idx == start {
+			idx = end
+			start = end
+		} else if j > 0 {
+			start = idx
+		} else {
+			end = idx
+		}
+	}
+
+	return 0, nil
 }

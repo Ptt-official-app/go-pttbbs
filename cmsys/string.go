@@ -1,6 +1,8 @@
 package cmsys
 
 import (
+	"bytes"
+
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types/ansi"
 )
@@ -11,6 +13,15 @@ func StringHashWithHashBits(theBytes []byte) uint32 {
 
 func StringHash(theBytes []byte) uint32 {
 	return fnv1a32StrCase(theBytes, FNV1_32_INIT)
+}
+
+func StripBlank(theBytes []byte) []byte {
+	theIdx := bytes.Index(theBytes, []byte{' '})
+	if theIdx == -1 {
+		return theBytes
+	}
+
+	return theBytes[:theIdx]
 }
 
 //StringNoneBig5
