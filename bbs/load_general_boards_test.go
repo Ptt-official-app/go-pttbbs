@@ -3,6 +3,7 @@ package bbs
 import (
 	"testing"
 
+	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/testutil"
 )
 
@@ -34,7 +35,7 @@ func TestLoadGeneralBoards(t *testing.T) {
 			setupTest()
 			defer teardownTest()
 
-			gotSummary, gotNextIdx, err := LoadGeneralBoards(tt.args.uuserID, tt.args.startIdxStr, tt.args.nBoards, tt.args.keyword)
+			gotSummary, gotNextIdx, err := LoadGeneralBoards(tt.args.uuserID, tt.args.startIdxStr, tt.args.nBoards, tt.args.keyword, ptttype.BSORT_BY_NAME)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadGeneralBoards() error = %v, wantErr %v", err, tt.wantErr)
 				return

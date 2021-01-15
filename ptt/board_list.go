@@ -127,7 +127,7 @@ func loadHotBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idx uint8) (*ptt
 //  summary
 //	nextIdx: next idx in bsorted.
 //	err
-func LoadGeneralBoards(user *ptttype.UserecRaw, uid ptttype.Uid, startIdx ptttype.SortIdx, nBoards int, keyword []byte) (summary []*ptttype.BoardSummaryRaw, nextIdx ptttype.SortIdx, err error) {
+func LoadGeneralBoards(user *ptttype.UserecRaw, uid ptttype.Uid, startIdx ptttype.SortIdx, nBoards int, keyword []byte, bsortBy ptttype.BSortBy) (summary []*ptttype.BoardSummaryRaw, nextIdx ptttype.SortIdx, err error) {
 
 	nBoardsInCache := cache.NumBoards()
 
@@ -138,7 +138,7 @@ func LoadGeneralBoards(user *ptttype.UserecRaw, uid ptttype.Uid, startIdx ptttyp
 			break
 		}
 
-		eachBoardStat, err := loadGeneralBoardStat(user, uid, currentIdx, keyword)
+		eachBoardStat, err := loadGeneralBoardStat(user, uid, currentIdx, keyword, bsortBy)
 		if err != nil {
 			continue
 		}
@@ -164,12 +164,12 @@ func LoadGeneralBoards(user *ptttype.UserecRaw, uid ptttype.Uid, startIdx ptttyp
 //loadGeneralBoardStat
 //
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1147
-func loadGeneralBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idx ptttype.SortIdx, keyword []byte) (*ptttype.BoardStat, error) {
+func loadGeneralBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idx ptttype.SortIdx, keyword []byte, bsortBy ptttype.BSortBy) (*ptttype.BoardStat, error) {
 	var bidInCache ptttype.BidInStore
 
 	const bsort0sz = unsafe.Sizeof(cache.Shm.Raw.BSorted[0])
 	cache.Shm.ReadAt(
-		unsafe.Offsetof(cache.Shm.Raw.BSorted)+bsort0sz*uintptr(ptttype.BSORT_BY_NAME)+uintptr(idx)*ptttype.BID_IN_STORE_SZ,
+		unsafe.Offsetof(cache.Shm.Raw.BSorted)+bsort0sz*uintptr(bsortBy)+uintptr(idx)*ptttype.BID_IN_STORE_SZ,
 		ptttype.BID_IN_STORE_SZ,
 		unsafe.Pointer(&bidInCache),
 	)
