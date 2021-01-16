@@ -124,3 +124,31 @@ func TestStripAnsi(t *testing.T) {
 		})
 	}
 }
+
+func TestStripBlank(t *testing.T) {
+	type args struct {
+		theBytes []byte
+	}
+	tests := []struct {
+		name     string
+		args     args
+		expected []byte
+	}{
+		// TODO: Add test cases.
+		{
+			args:     args{theBytes: []byte("test")},
+			expected: []byte("test"),
+		},
+		{
+			args:     args{theBytes: []byte("test1 test2")},
+			expected: []byte("test1"),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := StripBlank(tt.args.theBytes); !reflect.DeepEqual(got, tt.expected) {
+				t.Errorf("StripBlank() = %v, want %v", got, tt.expected)
+			}
+		})
+	}
+}

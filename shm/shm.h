@@ -23,7 +23,6 @@ void writewrapper(void *shmaddr, int offset, void *inptr, unsigned long n);
 void incuint32wrapper(void *shmaddr, int offset);
 void set_or_uint32wrapper(void *shmaddr, int offset, unsigned int flag);
 void innerset_int32wrapper(void *shmaddr, int offsetSrc, int offsetDst);
-int memcmpwrapper(void *shmaddr, int offset, unsigned long n, void *cmpaddr);
 void memsetwrapper(void *shmaddr, int offset, unsigned char c, unsigned long n);
 
 void set_bcacheptr(void *shmaddr, int offset);

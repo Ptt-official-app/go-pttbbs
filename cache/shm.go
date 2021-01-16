@@ -258,10 +258,6 @@ func (s *SHM) InnerSetInt32(offsetSrc uintptr, offsetDst uintptr) {
     shm.InnerSetInt32(s.Shmaddr, int(offsetSrc), int(offsetDst))
 }
 
-func (s *SHM) Memcmp(offsetOfSHMRawComponent uintptr, size uintptr, cmpptr unsafe.Pointer) int {
-    return shm.Memcmp(s.Shmaddr, int(offsetOfSHMRawComponent), size, cmpptr)
-}
-
 //SetBCACHEPTR
 //
 //!!!Required in NewSHM (and should be set only once in NewSHM)

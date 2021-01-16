@@ -65,7 +65,7 @@ func TDeepEqual(t *testing.T, prompt string, got interface{}, expected interface
 		return
 	}
 
-	if gotKind != reflect.Ptr {
+	if gotKind != reflect.Ptr && gotKind != reflect.Interface {
 		if !reflect.DeepEqual(got, expected) {
 			t.Errorf("%v: (%v/%v) expected: (%v/%v)", prompt, got, gotKind, expected, expectedKind)
 		}
@@ -130,6 +130,11 @@ func tDeepEqualValue(t *testing.T, fieldName string, got reflect.Value, expected
 	}
 
 	if gotKind == reflect.Ptr {
+		TDeepEqual(t, fieldName, gotValue, expectedValue)
+		return
+	}
+
+	if gotKind == reflect.Interface {
 		TDeepEqual(t, fieldName, gotValue, expectedValue)
 		return
 	}

@@ -37,12 +37,6 @@ innerset_int32wrapper(void *shmaddr, int offsetSrc, int offsetDst) {
     *dst = *src;
 }
 
-int
-memcmpwrapper(void *shmaddr, int offset, unsigned long n, void *cmpaddr) {
-  unsigned char *cmp1 = (unsigned char *)shmaddr + offset;
-  return memcmp(cmp1, cmpaddr, n);
-}
-
 void
 memsetwrapper(void *shmaddr, int offset, unsigned char c, unsigned long n) {
   unsigned char *dst = (unsigned char *)shmaddr + offset;

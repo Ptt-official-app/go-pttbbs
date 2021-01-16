@@ -117,18 +117,6 @@ func QsortCmpBoardClass(shmaddr unsafe.Pointer, offset int, n uint32) {
 	C.qsort_cmpboardclass_wrapper(shmaddr, C.int(offset), C.ulong(n))
 }
 
-//Memcmp
-//
-//memcmp(shmaddr+offset, cmpaddr, size)
-//
-//Return:
-//	int: 0: shm == gomem, <0: shm < gomem, >0: shm > gomem
-func Memcmp(shmaddr unsafe.Pointer, offset int, size uintptr, cmpaddr unsafe.Pointer) int {
-	cret := C.memcmpwrapper(shmaddr, C.int(offset), C.ulong(size), cmpaddr)
-
-	return int(cret)
-}
-
 func shmget(key types.Key_t, size types.Size_t, shmflg int) (int, error) {
 	cshmid, err := C.shmget(C.int(key), C.ulong(size), C.int(shmflg))
 	shmid := int(cshmid)

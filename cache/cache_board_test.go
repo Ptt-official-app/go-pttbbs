@@ -361,3 +361,48 @@ func TestSetBottomTotal(t *testing.T) {
 		})
 	}
 }
+
+func TestGetBid(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	ReloadBCache()
+
+	boardID0 := &ptttype.BoardID_t{}
+	copy(boardID0[:], []byte("WhoAmI"))
+
+	boardID1 := &ptttype.BoardID_t{}
+	copy(boardID1[:], []byte("SYSOP"))
+
+	type args struct {
+		boardID *ptttype.BoardID_t
+	}
+	tests := []struct {
+		name        string
+		args        args
+		expectedBid ptttype.Bid
+		wantErr     bool
+	}{
+		// TODO: Add test cases.
+		{
+			args:        args{boardID: boardID0},
+			expectedBid: 10,
+		},
+		{
+			args:        args{boardID: boardID1},
+			expectedBid: 1,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotBid, err := GetBid(tt.args.boardID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GetBid() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotBid, tt.expectedBid) {
+				t.Errorf("GetBid() = %v, want %v", gotBid, tt.expectedBid)
+			}
+		})
+	}
+}

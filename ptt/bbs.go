@@ -47,7 +47,7 @@ func ReadPost(user *ptttype.UserecRaw, uid ptttype.Uid, boardID *ptttype.BoardID
 	if err != nil {
 		return nil, 0, err
 	}
-	mtime = types.Time4(stat.ModTime().Unix())
+	mtime = types.TimeToTime4(stat.ModTime())
 	if mtime <= retrieveTS {
 		return nil, mtime, nil
 	}

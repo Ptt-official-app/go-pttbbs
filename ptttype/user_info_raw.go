@@ -98,6 +98,8 @@ type UserInfoRaw struct {
 var EMPTY_USER_INFO_RAW = UserInfoRaw{}
 
 const USER_INFO_RAW_SZ = unsafe.Sizeof(EMPTY_USER_INFO_RAW)
+const USER_INFO_USER_ID_OFFSET = unsafe.Offsetof(EMPTY_USER_INFO_RAW.UserID)
+const USER_INFO_PID_OFFSET = unsafe.Offsetof(EMPTY_USER_INFO_RAW.Pid)
 
 type FriendOnline uint32
 
