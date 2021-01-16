@@ -12,8 +12,8 @@ func TestToArticleID(t *testing.T) {
 	defer teardownTest()
 
 	filename1 := &ptttype.Filename_t{}
-	copy(filename1[:], []byte("M.1607202239.A.30D"))
-	articleID := ToArticleID(filename1, "SYSOP")
+	copy(filename1[:], []byte("M.1607937174.A.081"))
+	articleID := ArticleID("1VrooM21SYSOP")
 
 	type args struct {
 		filename *ptttype.Filename_t

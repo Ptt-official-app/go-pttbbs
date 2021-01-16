@@ -58,7 +58,7 @@ func ReadFile(filename string) ([]byte, error) {
 //Read the file with identified size, the first bytes are fit in v.
 //Assuming that the size of v is <= theSize.
 //XXX not sure what to do if v > theSize.
-func BinRead(file *os.File, v interface{}, theSize uintptr) error {
+func BinRead(file io.ReadSeeker, v interface{}, theSize uintptr) error {
 	vSize := binary.Size(v)
 	if vSize > int(theSize) {
 		log.WithFields(log.Fields{"theSize": theSize, "vSize": vSize, "type": reflect.TypeOf(v)}).Warn("binRead: theSize < vSize")
@@ -88,7 +88,7 @@ func BinRead(file *os.File, v interface{}, theSize uintptr) error {
 //Write the file with identified size, the first bytes are with v.
 //Assuming that the size of v is <= theSize.
 //XXX not sure what to do if v > theSize.
-func BinWrite(file *os.File, v interface{}, theSize uintptr) error {
+func BinWrite(file io.Writer, v interface{}, theSize uintptr) error {
 	vSize := binary.Size(v)
 	if vSize > int(theSize) {
 		return ErrBytesTooLarge
