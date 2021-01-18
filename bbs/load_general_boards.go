@@ -5,7 +5,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 )
 
-func LoadGeneralBoards(uuserID UUserID, startIdxStr string, nBoards int, keywordBytes []byte, bsortBy ptttype.BSortBy) (summary []*BoardSummary, nextIdxStr string, err error) {
+func LoadGeneralBoards(uuserID UUserID, startIdxStr string, nBoards int, keywordBytes []byte, bsortBy ptttype.BSortBy) (summaries []*BoardSummary, nextIdxStr string, err error) {
 	startIdx, err := ptttype.ToSortIdx(startIdxStr)
 	if err != nil {
 		return nil, "", ErrInvalidParams
@@ -29,13 +29,13 @@ func LoadGeneralBoards(uuserID UUserID, startIdxStr string, nBoards int, keyword
 		return nil, "", err
 	}
 
-	summary = make([]*BoardSummary, len(summaryRaw))
+	summaries = make([]*BoardSummary, len(summaryRaw))
 	for idx, each := range summaryRaw {
 		eachSummary := NewBoardSummaryFromRaw(each)
-		summary[idx] = eachSummary
+		summaries[idx] = eachSummary
 	}
 
 	nextIdxStr = nextIdx.String()
 
-	return summary, nextIdxStr, nil
+	return summaries, nextIdxStr, nil
 }

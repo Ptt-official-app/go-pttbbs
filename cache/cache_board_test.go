@@ -2,6 +2,7 @@ package cache
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 	"unsafe"
 
@@ -58,6 +59,13 @@ func TestGetBCache(t *testing.T) {
 }
 
 func TestIsHiddenBoardFriend(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	_ = LoadUHash()
+
+	ReloadBCache()
+
 	type args struct {
 		bidInCache ptttype.BidInStore
 		uidInCache ptttype.UidInStore
@@ -93,19 +101,17 @@ func TestIsHiddenBoardFriend(t *testing.T) {
 			expected: false,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
-			setupTest()
-			defer teardownTest()
-
-			_ = LoadUHash()
-
-			ReloadBCache()
-
+			defer wg.Done()
 			if got := IsHiddenBoardFriend(tt.args.bidInCache, tt.args.uidInCache); got != tt.expected {
 				t.Errorf("IsHiddenBoardFriend() = %v, want %v", got, tt.expected)
 			}
 		})
+		wg.Wait()
 	}
 }
 
