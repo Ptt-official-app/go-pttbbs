@@ -13,17 +13,18 @@ func TestGetArticle(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	params1 := &GetArticleParams{}
-	path1 := &GetArticlePath{
-		BBoardID:  bbs.BBoardID("10_WhoAmI"),
-		ArticleID: bbs.ArticleID("1Vo_M_CDSYSOP"),
-	}
-
+	// keep chtime for testing
 	filename := "testcase/boards/W/WhoAmI/M.1607202239.A.30D"
 	mtime := time.Unix(1607209066, 0)
 	os.Chtimes(filename, mtime, mtime)
 
-	expectedResult1 := &GetArticleResult{
+	goodUUserID := bbs.UUserID("SYSOP")
+	goodParams := &GetArticleParams{}
+	goodPath := &GetArticlePath{
+		BBoardID:  bbs.BBoardID("10_WhoAmI"),
+		ArticleID: bbs.ArticleID("1Vo_M_CDSYSOP"),
+	}
+	goodExpectedResult := &GetArticleResult{
 		MTime:   1607209066,
 		Content: testContent1,
 	}
@@ -40,14 +41,45 @@ func TestGetArticle(t *testing.T) {
 		expectedResult interface{}
 		wantErr        bool
 	}{
-		// TODO: Add test cases.
 		{
+			name: "get_article_success",
 			args: args{
-				uuserID: bbs.UUserID("SYSOP"),
-				params:  params1,
-				path:    path1,
+				uuserID: goodUUserID,
+				params:  goodParams,
+				path:    goodPath,
 			},
-			expectedResult: expectedResult1,
+			expectedResult: goodExpectedResult,
+			wantErr:        false,
+		},
+		{
+			name: "invalid_params",
+			args: args{
+				uuserID: goodUUserID,
+				params:  "invalid_params",
+				path:    goodPath,
+			},
+			expectedResult: nil,
+			wantErr:        true,
+		},
+		{
+			name: "invalid_path",
+			args: args{
+				uuserID: goodUUserID,
+				params:  goodParams,
+				path:    "invalid_path",
+			},
+			expectedResult: nil,
+			wantErr:        true,
+		},
+		{
+			name: "invalid_get_article",
+			args: args{
+				uuserID: bbs.UUserID("invalid_user"),
+				params:  goodParams,
+				path:    goodPath,
+			},
+			expectedResult: nil,
+			wantErr:        true,
 		},
 	}
 	for _, tt := range tests {
