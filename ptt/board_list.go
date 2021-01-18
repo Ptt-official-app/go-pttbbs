@@ -53,10 +53,8 @@ func LoadHotBoards(user *ptttype.UserecRaw, uid ptttype.Uid) (summary []*ptttype
 	boardStats := make([]*ptttype.BoardStat, 0, nBoards)
 
 	for idx := uint8(0); idx < nBoards; idx++ {
-		eachBoardStat, err := loadHotBoardStat(user, uid, idx)
-		if err != nil {
-			continue
-		}
+		eachBoardStat := loadHotBoardStat(user, uid, idx)
+
 		if eachBoardStat == nil {
 			continue
 		}
@@ -75,7 +73,7 @@ func LoadHotBoards(user *ptttype.UserecRaw, uid ptttype.Uid) (summary []*ptttype
 //loadHotBoardStat
 //
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1147
-func loadHotBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idx uint8) (*ptttype.BoardStat, error) {
+func loadHotBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idx uint8) *ptttype.BoardStat {
 
 	//read bid-in-cache
 	var bidInCache ptttype.BidInStore
@@ -86,7 +84,7 @@ func loadHotBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idx uint8) (*ptt
 		unsafe.Pointer(&bidInCache),
 	)
 	if bidInCache < 0 {
-		return nil, nil
+		return nil
 	}
 
 	//get board
@@ -102,13 +100,57 @@ func loadHotBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idx uint8) (*ptt
 	bid := bidInCache.ToBid()
 	isGroupOp := groupOp(user, board)
 	state := boardPermStat(user, uid, board, bid)
-	if state == ptttype.NBRD_INVALID {
-		return nil, nil
+	if (board.Brdname[0] == '\x00') ||
+		(board.BrdAttr&(ptttype.BRD_GROUPBOARD|ptttype.BRD_SYMBOLIC) != 0) ||
+		!((state != ptttype.NBRD_INVALID) || isGroupOp) {
+		return nil
 	}
 
 	boardStat := newBoardStat(bidInCache, state, board, isGroupOp)
 
-	return boardStat, nil
+	return boardStat
+}
+
+func LoadBoardsByBids(user *ptttype.UserecRaw, uid ptttype.Uid, bids []ptttype.Bid) (summaries []*ptttype.BoardSummaryRaw, err error) {
+
+	boardStats := make([]*ptttype.BoardStat, 0, len(bids))
+
+	for _, bid := range bids {
+		if !bid.IsValid() {
+			continue
+		}
+		eachBoardStat := loadBoardStat(user, uid, bid)
+		if eachBoardStat == nil {
+			continue
+		}
+
+		boardStats = append(boardStats, eachBoardStat)
+	}
+
+	summaries, err = showBoardList(user, uid, boardStats)
+
+	return summaries, err
+}
+
+func loadBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, bid ptttype.Bid) (boardStat *ptttype.BoardStat) {
+	bidInCache := bid.ToBidInStore()
+	board := &ptttype.BoardHeaderRaw{}
+	cache.Shm.ReadAt(
+		unsafe.Offsetof(cache.Shm.Raw.BCache)+ptttype.BOARD_HEADER_RAW_SZ*uintptr(bidInCache),
+		ptttype.BOARD_HEADER_RAW_SZ,
+		unsafe.Pointer(board),
+	)
+
+	isGroupOp := groupOp(user, board)
+	state := boardPermStat(user, uid, board, bid)
+	if (board.Brdname[0] == '\x00') ||
+		(board.BrdAttr&(ptttype.BRD_GROUPBOARD|ptttype.BRD_SYMBOLIC) != 0) ||
+		!((state != ptttype.NBRD_INVALID) || isGroupOp) {
+		return nil
+	}
+
+	boardStat = newBoardStat(bidInCache, state, board, isGroupOp)
+	return boardStat
 }
 
 //LoadGeneralBoards
@@ -138,10 +180,8 @@ func LoadGeneralBoards(user *ptttype.UserecRaw, uid ptttype.Uid, startIdx ptttyp
 			break
 		}
 
-		eachBoardStat, err := loadGeneralBoardStat(user, uid, currentIdx, keyword, bsortBy)
-		if err != nil {
-			continue
-		}
+		eachBoardStat := loadGeneralBoardStat(user, uid, currentIdx, keyword, bsortBy)
+
 		if eachBoardStat == nil {
 			continue
 		}
@@ -164,7 +204,7 @@ func LoadGeneralBoards(user *ptttype.UserecRaw, uid ptttype.Uid, startIdx ptttyp
 //loadGeneralBoardStat
 //
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1147
-func loadGeneralBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idx ptttype.SortIdx, keyword []byte, bsortBy ptttype.BSortBy) (*ptttype.BoardStat, error) {
+func loadGeneralBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idx ptttype.SortIdx, keyword []byte, bsortBy ptttype.BSortBy) (boardStat *ptttype.BoardStat) {
 	var bidInCache ptttype.BidInStore
 
 	const bsort0sz = unsafe.Sizeof(cache.Shm.Raw.BSorted[0])
@@ -174,7 +214,7 @@ func loadGeneralBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idx ptttype.
 		unsafe.Pointer(&bidInCache),
 	)
 	if bidInCache < 0 {
-		return nil, nil
+		return nil
 	}
 
 	board := &ptttype.BoardHeaderRaw{}
@@ -191,12 +231,11 @@ func loadGeneralBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idx ptttype.
 		(board.BrdAttr&(ptttype.BRD_GROUPBOARD|ptttype.BRD_SYMBOLIC) != 0) ||
 		!((state != ptttype.NBRD_INVALID) || isGroupOp) ||
 		keywordNotInTitle(&board.Title, keyword) {
-		return nil, nil
+		return nil
 	}
 
-	boardStat := newBoardStat(bidInCache, state, board, isGroupOp)
-
-	return boardStat, nil
+	boardStat = newBoardStat(bidInCache, state, board, isGroupOp)
+	return boardStat
 }
 
 //newBoardStat

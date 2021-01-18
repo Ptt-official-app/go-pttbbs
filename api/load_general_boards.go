@@ -29,12 +29,12 @@ func LoadGeneralBoards(remoteAddr string, uuserID bbs.UUserID, params interface{
 }
 
 func loadGeneralBoardsCore(remoteAddr string, uuserID bbs.UUserID, params interface{}, bsortBy ptttype.BSortBy) (interface{}, error) {
-	loadGeneralBoardsParams, ok := params.(*LoadGeneralBoardsParams)
+	theParams, ok := params.(*LoadGeneralBoardsParams)
 	if !ok {
 		return nil, ErrInvalidParams
 	}
 
-	summary, nextIdx, err := bbs.LoadGeneralBoards(uuserID, loadGeneralBoardsParams.StartIdx, loadGeneralBoardsParams.NBoards, loadGeneralBoardsParams.Keyword, bsortBy)
+	summary, nextIdx, err := bbs.LoadGeneralBoards(uuserID, theParams.StartIdx, theParams.NBoards, theParams.Keyword, bsortBy)
 	if err != nil {
 		return nil, err
 	}

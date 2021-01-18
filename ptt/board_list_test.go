@@ -200,3 +200,42 @@ func TestLoadHotBoards(t *testing.T) {
 		})
 	}
 }
+
+func TestLoadBoardsByBids(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	cache.ReloadBCache()
+
+	bids := []ptttype.Bid{10, 1, 8}
+
+	type args struct {
+		user *ptttype.UserecRaw
+		uid  ptttype.Uid
+		bids []ptttype.Bid
+	}
+	tests := []struct {
+		name              string
+		args              args
+		expectedSummaries []*ptttype.BoardSummaryRaw
+		wantErr           bool
+	}{
+		// TODO: Add test cases.
+		{
+			args:              args{user: testUserecRaw1, uid: 1, bids: bids},
+			expectedSummaries: []*ptttype.BoardSummaryRaw{testBoardSummary10, testBoardSummary1, testBoardSummary8},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotSummaries, err := LoadBoardsByBids(tt.args.user, tt.args.uid, tt.args.bids)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("LoadBoardsByBids() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotSummaries, tt.expectedSummaries) {
+				t.Errorf("LoadBoardsByBids() = %v, want %v", gotSummaries, tt.expectedSummaries)
+			}
+		})
+	}
+}

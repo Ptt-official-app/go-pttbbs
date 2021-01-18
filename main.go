@@ -29,6 +29,7 @@ func initGin() (*gin.Engine, error) {
 	router.GET(withPrefix(api.LOAD_BOARD_SUMMARY_R), api.LoadBoardSummaryWrapper)
 	router.GET(withPrefix(api.LOAD_HOT_BOARDS_R), api.LoadHotBoardsWrapper)
 	router.GET(withPrefix(api.LOAD_GENERAL_BOARDS_BY_CLASS_R), api.LoadGeneralBoardsByClassWrapper)
+	router.POST(withPrefix(api.LOAD_BOARDS_BY_BIDS_R), api.LoadBoardsByBidsWrapper)
 
 	//article
 	router.GET(withPrefix(api.GET_ARTICLE_R), api.GetArticleWrapper)

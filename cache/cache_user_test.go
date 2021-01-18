@@ -276,8 +276,12 @@ func TestGetUserID(t *testing.T) {
 			want: userIDEmpty,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			got, err := GetUserID(tt.args.uid)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetUserID() error = %v, wantErr %v", err, tt.wantErr)
@@ -287,6 +291,7 @@ func TestGetUserID(t *testing.T) {
 				t.Errorf("GetUserID() = %v, want %v", got, tt.want)
 			}
 		})
+		wg.Wait()
 	}
 }
 
