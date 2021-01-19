@@ -27,7 +27,7 @@ func TestLoadHotBoards(t *testing.T) {
 		unsafe.Pointer(&nhots),
 	)
 
-	result0 := &LoadHotBoardsResults{
+	result0 := &LoadHotBoardsResult{
 		Boards: []*bbs.BoardSummary{testBoardSummary11, testBoardSummary6, testBoardSummary8},
 	}
 
