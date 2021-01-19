@@ -7,7 +7,7 @@ import (
 
 const LOAD_HOT_BOARDS_R = "/boards/popular"
 
-type LoadHotBoardsResults struct {
+type LoadHotBoardsResult struct {
 	Boards []*bbs.BoardSummary `json:"data"`
 }
 
@@ -23,7 +23,7 @@ func LoadHotBoards(remoteAddr string, uuserID bbs.UUserID, params interface{}) (
 		return nil, err
 	}
 
-	result = &LoadHotBoardsResults{
+	result = &LoadHotBoardsResult{
 		Boards: summary,
 	}
 
