@@ -44,6 +44,7 @@ func initGin() (*gin.Engine, error) {
 	router.POST(withPrefix(api.GET_TOKEN_INFO_R), api.GetTokenInfoWrapper)
 	router.POST(withPrefix(api.GET_EMAIL_TOKEN_INFO_R), api.GetEmailTokenInfoWrapper)
 	router.GET(withPrefix(api.GET_FAV_R), api.GetFavoritesWrapper)
+	router.POST(withPrefix(api.CHECK_EXISTS_USER_R), api.CheckExistsUserWrapper)
 
 	return router, nil
 }

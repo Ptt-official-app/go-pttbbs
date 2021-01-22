@@ -10,33 +10,28 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestDoSearchUser(t *testing.T) {
+func TestDoSearchUserRaw(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
 	_ = LoadUHash()
 
+	userID0 := &ptttype.UserID_t{}
+	copy(userID0[:], []byte("SYSOP"))
+
 	type args struct {
-		userID   string
-		isReturn bool
+		userID *ptttype.UserID_t
 	}
 	tests := []struct {
 		name     string
 		args     args
 		expected ptttype.Uid
-		want1    string
 		wantErr  bool
 	}{
 		// TODO: Add test cases.
 		{
-			args:     args{userID: "SYSOP"},
+			args:     args{userID: userID0},
 			expected: 1,
-			want1:    "",
-		},
-		{
-			args:     args{userID: "SYSOP", isReturn: true},
-			expected: 1,
-			want1:    "SYSOP",
 		},
 	}
 	var wg sync.WaitGroup
@@ -44,16 +39,13 @@ func TestDoSearchUser(t *testing.T) {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
-			got, got1, err := DoSearchUser(tt.args.userID, tt.args.isReturn)
+			got, err := DoSearchUserRaw(tt.args.userID, nil)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("DoSearchUser() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if got != tt.expected {
 				t.Errorf("DoSearchUser() got = %v, expected%v", got, tt.expected)
-			}
-			if got1 != tt.want1 {
-				t.Errorf("DoSearchUser() got1 = %v, expected%v", got1, tt.want1)
 			}
 		})
 		wg.Wait()

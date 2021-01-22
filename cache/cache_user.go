@@ -137,53 +137,6 @@ func RemoveFromUHash(uidInCache ptttype.UidInStore) error {
 //	int: uid.
 //	string: the userID in shm.
 //	error: err.
-func SearchUser(userID string, isReturn bool) (uid ptttype.Uid, rightID string, err error) {
-	if len(userID) == 0 {
-		return 0, "", nil
-	}
-	return DoSearchUser(userID, isReturn)
-}
-
-//DoSearchUser
-//Params:
-//	userID
-//	isReturn
-//
-//Return:
-//	int32: uid
-//	string: the userID in shm.
-//	error: err.
-func DoSearchUser(userID string, isReturn bool) (uid ptttype.Uid, rightID string, err error) {
-	userIDBytes := &ptttype.UserID_t{}
-	copy(userIDBytes[:], []byte(userID))
-
-	var rightIDBytes *ptttype.UserID_t = nil
-	if isReturn {
-		rightIDBytes = &ptttype.UserID_t{}
-	}
-
-	uid, err = DoSearchUserRaw(userIDBytes, rightIDBytes)
-	if err != nil {
-		return 0, "", err
-	}
-
-	rightID = ""
-	if isReturn {
-		rightID = types.CstrToString(rightIDBytes[:])
-	}
-
-	return uid, rightID, nil
-}
-
-//SearchUser
-//Params:
-//	userID: querying user-id.
-//	isReturn: is return the user-id in the shm.
-//
-//Return:
-//	int: uid.
-//	string: the userID in shm.
-//	error: err.
 func SearchUserRaw(userID *ptttype.UserID_t, rightID *ptttype.UserID_t) (uid ptttype.Uid, err error) {
 	if userID[0] == 0 {
 		return 0, nil
