@@ -294,3 +294,39 @@ func TestChangeUserLevel2(t *testing.T) {
 		wg.Wait()
 	}
 }
+
+func TestGetUid(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	userID0 := &ptttype.UserID_t{}
+	copy(userID0[:], []byte("SYSOP"))
+
+	type args struct {
+		userID *ptttype.UserID_t
+	}
+	tests := []struct {
+		name        string
+		args        args
+		expectedUid ptttype.Uid
+		wantErr     bool
+	}{
+		// TODO: Add test cases.
+		{
+			args:        args{userID: userID0},
+			expectedUid: 1,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotUid, err := GetUid(tt.args.userID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GetUid() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotUid, tt.expectedUid) {
+				t.Errorf("GetUid() = %v, want %v", gotUid, tt.expectedUid)
+			}
+		})
+	}
+}

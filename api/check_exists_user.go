@@ -1,6 +1,9 @@
 package api
 
-import "github.com/Ptt-official-app/go-pttbbs/bbs"
+import (
+	"github.com/Ptt-official-app/go-pttbbs/bbs"
+	"github.com/gin-gonic/gin"
+)
 
 const CHECK_EXISTS_USER_R = "/existsuser"
 
@@ -11,6 +14,11 @@ type CheckExistsUserParams struct {
 type CheckExistsUserResult struct {
 	UserID   bbs.UUserID `json:"user_id"`
 	IsExists bool        `json:"is_exists"`
+}
+
+func CheckExistsUserWrapper(c *gin.Context) {
+	params := &CheckExistsUserParams{}
+	JSON(CheckExistsUser, params, c)
 }
 
 func CheckExistsUser(remoteAddr string, params interface{}) (result interface{}, err error) {
