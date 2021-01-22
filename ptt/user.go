@@ -13,6 +13,10 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+func GetUid(userID *ptttype.UserID_t) (uid ptttype.Uid, err error) {
+	return cache.SearchUserRaw(userID, nil)
+}
+
 //killUser
 //
 //Assume correct uid / userID correspondance.
