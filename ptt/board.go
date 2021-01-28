@@ -5,6 +5,21 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 )
 
+func IsBoardValidUser(user *ptttype.UserecRaw, uid ptttype.Uid, boardID *ptttype.BoardID_t, bid ptttype.Bid) (isValid bool, err error) {
+
+	board, err := cache.GetBCache(bid)
+	if err != nil {
+		return false, err
+	}
+
+	statAttr := boardPermStat(user, uid, board, bid)
+	if statAttr == ptttype.NBRD_INVALID {
+		return false, nil
+	}
+
+	return true, nil
+}
+
 //boardPermStat
 //
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L197
