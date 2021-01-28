@@ -41,5 +41,7 @@ jobs:
       run: go test -v ./... -cover
 
     - name: Coverage
-      run: go test ./... -cover
-
+      run: |
+        ipcrm -S 0x00007ffb
+        ipcrm -M 0x0000fffe
+        go test ./... -cover
