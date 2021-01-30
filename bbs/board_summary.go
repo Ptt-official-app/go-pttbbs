@@ -23,25 +23,24 @@ type BoardSummary struct {
 
 func NewBoardSummaryFromRaw(boardSummaryRaw *ptttype.BoardSummaryRaw) *BoardSummary {
 
-	boardSummary := &BoardSummary{}
-
-	boardSummary.BBoardID = ToBBoardID(boardSummaryRaw.Bid, boardSummaryRaw.Brdname)
-	boardSummary.BrdAttr = boardSummaryRaw.BrdAttr
-	boardSummary.StatAttr = boardSummaryRaw.StatAttr
-	boardSummary.Brdname = types.CstrToString(boardSummaryRaw.Brdname[:])
-
-	boardSummary.BoardClass = types.CstrToBytes(boardSummaryRaw.Title[:4])
-	boardSummary.BoardType = types.CstrToBytes(boardSummaryRaw.Title[5:7])
-	boardSummary.RealTitle = types.CstrToBytes(boardSummaryRaw.Title[7:])
-	boardSummary.BM = make([]UUserID, len(boardSummaryRaw.BM))
-	if len(boardSummaryRaw.BM) > 0 {
-		for idx, each := range boardSummaryRaw.BM {
-			boardSummary.BM[idx] = UUserID(types.CstrToString(each[:]))
-		}
+	bms := make([]UUserID, len(boardSummaryRaw.BM))
+	for idx, each := range boardSummaryRaw.BM {
+		bms[idx] = UUserID(types.CstrToString(each[:]))
 	}
-	boardSummary.Reason = boardSummaryRaw.Reason
-	boardSummary.LastPostTime = boardSummaryRaw.LastPostTime
-	boardSummary.Total = boardSummaryRaw.Total
+	boardSummary := &BoardSummary{
+		BBoardID:     ToBBoardID(boardSummaryRaw.Bid, boardSummaryRaw.Brdname),
+		BrdAttr:      boardSummaryRaw.BrdAttr,
+		StatAttr:     boardSummaryRaw.StatAttr,
+		Brdname:      types.CstrToString(boardSummaryRaw.Brdname[:]),
+		BoardClass:   types.CstrToBytes(boardSummaryRaw.Title[:4]),
+		BoardType:    types.CstrToBytes(boardSummaryRaw.Title[5:7]),
+		RealTitle:    types.CstrToBytes(boardSummaryRaw.Title[7:]),
+		BM:           bms,
+		Reason:       boardSummaryRaw.Reason,
+		LastPostTime: boardSummaryRaw.LastPostTime,
+		Total:        boardSummaryRaw.Total,
+		NUser:        boardSummaryRaw.NUser,
+	}
 
 	return boardSummary
 }
