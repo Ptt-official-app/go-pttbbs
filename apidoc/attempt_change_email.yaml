@@ -1,30 +1,36 @@
-login
+attemptChangeEmail
 ---
 tags:
   - user
+description: attempt change email.
 parameters:
   - '$ref': '#/definitions/Host'
   - '$ref': '#/definitions/XForwardedFor'
+  - '$ref': '#/definitions/Authorization'
+  - name: "uid"
+    in: path
+    type: string
+    description: user_id
   - name: params
     in: body
-    required: true
     schema:
       '$id': https://json-schema.org/draft/2019-09/output/schema
       type: object
       properties:
         client_info:
           type: string
-          required: false
-          default: ''
-        username:
-          type: string
           required: true
+          description: client-info
         password:
           type: string
           required: true
+          description: password
+        email:
+          type: string
+          required: true
+          description: email
 responses:
   200:
-    description: index-response
     schema:
       '$id': https://json-schema.org/draft/2019-09/output/schema
-      '$ref': '#/definitions/Token'
+      '$ref': '#/definitions/EmailToken'

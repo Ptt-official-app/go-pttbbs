@@ -1,0 +1,22 @@
+isBoardValidUser
+---
+tags:
+  - board
+description: get board-summary.
+parameters:
+  - '$ref': '#/definitions/Host'
+  - '$ref': '#/definitions/XForwardedFor'
+  - '$ref': '#/definitions/Authorization'
+  - name: bid
+    in: path
+    type: string
+    required: true
+    description: bid is returned from board-list.
+responses:
+  200:
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      type: object
+      properties:
+        is_valid:
+          type: boolean

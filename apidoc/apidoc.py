@@ -34,14 +34,6 @@ def _index():
     return ''
 
 
-@app.route(_with_app_prefix('/user/me/information'), methods=['GET'])
-def _me():
-    """
-    swagger_from_file: apidoc/me.yaml
-    """
-    return ''
-
-
 @app.route(_with_app_prefix('/token'), methods=['POST'])
 def _login():
     """
@@ -74,10 +66,42 @@ def _load_general_articles(bid):
     return ''
 
 
-@app.route(_with_app_prefix('/class/<class_id>'), methods=['GET'])
-def _load_boards_by_class(class_id):
+@app.route(_with_app_prefix('/board/<bid>/summary'), methods=['GET'])
+def _load_board_summary(bid):
     """
-    swagger_from_file: apidoc/load_boards_by_class.yaml
+    swagger_from_file: apidoc/load_board_summary.yaml
+    """
+    return ''
+
+
+@app.route(_with_app_prefix('/boards/popular'), methods=['GET'])
+def _load_hot_boards():
+    """
+    swagger_from_file: apidoc/load_hot_boards.yaml
+    """
+    return ''
+
+
+@app.route(_with_app_prefix('/boards/byclass'), methods=['GET'])
+def _load_general_boards_by_class():
+    """
+    swagger_from_file: apidoc/load_general_boards_by_class.yaml
+    """
+    return ''
+
+
+@app.route(_with_app_prefix('/boards/bybids'), methods=['POST'])
+def _load_boards_by_bids():
+    """
+    swagger_from_file: apidoc/load_boards_by_bids.yaml
+    """
+    return ''
+
+
+@app.route(_with_app_prefix('/board/<bid>/isvalid'), methods=['GET'])
+def _is_board_valid_user(bid):
+    """
+    swagger_from_file: apidoc/is_board_valid_user.yaml
     """
     return ''
 
@@ -86,5 +110,85 @@ def _load_boards_by_class(class_id):
 def _get_article(bid, aid):
     """
     swagger_from_file: apidoc/get_article.yaml
+    """
+    return ''
+
+
+@app.route(_with_app_prefix('/user/<uid>/information'), methods=['GET'])
+def _get_user(uid):
+    """
+    swagger_from_file: apidoc/get_user.yaml
+    """
+    return ''
+
+
+@app.route(_with_app_prefix('/user/<uid>/changepasswd'), methods=['POST'])
+def _change_passwd(uid):
+    """
+    swagger_from_file: apidoc/change_passwd.yaml
+    """
+    return ''
+
+
+@app.route(_with_app_prefix('/user/<uid>/changeemail'), methods=['POST'])
+def _change_email(uid):
+    """
+    swagger_from_file: apidoc/change_email.yaml
+    """
+    return ''
+
+
+@app.route(_with_app_prefix('/user/<uid>/attemptchangeemail'), methods=['POST'])
+def _attempt_change_email(uid):
+    """
+    swagger_from_file: apidoc/attempt_change_email.yaml
+    """
+    return ''
+
+
+@app.route(_with_app_prefix('/user/<uid>/attemptsetidemail'), methods=['POST'])
+def _attempt_set_id_email(uid):
+    """
+    swagger_from_file: apidoc/attempt_set_id_email.yaml
+    """
+    return ''
+
+
+@app.route(_with_app_prefix('/user/<uid>/setidemail'), methods=['POST'])
+def _set_id_email(uid):
+    """
+    swagger_from_file: apidoc/set_id_email.yaml
+    """
+    return ''
+
+
+@app.route(_with_app_prefix('/token/info'), methods=['POST'])
+def _get_token_info():
+    """
+    swagger_from_file: apidoc/get_token_info.yaml
+    """
+    return ''
+
+
+@app.route(_with_app_prefix('/emailtoken/info'), methods=['POST'])
+def _get_email_token_info():
+    """
+    swagger_from_file: apidoc/get_email_token_info.yaml
+    """
+    return ''
+
+
+@app.route(_with_app_prefix('/user/<uid>/favorites'), methods=['GET'])
+def _get_fav(uid):
+    """
+    swagger_from_file: apidoc/get_fav.yaml
+    """
+    return ''
+
+
+@app.route(_with_app_prefix('/existsuser'), methods=['POST'])
+def _check_exists_user(uid):
+    """
+    swagger_from_file: apidoc/check_exists_user.yaml
     """
     return ''

@@ -49,6 +49,7 @@ responses:
     description: index-response
     schema:
       '$id': https://json-schema.org/draft/2019-09/output/schema
+      '$ref': '#/definitions/Token'
       type: object
       properties:
         access_token:

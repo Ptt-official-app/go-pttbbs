@@ -1,0 +1,26 @@
+loadGeneralBoardsByClass
+---
+tags:
+  - board
+description: get board-summary in asecnding mode.
+parameters:
+  - '$ref': '#/definitions/Host'
+  - '$ref': '#/definitions/XForwardedFor'
+  - '$ref': '#/definitions/Authorization'
+  - '$ref': '#/definitions/ParamsStartIdx'
+  - '$ref': '#/definitions/ParamsMax'
+  - '$ref': '#/definitions/ParamsKeyword'
+responses:
+  200:
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      type: object
+      properties:
+        data:
+          type: array
+          description: board information (board-summary)
+          required: true
+          items:
+            '$ref': '#/definitions/BoardSummary'
+        next_idx:
+          type: string

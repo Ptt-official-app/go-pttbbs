@@ -1,0 +1,19 @@
+getUser
+---
+tags:
+  - user
+description: get user info.
+parameters:
+  - '$ref': '#/definitions/Host'
+  - '$ref': '#/definitions/XForwardedFor'
+  - '$ref': '#/definitions/Authorization'
+  - name: uid
+    in: path
+    type: string
+    required: true
+    description: username
+responses:
+  200:
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      '$ref': '#/definitions/User'

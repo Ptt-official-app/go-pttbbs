@@ -1,30 +1,35 @@
-login
+getEmailTokenInfo
 ---
 tags:
   - user
+description: get email token info
 parameters:
   - '$ref': '#/definitions/Host'
   - '$ref': '#/definitions/XForwardedFor'
+  - '$ref': '#/definitions/Authorization'
   - name: params
     in: body
-    required: true
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      type: object
+      properties:
+        token:
+          type: string
+          required: true
+          description: token
+        context:
+          type: string
+          required: true
+          description: https://github.com/Ptt-official-app/go-pttbbs/blob/main/api/email_token_context.go
+responses:
+  200:
     schema:
       '$id': https://json-schema.org/draft/2019-09/output/schema
       type: object
       properties:
         client_info:
           type: string
-          required: false
-          default: ''
-        username:
+        user_id:
           type: string
-          required: true
-        password:
+        email:
           type: string
-          required: true
-responses:
-  200:
-    description: index-response
-    schema:
-      '$id': https://json-schema.org/draft/2019-09/output/schema
-      '$ref': '#/definitions/Token'

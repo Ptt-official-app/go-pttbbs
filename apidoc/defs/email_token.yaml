@@ -1,0 +1,7 @@
+EmailToken:
+  type: object
+  properties:
+    user_id:
+      type: string
+    email_token:
+      type: string

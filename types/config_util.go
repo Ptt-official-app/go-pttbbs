@@ -21,6 +21,10 @@ func setIntConfig(idx string, orig int) int {
 	return config_util.SetIntConfig(configPrefix, idx, orig)
 }
 
+func setBoolConfig(idx string, orig bool) bool {
+	return config_util.SetBoolConfig(configPrefix, idx, orig)
+}
+
 func postConfig() (err error) {
 	_, err = setTimeLocation(TIME_LOCATION)
 	if err != nil {

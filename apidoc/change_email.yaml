@@ -1,30 +1,32 @@
-login
+changeEmail
 ---
 tags:
   - user
+description: change email.
 parameters:
   - '$ref': '#/definitions/Host'
   - '$ref': '#/definitions/XForwardedFor'
+  - '$ref': '#/definitions/Authorization'
+  - name: uid
+    in: path
+    type: string
   - name: params
     in: body
-    required: true
     schema:
       '$id': https://json-schema.org/draft/2019-09/output/schema
       type: object
       properties:
-        client_info:
-          type: string
-          required: false
-          default: ''
-        username:
+        email_token:
           type: string
           required: true
-        password:
-          type: string
-          required: true
+          description: email-token
 responses:
   200:
-    description: index-response
     schema:
       '$id': https://json-schema.org/draft/2019-09/output/schema
-      '$ref': '#/definitions/Token'
+      type: object
+      properties:
+        user_id:
+          type: string
+        email:
+          type: string

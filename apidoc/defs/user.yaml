@@ -1,0 +1,160 @@
+User:
+  type: object
+  properties:
+    version:
+      type: number
+    user_id:
+      type: string
+    username:
+      type: string
+
+    realname:
+      type: string
+      description: base64-big5
+    nickname:
+      type: string
+      description: base64-big5
+
+    flag:
+      type: number
+      description: https://github.com/Ptt-official-app/go-pttbbs/blob/main/ptttype/uflags.go
+    perm:
+      type: number
+      description: https://github.com/Ptt-official-app/go-pttbbs/blob/main/ptttype/perm.go
+    login_days:
+      type: number
+    posts:
+      type: number
+    first_login:
+      type: number
+      description: first-login in unix-time
+    last_login:
+      type: number
+      description: last-login in unix-time
+    last_ip:
+      type: string
+      description: from-ip
+    money:
+      type: number
+
+    email:
+      type: string
+      description: 在 ptt 上的 email
+    justify:
+      type: string
+      description: base64-big5
+    over18:
+      type: boolean
+    pager_ui:
+      type: number
+    pager:
+      type: number
+      description: https://github.com/Ptt-official-app/go-pttbbs/blob/main/ptttype/modes.go#L5
+    invisible:
+      type: boolean
+      description: 隱身
+    exmail:
+      type: number
+      description: 可容納站外信數量.
+
+    career:
+      type: string
+      description: base64-big5
+    role:
+      type: number
+    last_seen:
+      type: number
+      description: last-seen in unix-time
+    time_set_angel:
+      type: number
+      description: unix-time
+    time_play_angel:
+      type: number
+      description: unix-time
+
+    last_song:
+      type: number
+      description: last-time the user ordered an song (in unix-time).
+    login_view:
+      type: number
+
+    violation:
+      type: number
+      description: violation count
+    five_win:
+      type: number
+      description: 五子棋(贏)
+    five_lose:
+      type: number
+      description: 五子棋(輸)
+    five_tie:
+      type: number
+      description: 五子棋(平)
+    chc_win:
+      type: number
+      description: 象棋(贏)
+    chc_lose:
+      type: number
+      description: 象棋(輸)
+    chc_tie:
+      type: number
+      description: 象棋(平)
+    conn6_win:
+      type: number
+      description: 六子棋(贏)
+    conn6_lose:
+      type: number
+      description: 六子棋(輸)
+    conn6_tie:
+      type: number
+      description: 六子棋(平)
+    go_win:
+      type: number
+      description: 圍棋(贏)
+    go_lose:
+      type: number
+      description: 圍棋(輸)
+    go_tie:
+      type: number
+      description: 圍棋(平)
+    dark_win:
+      type: number
+      description: 暗棋(贏)
+    dark_lose:
+      type: number
+      description: 暗棋(輸)
+    dark_tie:
+      type: number
+      description: 暗棋(平)
+    ua_version:
+      type: number
+      description: User-agreement 的版本.
+
+    signature:
+      type: number
+    badpost:
+      type: number
+      description: badpost count
+    angel:
+      type: string
+      description: 小天使
+
+    chess_rank:
+      type: number
+      description: 象棋等級
+    withme:
+      type: number
+      description: https://github.com/Ptt-official-app/go-pttbbs/blob/main/ptttype/withme.go
+    time_remove_bad_post:
+      type: number
+      description: newest removing badpost in unix-time
+    time_violate_law:
+      type: number
+      description: newest violating law in unix-time
+
+    perm2:
+      type: number
+      description: https://github.com/Ptt-official-app/go-pttbbs/blob/main/ptttype/perm2.go
+    update_ts2:
+      type: number
+      description: update-time of perm2
