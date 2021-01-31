@@ -1,5 +1,6 @@
 ParamsMax:
   name: max
   in: query
+  required: true
   description: max number of the items
   type: number
