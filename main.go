@@ -17,6 +17,9 @@ func withPrefix(path string) string {
 func initGin() (*gin.Engine, error) {
 	router := gin.Default()
 
+	//options
+	router.OPTIONS("/*path", api.OptionsWrapper)
+
 	router.POST(withPrefix(api.INDEX_R), api.IndexWrapper)
 
 	//login/register
