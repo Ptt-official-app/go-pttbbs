@@ -9,7 +9,7 @@ const (
 	// type struct requires const.
 	MAX_USERS = 100 /* 最高註冊人數 */
 
-	MAX_ACTIVE = 31 /* 最多同時上站人數 */
+	MAX_ACTIVE = 100 /* 最多同時上站人數 */
 
 	MAX_BOARD = 1024 /* 最大開板個數 */
 
