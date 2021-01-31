@@ -21,5 +21,9 @@ echo "#define HOTBOARDCACHE (10)" >> /home/bbs/pttbbs/pttbbs.conf
 # 7. update max-active user to 100
 sed -i 's/.*#define MAX_ACTIVE.*/#define MAX_ACTIVE (100)/g' /home/bbs/pttbbs/pttbbs.conf
 
-# 7. rebuild
+# 8. shm_offset.c
+cp /home/bbs/pttbbs/util/Makefile /home/bbs/pttbbs/util/Makefile.c-pttbbs
+sed -i 's/initbbs/initbbs shm_offset' /home/bbs/pttbbs/util/Makefile
+
+# 8. rebuild
 bash /tmp/build_ptt_new.sh
