@@ -7,7 +7,7 @@ go-pttbbs intends to be web-based bbs.
 
 ## Getting Started
 
-You can start with the [swagger api](http://173.255.216.176:8080)
+You can start with the [swagger api](https://api.devptt.site:8080)
 and try the api.
 
 You can copy the curl command from the link if you encounter
