@@ -1,0 +1,29 @@
+getFav
+---
+tags:
+  - user
+  - board
+description: get email token info
+parameters:
+  - '$ref': '#/definitions/Host'
+  - '$ref': '#/definitions/XForwardedFor'
+  - '$ref': '#/definitions/Authorization'
+  - name: uid
+    in: path
+    type: string
+  - name: last_ts
+    in: query
+    description: last updated ts.
+    type: number
+responses:
+  200:
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      type: object
+      properties:
+        mtime:
+          type: number
+          description: mtime of the file.
+        content:
+          type: string
+          description: base64-big5

@@ -1,0 +1,34 @@
+loadBoardsByBids
+---
+tags:
+  - board
+description: get board-summary in asecnding mode.
+parameters:
+  - '$ref': '#/definitions/Host'
+  - '$ref': '#/definitions/XForwardedFor'
+  - '$ref': '#/definitions/Authorization'
+  - name: params
+    in: body
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      type: object
+      properties:
+        bids:
+          type: array
+          items:
+            type: number
+            description: 'numeric part of the bid. ex: 10_WhoAmI => 10'
+          required: true
+          description: bids
+responses:
+  200:
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      type: object
+      properties:
+        data:
+          type: array
+          description: board information (board-summary)
+          required: true
+          items:
+            '$ref': '#/definitions/BoardSummary'

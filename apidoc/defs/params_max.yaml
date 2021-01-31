@@ -3,4 +3,4 @@ ParamsMax:
   in: query
   required: true
   description: max number of the items
-  type: integer
+  type: number

@@ -1,30 +1,29 @@
-login
+checkExistsUser
 ---
 tags:
   - user
+description: check exists user.
 parameters:
   - '$ref': '#/definitions/Host'
   - '$ref': '#/definitions/XForwardedFor'
+  - '$ref': '#/definitions/Authorization'
   - name: params
     in: body
-    required: true
     schema:
       '$id': https://json-schema.org/draft/2019-09/output/schema
       type: object
       properties:
-        client_info:
-          type: string
-          required: false
-          default: ''
         username:
           type: string
           required: true
-        password:
-          type: string
-          required: true
+          description: username
 responses:
   200:
-    description: index-response
     schema:
       '$id': https://json-schema.org/draft/2019-09/output/schema
-      '$ref': '#/definitions/Token'
+      type: object
+      properties:
+        user_id:
+          type: string
+        is_exists:
+          type: boolean

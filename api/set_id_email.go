@@ -20,7 +20,7 @@ type SetIDEmailPath struct {
 type SetIDEmailResult struct {
 	UserID     bbs.UUserID   `json:"user_id"`
 	Email      string        `json:"email"`
-	UserLevel2 ptttype.PERM2 `json:"user_level2"`
+	UserLevel2 ptttype.PERM2 `json:"perm2"`
 }
 
 func SetIDEmailWrapper(c *gin.Context) {

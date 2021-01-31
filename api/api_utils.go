@@ -4,10 +4,13 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
+	"github.com/Ptt-official-app/go-pttbbs/types"
 	"github.com/gin-gonic/gin"
 )
 
 func processResult(c *gin.Context, result interface{}, err error) {
+	setHeader(c)
+
 	switch err {
 	case nil:
 		c.JSON(200, result)
@@ -50,5 +53,27 @@ func processResult(c *gin.Context, result interface{}, err error) {
 
 	default:
 		c.JSON(500, &errResult{err.Error()})
+	}
+}
+
+func setHeader(c *gin.Context) {
+	if !types.IS_ALLOW_CROSSDOMAIN {
+		return
+	}
+
+	origin := c.GetHeader("Origin")
+
+	if origin == "" {
+		return
+	}
+
+	requestHeaders := c.GetHeader("Access-Control-Request-Headers")
+
+	c.Header("X-Frame-Options", "SAMEORIGIN")
+	c.Header("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
+	c.Header("Access-Control-Allow-Credentials", "true")
+	c.Header("Access-Control-Allow-Origin", origin)
+	if requestHeaders != "" {
+		c.Header("Access-Control-Allow-Headers", requestHeaders)
 	}
 }

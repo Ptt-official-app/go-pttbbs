@@ -4,10 +4,10 @@ BoardSummary:
     bid:
       type: string
     attr:
-      type: integer
+      type: number
       description: board-flag. https://github.com/Ptt-official-app/go-pttbbs/blob/main/ptttype/brdattr.go
     user_attr:
-      type: integer
+      type: number
       description: state-flag. https://github.com/Ptt-official-app/go-pttbbs/blob/main/ptttype/board_stat.go
     brdname:
       type: string
@@ -29,11 +29,11 @@ BoardSummary:
       type: string
       description: reason unable to see the board.
     last_post_time:
-      type: integer
+      type: number
       description: last post time
     number_of_user:
-      type: integer
+      type: number
     total:
-      type: integer
+      type: number
     read:
       type: boolean

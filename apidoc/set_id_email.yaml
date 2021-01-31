@@ -1,0 +1,38 @@
+setIDEmail
+---
+tags:
+  - user
+description: set id email.
+parameters:
+  - '$ref': '#/definitions/Host'
+  - '$ref': '#/definitions/XForwardedFor'
+  - '$ref': '#/definitions/Authorization'
+  - name: uid
+    in: path
+    type: string
+  - name: params
+    in: body
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      type: object
+      properties:
+        is_set:
+          type: boolean
+          required: true
+          description: 'true: with perm2, set user-level2; false: no perm2, unset user-level2'
+        email_token:
+          type: string
+          required: true
+          description: email-token
+responses:
+  200:
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      type: object
+      properties:
+        user_id:
+          type: string
+        email:
+          type: string
+        perm2:
+          type: number
