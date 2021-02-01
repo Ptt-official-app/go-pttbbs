@@ -23,7 +23,11 @@ sed -i 's/.*#define MAX_ACTIVE.*/#define MAX_ACTIVE (100)/g' /home/bbs/pttbbs/pt
 
 # 8. shm_offset.c
 cp /home/bbs/pttbbs/util/Makefile /home/bbs/pttbbs/util/Makefile.c-pttbbs
-sed -i 's/initbbs/initbbs shm_offset' /home/bbs/pttbbs/util/Makefile
+sed -i 's/initbbs/initbbs shm_offset/g' /home/bbs/pttbbs/util/Makefile
 
-# 8. rebuild
+# 9. rebuild
 bash /tmp/build_ptt_new.sh
+
+# 10. openrestry
+cp /usr/local/openresty/nginx/conf/nginx.conf /usr/local/openresty/nginx/conf/nginx.conf.c-pttbbs
+sed -i 's/bbsdocker\.github\.io/term.devptt.site/g' /usr/local/openresty/nginx/conf/nginx.conf
