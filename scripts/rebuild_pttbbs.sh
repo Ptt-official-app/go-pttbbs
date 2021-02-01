@@ -22,12 +22,9 @@ echo "#define HOTBOARDCACHE (10)" >> /home/bbs/pttbbs/pttbbs.conf
 sed -i 's/.*#define MAX_ACTIVE.*/#define MAX_ACTIVE (100)/g' /home/bbs/pttbbs/pttbbs.conf
 
 # 8. shm_offset.c
+cp /srv/go-pttbbs/c-pttbbs/shm_offset.c /home/bbs/pttbbs/util
 cp /home/bbs/pttbbs/util/Makefile /home/bbs/pttbbs/util/Makefile.c-pttbbs
 sed -i 's/initbbs/initbbs shm_offset/g' /home/bbs/pttbbs/util/Makefile
 
 # 9. rebuild
 bash /tmp/build_ptt_new.sh
-
-# 10. openrestry
-cp /usr/local/openresty/nginx/conf/nginx.conf /usr/local/openresty/nginx/conf/nginx.conf.c-pttbbs
-sed -i 's/bbsdocker\.github\.io/term.devptt.site/g' /usr/local/openresty/nginx/conf/nginx.conf
