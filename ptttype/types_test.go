@@ -397,6 +397,11 @@ func TestFilename_t_ToAidu(t *testing.T) {
 
 	expected2 := Aidu(0x5fcbf5bf30d)
 
+	f3 := &Filename_t{}
+	copy(f3[:], []byte("M.1607202240.A.30D"))
+
+	expected3 := Aidu(0x5fcbf5c030d)
+
 	tests := []struct {
 		name     string
 		f        *Filename_t
@@ -414,6 +419,10 @@ func TestFilename_t_ToAidu(t *testing.T) {
 		{
 			f:        f2,
 			expected: expected2,
+		},
+		{
+			f:        f3,
+			expected: expected3,
 		},
 	}
 	for _, tt := range tests {
@@ -587,6 +596,10 @@ func TestAidu_ToAidc(t *testing.T) {
 	expected4 := &Aidc{}
 	copy(expected4[:], []byte("0G000000"))
 
+	a5 := Aidu(0x5fcbf5c030d)
+	expected5 := &Aidc{}
+	copy(expected5[:], []byte("1Vo_N0CD"))
+
 	tests := []struct {
 		name     string
 		a        Aidu
@@ -612,6 +625,10 @@ func TestAidu_ToAidc(t *testing.T) {
 		{
 			a:        a4,
 			expected: expected4,
+		},
+		{
+			a:        a5,
+			expected: expected5,
 		},
 	}
 	for _, tt := range tests {

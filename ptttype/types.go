@@ -61,6 +61,8 @@ type Gid int32
 
 type SortIdx int
 
+type NumIdx int
+
 var (
 	EMPTY_USER_ID     = UserID_t{}
 	EMPTY_BOARD_ID    = BoardID_t{}

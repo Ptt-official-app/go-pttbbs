@@ -1,10 +1,10 @@
 package api
 
 import (
-	"reflect"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 )
 
 func TestLoadGeneralArticles(t *testing.T) {
@@ -34,28 +34,33 @@ func TestLoadGeneralArticles(t *testing.T) {
 				params: &LoadGeneralArticlesParams{
 					StartIdx:  "",
 					NArticles: 1,
+					Desc:      true,
 				},
 				path: path,
 			},
 			expectedResult: &LoadGeneralArticlesResult{
-				Articles: []*bbs.ArticleSummary{testArticleSummary1},
-				IsNewest: true,
-				NextIdx:  "1",
+				Articles:       []*bbs.ArticleSummary{testArticleSummary1},
+				IsNewest:       true,
+				NextIdx:        "1607202239@1Vo_M_CDSYSOP",
+				NextCreateTime: 1607202239,
+				StartNumIdx:    2,
 			},
 		},
 		{
 			args: args{
 				uuserID: "SYSOP",
 				params: &LoadGeneralArticlesParams{
-					StartIdx:  "2",
+					StartIdx:  "1607203395@1Vo_f30DSYSOP",
 					NArticles: 2,
+					Desc:      true,
 				},
 				path: path,
 			},
 			expectedResult: &LoadGeneralArticlesResult{
-				Articles: []*bbs.ArticleSummary{testArticleSummary1, testArticleSummary0},
-				IsNewest: true,
-				NextIdx:  "",
+				Articles:    []*bbs.ArticleSummary{testArticleSummary1, testArticleSummary0},
+				IsNewest:    true,
+				NextIdx:     "",
+				StartNumIdx: 2,
 			},
 		},
 		{
@@ -63,15 +68,18 @@ func TestLoadGeneralArticles(t *testing.T) {
 			args: args{
 				uuserID: "SYSOP",
 				params: &LoadGeneralArticlesParams{
-					StartIdx:  "2",
+					StartIdx:  "1607203395@1Vo_f30DSYSOP",
 					NArticles: 1,
+					Desc:      true,
 				},
 				path: path,
 			},
 			expectedResult: &LoadGeneralArticlesResult{
-				Articles: []*bbs.ArticleSummary{testArticleSummary1},
-				IsNewest: true,
-				NextIdx:  "1",
+				Articles:       []*bbs.ArticleSummary{testArticleSummary1},
+				IsNewest:       true,
+				NextIdx:        "1607202239@1Vo_M_CDSYSOP",
+				NextCreateTime: 1607202239,
+				StartNumIdx:    2,
 			},
 		},
 	}
@@ -82,9 +90,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 				t.Errorf("LoadGeneralArticles() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(gotResult, tt.expectedResult) {
-				t.Errorf("LoadGeneralArticles() = %v, want %v", gotResult, tt.expectedResult)
-			}
+			testutil.TDeepEqual(t, "got", gotResult, tt.expectedResult)
 		})
 	}
 }

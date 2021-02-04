@@ -29,6 +29,28 @@ func GetBCache(bid ptttype.Bid) (board *ptttype.BoardHeaderRaw, err error) {
 	return board, nil
 }
 
+func GetBTotalWithRetry(bid ptttype.Bid) (total int32, err error) {
+	//2. bcache preparation.
+	total = GetBTotal(bid)
+	if total == 0 {
+		err = SetBTotal(bid)
+		if err != nil {
+			return 0, err
+		}
+		err = SetBottomTotal(bid)
+		if err != nil {
+			return 0, err
+		}
+
+		total = GetBTotal(bid)
+		if total == 0 { //no data
+			return 0, nil
+		}
+	}
+
+	return total, nil
+}
+
 func GetBTotal(bid ptttype.Bid) (total int32) {
 	bidInCache := bid.ToBidInStore()
 
