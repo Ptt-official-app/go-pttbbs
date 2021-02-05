@@ -1,6 +1,9 @@
 package bbs
 
 import (
+	"strconv"
+	"strings"
+
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
@@ -19,6 +22,7 @@ type ArticleSummary struct {
 	Filemode   ptttype.FileMode `json:"mode"`
 	Class      []byte           `json:"class"`
 	Read       bool             `json:"read"`
+	Idx        string           `json:"idx"`
 }
 
 func NewArticleSummaryFromRaw(bboardID BBoardID, articleSummaryRaw *ptttype.ArticleSummaryRaw) *ArticleSummary {
@@ -41,6 +45,36 @@ func NewArticleSummaryFromRaw(bboardID BBoardID, articleSummaryRaw *ptttype.Arti
 		Class:      articleSummaryRaw.Class,
 		Filemode:   articleSummaryRaw.Filemode,
 	}
+	articleSummary.Idx = serializeArticleIdxStr(articleSummary)
 
 	return articleSummary
+}
+
+func serializeArticleIdxStr(summary *ArticleSummary) (idxStr string) {
+	return strconv.Itoa(int(summary.CreateTime)) + "@" + string(summary.ArticleID)
+}
+
+func deserializeArticleIdxStr(idxStr string) (createTime types.Time4, articleID ArticleID, err error) {
+	theList := strings.Split(idxStr, "@")
+	if len(theList) != 2 {
+		return 0, "", ErrInvalidParams
+	}
+
+	createTime_i, err := strconv.Atoi(theList[0])
+	if err != nil {
+		return 0, "", err
+	}
+	createTime = types.Time4(createTime_i)
+
+	articleID = ArticleID(theList[1])
+	filename, _ := articleID.ToRaw()
+	createTimeFromArticleID, err := filename.CreateTime()
+	if err != nil {
+		return 0, "", err
+	}
+	if createTime != createTimeFromArticleID {
+		return 0, "", ErrInvalidParams
+	}
+
+	return createTime, articleID, nil
 }

@@ -125,6 +125,7 @@ func initTestVars() {
 			0xe3,
 		},
 		Class: []byte{0xb0, 0xdd, 0xc3, 0x44},
+		Idx:   "1607202239@1Vo_M_CDSYSOP",
 	}
 
 	testArticleSummary1 = &bbs.ArticleSummary{
@@ -144,6 +145,7 @@ func initTestVars() {
 		Filemode: ptttype.FILE_MARKED,
 
 		Class: []byte{0xa4, 0xdf, 0xb1, 0x6f},
+		Idx:   "1607203395@1Vo_f30DSYSOP",
 	}
 
 	testContent1 = []byte{
