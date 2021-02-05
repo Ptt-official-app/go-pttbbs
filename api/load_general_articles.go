@@ -24,7 +24,7 @@ type LoadGeneralArticlesResult struct {
 	IsNewest       bool                  `json:"is_newest"`
 	NextIdx        string                `json:"next_idx"`
 	NextCreateTime types.Time4           `json:"next_create_time"`
-	StartNumIdx    ptttype.NumIdx        `json:"start_num_idx"`
+	StartNumIdx    ptttype.SortIdx       `json:"start_num_idx"`
 }
 
 func NewLoadGeneralArticlesParams() *LoadGeneralArticlesParams {

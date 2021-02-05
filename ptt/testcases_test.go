@@ -176,6 +176,7 @@ var (
 	testNewRegister1Passwd = []byte("!@Ab86")
 
 	testBoardSummary6 = &ptttype.BoardSummaryRaw{
+		Gid:     5,
 		Bid:     6,
 		BrdAttr: ptttype.BRD_POSTMASK,
 		Brdname: &ptttype.BoardID_t{'A', 'L', 'L', 'P', 'O', 'S', 'T', 0x00, 0x2e, 0x2e, 0x2e, 0x2e},
@@ -190,6 +191,7 @@ var (
 	}
 
 	testBoardSummary7 = &ptttype.BoardSummaryRaw{
+		Gid:     5,
 		Bid:     7,
 		Brdname: &ptttype.BoardID_t{0x64, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x64, 0x00, 0x2e, 0x2e, 0x2e, 0x2e},
 		Title: &ptttype.BoardTitle_t{
@@ -203,6 +205,7 @@ var (
 	}
 
 	testBoardSummary11 = &ptttype.BoardSummaryRaw{
+		Gid:     5,
 		Bid:     11,
 		Brdname: &ptttype.BoardID_t{0x45, 0x64, 0x69, 0x74, 0x45, 0x78, 0x70, 0x00, 0x2e, 0x2e, 0x2e, 0x2e},
 		Title: &ptttype.BoardTitle_t{
@@ -216,6 +219,7 @@ var (
 	}
 
 	testBoardSummary8 = &ptttype.BoardSummaryRaw{
+		Gid:     5,
 		Bid:     8,
 		Brdname: &ptttype.BoardID_t{0x4e, 0x6f, 0x74, 0x65, 0x00, 0x65, 0x64, 0x00, 0x2e, 0x2e, 0x2e, 0x2e},
 		Title: &ptttype.BoardTitle_t{
@@ -229,6 +233,7 @@ var (
 	}
 
 	testBoardSummary1 = &ptttype.BoardSummaryRaw{
+		Gid:     2,
 		Bid:     1,
 		BrdAttr: ptttype.BRD_POSTMASK,
 		Brdname: &ptttype.BoardID_t{'S', 'Y', 'S', 'O', 'P'},
@@ -240,7 +245,24 @@ var (
 		StatAttr: ptttype.NBRD_FAV,
 	}
 
+	testBoardSummary9 = &ptttype.BoardSummaryRaw{
+		Gid:     5,
+		Bid:     9,
+		BrdAttr: ptttype.BRD_POSTMASK,
+		Brdname: &ptttype.BoardID_t{'R', 'e', 'c', 'o', 'r', 'd', 0x00, 0x00, 0x2e, 0x2e, 0x2e, 0x2e},
+		Title: &ptttype.BoardTitle_t{
+			0xbc, 0x54, 0xad, 0xf9, 0x20, 0xa1, 0xb7, 0xa7, 0xda, 0xad,
+			0xcc, 0xaa, 0xba, 0xa6, 0xa8, 0xaa, 0x47, 0x00, 0x71, 0xa6,
+			0xb1, 0xa7, 0xeb, 0xbd, 0x5a, 0x00, 0xaf, 0xb8, 0xaa, 0xf8,
+			0x20, 0x20, 0xa3, 0xad, 0xa1, 0x49, 0x00, 0x6e, 0x00, 0x00,
+			0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		},
+		BM:       []*ptttype.UserID_t{},
+		StatAttr: ptttype.NBRD_FAV,
+	}
+
 	testBoardSummary10 = &ptttype.BoardSummaryRaw{
+		Gid:     5,
 		Bid:     10,
 		Brdname: &ptttype.BoardID_t{'W', 'h', 'o', 'A', 'm', 'I', 0x00, 0x00, 0x2e, 0x2e, 0x2e, 0x2e},
 		Title: &ptttype.BoardTitle_t{

@@ -8,7 +8,6 @@ import (
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
-	"github.com/sirupsen/logrus"
 )
 
 func GetNumRecords(filename string, size uintptr) int {
@@ -20,9 +19,9 @@ func GetNumRecords(filename string, size uintptr) int {
 	return int(stat.Size() / int64(size))
 }
 
-func GetRecords(boardID *ptttype.BoardID_t, filename string, startAid ptttype.Aid, n int, isDesc bool, maxAid ptttype.Aid) (summaries []*ptttype.ArticleSummaryRaw, err error) {
-	if !startAid.IsValid() {
-		return nil, ptttype.ErrInvalidAid
+func GetRecords(boardID *ptttype.BoardID_t, filename string, startIdx ptttype.SortIdx, n int, isDesc bool) (summaries []*ptttype.ArticleSummaryRaw, err error) {
+	if !startIdx.IsValid() {
+		return nil, ptttype.ErrInvalidIdx
 	}
 
 	file, err := os.Open(filename)
@@ -34,16 +33,21 @@ func GetRecords(boardID *ptttype.BoardID_t, filename string, startAid ptttype.Ai
 	}
 	defer file.Close()
 
+	info, err := file.Stat()
+	if err != nil {
+		return nil, err
+	}
+	fileSize := info.Size()
+	maxIdx := ptttype.SortIdx(fileSize / int64(ptttype.FILE_HEADER_RAW_SZ))
+
 	//construct headers
 	summaries = make([]*ptttype.ArticleSummaryRaw, 0, n)
-	logrus.Infof("cmsys.GetRecords: startAid: %v maxAid: %v n: %v isDesc: %v", startAid, maxAid, n, isDesc)
-	for idx, aid, aidInFile := 0, startAid, startAid.ToAidInStore(); idx < n; idx++ {
-		logrus.Infof("cmsys.GetRecords: (%v/%v) aid: %v aidInFile: %v", idx, n, aid, aidInFile)
-		if aid == 0 || aid > maxAid {
+	for i, idx, idxInFile := 0, startIdx, startIdx.ToSortIdxInStore(); i < n; i++ {
+		if idx == 0 || idx > maxIdx {
 			break
 		}
 
-		_, err = file.Seek(int64(ptttype.FILE_HEADER_RAW_SZ)*int64(aidInFile), 0)
+		_, err = file.Seek(int64(ptttype.FILE_HEADER_RAW_SZ)*int64(idxInFile), 0)
 		if err != nil {
 			return summaries, nil
 		}
@@ -54,25 +58,25 @@ func GetRecords(boardID *ptttype.BoardID_t, filename string, startAid ptttype.Ai
 			return summaries, nil
 		}
 
-		each := ptttype.NewArticleSummaryRaw(aid, boardID, header)
+		each := ptttype.NewArticleSummaryRaw(idx, boardID, header)
 		summaries = append(summaries, each)
 
 		if isDesc {
-			aid--
-			aidInFile = aid.ToAidInStore()
+			idx--
+			idxInFile = idx.ToSortIdxInStore()
 		} else {
-			aid++
-			aidInFile = aid.ToAidInStore()
+			idx++
+			idxInFile = idx.ToSortIdxInStore()
 		}
 	}
 
 	return summaries, nil
 }
 
-//FindRecordStartAid
+//FindRecordStartIdx
 //
 //startIdx should be 1-total.
-func FindRecordStartAid(dirFilename string, total int, createTime types.Time4, filename *ptttype.Filename_t, isDesc bool) (startAid ptttype.Aid, err error) {
+func FindRecordStartIdx(dirFilename string, total int, createTime types.Time4, filename *ptttype.Filename_t, isDesc bool) (startIdx ptttype.SortIdx, err error) {
 
 	file, err := os.Open(dirFilename)
 	if err != nil {
@@ -106,7 +110,6 @@ func FindRecordStartAid(dirFilename string, total int, createTime types.Time4, f
 		}
 		j := createTime - fileCreateTime
 
-		logrus.Infof("cmsys.FindRecordStartAid: start: %v end: %v idxInStore: %v j: %v", start, end, idxInStore, j)
 		if j == 0 {
 			break
 		}
@@ -125,11 +128,10 @@ func FindRecordStartAid(dirFilename string, total int, createTime types.Time4, f
 
 	fileCreateTime, _ := header.Filename.CreateTime()
 	if createTime == fileCreateTime && filename != nil && bytes.Equal(filename[:], header.Filename[:]) {
-		return ptttype.Aid(idxInStore + 1), nil
+		return ptttype.SortIdx(idxInStore + 1), nil
 	}
 
 	//find the start
-	logrus.Infof("cmsys.FindRecordStartAid: to find start: createTime: %v fileCreateTime: %v idxInStore: %v total: %v isDesc: %v", createTime, fileCreateTime, idxInStore, total, isDesc)
 	if isDesc {
 		for ; idxInStore < total; idxInStore++ {
 			_, err = file.Seek(int64(ptttype.FILE_HEADER_RAW_SZ)*int64(idxInStore), io.SeekStart)
@@ -172,7 +174,6 @@ func FindRecordStartAid(dirFilename string, total int, createTime types.Time4, f
 		if idxInStore == -1 {
 			idxInStore = 0
 		}
-
 	}
 
 	//linear search
@@ -191,7 +192,7 @@ func FindRecordStartAid(dirFilename string, total int, createTime types.Time4, f
 			fileCreateTime, _ = header.Filename.CreateTime()
 
 			if createTime == fileCreateTime && filename != nil && bytes.Equal(filename[:], header.Filename[:]) {
-				return ptttype.Aid(idxInStore + 1), nil
+				return ptttype.SortIdx(idxInStore + 1), nil
 			} else if createTime > fileCreateTime {
 				break
 			}
@@ -211,7 +212,7 @@ func FindRecordStartAid(dirFilename string, total int, createTime types.Time4, f
 			fileCreateTime, _ = header.Filename.CreateTime()
 
 			if createTime == fileCreateTime && filename != nil && bytes.Equal(filename[:], header.Filename[:]) {
-				return ptttype.Aid(idxInStore + 1), nil
+				return ptttype.SortIdx(idxInStore + 1), nil
 			} else if createTime < fileCreateTime {
 				break
 			}
@@ -224,5 +225,5 @@ func FindRecordStartAid(dirFilename string, total int, createTime types.Time4, f
 		return -1, nil
 	}
 
-	return ptttype.Aid(idxInStore + 1), nil
+	return ptttype.SortIdx(idxInStore + 1), nil
 }

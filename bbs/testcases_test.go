@@ -19,9 +19,12 @@ var (
 
 	testBoardSummaryRaw6 *ptttype.BoardSummaryRaw
 
+	testBoardSummary1  *BoardSummary
 	testBoardSummary6  *BoardSummary
 	testBoardSummary7  *BoardSummary
 	testBoardSummary8  *BoardSummary
+	testBoardSummary9  *BoardSummary
+	testBoardSummary10 *BoardSummary
 	testBoardSummary11 *BoardSummary
 
 	testArticleSummary0 *ArticleSummary
@@ -109,6 +112,7 @@ func initTestVars() {
 	testUserecEmpty = &Userec{}
 
 	testBoardSummaryRaw6 = &ptttype.BoardSummaryRaw{
+		Gid:     5,
 		Bid:     6,
 		BrdAttr: ptttype.BRD_POSTMASK,
 		Brdname: &ptttype.BoardID_t{'A', 'L', 'L', 'P', 'O', 'S', 'T', 0x00, 0x2e, 0x2e, 0x2e, 0x2e},
@@ -122,7 +126,28 @@ func initTestVars() {
 		StatAttr: ptttype.NBRD_FAV,
 	}
 
+	testBoardSummary1 = &BoardSummary{
+		Gid:      2,
+		Bid:      1,
+		BBoardID: BBoardID("1_SYSOP"),
+		BrdAttr:  ptttype.BRD_POSTMASK,
+		StatAttr: ptttype.NBRD_FAV,
+		Brdname:  "SYSOP",
+		BoardClass: []byte{
+			0xbc, 0x54, 0xad, 0xf9,
+		},
+		RealTitle: []byte{
+			0xaf, 0xb8, 0xaa, 0xf8, 0xa6, 0x6e, 0x21,
+		},
+		BoardType:  []byte{0xa1, 0xb7},
+		BM:         []UUserID{},
+		IdxByName:  "SYSOP",
+		IdxByClass: "vFSt-Q@SYSOP",
+	}
+
 	testBoardSummary6 = &BoardSummary{
+		Gid:      5,
+		Bid:      6,
 		BBoardID: BBoardID("6_ALLPOST"),
 		BrdAttr:  ptttype.BRD_POSTMASK,
 		StatAttr: ptttype.NBRD_FAV,
@@ -134,11 +159,15 @@ func initTestVars() {
 			0xb8, 0xf3, 0xaa, 0x4f, 0xa6, 0xa1, 0x4c, 0x4f, 0x43, 0x41,
 			0x4c, 0xb7, 0x73, 0xa4, 0xe5, 0xb3, 0xb9,
 		},
-		BoardType: []byte{0xa1, 0xb7},
-		BM:        []UUserID{},
+		BoardType:  []byte{0xa1, 0xb7},
+		BM:         []UUserID{},
+		IdxByName:  "ALLPOST",
+		IdxByClass: "vFSt-Q@ALLPOST",
 	}
 
 	testBoardSummary7 = &BoardSummary{
+		Gid:      5,
+		Bid:      7,
 		BBoardID: BBoardID("7_deleted"),
 		StatAttr: ptttype.NBRD_FAV,
 		Brdname:  "deleted",
@@ -148,11 +177,15 @@ func initTestVars() {
 		RealTitle: []byte{
 			0xb8, 0xea, 0xb7, 0xbd, 0xa6, 0x5e, 0xa6, 0xac, 0xb5, 0xa9,
 		},
-		BoardType: []byte{0xa1, 0xb7},
-		BM:        []UUserID{},
+		BoardType:  []byte{0xa1, 0xb7},
+		BM:         []UUserID{},
+		IdxByName:  "deleted",
+		IdxByClass: "vFSt-Q@deleted",
 	}
 
 	testBoardSummary8 = &BoardSummary{
+		Gid:      5,
+		Bid:      8,
 		BBoardID: BBoardID("8_Note"),
 		StatAttr: ptttype.NBRD_FAV,
 		Brdname:  "Note",
@@ -163,11 +196,53 @@ func initTestVars() {
 			0xb0, 0xca, 0xba, 0x41, 0xac, 0xdd, 0xaa, 0x4f, 0xa4, 0xce,
 			0xba, 0x71, 0xa6, 0xb1, 0xa7, 0xeb, 0xbd, 0x5a,
 		},
-		BoardType: []byte{0xa1, 0xb7},
-		BM:        []UUserID{},
+		BoardType:  []byte{0xa1, 0xb7},
+		BM:         []UUserID{},
+		IdxByName:  "Note",
+		IdxByClass: "vFSt-Q@Note",
+	}
+
+	testBoardSummary9 = &BoardSummary{
+		Gid:      5,
+		Bid:      9,
+		BBoardID: BBoardID("9_Record"),
+		BrdAttr:  ptttype.BRD_POSTMASK,
+		StatAttr: ptttype.NBRD_FAV,
+		Brdname:  "Record",
+		BoardClass: []byte{
+			0xbc, 0x54, 0xad, 0xf9,
+		},
+		RealTitle: []byte{
+			0xa7, 0xda, 0xad, 0xcc, 0xaa, 0xba, 0xa6, 0xa8, 0xaa, 0x47,
+		},
+		BoardType:  []byte{0xa1, 0xb7},
+		BM:         []UUserID{},
+		IdxByName:  "Record",
+		IdxByClass: "vFSt-Q@Record",
+	}
+
+	testBoardSummary10 = &BoardSummary{
+		Gid:      5,
+		Bid:      10,
+		BBoardID: BBoardID("10_WhoAmI"),
+		StatAttr: ptttype.NBRD_FAV,
+		Brdname:  "WhoAmI",
+		BoardClass: []byte{
+			0xbc, 0x54, 0xad, 0xf9,
+		},
+		RealTitle: []byte{
+			0xa8, 0xfe, 0xa8, 0xfe, 0xa1, 0x41, 0xb2, 0x71, 0xb2, 0x71,
+			0xa7, 0xda, 0xac, 0x4f, 0xbd, 0xd6, 0xa1, 0x49,
+		},
+		BoardType:  []byte{0xa1, 0xb7},
+		BM:         []UUserID{},
+		IdxByName:  "WhoAmI",
+		IdxByClass: "vFSt-Q@WhoAmI",
 	}
 
 	testBoardSummary11 = &BoardSummary{
+		Gid:      5,
+		Bid:      11,
 		BBoardID: BBoardID("11_EditExp"),
 		StatAttr: ptttype.NBRD_FAV,
 		Brdname:  "EditExp",
@@ -178,8 +253,10 @@ func initTestVars() {
 			0xbd, 0x64, 0xa5, 0xbb, 0xba, 0xeb, 0xc6, 0x46, 0xa7, 0xeb,
 			0xbd, 0x5a, 0xb0, 0xcf,
 		},
-		BoardType: []byte{0xa1, 0xb7},
-		BM:        []UUserID{},
+		BoardType:  []byte{0xa1, 0xb7},
+		BM:         []UUserID{},
+		IdxByName:  "EditExp",
+		IdxByClass: "vFSt-Q@EditExp",
 	}
 
 	testArticleSummary0 = &ArticleSummary{

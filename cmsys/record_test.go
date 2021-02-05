@@ -49,17 +49,17 @@ func TestGetRecords(t *testing.T) {
 	expected0 := []*ptttype.ArticleSummaryRaw{testArticleSummary0}
 
 	filename1 := "./testcase/DIR1"
-	startAid1 := ptttype.Aid(1)
+	startIdx1 := ptttype.SortIdx(1)
 	n1 := 100
 	expected1 := []*ptttype.ArticleSummaryRaw{testArticleSummary1, testArticleSummary2}
 
 	filename2 := "./testcase/DIR"
-	startAid2 := ptttype.Aid(2)
+	startIdx2 := ptttype.SortIdx(2)
 	n2 := 100
 	expected2 := []*ptttype.ArticleSummaryRaw{}
 
 	filename3 := "./testcase/DIR"
-	startAid3 := ptttype.Aid(3)
+	startIdx3 := ptttype.SortIdx(3)
 	n3 := 100
 	expected3 := []*ptttype.ArticleSummaryRaw{}
 
@@ -77,7 +77,7 @@ func TestGetRecords(t *testing.T) {
 	defer file.Close()
 	_ = binary.Write(file, binary.LittleEndian, fileHeaders)
 
-	startAid4 := ptttype.Aid(2)
+	startIdx4 := ptttype.SortIdx(2)
 	n4 := 100
 	expected4 := []*ptttype.ArticleSummaryRaw{
 		testArticleSummary2,
@@ -86,7 +86,7 @@ func TestGetRecords(t *testing.T) {
 		testArticleSummary5,
 	}
 
-	startAid5 := ptttype.Aid(5)
+	startIdx5 := ptttype.SortIdx(5)
 	n5 := 100
 	expected5 := []*ptttype.ArticleSummaryRaw{
 		testArticleSummary5,
@@ -100,10 +100,9 @@ func TestGetRecords(t *testing.T) {
 	type args struct {
 		boardID  *ptttype.BoardID_t
 		filename string
-		startAid ptttype.Aid
+		startIdx ptttype.SortIdx
 		n        int
 		isDesc   bool
-		maxAid   ptttype.Aid
 	}
 	tests := []struct {
 		name     string
@@ -113,33 +112,33 @@ func TestGetRecords(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{
-			args:     args{boardID: boardID, filename: filename0, startAid: 1, n: n0, isDesc: false, maxAid: 1},
+			args:     args{boardID: boardID, filename: filename0, startIdx: 1, n: n0, isDesc: false},
 			expected: expected0,
 		},
 		{
-			args:     args{boardID: boardID, filename: filename1, startAid: startAid1, n: n1, isDesc: false, maxAid: 2},
+			args:     args{boardID: boardID, filename: filename1, startIdx: startIdx1, n: n1, isDesc: false},
 			expected: expected1,
 		},
 		{
-			args:     args{boardID: boardID, filename: filename2, startAid: startAid2, n: n2, isDesc: false, maxAid: 1},
+			args:     args{boardID: boardID, filename: filename2, startIdx: startIdx2, n: n2, isDesc: false},
 			expected: expected2,
 		},
 		{
-			args:     args{boardID: boardID, filename: filename3, startAid: startAid3, n: n3, isDesc: false, maxAid: 1},
+			args:     args{boardID: boardID, filename: filename3, startIdx: startIdx3, n: n3, isDesc: false},
 			expected: expected3,
 		},
 		{
-			args:     args{boardID: boardID, filename: filename4, startAid: startAid4, n: n4, isDesc: false, maxAid: 5},
+			args:     args{boardID: boardID, filename: filename4, startIdx: startIdx4, n: n4, isDesc: false},
 			expected: expected4,
 		},
 		{
-			args:     args{boardID: boardID, filename: filename4, startAid: startAid5, n: n5, isDesc: isDesc5, maxAid: 5},
+			args:     args{boardID: boardID, filename: filename4, startIdx: startIdx5, n: n5, isDesc: isDesc5},
 			expected: expected5,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := GetRecords(tt.args.boardID, tt.args.filename, tt.args.startAid, tt.args.n, tt.args.isDesc, tt.args.maxAid)
+			got, err := GetRecords(tt.args.boardID, tt.args.filename, tt.args.startIdx, tt.args.n, tt.args.isDesc)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetRecords() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -178,7 +177,7 @@ func TestFindRecordStartAid(t *testing.T) {
 	tests := []struct {
 		name             string
 		args             args
-		expectedStartIdx ptttype.Aid
+		expectedStartIdx ptttype.SortIdx
 		wantErr          bool
 	}{
 		// TODO: Add test cases.
@@ -255,7 +254,7 @@ func TestFindRecordStartAid(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotStartIdx, err := FindRecordStartAid(tt.args.dirFilename, tt.args.total, tt.args.createTime, tt.args.filename, tt.args.isDesc)
+			gotStartIdx, err := FindRecordStartIdx(tt.args.dirFilename, tt.args.total, tt.args.createTime, tt.args.filename, tt.args.isDesc)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("FindRecordStartIdx() error = %v, wantErr %v", err, tt.wantErr)
 				return

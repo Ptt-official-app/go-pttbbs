@@ -9,12 +9,12 @@ type ArticleSummaryRaw struct {
 	Class []byte
 }
 
-func NewArticleSummaryRaw(aid Aid, boardID *BoardID_t, header *FileHeaderRaw) *ArticleSummaryRaw {
+func NewArticleSummaryRaw(idx SortIdx, boardID *BoardID_t, header *FileHeaderRaw) *ArticleSummaryRaw {
 
 	class := header.Title.ToClass()
 
 	return &ArticleSummaryRaw{
-		Aid:     aid,
+		Aid:     Aid(idx),
 		BoardID: boardID,
 
 		FileHeaderRaw: header,

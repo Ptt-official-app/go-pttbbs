@@ -9,12 +9,11 @@ parameters:
   - name: class_id
     in: path
     type: string
-  - name: params
-    in: body
-    required: true
-    schema:
-      '$id': https://json-schema.org/draft/2019-09/output/schema
-      '$ref': '#/definitions/BoardListParams'
+  - '$ref': '#/definitions/ParamsStartIdx'
+  - '$ref': '#/definitions/ParamsMax'
+  - '$ref': '#/definitions/ParamsTitle'
+  - '$ref': '#/definitions/ParamsKeyword'
+  - '$ref': '#/definitions/ParamsAsc'
 responses:
   200:
     description: index-response
@@ -28,5 +27,7 @@ responses:
           required: true
           items:
             '$ref': '#/definitions/BoardSummary'
-        next_bid:
+        next_idx:
+          type: string
+        start_num_idx:
           type: string

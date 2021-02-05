@@ -1,0 +1,7 @@
+ParamsTitle:
+  name: title
+  in: query
+  required: false
+  description: search title
+  type: string
+  default: ''

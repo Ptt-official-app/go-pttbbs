@@ -1,6 +1,10 @@
 BoardSummary:
   type: object
   properties:
+    pttgid:
+      type: string
+    pttbid:
+      type: string
     bid:
       type: string
     attr:
@@ -37,3 +41,10 @@ BoardSummary:
       type: number
     read:
       type: boolean
+
+    idx_name:
+      type: string
+      description: idx for search by brdname
+    idx_class:
+      type: string
+      description: idx for search by class

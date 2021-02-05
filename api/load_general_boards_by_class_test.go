@@ -2,7 +2,6 @@ package api
 
 import (
 	"reflect"
-	"strconv"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
@@ -13,13 +12,14 @@ func TestLoadGeneralBoardsByClass(t *testing.T) {
 	defer teardownTest()
 
 	params := &LoadGeneralBoardsParams{
-		StartIdx: strconv.Itoa(int(0)),
+		StartIdx: "vFSt-Q@ALLPOST",
 		NBoards:  4,
+		Asc:      true,
 	}
 
 	expected := &LoadGeneralBoardsResult{
 		Boards:  []*bbs.BoardSummary{testBoardSummary6, testBoardSummary7, testBoardSummary11, testBoardSummary8},
-		NextIdx: strconv.Itoa(int(9)),
+		NextIdx: "vFSt-Q@Record",
 	}
 
 	type args struct {

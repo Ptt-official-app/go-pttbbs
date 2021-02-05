@@ -7,10 +7,10 @@ import (
 )
 
 func TestNewArticleSummaryRaw(t *testing.T) {
-	aid0 := Aid(2)
+	aid0 := SortIdx(2)
 	boardID0 := &BoardID_t{}
 	type args struct {
-		aid     Aid
+		aid     SortIdx
 		boardID *BoardID_t
 		header  *FileHeaderRaw
 	}

@@ -30,7 +30,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 		uid        ptttype.Uid
 		boardIDRaw *ptttype.BoardID_t
 		bid        ptttype.Bid
-		startAid   ptttype.Aid
+		startAid   ptttype.SortIdx
 		nArticles  int
 		isDesc     bool
 	}
@@ -40,7 +40,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 		expectedSummaries   []*ptttype.ArticleSummaryRaw
 		expectedIsNewest    bool
 		expectedNextSummary *ptttype.ArticleSummaryRaw
-		expectedStartNumIdx ptttype.NumIdx
+		expectedStartNumIdx ptttype.SortIdx
 		wantErr             bool
 	}{
 		// TODO: Add test cases.
@@ -279,7 +279,7 @@ func TestFindArticleStartAid(t *testing.T) {
 	tests := []struct {
 		name             string
 		args             args
-		expectedStartAid ptttype.Aid
+		expectedStartAid ptttype.SortIdx
 		wantErr          bool
 	}{
 		// TODO: Add test cases.
@@ -386,7 +386,7 @@ func TestFindArticleStartAid(t *testing.T) {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
-			gotStartAid, err := FindArticleStartAid(tt.args.user, tt.args.uid, tt.args.boardID, tt.args.bid, tt.args.createTime, tt.args.filename, tt.args.isDesc)
+			gotStartAid, err := FindArticleStartIdx(tt.args.user, tt.args.uid, tt.args.boardID, tt.args.bid, tt.args.createTime, tt.args.filename, tt.args.isDesc)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("FindArticleStartAid() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -412,16 +412,16 @@ func TestLoadGeneralArticlesSameCreateTime(t *testing.T) {
 	type args struct {
 		boardIDRaw *ptttype.BoardID_t
 		bid        ptttype.Bid
-		startAid   ptttype.Aid
-		endAid     ptttype.Aid
+		startAid   ptttype.SortIdx
+		endAid     ptttype.SortIdx
 		createTime types.Time4
 	}
 	tests := []struct {
 		name                string
 		args                args
 		expectedSummaries   []*ptttype.ArticleSummaryRaw
-		expectedStartNumIdx ptttype.NumIdx
-		expectedEndNumIdx   ptttype.NumIdx
+		expectedStartNumIdx ptttype.SortIdx
+		expectedEndNumIdx   ptttype.SortIdx
 		wantErr             bool
 	}{
 		// TODO: Add test cases.
@@ -439,7 +439,7 @@ func TestLoadGeneralArticlesSameCreateTime(t *testing.T) {
 		},
 		{
 			args:              args{boardIDRaw: boardID, bid: bid, startAid: 1, endAid: 0, createTime: 1607203394},
-			expectedSummaries: []*ptttype.ArticleSummaryRaw{},
+			expectedSummaries: nil,
 		},
 	}
 	for _, tt := range tests {

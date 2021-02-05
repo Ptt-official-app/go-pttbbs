@@ -42,27 +42,42 @@ func TestLoadGeneralBoards(t *testing.T) {
 		uid      ptttype.Uid
 		startIdx ptttype.SortIdx
 		nBoards  int
+		title    []byte
 		keyword  []byte
+		isAsc    bool
 		bsortBy  ptttype.BSortBy
 	}
 	tests := []struct {
-		name            string
-		args            args
-		expectedSummary []*ptttype.BoardSummaryRaw
-		expectedNextIdx ptttype.SortIdx
-		wantErr         bool
+		name                string
+		args                args
+		expectedSummaries   []*ptttype.BoardSummaryRaw
+		expectedNextSummary *ptttype.BoardSummaryRaw
+		wantErr             bool
 	}{
 		// TODO: Add test cases.
 		{
 			args: args{
 				user:     testUserecRaw1,
 				uid:      1,
-				startIdx: 0,
+				startIdx: 1,
 				nBoards:  4,
 				bsortBy:  ptttype.BSORT_BY_NAME,
+				isAsc:    true,
 			},
-			expectedSummary: []*ptttype.BoardSummaryRaw{testBoardSummary6, testBoardSummary7, testBoardSummary11, testBoardSummary8},
-			expectedNextIdx: 8,
+			expectedSummaries:   []*ptttype.BoardSummaryRaw{testBoardSummary6, testBoardSummary7, testBoardSummary11, testBoardSummary8},
+			expectedNextSummary: testBoardSummary9,
+		},
+		{
+			args: args{
+				user:     testUserecRaw1,
+				uid:      1,
+				startIdx: 5,
+				nBoards:  4,
+				bsortBy:  ptttype.BSORT_BY_NAME,
+				isAsc:    false,
+			},
+			expectedSummaries:   []*ptttype.BoardSummaryRaw{testBoardSummary7, testBoardSummary6},
+			expectedNextSummary: nil,
 		},
 		{
 			args: args{
@@ -71,21 +86,49 @@ func TestLoadGeneralBoards(t *testing.T) {
 				startIdx: 10,
 				nBoards:  4,
 				bsortBy:  ptttype.BSORT_BY_NAME,
+				isAsc:    true,
 			},
-			expectedSummary: []*ptttype.BoardSummaryRaw{testBoardSummary1, testBoardSummary10},
-			expectedNextIdx: -1,
+			expectedSummaries:   []*ptttype.BoardSummaryRaw{testBoardSummary1, testBoardSummary10},
+			expectedNextSummary: nil,
+		},
+		{
+			args: args{
+				user:     testUserecRaw1,
+				uid:      1,
+				startIdx: 1,
+				nBoards:  4,
+				bsortBy:  ptttype.BSORT_BY_NAME,
+				isAsc:    true,
+				title:    []byte{'o'},
+			},
+			expectedSummaries:   []*ptttype.BoardSummaryRaw{testBoardSummary6, testBoardSummary8, testBoardSummary10},
+			expectedNextSummary: nil,
+		},
+		{
+			args: args{
+				user:     testUserecRaw1,
+				uid:      1,
+				startIdx: 1,
+				nBoards:  4,
+				bsortBy:  ptttype.BSORT_BY_NAME,
+				isAsc:    true,
+				keyword:  []byte{'o'},
+			},
+			expectedSummaries:   []*ptttype.BoardSummaryRaw{testBoardSummary6, testBoardSummary8, testBoardSummary9, testBoardSummary1},
+			expectedNextSummary: testBoardSummary10,
 		},
 		{
 			name: "sort-by-class",
 			args: args{
 				user:     testUserecRaw1,
 				uid:      1,
-				startIdx: 0,
+				startIdx: 1,
 				nBoards:  4,
 				bsortBy:  ptttype.BSORT_BY_CLASS,
+				isAsc:    true,
 			},
-			expectedSummary: []*ptttype.BoardSummaryRaw{testBoardSummary6, testBoardSummary7, testBoardSummary11, testBoardSummary8},
-			expectedNextIdx: 9,
+			expectedSummaries:   []*ptttype.BoardSummaryRaw{testBoardSummary6, testBoardSummary7, testBoardSummary11, testBoardSummary8},
+			expectedNextSummary: testBoardSummary9,
 		},
 	}
 
@@ -94,17 +137,16 @@ func TestLoadGeneralBoards(t *testing.T) {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
-			gotSummary, gotNextIdx, err := LoadGeneralBoards(tt.args.user, tt.args.uid, tt.args.startIdx, tt.args.nBoards, tt.args.keyword, tt.args.bsortBy)
+			gotSummaries, gotNextSummary, err := LoadGeneralBoards(tt.args.user, tt.args.uid, tt.args.startIdx, tt.args.nBoards, tt.args.title, tt.args.keyword, tt.args.isAsc, tt.args.bsortBy)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadGeneralBoards() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 
-			testutil.TDeepEqual(t, "summary", gotSummary, tt.expectedSummary)
+			testutil.TDeepEqual(t, "summaries", gotSummaries, tt.expectedSummaries)
 
-			if gotNextIdx != tt.expectedNextIdx {
-				t.Errorf("LoadGeneralBoards() gotNextIdx = %v, want %v", gotNextIdx, tt.expectedNextIdx)
-			}
+			testutil.TDeepEqual(t, "nextSummary", gotNextSummary, tt.expectedNextSummary)
+
 		})
 		wg.Wait()
 	}
@@ -235,6 +277,69 @@ func TestLoadBoardsByBids(t *testing.T) {
 			}
 			if !reflect.DeepEqual(gotSummaries, tt.expectedSummaries) {
 				t.Errorf("LoadBoardsByBids() = %v, want %v", gotSummaries, tt.expectedSummaries)
+			}
+		})
+	}
+}
+
+func TestFindBoardStartIdxByName(t *testing.T) {
+	type args struct {
+		boardID *ptttype.BoardID_t
+		isAsc   bool
+	}
+	tests := []struct {
+		name             string
+		args             args
+		expectedStartIdx ptttype.SortIdx
+		wantErr          bool
+	}{
+		// TODO: Add test cases.
+		{
+			args:             args{boardID: testBoardSummary10.Brdname, isAsc: true},
+			expectedStartIdx: 12,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotStartIdx, err := FindBoardStartIdxByName(tt.args.boardID, tt.args.isAsc)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("FindBoardStartIdxByName() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotStartIdx, tt.expectedStartIdx) {
+				t.Errorf("FindBoardStartIdxByName() = %v, want %v", gotStartIdx, tt.expectedStartIdx)
+			}
+		})
+	}
+}
+
+func TestFindBoardStartIdxByClass(t *testing.T) {
+	type args struct {
+		cls     []byte
+		boardID *ptttype.BoardID_t
+		isAsc   bool
+	}
+	tests := []struct {
+		name             string
+		args             args
+		expectedStartIdx ptttype.SortIdx
+		wantErr          bool
+	}{
+		// TODO: Add test cases.
+		{
+			args:             args{cls: testBoardSummary10.Title[:4], boardID: testBoardSummary10.Brdname, isAsc: true},
+			expectedStartIdx: 12,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotStartIdx, err := FindBoardStartIdxByClass(tt.args.cls, tt.args.boardID, tt.args.isAsc)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("FindBoardStartIdxByClass() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotStartIdx, tt.expectedStartIdx) {
+				t.Errorf("FindBoardStartIdxByClass() = %v, want %v", gotStartIdx, tt.expectedStartIdx)
 			}
 		})
 	}

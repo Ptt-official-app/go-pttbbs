@@ -15,6 +15,7 @@ func Test_LoadGeneralBoardsByClass(t *testing.T) {
 	params := &api.LoadGeneralBoardsParams{
 		StartIdx: "",
 		NBoards:  4,
+		Asc:      true,
 	}
 
 	type args struct {

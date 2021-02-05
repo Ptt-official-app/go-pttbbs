@@ -5,4 +5,3 @@ ParamsKeyword:
   description: search keyword
   type: string
   default: ''
-
