@@ -153,6 +153,68 @@ func loadBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, bid ptttype.Bid) (b
 	return boardStat
 }
 
+//LoadAutoCompleteBoards
+//
+//Load auto-complete boards by name.
+func LoadAutoCompleteBoards(user *ptttype.UserecRaw, uid ptttype.Uid, startIdx ptttype.SortIdx, nBoards int, keyword []byte, isAsc bool) (summaries []*ptttype.BoardSummaryRaw, nextSummary *ptttype.BoardSummaryRaw, err error) {
+
+	nBoardsInCache := cache.NumBoards()
+	if startIdx == 0 && !isAsc {
+		startIdx = ptttype.SortIdx(nBoardsInCache)
+	}
+
+	startIdxInStore := startIdx.ToSortIdxInStore()
+
+	nBoardsWithNext := nBoards + 1
+
+	//get board-stats
+	boardStats := make([]*ptttype.BoardStat, 0, nBoardsWithNext)
+	if isAsc {
+		for idxInStore := startIdxInStore; ; idxInStore++ {
+			if int32(idxInStore) >= nBoardsInCache || len(boardStats) >= nBoardsWithNext { //add 1 more board for nextSummary
+				break
+			}
+			eachBoardStat, isEnd := loadAutoCompleteBoardStat(user, uid, idxInStore, keyword)
+			if isEnd {
+				break
+			}
+			if eachBoardStat == nil {
+				continue
+			}
+
+			boardStats = append(boardStats, eachBoardStat)
+		}
+	} else {
+		for idxInStore := startIdxInStore; ; idxInStore-- {
+			if int32(idxInStore) < 0 || len(boardStats) >= nBoardsWithNext { //add 1 more board for nextSummary
+				break
+			}
+			eachBoardStat, isEnd := loadAutoCompleteBoardStat(user, uid, idxInStore, keyword)
+			if isEnd {
+				break
+			}
+			if eachBoardStat == nil {
+				continue
+			}
+
+			boardStats = append(boardStats, eachBoardStat)
+		}
+	}
+
+	//boardStats to summaries
+	summaries, err = showBoardList(user, uid, boardStats)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	if len(summaries) == nBoardsWithNext {
+		nextSummary = summaries[nBoards]
+		summaries = summaries[:nBoards]
+	}
+
+	return summaries, nextSummary, nil
+}
+
 //LoadGeneralBoards
 //
 //Load general boards by name.
@@ -220,6 +282,46 @@ func LoadGeneralBoards(user *ptttype.UserecRaw, uid ptttype.Uid, startIdx ptttyp
 	}
 
 	return summaries, nextSummary, nil
+}
+
+//loadAutoCompleteBoardStat
+//
+//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1147
+func loadAutoCompleteBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idxInStore ptttype.SortIdxInStore, keyword []byte) (boardStat *ptttype.BoardStat, isEnd bool) {
+	var bidInCache ptttype.BidInStore
+
+	const bsort0sz = unsafe.Sizeof(cache.Shm.Raw.BSorted[0])
+	cache.Shm.ReadAt(
+		unsafe.Offsetof(cache.Shm.Raw.BSorted)+bsort0sz*uintptr(ptttype.BSORT_BY_NAME)+uintptr(idxInStore)*ptttype.BID_IN_STORE_SZ,
+		ptttype.BID_IN_STORE_SZ,
+		unsafe.Pointer(&bidInCache),
+	)
+	if bidInCache < 0 {
+		return nil, false
+	}
+
+	board := &ptttype.BoardHeaderRaw{}
+	cache.Shm.ReadAt(
+		unsafe.Offsetof(cache.Shm.Raw.BCache)+ptttype.BOARD_HEADER_RAW_SZ*uintptr(bidInCache),
+		ptttype.BOARD_HEADER_RAW_SZ,
+		unsafe.Pointer(board),
+	)
+
+	if !types.CstrCaseHasPrefix(board.Brdname[:], keyword) {
+		return nil, true
+	}
+
+	bid := bidInCache.ToBid()
+	isGroupOp := groupOp(user, board)
+	state := boardPermStat(user, uid, board, bid)
+	if (board.Brdname[0] == '\x00') ||
+		(board.BrdAttr&(ptttype.BRD_GROUPBOARD|ptttype.BRD_SYMBOLIC) != 0) ||
+		!((state != ptttype.NBRD_INVALID) || isGroupOp) {
+		return nil, false
+	}
+
+	boardStat = newBoardStat(bidInCache, state, board, isGroupOp)
+	return boardStat, false
 }
 
 //loadGeneralBoardStat
@@ -386,4 +488,8 @@ func FindBoardStartIdxByName(boardID *ptttype.BoardID_t, isAsc bool) (startIdx p
 func FindBoardStartIdxByClass(cls []byte, boardID *ptttype.BoardID_t, isAsc bool) (startIdx ptttype.SortIdx, err error) {
 
 	return cache.FindBoardIdxByClass(cls, boardID, isAsc)
+}
+
+func FindBoardAutoCompleteStartIdx(keyword []byte, isAsc bool) (startIdx ptttype.SortIdx, err error) {
+	return cache.FindBoardAutoCompleteStartIdx(keyword, isAsc)
 }

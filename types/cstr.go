@@ -109,6 +109,13 @@ func Cstrstr(cstr Cstr, substr Cstr) int {
 	return theIdx
 }
 
+func CstrCaseHasPrefix(cstr Cstr, substr Cstr) bool {
+	cstrLower := CstrTolower(cstr)
+	substrLower := CstrTolower(substr)
+
+	return bytes.HasPrefix([]byte(cstrLower), []byte(substrLower))
+}
+
 func Cstrcasestr(cstr Cstr, substr Cstr) int {
 	cstrLower := CstrTolower(cstr)
 	substrLower := CstrTolower(substr)

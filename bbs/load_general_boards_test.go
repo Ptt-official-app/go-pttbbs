@@ -8,6 +8,8 @@ import (
 )
 
 func TestLoadGeneralBoards(t *testing.T) {
+	setupTest()
+	defer teardownTest()
 	//setupTest moves in for-loop
 	//teardownTest moves in for-loop
 	type args struct {
@@ -50,8 +52,6 @@ func TestLoadGeneralBoards(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			setupTest()
-			defer teardownTest()
 
 			gotSummaries, gotNextIdx, err := LoadGeneralBoards(tt.args.uuserID, tt.args.startIdxStr, tt.args.nBoards, tt.args.title, tt.args.keyword, tt.args.isAsc, tt.args.sortBy)
 			if (err != nil) != tt.wantErr {
