@@ -15,4 +15,6 @@ var (
 	ErrInvalidUID = errors.New("invalid uid")
 
 	ErrStats = errors.New("invalid stats")
+
+	ErrNotFound = errors.New("not found")
 )

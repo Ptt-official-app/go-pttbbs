@@ -11,7 +11,9 @@ const LOAD_GENERAL_BOARDS_R = "/boards"
 type LoadGeneralBoardsParams struct {
 	StartIdx string `json:"start_idx,omitempty" form:"start_idx,omitempty" url:"start_idx,omitempty"`
 	NBoards  int    `json:"max,omitempty" form:"max,omitempty" url:"max,omitempty"`
+	Title    []byte `json:"title,omitempty" form:"title,omitempty" url:"title,omitempty"`       //sending utf8-bytes from middleware
 	Keyword  []byte `json:"keyword,omitempty" form:"keyword,omitempty" url:"keyword,omitempty"` //sending utf8-bytes from middleware
+	Asc      bool   `json:"asc,omitempty" form:"asc,omitempty" url:"asc,omitempty"`
 }
 
 type LoadGeneralBoardsResult struct {
@@ -34,13 +36,13 @@ func loadGeneralBoardsCore(remoteAddr string, uuserID bbs.UUserID, params interf
 		return nil, ErrInvalidParams
 	}
 
-	summary, nextIdx, err := bbs.LoadGeneralBoards(uuserID, theParams.StartIdx, theParams.NBoards, theParams.Keyword, bsortBy)
+	summaries, nextIdx, err := bbs.LoadGeneralBoards(uuserID, theParams.StartIdx, theParams.NBoards, theParams.Title, theParams.Keyword, theParams.Asc, bsortBy)
 	if err != nil {
 		return nil, err
 	}
 
 	results := &LoadGeneralBoardsResult{
-		Boards:  summary,
+		Boards:  summaries,
 		NextIdx: nextIdx,
 	}
 

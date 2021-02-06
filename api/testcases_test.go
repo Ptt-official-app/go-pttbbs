@@ -52,6 +52,8 @@ func initTestVars() {
 	}
 
 	testBoardSummary6 = &bbs.BoardSummary{
+		Gid:      5,
+		Bid:      6,
 		BBoardID: bbs.BBoardID("6_ALLPOST"),
 		BrdAttr:  ptttype.BRD_POSTMASK,
 		StatAttr: ptttype.NBRD_FAV,
@@ -63,11 +65,15 @@ func initTestVars() {
 			0xb8, 0xf3, 0xaa, 0x4f, 0xa6, 0xa1, 0x4c, 0x4f, 0x43, 0x41,
 			0x4c, 0xb7, 0x73, 0xa4, 0xe5, 0xb3, 0xb9,
 		},
-		BoardType: []byte{0xa1, 0xb7},
-		BM:        []bbs.UUserID{},
+		BoardType:  []byte{0xa1, 0xb7},
+		BM:         []bbs.UUserID{},
+		IdxByName:  "ALLPOST",
+		IdxByClass: "vFSt-Q@ALLPOST",
 	}
 
 	testBoardSummary7 = &bbs.BoardSummary{
+		Gid:      5,
+		Bid:      7,
 		BBoardID: bbs.BBoardID("7_deleted"),
 		StatAttr: ptttype.NBRD_FAV,
 		Brdname:  "deleted",
@@ -77,11 +83,15 @@ func initTestVars() {
 		RealTitle: []byte{
 			0xb8, 0xea, 0xb7, 0xbd, 0xa6, 0x5e, 0xa6, 0xac, 0xb5, 0xa9,
 		},
-		BoardType: []byte{0xa1, 0xb7},
-		BM:        []bbs.UUserID{},
+		BoardType:  []byte{0xa1, 0xb7},
+		BM:         []bbs.UUserID{},
+		IdxByName:  "deleted",
+		IdxByClass: "vFSt-Q@deleted",
 	}
 
 	testBoardSummary8 = &bbs.BoardSummary{
+		Gid:      5,
+		Bid:      8,
 		BBoardID: bbs.BBoardID("8_Note"),
 		StatAttr: ptttype.NBRD_FAV,
 		Brdname:  "Note",
@@ -92,11 +102,15 @@ func initTestVars() {
 			0xb0, 0xca, 0xba, 0x41, 0xac, 0xdd, 0xaa, 0x4f, 0xa4, 0xce,
 			0xba, 0x71, 0xa6, 0xb1, 0xa7, 0xeb, 0xbd, 0x5a,
 		},
-		BoardType: []byte{0xa1, 0xb7},
-		BM:        []bbs.UUserID{},
+		BoardType:  []byte{0xa1, 0xb7},
+		BM:         []bbs.UUserID{},
+		IdxByName:  "Note",
+		IdxByClass: "vFSt-Q@Note",
 	}
 
 	testBoardSummary11 = &bbs.BoardSummary{
+		Gid:      5,
+		Bid:      11,
 		BBoardID: bbs.BBoardID("11_EditExp"),
 		StatAttr: ptttype.NBRD_FAV,
 		Brdname:  "EditExp",
@@ -107,8 +121,10 @@ func initTestVars() {
 			0xbd, 0x64, 0xa5, 0xbb, 0xba, 0xeb, 0xc6, 0x46, 0xa7, 0xeb,
 			0xbd, 0x5a, 0xb0, 0xcf,
 		},
-		BoardType: []byte{0xa1, 0xb7},
-		BM:        []bbs.UUserID{},
+		BoardType:  []byte{0xa1, 0xb7},
+		BM:         []bbs.UUserID{},
+		IdxByName:  "EditExp",
+		IdxByClass: "vFSt-Q@EditExp",
 	}
 
 	testArticleSummary0 = &bbs.ArticleSummary{

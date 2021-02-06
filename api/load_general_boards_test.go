@@ -15,11 +15,12 @@ func TestLoadGeneralBoards(t *testing.T) {
 	params := &LoadGeneralBoardsParams{
 		StartIdx: strconv.Itoa(int(0)),
 		NBoards:  4,
+		Asc:      true,
 	}
 
 	expected := &LoadGeneralBoardsResult{
 		Boards:  []*bbs.BoardSummary{testBoardSummary6, testBoardSummary7, testBoardSummary11, testBoardSummary8},
-		NextIdx: strconv.Itoa(int(8)),
+		NextIdx: "Record",
 	}
 
 	type args struct {

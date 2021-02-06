@@ -169,47 +169,68 @@ func loadBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, bid ptttype.Bid) (b
 //  summary
 //	nextIdx: next idx in bsorted.
 //	err
-func LoadGeneralBoards(user *ptttype.UserecRaw, uid ptttype.Uid, startIdx ptttype.SortIdx, nBoards int, keyword []byte, bsortBy ptttype.BSortBy) (summary []*ptttype.BoardSummaryRaw, nextIdx ptttype.SortIdx, err error) {
+func LoadGeneralBoards(user *ptttype.UserecRaw, uid ptttype.Uid, startIdx ptttype.SortIdx, nBoards int, title []byte, keyword []byte, isAsc bool, bsortBy ptttype.BSortBy) (summaries []*ptttype.BoardSummaryRaw, nextSummary *ptttype.BoardSummaryRaw, err error) {
 
 	nBoardsInCache := cache.NumBoards()
-
-	boardStats := make([]*ptttype.BoardStat, 0, nBoards)
-	currentIdx := ptttype.SortIdx(0)
-	for currentIdx = startIdx; ; currentIdx++ {
-		if int32(currentIdx) >= nBoardsInCache || len(boardStats) >= nBoards {
-			break
-		}
-
-		eachBoardStat := loadGeneralBoardStat(user, uid, currentIdx, keyword, bsortBy)
-
-		if eachBoardStat == nil {
-			continue
-		}
-
-		boardStats = append(boardStats, eachBoardStat)
+	if startIdx == 0 && !isAsc {
+		startIdx = ptttype.SortIdx(nBoardsInCache)
 	}
 
-	summary, err = showBoardList(user, uid, boardStats)
+	startIdxInStore := startIdx.ToSortIdxInStore()
+
+	nBoardsWithNext := nBoards + 1
+
+	//get board-stats
+	boardStats := make([]*ptttype.BoardStat, 0, nBoardsWithNext)
+	if isAsc {
+		for idxInStore := startIdxInStore; ; idxInStore++ {
+			if int32(idxInStore) >= nBoardsInCache || len(boardStats) >= nBoardsWithNext { //add 1 more board for nextSummary
+				break
+			}
+			eachBoardStat := loadGeneralBoardStat(user, uid, idxInStore, title, keyword, bsortBy)
+			if eachBoardStat == nil {
+				continue
+			}
+
+			boardStats = append(boardStats, eachBoardStat)
+		}
+	} else {
+		for idxInStore := startIdxInStore; ; idxInStore-- {
+			if int32(idxInStore) < 0 || len(boardStats) >= nBoardsWithNext { //add 1 more board for nextSummary
+				break
+			}
+			eachBoardStat := loadGeneralBoardStat(user, uid, idxInStore, title, keyword, bsortBy)
+			if eachBoardStat == nil {
+				continue
+			}
+
+			boardStats = append(boardStats, eachBoardStat)
+		}
+	}
+
+	//boardStats to summaries
+	summaries, err = showBoardList(user, uid, boardStats)
 	if err != nil {
-		return nil, -1, err
+		return nil, nil, err
 	}
 
-	if int32(currentIdx) == nBoardsInCache {
-		currentIdx = -1
+	if len(summaries) == nBoardsWithNext {
+		nextSummary = summaries[nBoards]
+		summaries = summaries[:nBoards]
 	}
 
-	return summary, currentIdx, nil
+	return summaries, nextSummary, nil
 }
 
 //loadGeneralBoardStat
 //
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1147
-func loadGeneralBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idx ptttype.SortIdx, keyword []byte, bsortBy ptttype.BSortBy) (boardStat *ptttype.BoardStat) {
+func loadGeneralBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idxInStore ptttype.SortIdxInStore, title []byte, keyword []byte, bsortBy ptttype.BSortBy) (boardStat *ptttype.BoardStat) {
 	var bidInCache ptttype.BidInStore
 
 	const bsort0sz = unsafe.Sizeof(cache.Shm.Raw.BSorted[0])
 	cache.Shm.ReadAt(
-		unsafe.Offsetof(cache.Shm.Raw.BSorted)+bsort0sz*uintptr(bsortBy)+uintptr(idx)*ptttype.BID_IN_STORE_SZ,
+		unsafe.Offsetof(cache.Shm.Raw.BSorted)+bsort0sz*uintptr(bsortBy)+uintptr(idxInStore)*ptttype.BID_IN_STORE_SZ,
 		ptttype.BID_IN_STORE_SZ,
 		unsafe.Pointer(&bidInCache),
 	)
@@ -230,7 +251,7 @@ func loadGeneralBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idx ptttype.
 	if (board.Brdname[0] == '\x00') ||
 		(board.BrdAttr&(ptttype.BRD_GROUPBOARD|ptttype.BRD_SYMBOLIC) != 0) ||
 		!((state != ptttype.NBRD_INVALID) || isGroupOp) ||
-		keywordNotInTitle(&board.Title, keyword) {
+		keywordsNotInBoard(&board.Brdname, &board.Title, title, keyword) {
 		return nil
 	}
 
@@ -262,14 +283,27 @@ func newBoardStat(bidInCache ptttype.BidInStore, state ptttype.BoardStatAttr, bo
 	return boardStat
 }
 
-//keywordNotInTitle
+//keywordsNotInBoard
 //
 //TITLE_MATCH in board.c
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L14
-func keywordNotInTitle(title *ptttype.BoardTitle_t, keyword []byte) bool {
-	result := (len(keyword) > 0) && (types.Cstrcasestr(title[:], keyword) < 0)
+func keywordsNotInBoard(boardID *ptttype.BoardID_t, boardTitle *ptttype.BoardTitle_t, title []byte, keyword []byte) bool {
+	if len(title) > 0 {
+		return (types.Cstrcasestr(boardTitle[:], title) < 0)
+	}
 
-	return result
+	if len(keyword) > 0 {
+		if types.Cstrcasestr(boardTitle[:], keyword) >= 0 {
+			return false
+		}
+		if types.Cstrcasestr(boardID[:], keyword) >= 0 {
+			return false
+		}
+
+		return true
+	}
+
+	return false
 }
 
 //showBoardList
@@ -300,23 +334,8 @@ func parseBoardSummary(user *ptttype.UserecRaw, uid ptttype.Uid, boardStat *pttt
 	}
 
 	//hidden board
-	board := boardStat.Board
 	if !boardStat.IsGroupOp && boardStat.Attr == ptttype.NBRD_INVALID {
-		reason := ptttype.RESTRICT_REASON_FORBIDDEN
-		if board.BrdAttr&ptttype.BRD_HIDE != 0 {
-			reason = ptttype.RESTRICT_REASON_HIDDEN
-		}
-		summary = &ptttype.BoardSummaryRaw{
-			Bid:      boardStat.Bid,
-			BrdAttr:  board.BrdAttr,
-			StatAttr: boardStat.Attr,
-			Brdname:  &board.Brdname,
-			Reason:   reason,
-		}
-		if ptttype.USE_REAL_DESC_FOR_HIDDEN_BOARD_IN_MYFAV {
-			summary.Title = &board.Title
-		}
-
+		summary = ptttype.NewBoardSummaryRawWithReason(boardStat)
 		return summary
 	}
 
@@ -335,17 +354,7 @@ func parseBoardSummary(user *ptttype.UserecRaw, uid ptttype.Uid, boardStat *pttt
 		unsafe.Pointer(&total),
 	)
 
-	summary = &ptttype.BoardSummaryRaw{
-		Bid:          boardStat.Bid,
-		BrdAttr:      board.BrdAttr,
-		StatAttr:     boardStat.Attr,
-		Brdname:      &board.Brdname,
-		Title:        &board.Title,
-		BM:           board.BM.ToBMs(),
-		LastPostTime: lastPostTime,
-		NUser:        board.NUser,
-		Total:        total,
-	}
+	summary = ptttype.NewBoardSummaryRaw(boardStat, lastPostTime, total)
 
 	return summary
 }
@@ -367,4 +376,14 @@ func groupOp(user *ptttype.UserecRaw, board *ptttype.BoardHeaderRaw) bool {
 	}
 
 	return false
+}
+
+func FindBoardStartIdxByName(boardID *ptttype.BoardID_t, isAsc bool) (startIdx ptttype.SortIdx, err error) {
+
+	return cache.FindBoardIdxByName(boardID, isAsc)
+}
+
+func FindBoardStartIdxByClass(cls []byte, boardID *ptttype.BoardID_t, isAsc bool) (startIdx ptttype.SortIdx, err error) {
+
+	return cache.FindBoardIdxByClass(cls, boardID, isAsc)
 }

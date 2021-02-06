@@ -60,8 +60,7 @@ type Title_t [TTLEN + 1]byte
 type Gid int32
 
 type SortIdx int
-
-type NumIdx int
+type SortIdxInStore int
 
 var (
 	EMPTY_USER_ID     = UserID_t{}
@@ -124,24 +123,16 @@ func (a AidInStore) ToAid() Aid {
 	return Aid(a + 1)
 }
 
-func (s SortIdx) String() string {
-	if s < 0 {
-		return ""
-	}
-	return strconv.Itoa(int(s))
+func (s SortIdx) ToSortIdxInStore() SortIdxInStore {
+	return SortIdxInStore(s - 1)
 }
 
-func ToSortIdx(str string) (SortIdx, error) {
-	if str == "" {
-		return 0, nil
-	}
+func (s SortIdx) IsValid() bool {
+	return s >= 1
+}
 
-	idx, err := strconv.Atoi(str)
-	if err != nil {
-		return -1, err
-	}
-
-	return SortIdx(idx), nil
+func (s SortIdxInStore) ToSortIdx() SortIdx {
+	return SortIdx(s + 1)
 }
 
 //valid UserID

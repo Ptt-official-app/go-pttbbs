@@ -7,9 +7,12 @@ parameters:
   - '$ref': '#/definitions/Host'
   - '$ref': '#/definitions/XForwardedFor'
   - '$ref': '#/definitions/Authorization'
+
   - '$ref': '#/definitions/ParamsStartIdx'
   - '$ref': '#/definitions/ParamsMax'
+  - '$ref': '#/definitions/ParamsTitle'
   - '$ref': '#/definitions/ParamsKeyword'
+  - '$ref': '#/definitions/ParamsAsc'
 responses:
   200:
     schema:

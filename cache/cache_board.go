@@ -494,6 +494,18 @@ func reloadBCacheReadFile() ([]byte, error) {
 }
 
 func GetBid(boardID *ptttype.BoardID_t) (bid ptttype.Bid, err error) {
+	_, bid, err = getBidByNameCore(boardID)
+	if err == ErrNotFound {
+		return 0, nil
+	}
+	if err != nil {
+		return 0, err
+	}
+
+	return bid, nil
+}
+
+func getBidByNameCore(boardID *ptttype.BoardID_t) (idx ptttype.SortIdxInStore, bid ptttype.Bid, err error) {
 	//wait 1 second for bbusystate
 	bbusystate := int32(0)
 	Shm.ReadAt(
@@ -510,7 +522,7 @@ func GetBid(boardID *ptttype.BoardID_t) (bid ptttype.Bid, err error) {
 	end := Shm.GetBNumber()
 	end--
 	if end < 0 { //unable to get bid
-		return 0, nil
+		return -1, 0, nil
 	}
 
 	const bsort0sz = unsafe.Sizeof(Shm.Raw.BSorted[0])
@@ -520,9 +532,10 @@ func GetBid(boardID *ptttype.BoardID_t) (bid ptttype.Bid, err error) {
 	bidInCache_ptr := unsafe.Pointer(&bidInCache)
 	boardIDInCache := &ptttype.BoardID_t{}
 	boardIDInCache_ptr := unsafe.Pointer(boardIDInCache)
-	for idx := (start + end) / 2; ; idx = (start + end) / 2 {
+	idx_i32 := (start + end) / 2
+	for ; ; idx_i32 = (start + end) / 2 {
 		Shm.ReadAt(
-			bsortedOffset+uintptr(idx)*ptttype.BID_IN_STORE_SZ,
+			bsortedOffset+uintptr(idx_i32)*ptttype.BID_IN_STORE_SZ,
 			ptttype.BID_IN_STORE_SZ,
 			bidInCache_ptr,
 		)
@@ -536,20 +549,259 @@ func GetBid(boardID *ptttype.BoardID_t) (bid ptttype.Bid, err error) {
 		j := types.Cstrcasecmp(boardID[:], boardIDInCache[:])
 		if j == 0 {
 			bid = bidInCache.ToBid()
-			return bid, nil
+			return ptttype.SortIdxInStore(idx_i32), bid, nil
 		}
 
 		if end == start {
 			break
-		} else if idx == start {
-			idx = end
+		} else if idx_i32 == start {
+			idx_i32 = end
 			start = end
 		} else if j > 0 {
-			start = idx
+			start = idx_i32
 		} else {
-			end = idx
+			end = idx_i32
 		}
 	}
 
-	return 0, nil
+	return ptttype.SortIdxInStore(idx_i32), 0, ErrNotFound
+}
+
+func getBidByClassCore(cls []byte, boardID *ptttype.BoardID_t) (idx ptttype.SortIdxInStore, bid ptttype.Bid, err error) {
+	//wait 1 second for bbusystate
+	bbusystate := int32(0)
+	Shm.ReadAt(
+		unsafe.Offsetof(Shm.Raw.BBusyState),
+		types.INT32_SZ,
+		unsafe.Pointer(&bbusystate),
+	)
+	if bbusystate != 0 {
+		time.Sleep(1 * time.Second)
+	}
+
+	//start and end
+	start := int32(0)
+	end := Shm.GetBNumber()
+	end--
+	if end < 0 { //unable to get bid
+		return -1, 0, nil
+	}
+
+	const bsort0sz = unsafe.Sizeof(Shm.Raw.BSorted[0])
+	const bsortedOffset = unsafe.Offsetof(Shm.Raw.BSorted) + bsort0sz*uintptr(ptttype.BSORT_BY_CLASS)
+	const bcacheOffset = unsafe.Offsetof(Shm.Raw.BCache)
+	bidInCache := ptttype.BidInStore(0)
+	bidInCache_ptr := unsafe.Pointer(&bidInCache)
+
+	titleInCache := &ptttype.BoardTitle_t{}
+	titleInCache_ptr := unsafe.Pointer(titleInCache)
+
+	boardIDInCache := &ptttype.BoardID_t{}
+	boardIDInCache_ptr := unsafe.Pointer(boardIDInCache)
+	idx_i32 := (start + end) / 2
+	for ; ; idx_i32 = (start + end) / 2 {
+		Shm.ReadAt(
+			bsortedOffset+uintptr(idx_i32)*ptttype.BID_IN_STORE_SZ,
+			ptttype.BID_IN_STORE_SZ,
+			bidInCache_ptr,
+		)
+
+		Shm.ReadAt(
+			bcacheOffset+uintptr(bidInCache)*ptttype.BOARD_HEADER_RAW_SZ+ptttype.BOARD_HEADER_TITLE_OFFSET,
+			ptttype.BOARD_TITLE_SZ,
+			titleInCache_ptr,
+		)
+		clsInCache := titleInCache.BoardClass()
+
+		Shm.ReadAt(
+			bcacheOffset+uintptr(bidInCache)*ptttype.BOARD_HEADER_RAW_SZ+ptttype.BOARD_HEADER_BRDNAME_OFFSET,
+			ptttype.BOARD_ID_SZ,
+			boardIDInCache_ptr,
+		)
+
+		j := cmpBoardByClass(cls, boardID, clsInCache, boardIDInCache)
+		if j == 0 {
+			bid = bidInCache.ToBid()
+			return ptttype.SortIdxInStore(idx_i32), bid, nil
+		}
+
+		if end == start {
+			break
+		} else if idx_i32 == start {
+			idx_i32 = end
+			start = end
+		} else if j > 0 {
+			start = idx_i32
+		} else {
+			end = idx_i32
+		}
+	}
+
+	return ptttype.SortIdxInStore(idx_i32), 0, ErrNotFound
+}
+
+func FindBoardIdxByName(boardID *ptttype.BoardID_t, isAsc bool) (idx ptttype.SortIdx, err error) {
+
+	idxInStore, bid, err := getBidByNameCore(boardID)
+	if bid.IsValid() && err == nil {
+		return idxInStore.ToSortIdx(), nil
+	}
+	if err != ErrNotFound || idxInStore == -1 {
+		return -1, err
+	}
+
+	nBoard_i32 := Shm.GetBNumber()
+	nBoard := ptttype.SortIdxInStore(nBoard_i32)
+	const bsort0sz = unsafe.Sizeof(Shm.Raw.BSorted[0])
+	const bsortedOffset = unsafe.Offsetof(Shm.Raw.BSorted) + bsort0sz*uintptr(ptttype.BSORT_BY_NAME)
+	const bcacheOffset = unsafe.Offsetof(Shm.Raw.BCache)
+	bidInCache := ptttype.BidInStore(0)
+	bidInCache_ptr := unsafe.Pointer(&bidInCache)
+	boardIDInCache := &ptttype.BoardID_t{}
+	boardIDInCache_ptr := unsafe.Pointer(boardIDInCache)
+	//
+	if isAsc {
+		for ; idxInStore < nBoard; idxInStore++ {
+			Shm.ReadAt(
+				bsortedOffset+uintptr(idxInStore)*ptttype.BID_IN_STORE_SZ,
+				ptttype.BID_IN_STORE_SZ,
+				bidInCache_ptr,
+			)
+
+			Shm.ReadAt(
+				bcacheOffset+uintptr(bidInCache)*ptttype.BOARD_HEADER_RAW_SZ+ptttype.BOARD_HEADER_BRDNAME_OFFSET,
+				ptttype.BOARD_ID_SZ,
+				boardIDInCache_ptr,
+			)
+
+			j := types.Cstrcasecmp(boardID[:], boardIDInCache[:])
+			if j < 0 {
+				break
+			}
+		}
+		if idxInStore == nBoard {
+			idxInStore = -1
+		}
+	} else {
+		for ; idxInStore >= 0; idxInStore-- {
+			Shm.ReadAt(
+				bsortedOffset+uintptr(idxInStore)*ptttype.BID_IN_STORE_SZ,
+				ptttype.BID_IN_STORE_SZ,
+				bidInCache_ptr,
+			)
+
+			Shm.ReadAt(
+				bcacheOffset+uintptr(bidInCache)*ptttype.BOARD_HEADER_RAW_SZ+ptttype.BOARD_HEADER_BRDNAME_OFFSET,
+				ptttype.BOARD_ID_SZ,
+				boardIDInCache_ptr,
+			)
+
+			j := types.Cstrcasecmp(boardID[:], boardIDInCache[:])
+			if j > 0 {
+				break
+			}
+		}
+	}
+	if idxInStore == -1 {
+		return -1, nil
+	}
+
+	return idxInStore.ToSortIdx(), nil
+}
+
+func FindBoardIdxByClass(cls []byte, boardID *ptttype.BoardID_t, isAsc bool) (idx ptttype.SortIdx, err error) {
+
+	idxInStore, bid, err := getBidByClassCore(cls, boardID)
+	if bid.IsValid() && err == nil {
+		return idxInStore.ToSortIdx(), nil
+	}
+	if err != ErrNotFound || idxInStore == -1 {
+		return -1, err
+	}
+
+	nBoard_i32 := Shm.GetBNumber()
+	nBoard := ptttype.SortIdxInStore(nBoard_i32)
+	const bsort0sz = unsafe.Sizeof(Shm.Raw.BSorted[0])
+	const bsortedOffset = unsafe.Offsetof(Shm.Raw.BSorted) + bsort0sz*uintptr(ptttype.BSORT_BY_CLASS)
+	const bcacheOffset = unsafe.Offsetof(Shm.Raw.BCache)
+	bidInCache := ptttype.BidInStore(0)
+	bidInCache_ptr := unsafe.Pointer(&bidInCache)
+
+	titleInCache := &ptttype.BoardTitle_t{}
+	titleInCache_ptr := unsafe.Pointer(titleInCache)
+
+	boardIDInCache := &ptttype.BoardID_t{}
+	boardIDInCache_ptr := unsafe.Pointer(boardIDInCache)
+	//
+	if isAsc {
+		for ; idxInStore < nBoard; idxInStore++ {
+			Shm.ReadAt(
+				bsortedOffset+uintptr(idxInStore)*ptttype.BID_IN_STORE_SZ,
+				ptttype.BID_IN_STORE_SZ,
+				bidInCache_ptr,
+			)
+
+			Shm.ReadAt(
+				bcacheOffset+uintptr(bidInCache)*ptttype.BOARD_HEADER_RAW_SZ+ptttype.BOARD_HEADER_TITLE_OFFSET,
+				ptttype.BOARD_TITLE_SZ,
+				titleInCache_ptr,
+			)
+			clsInCache := titleInCache.BoardClass()
+
+			Shm.ReadAt(
+				bcacheOffset+uintptr(bidInCache)*ptttype.BOARD_HEADER_RAW_SZ+ptttype.BOARD_HEADER_BRDNAME_OFFSET,
+				ptttype.BOARD_ID_SZ,
+				boardIDInCache_ptr,
+			)
+
+			j := cmpBoardByClass(cls, boardID, clsInCache, boardIDInCache)
+			if j < 0 {
+				break
+			}
+		}
+		if idxInStore == nBoard {
+			idxInStore = -1
+		}
+	} else {
+		for ; idxInStore >= 0; idxInStore-- {
+			Shm.ReadAt(
+				bsortedOffset+uintptr(idxInStore)*ptttype.BID_IN_STORE_SZ,
+				ptttype.BID_IN_STORE_SZ,
+				bidInCache_ptr,
+			)
+
+			Shm.ReadAt(
+				bcacheOffset+uintptr(bidInCache)*ptttype.BOARD_HEADER_RAW_SZ+ptttype.BOARD_HEADER_TITLE_OFFSET,
+				ptttype.BOARD_TITLE_SZ,
+				titleInCache_ptr,
+			)
+			clsInCache := titleInCache.BoardClass()
+
+			Shm.ReadAt(
+				bcacheOffset+uintptr(bidInCache)*ptttype.BOARD_HEADER_RAW_SZ+ptttype.BOARD_HEADER_BRDNAME_OFFSET,
+				ptttype.BOARD_ID_SZ,
+				boardIDInCache_ptr,
+			)
+
+			j := cmpBoardByClass(cls, boardID, clsInCache, boardIDInCache)
+			if j > 0 {
+				break
+			}
+		}
+	}
+	if idxInStore == -1 {
+		return -1, nil
+	}
+
+	return idxInStore.ToSortIdx(), nil
+}
+
+func cmpBoardByClass(cls []byte, boardID *ptttype.BoardID_t, clsInCache []byte, boardIDInCache *ptttype.BoardID_t) int {
+
+	j := types.Cstrcmp(cls, clsInCache)
+	if j != 0 {
+		return j
+	}
+
+	return types.Cstrcasecmp(boardID[:], boardIDInCache[:])
 }

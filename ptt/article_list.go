@@ -5,7 +5,6 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/cmsys"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
-	"github.com/sirupsen/logrus"
 )
 
 //LoadGeneralArticles
@@ -19,7 +18,7 @@ import (
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/read.c#L1106
 //
 //get bottom can be a separated api.
-func LoadGeneralArticles(user *ptttype.UserecRaw, uid ptttype.Uid, boardIDRaw *ptttype.BoardID_t, bid ptttype.Bid, startAid ptttype.Aid, nArticles int, isDesc bool) (summaries []*ptttype.ArticleSummaryRaw, isNewest bool, nextSummary *ptttype.ArticleSummaryRaw, startNumIdx ptttype.NumIdx, err error) {
+func LoadGeneralArticles(user *ptttype.UserecRaw, uid ptttype.Uid, boardIDRaw *ptttype.BoardID_t, bid ptttype.Bid, startIdx ptttype.SortIdx, nArticles int, isDesc bool) (summaries []*ptttype.ArticleSummaryRaw, isNewest bool, nextSummary *ptttype.ArticleSummaryRaw, startNumIdx ptttype.SortIdx, err error) {
 
 	//1. check perm.
 	board, err := cache.GetBCache(bid)
@@ -47,12 +46,11 @@ func LoadGeneralArticles(user *ptttype.UserecRaw, uid ptttype.Uid, boardIDRaw *p
 		return nil, false, nil, 0, err
 	}
 	//3.1. ensure startAid
-	if startAid == 0 && isDesc {
-		startAid = ptttype.Aid(total)
+	if startIdx == 0 && isDesc {
+		startIdx = ptttype.SortIdx(total)
 	}
 
-	maxAid := ptttype.Aid(total)
-	summaries, err = cmsys.GetRecords(boardIDRaw, filename, startAid, nArticles+1, isDesc, maxAid)
+	summaries, err = cmsys.GetRecords(boardIDRaw, filename, startIdx, nArticles+1, isDesc)
 	if err != nil {
 		return nil, false, nil, 0, err
 	}
@@ -60,22 +58,20 @@ func LoadGeneralArticles(user *ptttype.UserecRaw, uid ptttype.Uid, boardIDRaw *p
 	//4. return
 	isNewest = false
 	if isDesc {
-		isNewest = startAid == ptttype.Aid(total)
+		isNewest = startIdx == ptttype.SortIdx(total)
 	} else {
 		isNewest = len(summaries) != nArticles+1
 	}
 
 	if len(summaries) == nArticles+1 {
-		nextSummary = summaries[len(summaries)-1]
-		summaries = summaries[:len(summaries)-1]
+		nextSummary = summaries[nArticles]
+		summaries = summaries[:nArticles]
 	}
 
-	logrus.Infof("ptt.LoadGeneralArticles: to return: startAid: %v", startAid)
-
-	return summaries, isNewest, nextSummary, ptttype.NumIdx(startAid), nil
+	return summaries, isNewest, nextSummary, startIdx, nil
 }
 
-func FindArticleStartAid(user *ptttype.UserecRaw, uid ptttype.Uid, boardID *ptttype.BoardID_t, bid ptttype.Bid, createTime types.Time4, filename *ptttype.Filename_t, isDesc bool) (startAid ptttype.Aid, err error) {
+func FindArticleStartIdx(user *ptttype.UserecRaw, uid ptttype.Uid, boardID *ptttype.BoardID_t, bid ptttype.Bid, createTime types.Time4, filename *ptttype.Filename_t, isDesc bool) (startIdx ptttype.SortIdx, err error) {
 
 	//1. check perm.
 	board, err := cache.GetBCache(bid)
@@ -102,12 +98,10 @@ func FindArticleStartAid(user *ptttype.UserecRaw, uid ptttype.Uid, boardID *pttt
 		return -1, nil
 	}
 
-	logrus.Infof("FindArticleStartAid: to cmsys.FindRecordStartAid: dirFilename: %v total: %v createTime: %v filename: %v", dirFilename, total, createTime, filename)
-
-	return cmsys.FindRecordStartAid(dirFilename, int(total), createTime, filename, isDesc)
+	return cmsys.FindRecordStartIdx(dirFilename, int(total), createTime, filename, isDesc)
 }
 
-func LoadGeneralArticlesSameCreateTime(boardIDRaw *ptttype.BoardID_t, bid ptttype.Bid, startAid ptttype.Aid, endAid ptttype.Aid, createTime types.Time4) (summaries []*ptttype.ArticleSummaryRaw, startNumIdx ptttype.NumIdx, endNumIdx ptttype.NumIdx, err error) {
+func LoadGeneralArticlesSameCreateTime(boardIDRaw *ptttype.BoardID_t, bid ptttype.Bid, startIdx ptttype.SortIdx, endIdx ptttype.SortIdx, createTime types.Time4) (summaries []*ptttype.ArticleSummaryRaw, startNumIdx ptttype.SortIdx, endNumIdx ptttype.SortIdx, err error) {
 
 	total, err := cache.GetBTotalWithRetry(bid)
 	if err != nil {
@@ -117,8 +111,8 @@ func LoadGeneralArticlesSameCreateTime(boardIDRaw *ptttype.BoardID_t, bid ptttyp
 		return nil, 0, 0, nil
 	}
 
-	if endAid == 0 {
-		endAid = ptttype.Aid(total)
+	if endIdx == 0 {
+		endIdx = ptttype.SortIdx(total)
 	}
 
 	//3. get records
@@ -127,10 +121,9 @@ func LoadGeneralArticlesSameCreateTime(boardIDRaw *ptttype.BoardID_t, bid ptttyp
 		return nil, 0, 0, err
 	}
 
-	nArticles := int(endAid - startAid + 1)
+	nArticles := int(endIdx - startIdx + 1)
 
-	maxAid := ptttype.Aid(total)
-	summaries, err = cmsys.GetRecords(boardIDRaw, filename, startAid, nArticles, false, maxAid)
+	summaries, err = cmsys.GetRecords(boardIDRaw, filename, startIdx, nArticles, false)
 	if err != nil {
 		return nil, 0, 0, err
 	}
@@ -140,15 +133,15 @@ func LoadGeneralArticlesSameCreateTime(boardIDRaw *ptttype.BoardID_t, bid ptttyp
 
 	//filter with same create-time.
 	newSummaries := make([]*ptttype.ArticleSummaryRaw, 0, len(summaries))
-	startIdx := ptttype.NumIdx(startAid)
-	numIdx := ptttype.NumIdx(0)
+	startNumIdx = ptttype.SortIdx(startIdx)
+	numIdx := ptttype.SortIdx(0)
 	for idx, each := range summaries {
 		eachCreateTime, _ := each.Filename.CreateTime()
 		if eachCreateTime != createTime {
 			continue
 		}
 
-		numIdx = startIdx + ptttype.NumIdx(idx)
+		numIdx = startNumIdx + ptttype.SortIdx(idx)
 
 		if len(newSummaries) == 0 {
 			startNumIdx = numIdx
@@ -156,6 +149,10 @@ func LoadGeneralArticlesSameCreateTime(boardIDRaw *ptttype.BoardID_t, bid ptttyp
 
 		newSummaries = append(newSummaries, each)
 	}
+	if len(newSummaries) == 0 {
+		return nil, 0, 0, nil
+	}
+
 	endNumIdx = numIdx
 
 	return newSummaries, startNumIdx, endNumIdx, nil

@@ -1,0 +1,7 @@
+ParamsBrdname:
+  name: brdname
+  in: query
+  required: false
+  description: auto-complete by brdname
+  type: string
+  default: ''

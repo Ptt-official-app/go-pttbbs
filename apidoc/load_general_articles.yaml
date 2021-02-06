@@ -15,12 +15,7 @@ parameters:
     description: bid is returned from board-list.
   - '$ref': '#/definitions/ParamsStartIdx'
   - '$ref': '#/definitions/ParamsMax'
-  - name: desc
-    in: query
-    type: boolean
-    required: false
-    description: is descending
-    default: true
+  - '$ref': '#/definitions/ParamsDesc'
 responses:
   200:
     schema:

@@ -412,3 +412,320 @@ func TestGetBid(t *testing.T) {
 		})
 	}
 }
+
+func TestFindBoardIdxByName(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	ReloadBCache()
+
+	boardID0 := &ptttype.BoardID_t{}
+	copy(boardID0[:], []byte("WhoAmI"))
+
+	boardID1 := &ptttype.BoardID_t{}
+	copy(boardID1[:], []byte("SYSOP"))
+
+	boardID2 := &ptttype.BoardID_t{}
+	copy(boardID2[:], []byte("2..........."))
+
+	boardID3 := &ptttype.BoardID_t{}
+	copy(boardID3[:], []byte("EditExp"))
+
+	boardID4 := &ptttype.BoardID_t{}
+	copy(boardID4[:], []byte("WhoAmA"))
+
+	boardID5 := &ptttype.BoardID_t{}
+	copy(boardID5[:], []byte("junk"))
+
+	boardID6 := &ptttype.BoardID_t{}
+	copy(boardID6[:], []byte("Note"))
+
+	boardID7 := &ptttype.BoardID_t{}
+	copy(boardID7[:], []byte("Record"))
+
+	boardID8 := &ptttype.BoardID_t{}
+	copy(boardID8[:], []byte("WhoAmJ"))
+
+	boardID9 := &ptttype.BoardID_t{}
+	copy(boardID9[:], []byte("a0"))
+
+	type args struct {
+		boardID *ptttype.BoardID_t
+		isAsc   bool
+	}
+	tests := []struct {
+		name        string
+		args        args
+		expectedIdx ptttype.SortIdx
+		wantErr     bool
+	}{
+		// TODO: Add test cases.
+		{
+			args:        args{boardID: boardID0, isAsc: true},
+			expectedIdx: 12,
+		},
+		{
+			args:        args{boardID: boardID1, isAsc: true},
+			expectedIdx: 11,
+		},
+		{
+			args:        args{boardID: boardID2, isAsc: true},
+			expectedIdx: 2,
+		},
+		{
+			args:        args{boardID: boardID3, isAsc: true},
+			expectedIdx: 6,
+		},
+		{
+			args:        args{boardID: boardID4, isAsc: true},
+			expectedIdx: 12,
+		},
+		{
+			args:        args{boardID: boardID5, isAsc: true},
+			expectedIdx: 7,
+		},
+		{
+			args:        args{boardID: boardID6, isAsc: true},
+			expectedIdx: 8,
+		},
+		{
+			args:        args{boardID: boardID7, isAsc: true},
+			expectedIdx: 9,
+		},
+		{
+			args:        args{boardID: boardID8, isAsc: true},
+			expectedIdx: -1,
+		},
+		{
+			args:        args{boardID: boardID9, isAsc: true},
+			expectedIdx: 3,
+		},
+
+		{
+			args:        args{boardID: boardID0, isAsc: false},
+			expectedIdx: 12,
+		},
+		{
+			args:        args{boardID: boardID1, isAsc: false},
+			expectedIdx: 11,
+		},
+		{
+			args:        args{boardID: boardID2, isAsc: false},
+			expectedIdx: 2,
+		},
+		{
+			args:        args{boardID: boardID3, isAsc: false},
+			expectedIdx: 6,
+		},
+		{
+			args:        args{boardID: boardID4, isAsc: false},
+			expectedIdx: 11,
+		},
+		{
+			args:        args{boardID: boardID5, isAsc: false},
+			expectedIdx: 7,
+		},
+		{
+			args:        args{boardID: boardID6, isAsc: false},
+			expectedIdx: 8,
+		},
+		{
+			args:        args{boardID: boardID7, isAsc: false},
+			expectedIdx: 9,
+		},
+		{
+			args:        args{boardID: boardID8, isAsc: false},
+			expectedIdx: 12,
+		},
+		{
+			args:        args{boardID: boardID9, isAsc: false},
+			expectedIdx: 2,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotIdx, err := FindBoardIdxByName(tt.args.boardID, tt.args.isAsc)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("FindBoardIdxByName() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotIdx, tt.expectedIdx) {
+				t.Errorf("FindBoardIdxByName() = %v, want %v", gotIdx, tt.expectedIdx)
+			}
+		})
+	}
+}
+
+func TestFindBoardIdxByClass(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	ReloadBCache()
+
+	testTitle0 := make([]byte, 4)
+	copy(testTitle0, testBCacheTitle[0][:])
+
+	testBrdname0 := &ptttype.BoardID_t{}
+	copy(testBrdname0[:], []byte("WhoAMA"))
+
+	testTitle1 := make([]byte, 4)
+	copy(testTitle1, testBCacheTitle[0][:])
+	testTitle1[3]--
+
+	testTitle2 := make([]byte, 4)
+	copy(testTitle2, testBCacheTitle[0][:])
+	testTitle2[3]++
+
+	type args struct {
+		cls     []byte
+		boardID *ptttype.BoardID_t
+		isAsc   bool
+	}
+	tests := []struct {
+		name        string
+		args        args
+		expectedIdx ptttype.SortIdx
+		wantErr     bool
+	}{
+		// TODO: Add test cases.
+		{
+			args:        args{cls: testBCacheTitle[0][:4], boardID: &testBCacheName[0], isAsc: true},
+			expectedIdx: 11,
+		},
+		{
+			args:        args{cls: testBCacheTitle[1][:4], boardID: &testBCacheName[1], isAsc: true},
+			expectedIdx: 1,
+		},
+		{
+			args:        args{cls: testBCacheTitle[2][:4], boardID: &testBCacheName[2], isAsc: true},
+			expectedIdx: 3,
+		},
+		{
+			args:        args{cls: testBCacheTitle[3][:4], boardID: &testBCacheName[3], isAsc: true},
+			expectedIdx: 4,
+		},
+		{
+			args:        args{cls: testBCacheTitle[4][:4], boardID: &testBCacheName[4], isAsc: true},
+			expectedIdx: 2,
+		},
+		{
+			args:        args{cls: testBCacheTitle[5][:4], boardID: &testBCacheName[5], isAsc: true},
+			expectedIdx: 6,
+		},
+		{
+			args:        args{cls: testBCacheTitle[6][:4], boardID: &testBCacheName[6], isAsc: true},
+			expectedIdx: 7,
+		},
+		{
+			args:        args{cls: testBCacheTitle[7][:4], boardID: &testBCacheName[7], isAsc: true},
+			expectedIdx: 9,
+		},
+		{
+			args:        args{cls: testBCacheTitle[8][:4], boardID: &testBCacheName[8], isAsc: true},
+			expectedIdx: 10,
+		},
+		{
+			args:        args{cls: testBCacheTitle[9][:4], boardID: &testBCacheName[9], isAsc: true},
+			expectedIdx: 12,
+		},
+		{
+			args:        args{cls: testBCacheTitle[10][:4], boardID: &testBCacheName[10], isAsc: true},
+			expectedIdx: 8,
+		},
+		{
+			args:        args{cls: testBCacheTitle[11][:4], boardID: &testBCacheName[11], isAsc: true},
+			expectedIdx: 5,
+		},
+		{
+			name:        "title0-brdname0, WhoAMA, asc",
+			args:        args{cls: testTitle0, boardID: testBrdname0, isAsc: true},
+			expectedIdx: 12,
+		},
+		{
+			name:        "title1-brdname0, between Security/AllHIDPOST, asc",
+			args:        args{cls: testTitle1, boardID: testBrdname0, isAsc: true},
+			expectedIdx: 5,
+		},
+		{
+			name:        "title2-brdname0, after WhoAmI, asc",
+			args:        args{cls: testTitle2, boardID: testBrdname0, isAsc: true},
+			expectedIdx: -1,
+		},
+
+		{
+			args:        args{cls: testBCacheTitle[0][:4], boardID: &testBCacheName[0], isAsc: false},
+			expectedIdx: 11,
+		},
+		{
+			args:        args{cls: testBCacheTitle[1][:4], boardID: &testBCacheName[1], isAsc: false},
+			expectedIdx: 1,
+		},
+		{
+			args:        args{cls: testBCacheTitle[2][:4], boardID: &testBCacheName[2], isAsc: false},
+			expectedIdx: 3,
+		},
+		{
+			args:        args{cls: testBCacheTitle[3][:4], boardID: &testBCacheName[3], isAsc: false},
+			expectedIdx: 4,
+		},
+		{
+			args:        args{cls: testBCacheTitle[4][:4], boardID: &testBCacheName[4], isAsc: false},
+			expectedIdx: 2,
+		},
+		{
+			args:        args{cls: testBCacheTitle[5][:4], boardID: &testBCacheName[5], isAsc: false},
+			expectedIdx: 6,
+		},
+		{
+			args:        args{cls: testBCacheTitle[6][:4], boardID: &testBCacheName[6], isAsc: false},
+			expectedIdx: 7,
+		},
+		{
+			args:        args{cls: testBCacheTitle[7][:4], boardID: &testBCacheName[7], isAsc: false},
+			expectedIdx: 9,
+		},
+		{
+			args:        args{cls: testBCacheTitle[8][:4], boardID: &testBCacheName[8], isAsc: false},
+			expectedIdx: 10,
+		},
+		{
+			args:        args{cls: testBCacheTitle[9][:4], boardID: &testBCacheName[9], isAsc: false},
+			expectedIdx: 12,
+		},
+		{
+			args:        args{cls: testBCacheTitle[10][:4], boardID: &testBCacheName[10], isAsc: false},
+			expectedIdx: 8,
+		},
+		{
+			args:        args{cls: testBCacheTitle[11][:4], boardID: &testBCacheName[11], isAsc: false},
+			expectedIdx: 5,
+		},
+		{
+			name:        "title0-brdname0, WhoAMA, desc",
+			args:        args{cls: testTitle0, boardID: testBrdname0, isAsc: false},
+			expectedIdx: 11,
+		},
+		{
+			name:        "title1-brdname0, between Security/AllHIDPOST, desc",
+			args:        args{cls: testTitle1, boardID: testBrdname0, isAsc: false},
+			expectedIdx: 4,
+		},
+		{
+			name:        "title2-brdname0, after WhoAmI, desc",
+			args:        args{cls: testTitle2, boardID: testBrdname0, isAsc: false},
+			expectedIdx: 12,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotIdx, err := FindBoardIdxByClass(tt.args.cls, tt.args.boardID, tt.args.isAsc)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("FindBoardIdxByClass() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotIdx, tt.expectedIdx) {
+				t.Errorf("FindBoardIdxByClass() = %v, want %v", gotIdx, tt.expectedIdx)
+			}
+		})
+	}
+}

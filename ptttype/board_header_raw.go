@@ -25,7 +25,7 @@ type BoardHeaderRaw struct {
 	VTime              types.Time4 /* Vote close time */
 	Level              PERM        /* 可以看此板的權限 */
 	PermReload         types.Time4 /* 最後設定看板的時間 */
-	Gid                Gid         /* 看板所屬的類別 ID */
+	Gid                Bid         /* 看板所屬的類別 ID */
 	Next               [2]Bid      /* 在同一個gid下一個看板 動態產生*/
 	FirstChild         [2]Bid      /* 屬於這個看板的第一個子看板 */
 	Parent             Bid         /* 這個看板的 parent 看板 bid */

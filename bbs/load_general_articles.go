@@ -4,7 +4,6 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/ptt"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
-	"github.com/sirupsen/logrus"
 )
 
 //LoadGeneralArticles in descending mode.
@@ -19,7 +18,7 @@ func LoadGeneralArticles(
 	nextIdxStr string,
 	nextCreateTime types.Time4,
 	isNewest bool,
-	startNumIdx ptttype.NumIdx,
+	startNumIdx ptttype.SortIdx,
 	err error) {
 
 	if nArticles < 1 {
@@ -42,8 +41,7 @@ func LoadGeneralArticles(
 	}
 
 	//1. find start idx. start-idx as nextCreateTime if unable to find startIdxStr
-	startAid, err := loadGeneralArticlesToStartAid(userecRaw, uid, boardIDRaw, bid, startIdxStr, isDesc)
-	logrus.Infof("bbs.LoadGeneralArticles: after loadGeneralArticlesToStartAid: startAid: %v e: %v", startAid, err)
+	startIdx, err := loadGeneralArticlesToStartIdx(userecRaw, uid, boardIDRaw, bid, startIdxStr, isDesc)
 	if err != nil {
 		return nil, "", 0, false, -1, ErrInvalidParams
 	}
@@ -51,8 +49,8 @@ func LoadGeneralArticles(
 	//2. load articles.
 	var summariesRaw []*ptttype.ArticleSummaryRaw
 	var nextSummaryRaw *ptttype.ArticleSummaryRaw
-	if startAid >= 0 {
-		summariesRaw, isNewest, nextSummaryRaw, startNumIdx, err = ptt.LoadGeneralArticles(userecRaw, uid, boardIDRaw, bid, startAid, nArticles, isDesc)
+	if startIdx >= 0 {
+		summariesRaw, isNewest, nextSummaryRaw, startNumIdx, err = ptt.LoadGeneralArticles(userecRaw, uid, boardIDRaw, bid, startIdx, nArticles, isDesc)
 		if err != nil {
 			return nil, "", 0, false, -1, err
 		}
@@ -63,7 +61,7 @@ func LoadGeneralArticles(
 	nextCreateTime = 0
 	if nextSummaryRaw != nil {
 		nextSummary := NewArticleSummaryFromRaw(bboardID, nextSummaryRaw)
-		nextIdxStr = serializeArticleIdxStr(nextSummary)
+		nextIdxStr = nextSummary.Idx
 		nextCreateTime = nextSummary.CreateTime
 	}
 
@@ -93,14 +91,14 @@ func LoadGeneralArticles(
 	return summaries, nextIdxStr, nextCreateTime, isNewest, startNumIdx, nil
 }
 
-func loadGeneralArticlesToStartAid(
+func loadGeneralArticlesToStartIdx(
 	userecRaw *ptttype.UserecRaw,
 	uid ptttype.Uid,
 	boardIDRaw *ptttype.BoardID_t,
 	bid ptttype.Bid,
 	startIdxStr string,
 	isDesc bool,
-) (startAid ptttype.Aid, err error) {
+) (startIdx ptttype.SortIdx, err error) {
 	if startIdxStr == "" {
 		if isDesc {
 			return 0, nil
@@ -115,25 +113,25 @@ func loadGeneralArticlesToStartAid(
 	}
 	filename, _ := articleID.ToRaw()
 
-	startAid, err = ptt.FindArticleStartAid(userecRaw, uid, boardIDRaw, bid, createTime, filename, isDesc)
+	startIdx, err = ptt.FindArticleStartIdx(userecRaw, uid, boardIDRaw, bid, createTime, filename, isDesc)
 
-	return startAid, err
+	return startIdx, err
 }
 
-func loadGeneralArticlesSameCreateTime(userecRaw *ptttype.UserecRaw, uid ptttype.Uid, boardID BBoardID, boardIDRaw *ptttype.BoardID_t, bid ptttype.Bid, startIdxStr string, isDesc bool) (summaries []*ArticleSummary, startNumIdx ptttype.NumIdx, err error) {
+func loadGeneralArticlesSameCreateTime(userecRaw *ptttype.UserecRaw, uid ptttype.Uid, boardID BBoardID, boardIDRaw *ptttype.BoardID_t, bid ptttype.Bid, startIdxStr string, isDesc bool) (summaries []*ArticleSummary, startNumIdx ptttype.SortIdx, err error) {
 	createTime, _, err := deserializeArticleIdxStr(startIdxStr)
 	if err != nil {
 		return nil, 0, err
 	}
 
-	startAid, err := ptt.FindArticleStartAid(userecRaw, uid, boardIDRaw, bid, createTime, nil, true)
+	startAid, err := ptt.FindArticleStartIdx(userecRaw, uid, boardIDRaw, bid, createTime, nil, true)
 	if err != nil {
 		return nil, 0, err
 	}
 	if startAid == -1 {
 		startAid = 1
 	}
-	endAid, err := ptt.FindArticleStartAid(userecRaw, uid, boardIDRaw, bid, createTime, nil, false)
+	endAid, err := ptt.FindArticleStartIdx(userecRaw, uid, boardIDRaw, bid, createTime, nil, false)
 	if err != nil {
 		return nil, 0, err
 	}

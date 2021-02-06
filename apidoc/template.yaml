@@ -9,7 +9,11 @@ definitions:
   !include defs/article_summary.yaml
   !include defs/params_max.yaml
   !include defs/params_start_idx.yaml
+  !include defs/params_brdname.yaml
+  !include defs/params_title.yaml
   !include defs/params_keyword.yaml
+  !include defs/params_desc.yaml
+  !include defs/params_asc.yaml
   !include defs/user.yaml
   !include defs/token.yaml
   !include defs/email_token.yaml
