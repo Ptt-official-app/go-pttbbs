@@ -283,6 +283,11 @@ func TestLoadBoardsByBids(t *testing.T) {
 }
 
 func TestFindBoardStartIdxByName(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	cache.ReloadBCache()
+
 	type args struct {
 		boardID *ptttype.BoardID_t
 		isAsc   bool
@@ -314,6 +319,11 @@ func TestFindBoardStartIdxByName(t *testing.T) {
 }
 
 func TestFindBoardStartIdxByClass(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	cache.ReloadBCache()
+
 	type args struct {
 		cls     []byte
 		boardID *ptttype.BoardID_t
@@ -340,6 +350,104 @@ func TestFindBoardStartIdxByClass(t *testing.T) {
 			}
 			if !reflect.DeepEqual(gotStartIdx, tt.expectedStartIdx) {
 				t.Errorf("FindBoardStartIdxByClass() = %v, want %v", gotStartIdx, tt.expectedStartIdx)
+			}
+		})
+	}
+}
+
+func TestLoadAutoCompleteBoards(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	cache.ReloadBCache()
+
+	type args struct {
+		user     *ptttype.UserecRaw
+		uid      ptttype.Uid
+		startIdx ptttype.SortIdx
+		nBoards  int
+		keyword  []byte
+		isAsc    bool
+	}
+	tests := []struct {
+		name                string
+		args                args
+		expectedSummaries   []*ptttype.BoardSummaryRaw
+		expectedNextSummary *ptttype.BoardSummaryRaw
+		wantErr             bool
+	}{
+		// TODO: Add test cases.
+		{
+			args:                args{user: testUserecRaw1, uid: 1, startIdx: 3, nBoards: 200, keyword: []byte{'a'}, isAsc: true},
+			expectedSummaries:   []*ptttype.BoardSummaryRaw{testBoardSummary6},
+			expectedNextSummary: nil,
+		},
+		{
+			args:                args{user: testUserecRaw1, uid: 1, startIdx: 4, nBoards: 200, keyword: []byte{'a'}, isAsc: false},
+			expectedSummaries:   []*ptttype.BoardSummaryRaw{testBoardSummary6},
+			expectedNextSummary: nil,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotSummaries, gotNextSummary, err := LoadAutoCompleteBoards(tt.args.user, tt.args.uid, tt.args.startIdx, tt.args.nBoards, tt.args.keyword, tt.args.isAsc)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("LoadAutoCompleteBoards() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotSummaries, tt.expectedSummaries) {
+				t.Errorf("LoadAutoCompleteBoards() gotSummaries = %v, want %v", gotSummaries, tt.expectedSummaries)
+			}
+			if !reflect.DeepEqual(gotNextSummary, tt.expectedNextSummary) {
+				t.Errorf("LoadAutoCompleteBoards() gotNextSummary = %v, want %v", gotNextSummary, tt.expectedNextSummary)
+			}
+		})
+	}
+}
+
+func TestFindBoardAutoCompleteStartIdx(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	cache.ReloadBCache()
+
+	type args struct {
+		keyword []byte
+		isAsc   bool
+	}
+	tests := []struct {
+		name             string
+		args             args
+		expectedStartIdx ptttype.SortIdx
+		wantErr          bool
+	}{
+		// TODO: Add test cases.
+		{
+			args:             args{keyword: []byte{'w'}, isAsc: false},
+			expectedStartIdx: 12,
+		},
+		{
+			args:             args{keyword: []byte{'y'}, isAsc: false},
+			expectedStartIdx: -1,
+		},
+		{
+			args:             args{keyword: []byte{'w'}, isAsc: true},
+			expectedStartIdx: 12,
+		},
+		{
+			args:             args{keyword: []byte{'y'}, isAsc: true},
+			expectedStartIdx: -1,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotStartIdx, err := FindBoardAutoCompleteStartIdx(tt.args.keyword, tt.args.isAsc)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("FindBoardAutoCompleteStartIdx() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotStartIdx, tt.expectedStartIdx) {
+				t.Errorf("FindBoardAutoCompleteStartIdx() = %v, want %v", gotStartIdx, tt.expectedStartIdx)
 			}
 		})
 	}

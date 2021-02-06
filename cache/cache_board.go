@@ -14,6 +14,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/cmsys"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
+	"github.com/sirupsen/logrus"
 )
 
 func GetBCache(bid ptttype.Bid) (board *ptttype.BoardHeaderRaw, err error) {
@@ -804,4 +805,111 @@ func cmpBoardByClass(cls []byte, boardID *ptttype.BoardID_t, clsInCache []byte, 
 	}
 
 	return types.Cstrcasecmp(boardID[:], boardIDInCache[:])
+}
+
+func FindBoardAutoCompleteStartIdx(keyword []byte, isAsc bool) (startIdx ptttype.SortIdx, err error) {
+
+	boardID := findBoardClosetKeyword(keyword, isAsc)
+	nBoard_i32 := Shm.GetBNumber()
+	nBoard := ptttype.SortIdxInStore(nBoard_i32)
+
+	//find the closet keyword
+	idx, err := FindBoardIdxByName(boardID, !isAsc)
+	if err != nil {
+		return -1, err
+	}
+	if idx == -1 {
+		if isAsc {
+			idx = 1
+		} else {
+			idx = ptttype.SortIdx(nBoard_i32)
+		}
+	}
+	idxInStore := idx.ToSortIdxInStore()
+
+	const bsort0sz = unsafe.Sizeof(Shm.Raw.BSorted[0])
+	const bsortedOffset = unsafe.Offsetof(Shm.Raw.BSorted) + bsort0sz*uintptr(ptttype.BSORT_BY_NAME)
+	const bcacheOffset = unsafe.Offsetof(Shm.Raw.BCache)
+	bidInCache := ptttype.BidInStore(0)
+	bidInCache_ptr := unsafe.Pointer(&bidInCache)
+
+	boardIDInCache := &ptttype.BoardID_t{}
+	boardIDInCache_ptr := unsafe.Pointer(boardIDInCache)
+
+	const MAX_ITER = 3
+	// it should be either current idx or the next idx
+	if isAsc {
+		i := 0
+		for ; i < MAX_ITER && idxInStore < nBoard; i, idxInStore = i+1, idxInStore+1 {
+			Shm.ReadAt(
+				bsortedOffset+uintptr(idxInStore)*ptttype.BID_IN_STORE_SZ,
+				ptttype.BID_IN_STORE_SZ,
+				bidInCache_ptr,
+			)
+
+			Shm.ReadAt(
+				bcacheOffset+uintptr(bidInCache)*ptttype.BOARD_HEADER_RAW_SZ+ptttype.BOARD_HEADER_BRDNAME_OFFSET,
+				ptttype.BOARD_ID_SZ,
+				boardIDInCache_ptr,
+			)
+
+			boardIDInCachePrefix := boardIDInCache[:len(keyword)]
+			j := types.Cstrcasecmp(keyword, boardIDInCachePrefix)
+			if j == 0 {
+				break
+			} else if j < 0 { //keyword is already < boardIDInCachePrefix, we can't find fit anymore.
+				return -1, nil
+			}
+		}
+		if i == MAX_ITER || idxInStore == nBoard {
+			idxInStore = -1
+		}
+	} else {
+		i := 0
+		for ; i < MAX_ITER && idxInStore >= 0; i, idxInStore = i+1, idxInStore-1 {
+			Shm.ReadAt(
+				bsortedOffset+uintptr(idxInStore)*ptttype.BID_IN_STORE_SZ,
+				ptttype.BID_IN_STORE_SZ,
+				bidInCache_ptr,
+			)
+
+			Shm.ReadAt(
+				bcacheOffset+uintptr(bidInCache)*ptttype.BOARD_HEADER_RAW_SZ+ptttype.BOARD_HEADER_BRDNAME_OFFSET,
+				ptttype.BOARD_ID_SZ,
+				boardIDInCache_ptr,
+			)
+
+			logrus.Infof("cache.FindBoardAutoCompleteStartIdx: idxInStore: %v boardIDInCache: %v keyword: %v", idxInStore, string(boardIDInCache[:]), string(keyword))
+
+			boardIDInCachePrefix := boardIDInCache[:len(keyword)]
+			j := types.Cstrcasecmp(keyword, boardIDInCachePrefix)
+			if j == 0 {
+				break
+			} else if j > 0 { //keyword is already > boardIDInCachePrefix, we can't find fit anymore.
+				return -1, nil
+			}
+		}
+		if i == MAX_ITER {
+			idxInStore = -1
+		}
+	}
+	if idxInStore == -1 {
+		return -1, nil
+	}
+
+	return idxInStore.ToSortIdx(), nil
+
+}
+
+func findBoardClosetKeyword(keyword []byte, isAsc bool) (boardID *ptttype.BoardID_t) {
+	boardID = &ptttype.BoardID_t{}
+
+	if isAsc {
+		copy(boardID[:], keyword)
+	} else {
+		copy(boardID[:], keyword)
+		boardID[len(keyword)-1]++
+	}
+
+	return boardID
 }

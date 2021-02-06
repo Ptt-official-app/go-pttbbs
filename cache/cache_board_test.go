@@ -729,3 +729,83 @@ func TestFindBoardIdxByClass(t *testing.T) {
 		})
 	}
 }
+
+func TestFindBoardAutoCompleteStartIdx(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	ReloadBCache()
+
+	type args struct {
+		keyword []byte
+		isAsc   bool
+	}
+	tests := []struct {
+		name             string
+		args             args
+		expectedStartIdx ptttype.SortIdx
+		wantErr          bool
+	}{
+		// TODO: Add test cases.
+		{
+			name:             "a, asc (ALLHIDPOST)",
+			args:             args{keyword: []byte{'a'}, isAsc: true},
+			expectedStartIdx: 3,
+		},
+		{
+			name:             "a, desc (ALLPOST)",
+			args:             args{keyword: []byte{'a'}, isAsc: false},
+			expectedStartIdx: 4,
+		},
+		{
+			args:             args{keyword: []byte{'b'}, isAsc: true},
+			expectedStartIdx: -1,
+		},
+		{
+			args:             args{keyword: []byte{'r'}, isAsc: true},
+			expectedStartIdx: 9,
+		},
+		{
+			args:             args{keyword: []byte{'r'}, isAsc: false},
+			expectedStartIdx: 9,
+		},
+		{
+			name:             "s, asc (Security)",
+			args:             args{keyword: []byte{'s'}, isAsc: true},
+			expectedStartIdx: 10,
+		},
+		{
+			name:             "s, desc (SYSOP)",
+			args:             args{keyword: []byte{'s'}, isAsc: false},
+			expectedStartIdx: 11,
+		},
+		{
+			args:             args{keyword: []byte{'t'}, isAsc: true},
+			expectedStartIdx: -1,
+		},
+		{
+			args:             args{keyword: []byte{'w'}, isAsc: true},
+			expectedStartIdx: 12,
+		},
+		{
+			args:             args{keyword: []byte{'w'}, isAsc: false},
+			expectedStartIdx: 12,
+		},
+		{
+			args:             args{keyword: []byte{'y'}, isAsc: true},
+			expectedStartIdx: -1,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotStartIdx, err := FindBoardAutoCompleteStartIdx(tt.args.keyword, tt.args.isAsc)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("FindBoardAutoCompleteStartIdx() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotStartIdx, tt.expectedStartIdx) {
+				t.Errorf("FindBoardAutoCompleteStartIdx() = %v, want %v", gotStartIdx, tt.expectedStartIdx)
+			}
+		})
+	}
+}
