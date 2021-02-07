@@ -2,58 +2,18 @@ package main
 
 import (
 	"flag"
-	"strings"
 
-	"github.com/Ptt-official-app/go-pttbbs/api"
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs"
+	"github.com/Ptt-official-app/go-pttbbs/initgin"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
 	log "github.com/sirupsen/logrus"
 	jww "github.com/spf13/jwalterweatherman"
-	"github.com/spf13/viper"
 )
 
-//initConfig
-//
-//Params
-//	filename: ini filename
-//
-//Return
-//	error: err
-func initAllConfig(filename string) error {
-
-	filenameList := strings.Split(filename, ".")
-	if len(filenameList) == 1 {
-		return ErrInvalidIni
-	}
-
-	filenamePrefix := strings.Join(filenameList[:len(filenameList)-1], ".")
-	filenamePostfix := filenameList[len(filenameList)-1]
-	viper.SetConfigName(filenamePrefix)
-	viper.SetConfigType(filenamePostfix)
-	viper.AddConfigPath("/etc/go-pttbbs")
-	viper.AddConfigPath(".")
-	err := viper.ReadInConfig()
-	if err != nil {
-		return err
-	}
-
-	log.Debugf("viper keys: %v", viper.AllKeys())
-
-	err = InitConfig()
-	if err != nil {
-		return err
-	}
-	err = api.InitConfig()
-	if err != nil {
-		return err
-	}
-	err = types.InitConfig()
-	if err != nil {
-		return err
-	}
-	err = ptttype.InitConfig()
+func initAllConfig(filename string) (err error) {
+	err = initgin.InitAllConfig(filename)
 	if err != nil {
 		return err
 	}
