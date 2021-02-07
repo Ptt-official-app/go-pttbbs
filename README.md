@@ -1,5 +1,8 @@
 # go-pttbbs
 
+[![GoDoc](https://pkg.go.dev/badge/github.com/Ptt-official-app/go-pttbbs?status.svg)](https://pkg.go.dev/github.com/Ptt-official-app/go-pttbbs?tab=doc)
+[![codecov](https://codecov.io/gh/Ptt-official-app/go-pttbbs/branch/main/graph/badge.svg)](https://codecov.io/gh/Ptt-official-app/go-pttbbs)
+
 This project intends to be the go implementation of pttbbs/pttbbs.
 
 Collaborating with Ptt-official-app middlewares.
