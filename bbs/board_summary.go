@@ -6,7 +6,6 @@ import (
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
-	"github.com/sirupsen/logrus"
 )
 
 type BoardSummary struct {
@@ -71,7 +70,6 @@ func serializeBoardIdxByClassStr(summary *BoardSummary) (idxStr string) {
 }
 
 func deserializeBoardIdxByClassStr(idxStr string) (boardClass []byte, brdname string, err error) {
-	logrus.Infof("deserializeBoardIdxByClassStr: idxStr: %v", idxStr)
 	if idxStr == "" {
 		return nil, "", nil
 	}

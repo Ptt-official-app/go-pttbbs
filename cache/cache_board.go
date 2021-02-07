@@ -14,7 +14,6 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/cmsys"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
-	"github.com/sirupsen/logrus"
 )
 
 func GetBCache(bid ptttype.Bid) (board *ptttype.BoardHeaderRaw, err error) {
@@ -878,8 +877,6 @@ func FindBoardAutoCompleteStartIdx(keyword []byte, isAsc bool) (startIdx ptttype
 				ptttype.BOARD_ID_SZ,
 				boardIDInCache_ptr,
 			)
-
-			logrus.Infof("cache.FindBoardAutoCompleteStartIdx: idxInStore: %v boardIDInCache: %v keyword: %v", idxInStore, string(boardIDInCache[:]), string(keyword))
 
 			boardIDInCachePrefix := boardIDInCache[:len(keyword)]
 			j := types.Cstrcasecmp(keyword, boardIDInCachePrefix)
