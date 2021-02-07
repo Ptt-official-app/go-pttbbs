@@ -68,23 +68,14 @@ func TestStripNoneBig5(t *testing.T) {
 			expectedSanitizedStr: []byte("12345"),
 		},
 		{
-			//XXX this is to follow c-pttbbs implementation.
-			//https://github.com/ptt/pttbbs/issues/94
-			//real expectation: 12345
 			args:                 args{[]byte("\xff\xfd12345")},
-			expectedSanitizedStr: []byte("2345"),
+			expectedSanitizedStr: []byte("\xff\xfd12345"),
 		},
 		{
-			//XXX this is to follow c-pttbbs implementation.
-			//https://github.com/ptt/pttbbs/issues/94
-			//real expectation: 12345
 			args:                 args{[]byte("\x80\x0112345")},
 			expectedSanitizedStr: []byte("12345"),
 		},
 		{
-			//XXX this is to follow c-pttbbs implementation.
-			//https://github.com/ptt/pttbbs/issues/94
-			//real expectation: 12345
 			args:                 args{[]byte("\x80\x01\x80\x7312345")},
 			expectedSanitizedStr: []byte("\x80\x7312345"),
 		},

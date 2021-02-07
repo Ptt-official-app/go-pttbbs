@@ -34,19 +34,6 @@ func StripNoneBig5(str_out []byte) (sanitizedStr []byte) {
 		if 32 <= str_out[idx] && str_out[idx] < 128 {
 			str_out[theLen] = str_out[idx]
 			theLen++
-		} else if str_out[idx] == 255 {
-			if idx+1 < len(str_out) {
-				if 251 <= str_out[idx+1] && str_out[idx+1] <= 254 {
-					idx++
-					//XXX this looks strange,
-					//because we've already got idx++ in the end of for-loop,
-					//but this setup is to be compatible with c-pttbbs.
-					if idx+1 < len(str_out) && str_out[idx+1] != 0 {
-						idx++
-					}
-				}
-			}
-			continue
 		} else if (str_out[idx] & 0x80) != 0 {
 			if idx+1 < len(str_out) {
 				if 0x40 <= str_out[idx+1] && str_out[idx+1] <= 0x7e ||
