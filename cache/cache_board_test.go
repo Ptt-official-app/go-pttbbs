@@ -1,12 +1,16 @@
 package cache
 
 import (
+	"encoding/binary"
+	"io"
+	"os"
 	"reflect"
 	"sync"
 	"testing"
 	"unsafe"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
@@ -44,8 +48,11 @@ func TestGetBCache(t *testing.T) {
 			expectedBoard: &testBoardHeader2,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotBoard, err := GetBCache(tt.args.bidInCache)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetBCache() error = %v, wantErr %v", err, tt.wantErr)
@@ -55,6 +62,7 @@ func TestGetBCache(t *testing.T) {
 				t.Errorf("GetBCache() = %v, want %v", gotBoard, tt.expectedBoard)
 			}
 		})
+		wg.Wait()
 	}
 }
 
@@ -805,6 +813,273 @@ func TestFindBoardAutoCompleteStartIdx(t *testing.T) {
 			}
 			if !reflect.DeepEqual(gotStartIdx, tt.expectedStartIdx) {
 				t.Errorf("FindBoardAutoCompleteStartIdx() = %v, want %v", gotStartIdx, tt.expectedStartIdx)
+			}
+		})
+	}
+}
+
+func TestGetBTotalWithRetry(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	ReloadBCache()
+
+	type args struct {
+		bid ptttype.Bid
+	}
+	tests := []struct {
+		name          string
+		args          args
+		expectedTotal int32
+		wantErr       bool
+	}{
+		// TODO: Add test cases.
+		{
+			args:          args{10},
+			expectedTotal: 2,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotTotal, err := GetBTotalWithRetry(tt.args.bid)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GetBTotalWithRetry() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if gotTotal != tt.expectedTotal {
+				t.Errorf("GetBTotalWithRetry() = %v, want %v", gotTotal, tt.expectedTotal)
+			}
+		})
+	}
+}
+
+func TestNHots(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	ReloadBCache()
+
+	tests := []struct {
+		name          string
+		expectedNhots uint8
+	}{
+		// TODO: Add test cases.
+		{
+			expectedNhots: 0,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if gotNhots := NHots(); gotNhots != tt.expectedNhots {
+				t.Errorf("NHots() = %v, want %v", gotNhots, tt.expectedNhots)
+			}
+		})
+	}
+}
+
+func TestSanitizeBMs(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	_ = LoadUHash()
+
+	bms0 := &ptttype.BM_t{}
+	copy(bms0[:], []byte("SYSOP/SYSOP2/SYSOP3"))
+
+	expected0 := &ptttype.BM_t{}
+	copy(expected0[:], []byte("SYSOP"))
+
+	bms1 := &ptttype.BM_t{}
+	copy(bms1[:], []byte("SYSOP/SYSOP2/CodingMan"))
+
+	expected1 := &ptttype.BM_t{}
+	copy(expected1[:], []byte("SYSOP/CodingMan"))
+
+	type args struct {
+		bms *ptttype.BM_t
+	}
+	tests := []struct {
+		name              string
+		args              args
+		expectedParsedBMs *ptttype.BM_t
+	}{
+		// TODO: Add test cases.
+		{
+			args:              args{bms: bms0},
+			expectedParsedBMs: expected0,
+		},
+		{
+			args:              args{bms: bms1},
+			expectedParsedBMs: expected1,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if gotParsedBMs := SanitizeBMs(tt.args.bms); !reflect.DeepEqual(gotParsedBMs, tt.expectedParsedBMs) {
+				t.Errorf("SanitizeBMs() = %v, want %v", gotParsedBMs, tt.expectedParsedBMs)
+			}
+		})
+	}
+}
+
+func TestParseBMList(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	_ = LoadUHash()
+
+	bms0 := &ptttype.BM_t{}
+	copy(bms0[:], []byte("SYSOP/SYSOP2/SYSOP3"))
+
+	expected0 := &[ptttype.MAX_BMs]ptttype.Uid{1, -1, -1, -1}
+
+	bms1 := &ptttype.BM_t{}
+	copy(bms1[:], []byte("SYSOP/SYSOP2/CodingMan"))
+
+	expected1 := &[ptttype.MAX_BMs]ptttype.Uid{1, 2, -1, -1}
+
+	type args struct {
+		bms *ptttype.BM_t
+	}
+	tests := []struct {
+		name         string
+		args         args
+		expectedUids *[ptttype.MAX_BMs]ptttype.Uid
+	}{
+		// TODO: Add test cases.
+		{
+			args:         args{bms: bms0},
+			expectedUids: expected0,
+		},
+		{
+			args:         args{bms: bms1},
+			expectedUids: expected1,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if gotUids := ParseBMList(tt.args.bms); !reflect.DeepEqual(gotUids, tt.expectedUids) {
+				t.Errorf("ParseBMList() = %v, want %v", gotUids, tt.expectedUids)
+			}
+		})
+	}
+}
+
+func TestResetBoard(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	_ = LoadUHash()
+
+	bid0 := ptttype.Bid(1)
+	expected0 := &testBoardHeader3
+
+	type args struct {
+		bid ptttype.Bid
+	}
+	tests := []struct {
+		name     string
+		args     args
+		expected *ptttype.BoardHeaderRaw
+		wantErr  bool
+	}{
+		// TODO: Add test cases.
+		{
+			args:     args{bid: bid0},
+			expected: expected0,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := ResetBoard(tt.args.bid); (err != nil) != tt.wantErr {
+				t.Errorf("ResetBoard() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			got, _ := GetBCache(tt.args.bid)
+			testutil.TDeepEqual(t, "got", got, tt.expected)
+		})
+	}
+}
+
+func Test_buildBMCache(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	_ = LoadUHash()
+
+	Shm.WriteAt(
+		unsafe.Offsetof(Shm.Raw.BCache),
+		ptttype.BOARD_HEADER_RAW_SZ,
+		unsafe.Pointer(&testBoardHeader4),
+	)
+
+	expected0 := []ptttype.Uid{1, 2, -1, -1}
+
+	type args struct {
+		bid ptttype.Bid
+	}
+	tests := []struct {
+		name     string
+		args     args
+		expected []ptttype.Uid
+	}{
+		// TODO: Add test cases.
+		{
+			args:     args{bid: 1},
+			expected: expected0,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			buildBMCache(tt.args.bid)
+
+			got := [4]ptttype.Uid{0, 0, 0, 0}
+
+			const BMCACHE_SZ = unsafe.Sizeof(Shm.Raw.BMCache[0])
+			bidInStore := tt.args.bid.ToBidInStore()
+
+			Shm.ReadAt(
+				unsafe.Offsetof(Shm.Raw.BMCache)+BMCACHE_SZ*uintptr(bidInStore),
+				BMCACHE_SZ,
+				unsafe.Pointer(&got),
+			)
+
+			testutil.TDeepEqual(t, "got", got[:], tt.expected)
+		})
+	}
+}
+
+func TestAddbrdTouchCache(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	ReloadBCache()
+
+	file, _ := os.OpenFile(ptttype.FN_BOARD, os.O_WRONLY, 0644)
+	defer file.Close()
+
+	_, _ = file.Seek(0, io.SeekEnd)
+	_ = binary.Write(file, binary.LittleEndian, &testBoardHeader13)
+
+	tests := []struct {
+		name        string
+		expectedBid ptttype.Bid
+		wantErr     bool
+	}{
+		// TODO: Add test cases.
+		{
+			expectedBid: 13,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotBid, err := AddbrdTouchCache()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("AddbrdTouchCache() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotBid, tt.expectedBid) {
+				t.Errorf("AddbrdTouchCache() = %v, want %v", gotBid, tt.expectedBid)
 			}
 		})
 	}

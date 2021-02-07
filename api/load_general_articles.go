@@ -11,7 +11,7 @@ const LOAD_GENERAL_ARTICLES_R = "/board/:bid/articles"
 
 type LoadGeneralArticlesParams struct {
 	StartIdx  string `json:"start_idx,omitempty" form:"start_idx,omitempty" url:"start_idx,omitempty"`
-	NArticles int    `json:"max,omitempty" form:"max,omitempty" url:"max,omitempty"`
+	NArticles int    `json:"max" form:"max" url:"max"`
 	Desc      bool   `json:"desc,omitempty" form:"desc,omitempty" url:"desc"`
 }
 

@@ -75,10 +75,10 @@ func TestCopyFile(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	_ = Mkdir("./testcase/to-dir")
+	_ = MkdirAll("./testcase/to-dir")
 	defer os.RemoveAll("./testcase/to-dir")
 
-	_ = Mkdir("./testcase/to-dir-2")
+	_ = MkdirAll("./testcase/to-dir-2")
 	defer os.RemoveAll("./testcase/to-dir-2")
 
 	type args struct {
@@ -148,10 +148,10 @@ func TestRename(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	_ = Mkdir("./testcase/to-dir")
+	_ = MkdirAll("./testcase/to-dir")
 	defer os.RemoveAll("./testcase/to-dir")
 
-	_ = Mkdir("./testcase/to-dir-2")
+	_ = MkdirAll("./testcase/to-dir-2")
 	defer os.RemoveAll("./testcase/to-dir-2")
 
 	defer os.RemoveAll("./testcase/to-dir-3")
@@ -223,6 +223,45 @@ func TestRename(t *testing.T) {
 			}
 
 			os.RemoveAll(tt.args.dst)
+		})
+	}
+}
+
+func TestMkdir(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	defer os.RemoveAll("./testcase/test_dir0")
+	defer os.RemoveAll("./testcase/test_dir1")
+
+	path0 := "./testcase/test_dir0"
+	path1 := "./testcase/test_dir1"
+
+	type args struct {
+		path string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+		{
+			args: args{path: path0},
+		},
+		{
+			args:    args{path: path0},
+			wantErr: true,
+		},
+		{
+			args: args{path: path1},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := Mkdir(tt.args.path); (err != nil) != tt.wantErr {
+				t.Errorf("Mkdir() error = %v, wantErr %v", err, tt.wantErr)
+			}
 		})
 	}
 }

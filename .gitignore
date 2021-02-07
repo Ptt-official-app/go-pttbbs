@@ -8,8 +8,6 @@
 /testcase/home
 /apidoc/template.json
 /swagger
-/cache/testcase/boards
-/ptt/testcase/boards
 /02-config.run.ini
 /ptttype/02-config-run.go
 /ptttype/00-config-production.go

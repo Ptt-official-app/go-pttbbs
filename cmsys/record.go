@@ -5,9 +5,11 @@ import (
 	"encoding/binary"
 	"io"
 	"os"
+	"syscall"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
+	"github.com/sirupsen/logrus"
 )
 
 func GetNumRecords(filename string, size uintptr) int {
@@ -226,4 +228,66 @@ func FindRecordStartIdx(dirFilename string, total int, createTime types.Time4, f
 	}
 
 	return ptttype.SortIdx(idxInStore + 1), nil
+}
+
+func SubstituteRecord(filename string, data interface{}, theSize uintptr, idxInStore int32) (err error) {
+	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, os.FileMode(ptttype.DEFAULT_FILE_CREATE_PERM))
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	offset := int64(idxInStore) * int64(theSize)
+	_, err = file.Seek(offset, io.SeekStart)
+	if err != nil {
+		return err
+	}
+
+	err = PttLock(file, offset, theSize, syscall.F_WRLCK)
+	if err != nil {
+		return err
+	}
+	defer PttLock(file, offset, theSize, syscall.F_UNLCK)
+
+	logrus.Infof("SubstituteRecord: to write: filename: %v offset: %v data: %v", filename, offset, data)
+	err = binary.Write(file, binary.LittleEndian, data)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func AppendRecord(filename string, data interface{}, theSize uintptr) (err error) {
+	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, os.FileMode(ptttype.DEFAULT_FILE_CREATE_PERM))
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	fd := file.Fd()
+	err = syscall.Flock(int(fd), syscall.LOCK_EX)
+	if err != nil {
+		return err
+	}
+	defer syscall.Flock(int(fd), syscall.LOCK_UN)
+
+	fsize, err := file.Seek(0, io.SeekEnd)
+	if err != nil {
+		return err
+	}
+
+	idxInStore := fsize / int64(theSize)
+	offset := int64(idxInStore) * int64(theSize)
+	_, err = file.Seek(offset, io.SeekStart)
+	if err != nil {
+		return err
+	}
+
+	err = binary.Write(file, binary.LittleEndian, data)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -1,6 +1,7 @@
 package cache
 
 import (
+	"os"
 	"time"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
@@ -19,9 +20,13 @@ func setupTest() {
 
 	Shm.Reset()
 
+	_ = types.CopyFileToFile("./testcase/.BRD1", "./testcase/.BRD")
+
 }
 
 func teardownTest() {
+	os.Remove("./testcase/.BRD")
+
 	CloseSHM()
 
 	shmTeardownTest()

@@ -54,6 +54,22 @@ var (
 	testBoardHeader2 = ptttype.BoardHeaderRaw{
 		Brdname: ptttype.BoardID_t{'b', '2'},
 	}
+
+	testBoardHeader3 = ptttype.BoardHeaderRaw{
+		Brdname: ptttype.BoardID_t{'S', 'Y', 'S', 'O', 'P'},
+		Title: ptttype.BoardTitle_t{
+			0xbc, 0x54, 0xad, 0xf9, 0x20, 0xa1, 0xb7, 0xaf, 0xb8, 0xaa,
+			0xf8, 0xa6, 0x6e, 0x21,
+		},
+		BrdAttr: ptttype.BRD_POSTMASK,
+		Gid:     2,
+	}
+
+	testBM4          ptttype.BM_t
+	testBoardHeader4 ptttype.BoardHeaderRaw
+
+	testBM13          ptttype.BM_t
+	testBoardHeader13 ptttype.BoardHeaderRaw
 )
 
 var (
@@ -172,4 +188,29 @@ func initTestCases() {
 		0x4f, 0xa6, 0xa1, 0x4c, 0x4f, 0x43, 0x41, 0x4c, 0xb7, 0x73,
 		0xa4, 0xe5, 0xb3, 0xb9, 0x28, 0xc1, 0xf4, 0xaa, 0x4f, 0x29,
 	})
+
+	copy(testBM4[:], []byte("SYSOP/CodingMan"))
+
+	testBoardHeader4 = ptttype.BoardHeaderRaw{
+		Brdname: ptttype.BoardID_t{'S', 'Y', 'S', 'O', 'P'},
+		Title: ptttype.BoardTitle_t{
+			0xbc, 0x54, 0xad, 0xf9, 0x20, 0xa1, 0xb7, 0xaf, 0xb8, 0xaa,
+			0xf8, 0xa6, 0x6e, 0x21,
+		},
+		BrdAttr: ptttype.BRD_POSTMASK,
+		Gid:     2,
+		BM:      testBM4,
+	}
+
+	copy(testBM13[:], []byte("CodingMan"))
+	testBoardHeader13 = ptttype.BoardHeaderRaw{
+		Brdname: ptttype.BoardID_t{'S', 'Y', 'S', 'O', 'P', '1', '3'},
+		Title: ptttype.BoardTitle_t{
+			0xbc, 0x54, 0xad, 0xf9, 0x20, 0xa1, 0xb7, 0xaf, 0xb8, 0xaa,
+			0xf8, 0xa6, 0x6e, 0x21,
+		},
+		Gid: 5,
+		BM:  testBM13,
+	}
+
 }

@@ -74,6 +74,10 @@ func CopyFile(src string, dst string) (err error) {
 }
 
 func Mkdir(path string) error {
+	return os.Mkdir(path, DEFAULT_FOLDER_CREATE_PERM)
+}
+
+func MkdirAll(path string) error {
 	return os.MkdirAll(path, DEFAULT_FOLDER_CREATE_PERM)
 }
 
@@ -85,7 +89,7 @@ func CopyDirToDir(src string, dst string) (err error) {
 
 	_, err = os.Stat(dst)
 	if err != nil {
-		err = Mkdir(dst)
+		err = MkdirAll(dst)
 		if err != nil {
 			return err
 		}
@@ -106,7 +110,7 @@ func CopyDirToDir(src string, dst string) (err error) {
 		childDst := strings.Join([]string{dst, entryName}, string(os.PathSeparator))
 
 		if IsDir(childSrc) {
-			Mkdir(childDst)
+			MkdirAll(childDst)
 		}
 
 		CopyFile(childSrc, childDst)

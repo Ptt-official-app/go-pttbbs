@@ -7,6 +7,9 @@ import (
 )
 
 func TestRegister(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
 	type args struct {
 		username string
 		passwd   string
@@ -32,8 +35,6 @@ func TestRegister(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			setupTest()
-			defer teardownTest()
 
 			gotUserID, err := Register(tt.args.username, tt.args.passwd, tt.args.ip, tt.args.email, tt.args.nickname, tt.args.realname, tt.args.career, tt.args.address, tt.args.over18)
 			if (err != nil) != tt.wantErr {

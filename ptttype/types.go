@@ -57,8 +57,6 @@ type Owner_t [IDLEN + 2]byte //user-id[.]
 
 type Title_t [TTLEN + 1]byte
 
-type Gid int32
-
 type SortIdx int
 type SortIdxInStore int
 
@@ -67,6 +65,7 @@ var (
 	EMPTY_BOARD_ID    = BoardID_t{}
 	EMPTY_BOARD_TITLE = BoardTitle_t{}
 	EMPTY_EMAIL       = Email_t{}
+	EMPTY_BM          = BM_t{}
 )
 
 const USER_ID_SZ = unsafe.Sizeof(EMPTY_USER_ID)
@@ -78,6 +77,7 @@ const UID_SZ = unsafe.Sizeof(Uid(0))
 const BID_IN_STORE_SZ = unsafe.Sizeof(BidInStore(0))
 const BID_SZ = unsafe.Sizeof(Bid(0))
 const EMAIL_SZ = unsafe.Sizeof(EMPTY_EMAIL)
+const BM_SZ = unsafe.Sizeof(EMPTY_BM)
 
 func (u UidInStore) ToUid() Uid {
 	return Uid(u + 1)
@@ -431,4 +431,26 @@ func (t *Title_t) ToClass() []byte {
 	}
 
 	return []byte{}
+}
+
+//NewBM
+//
+//called only in cache.ParseBMList.
+//Already verified in cache.ParseBMList.
+//no need to worry that userIDs exceeds BM_t
+func NewBM(userIDs []*UserID_t) (bms *BM_t) {
+	bms = &BM_t{}
+	bmsBytes := bms[:]
+	p_bmsBytes := bmsBytes
+	for idx, each := range userIDs {
+		if idx > 0 {
+			p_bmsBytes[0] = '/'
+			p_bmsBytes = p_bmsBytes[1:]
+		}
+		userIDBytes := types.CstrToBytes(each[:])
+		copy(p_bmsBytes[:], userIDBytes)
+		p_bmsBytes = p_bmsBytes[len(userIDBytes):]
+	}
+
+	return bms
 }

@@ -162,7 +162,6 @@ func userecRawAddToUHash(uidInCache ptttype.UidInStore, userecRaw *ptttype.Usere
 				unsafe.Pointer(&zero),
 			)
 		}
-		log.Debugf("UHashLoader.userecRawAddToUHash: add info: usernum: %v id: %v shmUserID: %v", uidInCache, string(userecRaw.UserID[:]), string(shmUserID[:]))
 	}
 
 	p := h
@@ -209,8 +208,6 @@ func userecRawAddToUHash(uidInCache ptttype.UidInStore, userecRaw *ptttype.Usere
 		unsafe.Pointer(&val),
 	)
 
-	log.Debugf("UHashLoader.userecRawAddToUHash: added level: %v p: %v hash: %v usernum: %v [%v] val: %v in hash isHashHead: %v", l, p, h, uidInCache, string(userecRaw.UserID[:]), val, isFirst)
-
 	// set next in hash as -1
 	p = uint32(val)
 	val = -1
@@ -219,7 +216,6 @@ func userecRawAddToUHash(uidInCache ptttype.UidInStore, userecRaw *ptttype.Usere
 		types.INT32_SZ,
 		unsafe.Pointer(&val),
 	)
-	log.Debugf("UHashLoader.userecRawAddToUHash: added NextInHash: usernum: %v p: %v val: %v isFirst: %v", uidInCache, p, val, isFirst)
 }
 
 func InitFillUHash(isOnfly bool) {
@@ -290,7 +286,6 @@ func checkHash(h uint32) {
 			ptttype.USER_ID_SZ,
 			unsafe.Pointer(&userID),
 		)
-		log.Debugf("checkHash: (in-for-loop): after read userID: h: %v p: %v val: %v userID: %v", h, p, val, types.CstrToString(userID[:]))
 
 		userIDHash := cmsys.StringHashWithHashBits(userID[:])
 
@@ -326,7 +321,6 @@ func checkHash(h uint32) {
 			)
 			isFirst = false
 
-			log.Debugf("checkHash: (in-for-loop (match)): after read next: h: %v p: %v val: %v userID: %v isFirst: %v", h, p, val, types.CstrToString(userID[:]), isFirst)
 		}
 
 		// line: 87

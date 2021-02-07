@@ -2,6 +2,7 @@ package cmsys
 
 import (
 	"encoding/binary"
+	"io"
 	"os"
 	"reflect"
 	"testing"
@@ -261,6 +262,72 @@ func TestFindRecordStartAid(t *testing.T) {
 			}
 			if !reflect.DeepEqual(gotStartIdx, tt.expectedStartIdx) {
 				t.Errorf("FindRecordStartIdx() = %v, want %v", int(gotStartIdx), int(tt.expectedStartIdx))
+			}
+		})
+	}
+}
+
+func TestSubstituteRecord(t *testing.T) {
+	filename := "./testcase/testSubstituteRecord.txt"
+	defer os.Remove(filename)
+
+	file, _ := os.OpenFile(filename, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
+	defer file.Close()
+
+	binary.Write(file, binary.LittleEndian, testArticleSummary0.FileHeaderRaw)
+	binary.Write(file, binary.LittleEndian, testArticleSummary1.FileHeaderRaw)
+	binary.Write(file, binary.LittleEndian, testArticleSummary2.FileHeaderRaw)
+
+	type args struct {
+		filename   string
+		data       interface{}
+		theSize    uintptr
+		idxInStore int32
+	}
+	tests := []struct {
+		name     string
+		args     args
+		expected *ptttype.FileHeaderRaw
+		wantErr  bool
+	}{
+		// TODO: Add test cases.
+		{
+			args:     args{filename: filename, data: testArticleSummary3.FileHeaderRaw, theSize: ptttype.FILE_HEADER_RAW_SZ, idxInStore: 1},
+			expected: testArticleSummary3.FileHeaderRaw,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := SubstituteRecord(tt.args.filename, tt.args.data, tt.args.theSize, tt.args.idxInStore); (err != nil) != tt.wantErr {
+				t.Errorf("SubstituteRecord() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			got := &ptttype.FileHeaderRaw{}
+			offset := int64(ptttype.FILE_HEADER_RAW_SZ) * int64(tt.args.idxInStore)
+			_, _ = file.Seek(offset, io.SeekStart)
+			_ = binary.Read(file, binary.LittleEndian, got)
+			testutil.TDeepEqual(t, "got", got, tt.expected)
+		})
+	}
+}
+
+func TestAppendRecord(t *testing.T) {
+	type args struct {
+		filename string
+		data     interface{}
+		theSize  uintptr
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := AppendRecord(tt.args.filename, tt.args.data, tt.args.theSize); (err != nil) != tt.wantErr {
+				t.Errorf("AppendRecord() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
