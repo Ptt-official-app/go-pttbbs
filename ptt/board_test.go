@@ -87,3 +87,85 @@ func TestIsBoardValidUser(t *testing.T) {
 		})
 	}
 }
+
+func TestNewBoard(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	cache.ReloadBCache()
+
+	testBrdname0 := &ptttype.BoardID_t{}
+	copy(testBrdname0[:], []byte("mnewboard0"))
+	testBrdClass0 := []byte("CPBL")
+	testBrdTitle0 := []byte("new-board")
+
+	expectedTitle0 := &ptttype.BoardTitle_t{}
+	copy(expectedTitle0[:], []byte("CPBL \xa1\xb7new-board"))
+	expected0 := &ptttype.BoardHeaderRaw{
+		Brdname: *testBrdname0,
+		Title:   *expectedTitle0,
+		BrdAttr: 0x200000,
+		Gid:     2,
+	}
+
+	type args struct {
+		user         *ptttype.UserecRaw
+		uid          ptttype.Uid
+		clsBid       ptttype.Bid
+		brdname      *ptttype.BoardID_t
+		brdClass     []byte
+		brdTitle     []byte
+		BMs          *ptttype.BM_t
+		brdAttr      ptttype.BrdAttr
+		level        ptttype.PERM
+		chessCountry ptttype.ChessCode
+		isGroup      bool
+	}
+	tests := []struct {
+		name             string
+		args             args
+		expectedNewBoard *ptttype.BoardHeaderRaw
+		expectedNewBid   ptttype.Bid
+		wantErr          bool
+	}{
+		// TODO: Add test cases.
+		{
+			args: args{
+				user:     testUserecRaw1,
+				uid:      1,
+				clsBid:   2,
+				brdname:  testBrdname0,
+				brdClass: testBrdClass0,
+				brdTitle: testBrdTitle0,
+			},
+			wantErr: true,
+		},
+		{
+			args: args{
+				user:     testUserecRaw3,
+				uid:      3,
+				clsBid:   2,
+				brdname:  testBrdname0,
+				brdClass: testBrdClass0,
+				brdTitle: testBrdTitle0,
+			},
+			expectedNewBoard: expected0,
+			expectedNewBid:   13,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotNewBoard, gotNewBid, err := NewBoard(tt.args.user, tt.args.uid, tt.args.clsBid, tt.args.brdname, tt.args.brdClass, tt.args.brdTitle, tt.args.BMs, tt.args.brdAttr, tt.args.level, tt.args.chessCountry, tt.args.isGroup)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("NewBoard() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotNewBoard, tt.expectedNewBoard) {
+				t.Errorf("NewBoard() gotNewBoard = %v, want %v", gotNewBoard, tt.expectedNewBoard)
+			}
+			if !reflect.DeepEqual(gotNewBid, tt.expectedNewBid) {
+				t.Errorf("NewBoard() gotNewBid = %v, want %v", gotNewBid, tt.expectedNewBid)
+			}
+		})
+	}
+}

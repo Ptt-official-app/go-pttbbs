@@ -32,11 +32,6 @@ jobs:
     - name: Build
       run: go build -v ./...
 
-    - name: extract testcases
-      run: |
-        cd cache/testcase; tar -zxvf boards.tar.gz; cd ../..
-        cd ptt/testcase; tar -zxvf boards.tar.gz; cd ../..
-
     - name: Test
       run: go test -v ./... -cover
 

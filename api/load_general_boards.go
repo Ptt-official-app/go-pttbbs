@@ -10,10 +10,10 @@ const LOAD_GENERAL_BOARDS_R = "/boards"
 
 type LoadGeneralBoardsParams struct {
 	StartIdx string `json:"start_idx,omitempty" form:"start_idx,omitempty" url:"start_idx,omitempty"`
-	NBoards  int    `json:"max,omitempty" form:"max,omitempty" url:"max,omitempty"`
+	NBoards  int    `json:"max" form:"max" url:"max"`
 	Title    []byte `json:"title,omitempty" form:"title,omitempty" url:"title,omitempty"`       //sending utf8-bytes from middleware
 	Keyword  []byte `json:"keyword,omitempty" form:"keyword,omitempty" url:"keyword,omitempty"` //sending utf8-bytes from middleware
-	Asc      bool   `json:"asc,omitempty" form:"asc,omitempty" url:"asc,omitempty"`
+	Asc      bool   `json:"asc,omitempty" form:"asc,omitempty" url:"asc"`
 }
 
 type LoadGeneralBoardsResult struct {
@@ -21,8 +21,14 @@ type LoadGeneralBoardsResult struct {
 	NextIdx string              `json:"next_idx"`
 }
 
+func NewLoadGeneralBoardsParams() *LoadGeneralBoardsParams {
+	return &LoadGeneralBoardsParams{
+		Asc: true,
+	}
+}
+
 func LoadGeneralBoardsWrapper(c *gin.Context) {
-	params := &LoadGeneralBoardsParams{}
+	params := NewLoadGeneralBoardsParams()
 	LoginRequiredQuery(LoadGeneralBoards, params, c)
 }
 

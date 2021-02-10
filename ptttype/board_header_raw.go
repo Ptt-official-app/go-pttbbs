@@ -13,7 +13,7 @@ type BoardHeaderRaw struct {
 	BM                 BM_t /* BMs' userid, token '/' */
 	Pad1               [3]byte
 	BrdAttr            BrdAttr     /* board的屬性 */
-	ChessCountry       byte        /* 棋國 */
+	ChessCountry       ChessCode   /* 棋國 */
 	VoteLimitPosts_    uint8       /* (已停用) 連署 : 文章篇數下限 */
 	VoteLimitLogins    uint8       /* 連署 : 登入次數下限 */
 	Pad2_1             [1]uint8    /* (已停用) 連署 : 註冊時間限制 */
@@ -52,3 +52,4 @@ const BOARD_HEADER_BRDNAME_OFFSET = unsafe.Offsetof(EMPTY_BOARD_HEADER_RAW.Brdna
 const BOARD_HEADER_TITLE_OFFSET = unsafe.Offsetof(EMPTY_BOARD_HEADER_RAW.Title)
 const BOARD_HEADER_BRD_ATTR_OFFSET = unsafe.Offsetof(EMPTY_BOARD_HEADER_RAW.BrdAttr)
 const BOARD_HEADER_FIRST_CHILD_OFFSET = unsafe.Offsetof(EMPTY_BOARD_HEADER_RAW.FirstChild)
+const BOARD_HEADER_BM_OFFSET = unsafe.Offsetof(EMPTY_BOARD_HEADER_RAW.BM)

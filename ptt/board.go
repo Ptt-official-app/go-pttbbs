@@ -89,3 +89,37 @@ func boardPermStatNormally(user *ptttype.UserecRaw, uid ptttype.Uid, board *pttt
 
 	return ptttype.NBRD_FAV
 }
+
+//NewBoard
+//
+//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L2283
+func NewBoard(
+	user *ptttype.UserecRaw,
+	uid ptttype.Uid,
+	clsBid ptttype.Bid,
+	brdname *ptttype.BoardID_t,
+	brdClass []byte,
+	brdTitle []byte,
+	BMs *ptttype.BM_t,
+	brdAttr ptttype.BrdAttr,
+	level ptttype.PERM,
+	chessCountry ptttype.ChessCode,
+	isGroup bool,
+) (
+
+	newBoard *ptttype.BoardHeaderRaw,
+	newBid ptttype.Bid,
+	err error) {
+
+	clsBoard, err := cache.GetBCache(clsBid)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	isGroupOp := groupOp(user, clsBoard)
+	if !user.UserLevel.HasUserPerm(ptttype.PERM_BOARD) && !isGroupOp {
+		return nil, 0, ErrNotPermitted
+	}
+
+	return mNewbrd(user, clsBid, brdname, brdClass, brdTitle, BMs, brdAttr, level, chessCountry, isGroup, false)
+}

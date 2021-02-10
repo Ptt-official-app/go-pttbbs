@@ -39,6 +39,18 @@ var (
 		LastHost:     ptttype.IPv4_t{'5', '9', '.', '1', '2', '4', '.', '1', '6', '7', '.', '2', '2', '6'},
 	}
 
+	testUserecRaw3 = &ptttype.UserecRaw{
+		Version:      ptttype.PASSWD_VERSION,
+		UserID:       ptttype.UserID_t{'t', 'e', 's', 't'},
+		UFlag:        33557216,
+		UserLevel:    7 | ptttype.PERM_BOARD,
+		NumLoginDays: 1,
+		NumPosts:     0,
+		FirstLogin:   1600737659,
+		LastLogin:    1600737960,
+		LastHost:     ptttype.IPv4_t{'5', '9', '.', '1', '2', '4', '.', '1', '6', '7', '.', '2', '2', '6'},
+	}
+
 	testSetupNewUser1 = &ptttype.UserecRaw{
 		Version:    4194,
 		UserID:     ptttype.UserID_t{65, 48}, //A0

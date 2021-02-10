@@ -385,7 +385,7 @@ func ReloadBCache() {
 		unsafe.Pointer(&busystate),
 	)
 
-	sortBCache()
+	SortBCache()
 
 	//XXX do not do reloadCacheLoadBottom in test
 	if IsTest {
@@ -395,9 +395,9 @@ func ReloadBCache() {
 	go reloadCacheLoadBottom()
 }
 
-//sortBCache
+//SortBCache
 //XXX TODO: implement
-func sortBCache() {
+func SortBCache() {
 	var busystate int32
 	pbusystate := &busystate
 	pbusystateptr := unsafe.Pointer(pbusystate)
@@ -909,4 +909,186 @@ func findBoardClosetKeyword(keyword []byte, isAsc bool) (boardID *ptttype.BoardI
 	}
 
 	return boardID
+}
+
+func SanitizeBMs(bms *ptttype.BM_t) (parsedBMs *ptttype.BM_t) {
+	if bms == nil {
+		return &ptttype.BM_t{}
+	}
+	bmsBytes := types.CstrToBytes(bms[:])
+	userIDsBytes := bytes.Split(bmsBytes, []byte{'/'})
+	userIDs := make([]*ptttype.UserID_t, len(userIDsBytes))
+	for idx, each := range userIDsBytes {
+		userIDs[idx] = &ptttype.UserID_t{}
+		copy(userIDs[idx][:], each)
+	}
+
+	validUserIDs := make([]*ptttype.UserID_t, 0, len(userIDs))
+	for _, each := range userIDs {
+		uid, err := SearchUserRaw(each, nil)
+		if err != nil || uid == 0 {
+			continue
+		}
+		validUserIDs = append(validUserIDs, each)
+	}
+
+	parsedBMs = ptttype.NewBM(validUserIDs)
+
+	return parsedBMs
+}
+
+func ParseBMList(bms *ptttype.BM_t) (uids *[ptttype.MAX_BMs]ptttype.Uid) {
+	//init uids
+	uids = &[ptttype.MAX_BMs]ptttype.Uid{}
+	for idx := 0; idx < ptttype.MAX_BMs; idx++ {
+		uids[idx] = -1
+	}
+
+	if bms == nil {
+		return uids
+	}
+
+	bmsBytes := types.CstrToBytes(bms[:])
+	userIDsBytes := bytes.Split(bmsBytes, []byte{'/'})
+	userIDs := make([]*ptttype.UserID_t, len(userIDsBytes))
+	for idx, each := range userIDsBytes {
+		userIDs[idx] = &ptttype.UserID_t{}
+		copy(userIDs[idx][:], each)
+	}
+
+	//parse user-ids
+	idxUid := 0
+	for _, each := range userIDs {
+		uid, err := SearchUserRaw(each, nil)
+		if err != nil || !uid.IsValid() {
+			continue
+		}
+		uids[idxUid] = uid
+		idxUid++
+	}
+
+	return uids
+}
+
+func ResetBoard(bid ptttype.Bid) (err error) {
+	if !bid.IsValid() {
+		return ptttype.ErrInvalidBid
+	}
+
+	bidInCache := bid.ToBidInStore()
+
+	var busystate int32
+	Shm.ReadAt(
+		unsafe.Offsetof(Shm.Raw.BBusyState),
+		types.INT32_SZ,
+		unsafe.Pointer(&busystate),
+	)
+
+	var busystate_b types.Time4
+	Shm.ReadAt(
+		unsafe.Offsetof(Shm.Raw.BusyStateB)+types.TIME4_SZ*uintptr(bidInCache),
+		types.TIME4_SZ,
+		unsafe.Pointer(&busystate_b),
+	)
+
+	nowTS := types.NowTS()
+	// busy, return
+	if busystate != 0 || nowTS-busystate_b < 10 {
+		time.Sleep(1 * time.Second)
+		return ErrBusy
+	}
+
+	Shm.WriteAt(
+		unsafe.Offsetof(Shm.Raw.BusyStateB)+types.TIME4_SZ*uintptr(bidInCache),
+		types.TIME4_SZ,
+		unsafe.Pointer(&nowTS),
+	)
+	defer func() {
+		zeroTS := types.Time4(0)
+		Shm.WriteAt(
+			unsafe.Offsetof(Shm.Raw.BusyStateB)+types.TIME4_SZ*uintptr(bidInCache),
+			types.TIME4_SZ,
+			unsafe.Pointer(&zeroTS),
+		)
+	}()
+
+	file, err := os.Open(ptttype.FN_BOARD)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	board := &ptttype.BoardHeaderRaw{}
+	_, err = file.Seek(int64(bidInCache)*int64(ptttype.BOARD_HEADER_RAW_SZ), 0)
+	if err != nil {
+		return err
+	}
+	err = binary.Read(file, binary.LittleEndian, board)
+	if err != nil {
+		return err
+	}
+
+	Shm.WriteAt(
+		unsafe.Offsetof(Shm.Raw.BCache)+ptttype.BOARD_HEADER_RAW_SZ*uintptr(bidInCache),
+		ptttype.BOARD_HEADER_RAW_SZ,
+		unsafe.Pointer(board),
+	)
+
+	buildBMCache(bid)
+
+	return nil
+}
+
+func buildBMCache(bid ptttype.Bid) {
+	BMs := &ptttype.BM_t{}
+	bidInCache := bid.ToBidInStore()
+	Shm.ReadAt(
+		unsafe.Offsetof(Shm.Raw.BCache)+ptttype.BOARD_HEADER_RAW_SZ*uintptr(bidInCache)+ptttype.BOARD_HEADER_BM_OFFSET,
+		ptttype.BM_SZ,
+		unsafe.Pointer(BMs),
+	)
+
+	//reset uids
+	resetUids := [ptttype.MAX_BMs]ptttype.Uid{}
+	for idx := 0; idx < ptttype.MAX_BMs; idx++ {
+		resetUids[idx] = -1
+	}
+
+	const BMCACHE_SZ = unsafe.Sizeof(Shm.Raw.BMCache[0])
+	Shm.WriteAt(
+		unsafe.Offsetof(Shm.Raw.BMCache)+BMCACHE_SZ*uintptr(bidInCache),
+		BMCACHE_SZ,
+		unsafe.Pointer(&resetUids),
+	)
+
+	//set uids
+	uids := ParseBMList(BMs)
+
+	if len(uids) == 0 {
+		return
+	}
+
+	Shm.WriteAt(
+		unsafe.Offsetof(Shm.Raw.BMCache)+BMCACHE_SZ*uintptr(bidInCache),
+		ptttype.UID_SZ*uintptr(ptttype.MAX_BMs),
+		unsafe.Pointer(uids),
+	)
+}
+
+func AddbrdTouchCache() (bid ptttype.Bid, err error) {
+	Shm.IncUint32(
+		unsafe.Offsetof(Shm.Raw.BNumber),
+	)
+
+	nBoards := NumBoards()
+
+	bid = ptttype.Bid(nBoards)
+
+	err = ResetBoard(bid)
+	if err != nil {
+		return 0, err
+	}
+	SortBCache()
+
+	return bid, nil
 }

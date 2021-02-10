@@ -41,6 +41,17 @@ func IsValidFilename(filename string) bool {
 	return !strings.Contains(filename, "..")
 }
 
+func SetBPath(boardID *ptttype.BoardID_t) string {
+	return strings.Join([]string{
+		ptttype.BBSHOME,
+		ptttype.DIR_BOARD,
+		string(boardID[0]),
+		types.CstrToString(boardID[:]),
+	},
+		string(os.PathSeparator),
+	)
+}
+
 func SetBFile(boardID *ptttype.BoardID_t, filename string) (string, error) {
 	if filename[0] == '\x00' || !IsValidFilename(filename) {
 		return "", ptttype.ErrInvalidFilename
