@@ -16,10 +16,15 @@ func TestCreateBoard(t *testing.T) {
 
 	params0 := &CreateBoardParams{
 		Brdname: "mnewtest",
+		BMs:     []bbs.UUserID{"CodingMan"},
 	}
 
 	path0 := &CreateBoardPath{
 		ClsBid: 2,
+	}
+
+	params1 := &CreateBoardParams{
+		Brdname: "mnewtest2",
 	}
 
 	type args struct {
@@ -42,6 +47,14 @@ func TestCreateBoard(t *testing.T) {
 				path:    path0,
 			},
 			expectedResult: testBoardSummary13,
+		},
+		{
+			args: args{
+				uuserID: "test",
+				params:  params1,
+				path:    path0,
+			},
+			expectedResult: testBoardSummary14,
 		},
 	}
 	for _, tt := range tests {
