@@ -33,6 +33,7 @@ func CreateBoard(
 
 	BMs_userIDRaw := make([]*ptttype.UserID_t, len(BMs))
 	for idx, each := range BMs {
+		BMs_userIDRaw[idx] = &ptttype.UserID_t{}
 		copy(BMs_userIDRaw[idx][:], []byte(each))
 	}
 	bms := ptttype.NewBM(BMs_userIDRaw)

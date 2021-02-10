@@ -13,6 +13,8 @@ var (
 	testBoardSummary8  *bbs.BoardSummary
 	testBoardSummary11 *bbs.BoardSummary
 	testBoardSummary13 *bbs.BoardSummary
+	testBoardSummary14 *bbs.BoardSummary
+	testBoardSummary15 *bbs.BoardSummary
 
 	testArticleSummary0 *bbs.ArticleSummary
 	testArticleSummary1 *bbs.ArticleSummary
@@ -166,9 +168,22 @@ func initTestVars() {
 		StatAttr:   ptttype.NBRD_FAV,
 		Brdname:    "mnewtest",
 		BoardType:  []byte{0xa1, 0xb7},
-		BM:         []bbs.UUserID{},
+		BM:         []bbs.UUserID{"CodingMan"},
 		IdxByName:  "mnewtest",
 		IdxByClass: "@mnewtest",
+		BrdAttr:    0x200000,
+	}
+
+	testBoardSummary14 = &bbs.BoardSummary{
+		Gid:        2,
+		Bid:        14,
+		BBoardID:   bbs.BBoardID("14_mnewtest2"),
+		StatAttr:   ptttype.NBRD_FAV,
+		Brdname:    "mnewtest2",
+		BoardType:  []byte{0xa1, 0xb7},
+		BM:         []bbs.UUserID{},
+		IdxByName:  "mnewtest2",
+		IdxByClass: "@mnewtest2",
 		BrdAttr:    0x200000,
 	}
 
