@@ -49,13 +49,21 @@ def _register():
     """
     return ''
 
+
+@app.route(_with_app_prefix('/class/<cls>/board'), methods=['POST'])
+def _create_board(cls):
+    """
+    swagger_from_file: apidoc/create_board.yaml
+    """
+    return ''
+
+
 @app.route(_with_app_prefix('/boards/autocomplete'), methods=['GET'])
 def _load_auto_complete_boards():
     """
     swagger_from_file: apidoc/load_auto_complete_boards.yaml
     """
     return ''
-
 
 
 @app.route(_with_app_prefix('/boards'), methods=['GET'])
