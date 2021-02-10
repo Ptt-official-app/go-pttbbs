@@ -27,6 +27,7 @@ var (
 	testBoardSummary9  *BoardSummary
 	testBoardSummary10 *BoardSummary
 	testBoardSummary11 *BoardSummary
+	testBoardSummary13 *BoardSummary
 
 	testArticleSummary0 *ArticleSummary
 	testArticleSummary1 *ArticleSummary
@@ -318,6 +319,21 @@ func initTestVars() {
 		BM:         []UUserID{},
 		IdxByName:  "EditExp",
 		IdxByClass: "vFSt-Q@EditExp",
+	}
+
+	testBoardSummary13 = &BoardSummary{
+		Gid:        5,
+		Bid:        13,
+		BBoardID:   BBoardID("13_mnewboard"),
+		StatAttr:   ptttype.NBRD_FAV,
+		Brdname:    "mnewboard",
+		BoardClass: []byte("CPBL"),
+		RealTitle:  []byte("new-board"),
+		BoardType:  []byte{0xa1, 0xb7},
+		BM:         []UUserID{},
+		IdxByName:  "mnewboard",
+		IdxByClass: "Q1BCTA@mnewboard",
+		BrdAttr:    0x200000,
 	}
 
 	testArticleSummary0 = &ArticleSummary{

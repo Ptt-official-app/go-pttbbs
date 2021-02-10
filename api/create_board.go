@@ -23,9 +23,7 @@ type CreateBoardPath struct {
 	ClsBid ptttype.Bid `uri:"cls" binding:"required"`
 }
 
-type CreateBoardResult struct {
-	BBoardID bbs.BBoardID `uri:"bid" binding:"required"`
-}
+type CreateBoardResult *bbs.BoardSummary
 
 func CreateBoardWrapper(c *gin.Context) {
 	params := &CreateBoardParams{}
@@ -44,7 +42,7 @@ func CreateBoard(remoteAddr string, uuserID bbs.UUserID, params interface{}, pat
 		return nil, ErrInvalidPath
 	}
 
-	boardID, err := bbs.CreateBoard(
+	result, err = bbs.CreateBoard(
 		uuserID,
 		thePath.ClsBid,
 		theParams.Brdname,
@@ -58,10 +56,6 @@ func CreateBoard(remoteAddr string, uuserID bbs.UUserID, params interface{}, pat
 	)
 	if err != nil {
 		return nil, err
-	}
-
-	result = &CreateBoardResult{
-		BBoardID: boardID,
 	}
 
 	return result, nil
