@@ -1,11 +1,11 @@
 package api
 
 import (
-	"reflect"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
 	"github.com/Ptt-official-app/go-pttbbs/ptt"
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 )
 
 func TestCreateBoard(t *testing.T) {
@@ -20,10 +20,6 @@ func TestCreateBoard(t *testing.T) {
 
 	path0 := &CreateBoardPath{
 		ClsBid: 2,
-	}
-
-	expected0 := &CreateBoardResult{
-		BBoardID: "13_mnewtest",
 	}
 
 	type args struct {
@@ -45,7 +41,7 @@ func TestCreateBoard(t *testing.T) {
 				params:  params0,
 				path:    path0,
 			},
-			expectedResult: expected0,
+			expectedResult: testBoardSummary13,
 		},
 	}
 	for _, tt := range tests {
@@ -55,9 +51,7 @@ func TestCreateBoard(t *testing.T) {
 				t.Errorf("CreateBoard() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(gotResult, tt.expectedResult) {
-				t.Errorf("CreateBoard() = %v, want %v", gotResult, tt.expectedResult)
-			}
+			testutil.TDeepEqual(t, "got", gotResult, tt.expectedResult)
 		})
 	}
 }

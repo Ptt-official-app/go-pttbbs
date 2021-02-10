@@ -5,6 +5,7 @@ import (
 
 	"github.com/Ptt-official-app/go-pttbbs/ptt"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 )
 
 func TestCreateBoard(t *testing.T) {
@@ -26,10 +27,10 @@ func TestCreateBoard(t *testing.T) {
 		isGroup      bool
 	}
 	tests := []struct {
-		name            string
-		args            args
-		expectedBoardID BBoardID
-		wantErr         bool
+		name     string
+		args     args
+		expected *BoardSummary
+		wantErr  bool
 	}{
 		// TODO: Add test cases.
 		{
@@ -50,19 +51,18 @@ func TestCreateBoard(t *testing.T) {
 				brdClass: []byte("CPBL"),
 				brdTitle: []byte("new-board"),
 			},
-			expectedBoardID: "13_mnewboard",
+			expected: testBoardSummary13,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotBoardID, err := CreateBoard(tt.args.userID, tt.args.clsBid, tt.args.brdname, tt.args.brdClass, tt.args.brdTitle, tt.args.BMs, tt.args.brdAttr, tt.args.level, tt.args.chessCountry, tt.args.isGroup)
+			got, err := CreateBoard(tt.args.userID, tt.args.clsBid, tt.args.brdname, tt.args.brdClass, tt.args.brdTitle, tt.args.BMs, tt.args.brdAttr, tt.args.level, tt.args.chessCountry, tt.args.isGroup)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CreateBoard() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if gotBoardID != tt.expectedBoardID {
-				t.Errorf("CreateBoard() = %v, want %v", gotBoardID, tt.expectedBoardID)
-			}
+
+			testutil.TDeepEqual(t, "got", got, tt.expected)
 		})
 	}
 }

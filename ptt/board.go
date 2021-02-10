@@ -106,20 +106,28 @@ func NewBoard(
 	chessCountry ptttype.ChessCode,
 	isGroup bool,
 ) (
-
-	newBoard *ptttype.BoardHeaderRaw,
-	newBid ptttype.Bid,
+	summary *ptttype.BoardSummaryRaw,
 	err error) {
 
 	clsBoard, err := cache.GetBCache(clsBid)
 	if err != nil {
-		return nil, 0, err
+		return nil, err
 	}
 
 	isGroupOp := groupOp(user, clsBoard)
 	if !user.UserLevel.HasUserPerm(ptttype.PERM_BOARD) && !isGroupOp {
-		return nil, 0, ErrNotPermitted
+		return nil, ErrNotPermitted
 	}
 
-	return mNewbrd(user, clsBid, brdname, brdClass, brdTitle, BMs, brdAttr, level, chessCountry, isGroup, false)
+	_, newBid, err := mNewbrd(user, clsBid, brdname, brdClass, brdTitle, BMs, brdAttr, level, chessCountry, isGroup, false)
+	if err != nil {
+		return nil, err
+	}
+
+	summary, err = LoadBoardSummary(user, uid, newBid)
+	if err != nil {
+		return nil, err
+	}
+
+	return summary, nil
 }

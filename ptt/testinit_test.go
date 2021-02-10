@@ -31,6 +31,8 @@ func setupTest() {
 	_ = cache.LoadUHash()
 
 	_ = cmbbs.PasswdInit()
+
+	initVars()
 }
 
 func teardownTest() {

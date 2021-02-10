@@ -16,16 +16,16 @@ func CreateBoard(
 	level ptttype.PERM,
 	chessCountry ptttype.ChessCode,
 	isGroup bool,
-) (boardID BBoardID, err error) {
+) (summary *BoardSummary, err error) {
 
 	userIDRaw, err := userID.ToRaw()
 	if err != nil {
-		return "", ErrInvalidParams
+		return nil, ErrInvalidParams
 	}
 
 	uid, userecRaw, err := ptt.InitCurrentUser(userIDRaw)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	brdnameRaw := &ptttype.BoardID_t{}
@@ -37,7 +37,7 @@ func CreateBoard(
 	}
 	bms := ptttype.NewBM(BMs_userIDRaw)
 
-	newBoardRaw, newBid, err := ptt.NewBoard(
+	summaryRaw, err := ptt.NewBoard(
 		userecRaw,
 		uid,
 		clsBid,
@@ -51,10 +51,10 @@ func CreateBoard(
 		isGroup,
 	)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	boardID = ToBBoardID(newBid, &newBoardRaw.Brdname)
+	summary = NewBoardSummaryFromRaw(summaryRaw)
 
-	return boardID, nil
+	return summary, nil
 }

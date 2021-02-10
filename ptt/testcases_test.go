@@ -287,6 +287,9 @@ var (
 		StatAttr: ptttype.NBRD_FAV,
 	}
 
+	testTitle13        *ptttype.BoardTitle_t
+	testBoardSummary13 *ptttype.BoardSummaryRaw
+
 	testBoardHeaderRaw1 = &ptttype.BoardHeaderRaw{
 		Brdname: ptttype.BoardID_t{'t', 'e', 's', 't'},
 		BrdAttr: ptttype.BRD_HIDE,
@@ -357,3 +360,22 @@ var (
 		0x31, 0x38, 0x2e, 0x30, 0x2e, 0x31, 0x0a,
 	}
 )
+
+func initVars() {
+	if testTitle13 != nil {
+		return
+	}
+
+	testTitle13 = &ptttype.BoardTitle_t{}
+	copy(testTitle13[:], []byte("CPBL \xa1\xb7new-board"))
+
+	testBoardSummary13 = &ptttype.BoardSummaryRaw{
+		Gid:      2,
+		Bid:      13,
+		Brdname:  &ptttype.BoardID_t{'m', 'n', 'e', 'w', 'b', 'o', 'a', 'r', 'd', '0'},
+		Title:    testTitle13,
+		BM:       []*ptttype.UserID_t{},
+		StatAttr: ptttype.NBRD_FAV,
+		BrdAttr:  0x200000,
+	}
+}
