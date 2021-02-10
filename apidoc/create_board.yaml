@@ -1,0 +1,57 @@
+createBoard
+---
+tags:
+  - board
+  - class
+parameters:
+  - '$ref': '#/definitions/Host'
+  - '$ref': '#/definitions/XForwardedFor'
+  - '$ref': '#/definitions/Authorization'
+  - name: cls
+    in: path
+    type: string
+    required: true
+    description: class-id
+  - name: params
+    in: body
+    required: true
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      type: object
+      properties:
+        brdname:
+          type: string
+        class:
+          type: string
+          description: base64-big5
+        title:
+          type: string
+          description: base64-big5
+        bms:
+          type: array
+          items:
+            type: string
+            description: user-id
+        brdattr:
+          type: number
+          description: https://github.com/Ptt-official-app/go-pttbbs/blob/main/ptttype/brdattr.go
+        level:
+          type: number
+          description: https://github.com/Ptt-official-app/go-pttbbs/blob/main/ptttype/perm.go
+        chess_country:
+          type: number
+          description: https://github.com/Ptt-official-app/go-pttbbs/blob/main/ptttype/ChessCode.go
+        is_group:
+          type: boolean
+responses:
+  200:
+    description: index-response
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      '$ref': '#/definitions/Token'
+      type: object
+      properties:
+        bid:
+          type: string
+          description: board-id
+          required: true
