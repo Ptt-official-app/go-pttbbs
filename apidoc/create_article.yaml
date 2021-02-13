@@ -1,0 +1,40 @@
+createArticle
+---
+tags:
+  - board
+  - article
+parameters:
+  - '$ref': '#/definitions/Host'
+  - '$ref': '#/definitions/XForwardedFor'
+  - '$ref': '#/definitions/Authorization'
+  - name: bid
+    in: path
+    type: string
+    required: true
+    description: board-id
+  - name: params
+    in: body
+    required: true
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      type: object
+      properties:
+        posttype:
+          type: string
+          description: base64-big5
+        title:
+          type: string
+          description: base64-big5
+        content:
+          type: array
+          items:
+            type: array
+            items:
+              type: string
+          description: '[][]base64-big5'
+responses:
+  200:
+    description: index-response
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      '$ref': '#/definitions/ArticleSummary'

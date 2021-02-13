@@ -31,7 +31,7 @@ parameters:
           type: array
           items:
             type: string
-            description: user-id
+          description: user-id
         brdattr:
           type: number
           description: https://github.com/Ptt-official-app/go-pttbbs/blob/main/ptttype/brdattr.go

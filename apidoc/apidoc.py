@@ -130,6 +130,14 @@ def _get_article(bid, aid):
     return ''
 
 
+@app.route(_with_app_prefix('/board/<bid>/article'), methods=['POST'])
+def _create_article(bid, aid):
+    """
+    swagger_from_file: apidoc/create_article.yaml
+    """
+    return ''
+
+
 @app.route(_with_app_prefix('/user/<uid>/information'), methods=['GET'])
 def _get_user(uid):
     """

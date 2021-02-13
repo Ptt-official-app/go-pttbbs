@@ -110,10 +110,16 @@ func CopyDirToDir(src string, dst string) (err error) {
 		childDst := strings.Join([]string{dst, entryName}, string(os.PathSeparator))
 
 		if IsDir(childSrc) {
-			MkdirAll(childDst)
+			err = MkdirAll(childDst)
+			if err != nil {
+				return err
+			}
 		}
 
-		CopyFile(childSrc, childDst)
+		err = CopyFile(childSrc, childDst)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -145,4 +151,30 @@ func Rename(src string, dst string) (err error) {
 	}
 
 	return os.Rename(src, dst)
+}
+
+func DashT(filename string) (t Time4) {
+	info, err := os.Stat(filename)
+	if err != nil {
+		return -1
+	}
+
+	return TimeToTime4(info.ModTime())
+}
+
+func Symlink(src string, dst string) (err error) {
+	return os.Symlink(src, dst)
+}
+
+func DashS(filename string) (theSize int64) {
+	info, err := os.Stat(filename)
+	if err != nil {
+		return -1
+	}
+
+	return info.Size()
+}
+
+func OpenCreate(filename string, flags int) (file *os.File, err error) {
+	return os.OpenFile(filename, flags|os.O_CREATE, DEFAULT_FILE_CREATE_PERM)
 }

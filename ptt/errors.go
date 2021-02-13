@@ -19,6 +19,7 @@ var (
 	ErrInvalidPID    = errors.New("invalid pid")
 	ErrInvalidEmail  = errors.New("invalid email")
 	ErrTooManyBoards = errors.New("too many boards")
+	ErrCooldown      = errors.New("cooldown")
 )
 
 func FatalLockedUser(userID *ptttype.UserID_t) error {

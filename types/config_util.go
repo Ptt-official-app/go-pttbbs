@@ -31,6 +31,11 @@ func postConfig() (err error) {
 		return err
 	}
 
+	err = initBig5()
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

@@ -7,6 +7,7 @@ import (
 	"unsafe"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
+	"github.com/Ptt-official-app/go-pttbbs/types"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -364,6 +365,96 @@ func TestSetUserID(t *testing.T) {
 				unsafe.Pointer(nextInHash),
 			)
 			assert.Equalf(t, nextInHash, tt.wantNextInHash, "SetUserID() nextInHash: %v want: %v", nextInHash, tt.wantNextInHash)
+		})
+		wg.Wait()
+	}
+}
+
+func TestAddCooldownTime(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	InitFillUHash(false)
+
+	type args struct {
+		uid     ptttype.Uid
+		minutes int
+	}
+	tests := []struct {
+		name     string
+		args     args
+		expected int
+		wantErr  bool
+	}{
+		// TODO: Add test cases.
+		{
+			args:     args{uid: 1, minutes: 10},
+			expected: 10,
+		},
+		{
+			args:     args{uid: 1, minutes: 5},
+			expected: 15,
+		},
+	}
+
+	var wg sync.WaitGroup
+	for _, tt := range tests {
+		wg.Add(1)
+		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
+			if err := AddCooldownTime(tt.args.uid, tt.args.minutes); (err != nil) != tt.wantErr {
+				t.Errorf("AddCooldownTime() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			got := CooldownTimeOf(tt.args.uid)
+			nowTS := types.NowTS()
+			if !((nowTS+types.Time4(tt.expected-1)*60) <= got && got <= (nowTS+types.Time4(tt.expected*60))) {
+				t.Errorf("AddCooldownTime: got: %v nowTS: %v diff: %v expected: %v", got, nowTS, got-nowTS, tt.args.minutes*60)
+			}
+		})
+		wg.Wait()
+	}
+}
+
+func TestAddPosttimes(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	InitFillUHash(false)
+
+	type args struct {
+		uid   ptttype.Uid
+		times int
+	}
+	tests := []struct {
+		name     string
+		args     args
+		expected types.Time4
+		wantErr  bool
+	}{
+		// TODO: Add test cases.
+		{
+			args:     args{uid: 1, times: 1},
+			expected: 1,
+		},
+		{
+			args:     args{uid: 1, times: 2},
+			expected: 3,
+		},
+	}
+
+	var wg sync.WaitGroup
+	for _, tt := range tests {
+		wg.Add(1)
+		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
+			if err := AddPosttimes(tt.args.uid, tt.args.times); (err != nil) != tt.wantErr {
+				t.Errorf("AddPosttimes() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			posttimes := PosttimesOf(tt.args.uid)
+			if posttimes != tt.expected {
+				t.Errorf("AddPosttimes: posttimes: %v expected: %v", posttimes, tt.expected)
+			}
 		})
 		wg.Wait()
 	}

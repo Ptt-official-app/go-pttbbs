@@ -114,7 +114,7 @@ func NewBoard(
 		return nil, err
 	}
 
-	isGroupOp := groupOp(user, clsBoard)
+	isGroupOp := groupOp(user, uid, clsBoard)
 	if !user.UserLevel.HasUserPerm(ptttype.PERM_BOARD) && !isGroupOp {
 		return nil, ErrNotPermitted
 	}
@@ -130,4 +130,31 @@ func NewBoard(
 	}
 
 	return summary, nil
+}
+
+//groupOp
+//
+//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1579
+func groupOp(user *ptttype.UserecRaw, uid ptttype.Uid, board *ptttype.BoardHeaderRaw) (isValid bool) {
+	if user.UserLevel.HasUserPerm(ptttype.PERM_NOCITIZEN) {
+		isValid = false
+	}
+
+	if user.UserLevel.HasUserPerm(ptttype.PERM_BOARD) {
+		isValid = true
+	}
+
+	if is_uBM(&user.UserID, &board.BM) {
+		isValid = true
+	}
+	if !isValid {
+		return isValid
+	}
+
+	// XXX 不是很確定是否該在這邊 save level?
+	if !user.UserLevel.HasUserPerm(ptttype.PERM_SYSSUBOP) || !user.UserLevel.HasUserPerm(ptttype.PERM_BM) {
+		pwcuBitEnableLevel(uid, &user.UserID, ptttype.PERM_SYSSUBOP|ptttype.PERM_BM)
+	}
+
+	return isValid
 }

@@ -38,6 +38,18 @@ func pwcuStart(uid ptttype.Uid, userID *ptttype.UserID_t) (user *ptttype.UserecR
 	return user, nil
 }
 
+func pwcuIncNumPost(user *ptttype.UserecRaw, uid ptttype.Uid) (err error) {
+	u, err := pwcuStart(uid, &user.UserID)
+	if err != nil {
+		return err
+	}
+
+	u.NumPosts++
+	user.NumPosts = u.NumPosts
+
+	return pwcuEnd(uid, u)
+}
+
 func pwcuEnd(uid ptttype.Uid, user *ptttype.UserecRaw) (err error) {
 	return passwdSyncUpdate(uid, user)
 }

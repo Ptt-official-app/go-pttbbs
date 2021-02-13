@@ -95,6 +95,10 @@ func (u Uid) IsValid() bool {
 	return u >= 1 && u <= MAX_USERS
 }
 
+func (u Uid) ToPid() (p types.Pid_t) {
+	return types.Pid_t(u) + types.DEFAULT_PID_MAX
+}
+
 func (b Bid) IsValid() bool {
 	return b >= 1 && b <= MAX_BOARD
 }
@@ -175,6 +179,13 @@ func (u *UserID_t) CopyFrom(uBytes []byte) {
 //guest as reserved user-account.
 func (u *UserID_t) IsGuest() bool {
 	return u[0] == 'g' && u[1] == 'u' && u[2] == 'e' && u[3] == 's' && u[4] == 't' && u[5] == 0
+}
+
+func ToBoardID(boardIDBytes []byte) (boardID *BoardID_t) {
+	boardID = &BoardID_t{}
+	copy(boardID[:], boardIDBytes)
+
+	return boardID
 }
 
 //Valid BoardID

@@ -1,5 +1,7 @@
 package cmsys
 
+import "sync"
+
 const (
 	//https://github.com/ptt/pttbbs/blob/master/include/fnv_hash.h
 	//commit: 6bdd36898bde207683a441cdffe2981e95de5b20
@@ -41,4 +43,22 @@ var (
 
 const (
 	N_ITER_PTTLOCK = 10
+)
+
+type LogFlag int
+
+const (
+	LOG_CREAT LogFlag = 1
+)
+
+type DBCSStatus_t int
+
+const (
+	DBCS_ASCII    DBCSStatus_t = 0
+	DBCS_LEADING  DBCSStatus_t = 1
+	DBCS_TRAILING DBCSStatus_t = 2
+)
+
+var (
+	lock sync.Mutex
 )

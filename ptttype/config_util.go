@@ -111,6 +111,15 @@ func SetBBSHOME(bbshome string) string {
 	return origBBSHome
 }
 
+func setBBSName(bbsname string) (origBBSName string) {
+	origBBSName = BBSNAME
+	BBSNAME = bbsname
+
+	BBSNAME_BIG5 = types.Utf8ToBig5(BBSNAME)
+
+	return origBBSName
+}
+
 //setBBSMName
 //
 //This is to safely set BBSMNAME
@@ -128,32 +137,32 @@ func setBBSMName(bbsmname string) string {
 
 	// regex-replace
 
-	BN_SECURITY = regexReplace(BN_SECURITY, "BBSMNAME", BBSMNAME)
-	BN_NOTE = regexReplace(BN_NOTE, "BBSMNAME", BBSMNAME)
-	BN_RECORD = regexReplace(BN_RECORD, "BBSMNAME", BBSMNAME)
-	BN_SYSOP = regexReplace(BN_SYSOP, "BBSMNAME", BBSMNAME)
-	BN_TEST = regexReplace(BN_SECURITY, "BBSMNAME", BBSMNAME)
-	BN_BUGREPORT = regexReplace(BN_BUGREPORT, "BBSMNAME", BBSMNAME)
-	BN_LAW = regexReplace(BN_LAW, "BBSMNAME", BBSMNAME)
-	BN_NEWBIE = regexReplace(BN_NEWBIE, "BBSMNAME", BBSMNAME)
-	BN_ASKBOARD = regexReplace(BN_ASKBOARD, "BBSMNAME", BBSMNAME)
-	BN_FOREIGN = regexReplace(BN_FOREIGN, "BBSMNAME", BBSMNAME)
+	BN_SECURITY_s = regexReplace(BN_SECURITY_s, "BBSMNAME", BBSMNAME)
+	BN_NOTE_s = regexReplace(BN_NOTE_s, "BBSMNAME", BBSMNAME)
+	BN_RECORD_s = regexReplace(BN_RECORD_s, "BBSMNAME", BBSMNAME)
+	BN_SYSOP_s = regexReplace(BN_SYSOP_s, "BBSMNAME", BBSMNAME)
+	BN_TEST_s = regexReplace(BN_SECURITY_s, "BBSMNAME", BBSMNAME)
+	BN_BUGREPORT_s = regexReplace(BN_BUGREPORT_s, "BBSMNAME", BBSMNAME)
+	BN_LAW_s = regexReplace(BN_LAW_s, "BBSMNAME", BBSMNAME)
+	BN_NEWBIE_s = regexReplace(BN_NEWBIE_s, "BBSMNAME", BBSMNAME)
+	BN_ASKBOARD_s = regexReplace(BN_ASKBOARD_s, "BBSMNAME", BBSMNAME)
+	BN_FOREIGN_s = regexReplace(BN_FOREIGN_s, "BBSMNAME", BBSMNAME)
 
 	// config.go
 	if IS_BN_FIVECHESS_LOG_INFERRED {
-		BN_FIVECHESS_LOG = BBSMNAME + "Five"
+		BN_FIVECHESS_LOG_s = BBSMNAME + "Five"
 	}
 	if IS_BN_CCHESS_LOG_INFERRED {
-		BN_CCHESS_LOG = BBSMNAME + "CChess"
+		BN_CCHESS_LOG_s = BBSMNAME + "CChess"
 	}
 	if IS_MONEYNAME_INFFERRED {
 		MONEYNAME = BBSMNAME + "幣"
 	}
 
-	BN_BUGREPORT = BBSMNAME + "Bug"
-	BN_LAW = BBSMNAME + "Law"
-	BN_NEWBIE = BBSMNAME + "NewHand"
-	BN_FOREIGN = BBSMNAME + "Foreign"
+	BN_BUGREPORT_s = BBSMNAME + "Bug"
+	BN_LAW_s = BBSMNAME + "Law"
+	BN_NEWBIE_s = BBSMNAME + "NewHand"
+	BN_FOREIGN_s = BBSMNAME + "Foreign"
 
 	return origBBSMName
 }
@@ -218,10 +227,12 @@ func setRecycleBinName(recycleBinName string) string {
 func postInitConfig() error {
 	_ = setServiceMode(SERVICE_MODE)
 	_ = SetBBSHOME(BBSHOME)
+	_ = setBBSName(BBSNAME)
 	_ = setBBSMName(BBSMNAME)
 	_ = setCAPTCHAInsertServerAddr(CAPTCHA_INSERT_SERVER_ADDR)
 	_ = setMyHostname(MYHOSTNAME)
 	_ = setRecycleBinName(RECYCLE_BIN_NAME)
+	_ = setBoards()
 
 	return nil
 }
@@ -263,6 +274,33 @@ func initReservedUserIDs() {
 		firstBytes := types.CstrToBytes(first)
 		ReservedUserIDs = append(ReservedUserIDs, firstBytes)
 	}
+}
 
-	return
+func setBoards() (err error) {
+	BN_SECURITY = ToBoardID([]byte(BN_SECURITY_s))
+	BN_NOTE = ToBoardID([]byte(BN_NOTE_s))
+	BN_RECORD = ToBoardID([]byte(BN_RECORD_s))
+	BN_SYSOP = ToBoardID([]byte(BN_SYSOP_s))
+	BN_TEST = ToBoardID([]byte(BN_TEST_s))
+	BN_BUGREPORT = ToBoardID([]byte(BN_BUGREPORT_s))
+	BN_LAW = ToBoardID([]byte(BN_LAW_s))
+	BN_NEWBIE = ToBoardID([]byte(BN_NEWBIE_s))
+	BN_ASKBOARD = ToBoardID([]byte(BN_ASKBOARD_s))
+	BN_FOREIGN = ToBoardID([]byte(BN_FOREIGN_s))
+	BN_ARTDSN = ToBoardID([]byte(BN_ARTDSN_s))
+	BN_BBSMOVIE = ToBoardID([]byte(BN_BBSMOVIE_s))
+	BN_WHOAMI = ToBoardID([]byte(BN_WHOAMI_s))
+	BN_FIVECHESS_LOG = ToBoardID([]byte(BN_FIVECHESS_LOG_s))
+	BN_CCHESS_LOG = ToBoardID([]byte(BN_CCHESS_LOG_s))
+
+	BN_ID_PROBLEM = ToBoardID([]byte(BN_ID_PROBLEM_s))
+	BN_DELETED = ToBoardID([]byte(BN_DELETED_s))
+	BN_JUNK = ToBoardID([]byte(BN_JUNK_s))
+	BN_POLICELOG = ToBoardID([]byte(BN_POLICELOG_s))
+	BN_UNANONYMOUS = ToBoardID([]byte(BN_UNANONYMOUS_s))
+	BN_NEWIDPOST = ToBoardID([]byte(BN_NEWIDPOST_s))
+	BN_ALLPOST = ToBoardID([]byte(BN_ALLPOST_s))
+	BN_ALLHIDPOST = ToBoardID([]byte(BN_ALLHIDPOST_s))
+
+	return nil
 }

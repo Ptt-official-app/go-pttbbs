@@ -395,8 +395,8 @@ func TestFindArticleStartAid(t *testing.T) {
 				t.Errorf("FindArticleStartAid() = %v, want %v", gotStartAid, tt.expectedStartAid)
 			}
 		})
-		wg.Wait()
 	}
+	wg.Wait()
 }
 
 func TestLoadGeneralArticlesSameCreateTime(t *testing.T) {
@@ -442,8 +442,12 @@ func TestLoadGeneralArticlesSameCreateTime(t *testing.T) {
 			expectedSummaries: nil,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotSummaries, gotStartNumIdx, gotEndNumIdx, err := LoadGeneralArticlesSameCreateTime(tt.args.boardIDRaw, tt.args.bid, tt.args.startAid, tt.args.endAid, tt.args.createTime)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadGeneralArticlesSameCreateTime() error = %v, wantErr %v", err, tt.wantErr)
@@ -465,4 +469,5 @@ func TestLoadGeneralArticlesSameCreateTime(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }

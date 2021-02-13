@@ -165,15 +165,22 @@ const (
 	WB_OFO_MSG_TOP     = 15
 	WB_OFO_MSG_BOTTOM  = 22
 	WB_OFO_MSG_LEFT    = 4
+)
 
-	/* ----------------------------------------------------- */
-	/* 標題類形                                              */
-	/* ----------------------------------------------------- */
-	SUBJECT_NORMAL  = 0
-	SUBJECT_REPLY   = 1
-	SUBJECT_FORWARD = 2
-	SUBJECT_LOCKED  = 3
+/* ----------------------------------------------------- */
+/* 標題類形                                              */
+/* ----------------------------------------------------- */
 
+type SubjectType int
+
+const (
+	SUBJECT_NORMAL  SubjectType = 0
+	SUBJECT_REPLY   SubjectType = 1
+	SUBJECT_FORWARD SubjectType = 2
+	SUBJECT_LOCKED  SubjectType = 3
+)
+
+const (
 	/* ----------------------------------------------------- */
 	/* 群組名單模式   Ptt                                    */
 	/* ----------------------------------------------------- */
@@ -193,21 +200,28 @@ const (
 	NOTREPLYING    = -1
 	REPLYING       = 0
 	RECVINREPLYING = 1
+)
 
+type EditFlag int
+
+const (
 	/* ----------------------------------------------------- */
 	/* 編輯器選項                                            */
 	/* ----------------------------------------------------- */
-	EDITFLAG_TEXTONLY   = 0x00000001
-	EDITFLAG_UPLOAD     = 0x00000002
-	EDITFLAG_ALLOWLARGE = 0x00000004
-	EDITFLAG_ALLOWTITLE = 0x00000008
+	EDITFLAG_TEXTONLY   EditFlag = 0x00000001
+	EDITFLAG_UPLOAD     EditFlag = 0x00000002
+	EDITFLAG_ALLOWLARGE EditFlag = 0x00000004
+	EDITFLAG_ALLOWTITLE EditFlag = 0x00000008
 	// #define EDITFLAG_ANONYMOUS  (0x00000010)
-	EDITFLAG_KIND_NEWPOST   = 0x00000010
-	EDITFLAG_KIND_REPLYPOST = 0x00000020
-	EDITFLAG_KIND_SENDMAIL  = 0x00000040
-	EDITFLAG_KIND_MAILLIST  = 0x00000080
-	EDITFLAG_WARN_NOSELFDEL = 0x00000100
+	EDITFLAG_KIND_NEWPOST   EditFlag = 0x00000010
+	EDITFLAG_KIND_REPLYPOST EditFlag = 0x00000020
+	EDITFLAG_KIND_SENDMAIL  EditFlag = 0x00000040
+	EDITFLAG_KIND_MAILLIST  EditFlag = 0x00000080
+	EDITFLAG_WARN_NOSELFDEL EditFlag = 0x00000100
 	// #define EDITFLAG_ALLOW_LOCAL    (0x00000200)
+)
+
+const (
 	EDIT_ABORTED = -1
 
 	/* ----------------------------------------------------- */
@@ -289,3 +303,24 @@ const (
 func (f FriendStat) HasPerm(f1 FriendStat) bool {
 	return f&f1 != 0
 }
+
+var (
+	TN_ANNOUNCE_BIG5 = []byte{'[', 0xa4, 0xbd, 0xa7, 0x69, ']'}         //[公告]
+	STR_AUTHOR1_BIG5 = []byte{0xa7, 0x40, 0xaa, 0xcc, 0x3a}             //作者:
+	STR_AUTHOR2_BIG5 = []byte{0xb5, 0x6f, 0xab, 0x48, 0xa4, 0x48, 0x3a} //發信人:
+	STR_POST1_BIG5   = []byte{0xac, 0xdd, 0xaa, 0x4f, 0x3a}             //看板:
+	STR_POST2_BIG5   = []byte{0xaf, 0xb8, 0xa4, 0xba, 0x3a}             //站內:
+
+	STR_TITLE_BIG5 = []byte{0xbc, 0xd0, 0xc3, 0x44, 0x3a} //標題:
+	STR_TIME_BIG5  = []byte{0xae, 0xc9, 0xb6, 0xa1, 0x3a} //時間:
+
+	STR_BBS_BIG5 = []byte{0xa1, 0xb0, 0x20, 0xb5, 0x6f, 0xab, 0x48, 0xaf, 0xb8, 0x3a} //※ 發信站:
+
+	STR_FROM_BIG5 = []byte{0xa8, 0xd3, 0xa6, 0xdb, 0x3a} //來自:
+
+	STR_URL_DISPLAYNAME_BIG5 = []byte{0xa1, 0xb0, 0x20, 0xa4, 0xe5, 0xb3, 0xb9, 0xba, 0xf4, 0xa7, 0x7d, 0x3a} //※ 文章網址:
+)
+
+const (
+	FN_POST = ".post"
+)

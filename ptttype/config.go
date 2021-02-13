@@ -1,6 +1,10 @@
 package ptttype
 
-import "github.com/Ptt-official-app/go-pttbbs/types"
+import (
+	"os"
+
+	"github.com/Ptt-official-app/go-pttbbs/types"
+)
 
 func config() {
 	serviceModeStr := setStringConfig("SERVICE_MODE", "DEV")
@@ -22,16 +26,16 @@ func config() {
 	QUERY_ARTICLE_URL = setBoolConfig("QUERY_ARTICLE_URL", QUERY_ARTICLE_URL)
 	URL_PREFIX = setStringConfig("URL_PREFIX", URL_PREFIX)
 
-	BN_ARTDSN = setStringConfig("BN_ARTDSN", BN_ARTDSN)
+	BN_ARTDSN_s = setStringConfig("BN_ARTDSN", BN_ARTDSN_s)
 
-	BN_BBSMOVIE = setStringConfig("BN_BBSMOVIE", BN_BBSMOVIE)
+	BN_BBSMOVIE_s = setStringConfig("BN_BBSMOVIE", BN_BBSMOVIE_s)
 
-	BN_WHOAMI = setStringConfig("BN_WHOAMI", BN_WHOAMI)
+	BN_WHOAMI_s = setStringConfig("BN_WHOAMI", BN_WHOAMI_s)
 
 	IS_BN_FIVECHESS_LOG_INFERRED = setBoolConfig("IS_BN_FIVECHESS_LOG_INFERRED", IS_BN_FIVECHESS_LOG_INFERRED)
-	BN_FIVECHESS_LOG = setStringConfig("BN_FIVECHESS_LOG", BN_FIVECHESS_LOG)
+	BN_FIVECHESS_LOG_s = setStringConfig("BN_FIVECHESS_LOG", BN_FIVECHESS_LOG_s)
 	IS_BN_CCHESS_LOG_INFERRED = setBoolConfig("IS_BN_CCHESS_LOG_INFERRED", IS_BN_CCHESS_LOG_INFERRED)
-	BN_CCHESS_LOG = setStringConfig("BN_CCHESS_LOG", BN_CCHESS_LOG)
+	BN_CCHESS_LOG_s = setStringConfig("BN_CCHESS_LOG", BN_CCHESS_LOG_s)
 
 	BN_NOTE_AGGCHKDIR = setStringConfig("BN_NOTE_AGGCHKDIR", BN_NOTE_AGGCHKDIR)
 
@@ -155,9 +159,9 @@ func config() {
 	TAR_PATH = setStringConfig("TAR_PATH", TAR_PATH)
 	MUTT_PATH = setStringConfig("MUTT_PATH", MUTT_PATH)
 
-	DEFAULT_FOLDER_CREATE_PERM = setIntConfig("DEFAULT_FOLDER_CREATE_PERM", DEFAULT_FOLDER_CREATE_PERM)
+	DEFAULT_FOLDER_CREATE_PERM = os.FileMode(setIntConfig("DEFAULT_FOLDER_CREATE_PERM", int(DEFAULT_FOLDER_CREATE_PERM)))
 
-	DEFAULT_FILE_CREATE_PERM = setIntConfig("DEFAULT_FILE_CREATE_PERM", DEFAULT_FILE_CREATE_PERM)
+	DEFAULT_FILE_CREATE_PERM = os.FileMode(setIntConfig("DEFAULT_FILE_CREATE_PERM", int(DEFAULT_FILE_CREATE_PERM)))
 
 	SHM_KEY = types.Key_t(setIntConfig("SHM_KEY", int(SHM_KEY)))
 
@@ -172,26 +176,26 @@ func config() {
 	/////////////////////////////////////////////////////////////////////////////
 	// Default Board Names 預設看板名稱
 
-	BN_SECURITY = setStringConfig("BN_SECURITY", BN_SECURITY)
-	BN_NOTE = setStringConfig("BN_NOTE", BN_NOTE)
-	BN_RECORD = setStringConfig("BN_RECORD", BN_RECORD)
+	BN_SECURITY_s = setStringConfig("BN_SECURITY", BN_SECURITY_s)
+	BN_NOTE_s = setStringConfig("BN_NOTE", BN_NOTE_s)
+	BN_RECORD_s = setStringConfig("BN_RECORD", BN_RECORD_s)
 
-	BN_SYSOP = setStringConfig("BN_SYSOP", BN_SYSOP)
-	BN_TEST = setStringConfig("BN_TEST", BN_TEST)
-	BN_BUGREPORT = setStringConfig("BN_BUGREPORT", BN_BUGREPORT)
-	BN_LAW = setStringConfig("BN_LAW", BN_LAW)
-	BN_NEWBIE = setStringConfig("BN_NEWBIE", BN_NEWBIE)
-	BN_ASKBOARD = setStringConfig("BN_ASKBOARD", BN_ASKBOARD)
-	BN_FOREIGN = setStringConfig("BN_FOREIGN", BN_FOREIGN)
-	BN_ID_PROBLEM = setStringConfig("BN_ID_PROBLEM", BN_ID_PROBLEM)
-	BN_DELETED = setStringConfig("BN_DELETED", BN_DELETED)
-	BN_JUNK = setStringConfig("BN_JUNK", BN_JUNK)
+	BN_SYSOP_s = setStringConfig("BN_SYSOP", BN_SYSOP_s)
+	BN_TEST_s = setStringConfig("BN_TEST", BN_TEST_s)
+	BN_BUGREPORT_s = setStringConfig("BN_BUGREPORT", BN_BUGREPORT_s)
+	BN_LAW_s = setStringConfig("BN_LAW", BN_LAW_s)
+	BN_NEWBIE_s = setStringConfig("BN_NEWBIE", BN_NEWBIE_s)
+	BN_ASKBOARD_s = setStringConfig("BN_ASKBOARD", BN_ASKBOARD_s)
+	BN_FOREIGN_s = setStringConfig("BN_FOREIGN", BN_FOREIGN_s)
+	BN_ID_PROBLEM_s = setStringConfig("BN_ID_PROBLEM", BN_ID_PROBLEM_s)
+	BN_DELETED_s = setStringConfig("BN_DELETED", BN_DELETED_s)
+	BN_JUNK_s = setStringConfig("BN_JUNK", BN_JUNK_s)
 
-	BN_POLICELOG = setStringConfig("BN_POLICELOG", BN_POLICELOG)
-	BN_UNANONYMOUS = setStringConfig("BN_UNANONYMOUS", BN_UNANONYMOUS)
-	BN_NEWIDPOST = setStringConfig("BN_NEWIDPOST", BN_NEWIDPOST)
-	BN_ALLPOST = setStringConfig("BN_ALLPOST", BN_ALLPOST)
-	BN_ALLHIDPOST = setStringConfig("BN_ALLHIDPOST", BN_ALLHIDPOST)
+	BN_POLICELOG_s = setStringConfig("BN_POLICELOG", BN_POLICELOG_s)
+	BN_UNANONYMOUS_s = setStringConfig("BN_UNANONYMOUS", BN_UNANONYMOUS_s)
+	BN_NEWIDPOST_s = setStringConfig("BN_NEWIDPOST", BN_NEWIDPOST_s)
+	BN_ALLPOST_s = setStringConfig("BN_ALLPOST", BN_ALLPOST_s)
+	BN_ALLHIDPOST_s = setStringConfig("BN_ALLHIDPOST", BN_ALLHIDPOST_s)
 
 	MAX_GUEST = setIntConfig("MAX_GUEST", MAX_GUEST)
 	MAX_CPULOAD = setIntConfig("MAX_CPULOAD", MAX_CPULOAD)
@@ -328,4 +332,9 @@ func config() {
 	IS_NEW_SHM = setBoolConfig("IS_NEW_SHM", IS_NEW_SHM)
 
 	IS_UTMP = setBoolConfig("IS_UTMP", IS_UTMP)
+
+	//misc
+	ASSESS = setBoolConfig("ASSESS", ASSESS)
+
+	ALLOW_FREE_TN_ANNOUNCE = setBoolConfig("ALLOW_FREE_TN_ANNOUNCE", ALLOW_FREE_TN_ANNOUNCE)
 }

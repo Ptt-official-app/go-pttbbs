@@ -164,7 +164,7 @@ func TestSearchUListPID(t *testing.T) {
 		},
 		{
 			args:      args{7},
-			expected:  0,
+			expected:  -1,
 			expected1: nil,
 		},
 	}

@@ -8,7 +8,6 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/cmsys"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
-	"github.com/sirupsen/logrus"
 )
 
 func addBoardRecord(board *ptttype.BoardHeaderRaw) (bid ptttype.Bid, err error) {
@@ -36,7 +35,7 @@ func addBoardRecord(board *ptttype.BoardHeaderRaw) (bid ptttype.Bid, err error) 
 		return 0, ErrTooManyBoards
 	}
 
-	err = cmsys.AppendRecord(ptttype.FN_BOARD, board, ptttype.BOARD_HEADER_RAW_SZ)
+	_, err = cmsys.AppendRecord(ptttype.FN_BOARD, board, ptttype.BOARD_HEADER_RAW_SZ)
 	if err != nil {
 		return 0, err
 	}
@@ -79,7 +78,6 @@ func mNewbrd(
 	//mkdir
 	dirname := path.SetBPath(brdname)
 	err = types.Mkdir(dirname)
-	logrus.Infof("mNewbrd: after Mkdir: dirname: %v e: %v", dirname, err)
 	if os.IsExist(err) && isRecover {
 		err = nil
 	}

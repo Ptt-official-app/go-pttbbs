@@ -1092,3 +1092,46 @@ func AddbrdTouchCache() (bid ptttype.Bid, err error) {
 
 	return bid, nil
 }
+
+func SetLastPosttime(bid ptttype.Bid, nowTS types.Time4) (err error) {
+
+	bidInCache := bid.ToBidInStore()
+	Shm.WriteAt(
+		unsafe.Offsetof(Shm.Raw.LastPostTime)+types.TIME4_SZ*uintptr(bidInCache),
+		types.TIME4_SZ,
+		unsafe.Pointer(&nowTS),
+	)
+
+	return nil
+}
+
+func GetLastPosttime(bid ptttype.Bid) (lastposttime types.Time4, err error) {
+	bidInCache := bid.ToBidInStore()
+	Shm.ReadAt(
+		unsafe.Offsetof(Shm.Raw.LastPostTime)+types.TIME4_SZ*uintptr(bidInCache),
+		types.TIME4_SZ,
+		unsafe.Pointer(&lastposttime),
+	)
+
+	return lastposttime, nil
+}
+
+func TouchBPostNum(bid ptttype.Bid, delta int32) (err error) {
+	bidInCache := bid.ToBidInStore()
+	total := int32(0)
+	Shm.ReadAt(
+		unsafe.Offsetof(Shm.Raw.Total)+types.INT32_SZ*uintptr(bidInCache),
+		types.INT32_SZ,
+		unsafe.Pointer(&total),
+	)
+
+	total += delta
+
+	Shm.WriteAt(
+		unsafe.Offsetof(Shm.Raw.Total)+types.INT32_SZ*uintptr(bidInCache),
+		types.INT32_SZ,
+		unsafe.Pointer(&total),
+	)
+
+	return nil
+}

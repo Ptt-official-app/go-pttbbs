@@ -13,9 +13,15 @@ func setupTest() {
 	SetIsTest()
 	cache.SetIsTest()
 
+	types.SetIsTest()
+
 	ptttype.SetIsTest()
 
 	_ = types.CopyFileToFile("./testcase/.PASSWDS1", "./testcase/.PASSWDS")
+
+	_ = types.CopyFileToFile("./testcase/.BRD1", "./testcase/.BRD")
+
+	_ = types.CopyDirToDir("./testcase/boards1", "./testcase/boards")
 
 	_ = types.CopyDirToDir("./testcase/home1", "./testcase/home")
 
@@ -34,10 +40,17 @@ func teardownTest() {
 	_ = cache.CloseSHM()
 
 	os.Remove("./testcase/.fresh")
-	os.Remove("./testcase/.PASSWDS")
+
 	os.RemoveAll("./testcase/home")
+	os.RemoveAll("./testcase/boards")
+	os.Remove("./testcase/.BRD")
+	os.Remove("./testcase/.PASSWDS")
 
 	ptttype.UnsetIsTest()
+
+	types.UnsetIsTest()
+
 	cache.UnsetIsTest()
 	UnsetIsTest()
+
 }

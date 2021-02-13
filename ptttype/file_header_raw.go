@@ -71,10 +71,20 @@ func (f *FileHeaderRaw) Money() (money int32) {
 	return money
 }
 
+func (f *FileHeaderRaw) SetMoney(money int32) {
+	buf := bytes.NewBuffer(f.Multi[:4])
+	_ = binary.Write(buf, binary.LittleEndian, &money)
+}
+
 func (f *FileHeaderRaw) AnonUID() (anonUID int32) {
 	buf := bytes.NewBuffer(f.Multi[:4])
 	_ = binary.Read(buf, binary.LittleEndian, &anonUID)
 	return anonUID
+}
+
+func (f *FileHeaderRaw) SetAnonUID(uid Uid) {
+	buf := bytes.NewBuffer(f.Multi[:4])
+	_ = binary.Write(buf, binary.LittleEndian, &uid)
 }
 
 func (f *FileHeaderRaw) VoteLimits() *VoteLimits {

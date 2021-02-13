@@ -40,7 +40,7 @@ func (t Time4) ToUtc() time.Time {
 //Cdate
 //
 //Print date-time in string.
-//23+1 bytes, "12/31/2007 00:00:00 Mon\0"
+//23+1 bytes, "01/31/2007 00:00:00 Mon\0"
 func (t Time4) Cdate() string {
 	return t.ToLocal().Format("01/02/2006 15:04:05 Mon")
 }
@@ -48,7 +48,7 @@ func (t Time4) Cdate() string {
 //Cdatelite
 //
 //Light-print date-time in string.
-//19+1 bytes, "12/31/2007 00:00:00\0"
+//19+1 bytes, "01/31/2007 00:00:00\0"
 func (t Time4) Cdatelite() string {
 	return t.ToLocal().Format("01/02/2006 15:04:05")
 }
@@ -56,7 +56,7 @@ func (t Time4) Cdatelite() string {
 //Cdatedate
 //
 //Print date in string.
-//10+1 bytes, "12/31/2007\0"
+//10+1 bytes, "01/31/2007\0"
 func (t Time4) Cdatedate() string {
 	return t.ToLocal().Format("01/02/2006")
 }
@@ -64,15 +64,23 @@ func (t Time4) Cdatedate() string {
 //CdateMd
 //
 //Print month/day in string
-//5+1 bytes, "12/31\0"
+//5+1 bytes, "01/31\0"
 func (t Time4) CdateMd() string {
 	return t.ToLocal().Format("01/02")
+}
+
+//Cdatemd
+//
+//Print month/day in string
+//5+1 bytes, " 1/31\0"
+func (t Time4) Cdatemd() string {
+	return t.ToLocal().Format("_1/02")
 }
 
 //CdateMdHM
 //
 //Print month/day hour:minute in string
-//11+1 bytes, "12/31 10:01\0"
+//11+1 bytes, "01/31 10:01\0"
 func (t Time4) CdateMdHM() string {
 	return t.ToLocal().Format("01/02 15:04")
 }
@@ -80,7 +88,13 @@ func (t Time4) CdateMdHM() string {
 //CdateMdHMS
 //
 //Print month/day hour:minute:second in string
-//13+1 bytes, "12/31 10:01:01\0"
+//13+1 bytes, "01/31 10:01:01\0"
 func (t Time4) CdateMdHMS() string {
 	return t.ToLocal().Format("01/02 15:04:05")
+}
+
+//Ctime
+//Sun Feb 14 13:33:27 2021
+func (t Time4) Ctime() string {
+	return t.ToLocal().Format("Mon Jan _2 15:04:05 2006")
 }
