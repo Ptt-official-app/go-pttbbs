@@ -3,7 +3,8 @@ package initgin
 import "github.com/Ptt-official-app/go-pttbbs/ptttype"
 
 var (
-	testUserecRaw3 *ptttype.UserecRaw
+	testUserecRaw3      *ptttype.UserecRaw
+	testNewPostUserRaw1 *ptttype.UserecRaw
 )
 
 func initTestVars() {
@@ -41,4 +42,24 @@ func initTestVars() {
 		LastSeen: 1600681288,
 	}
 
+	testNewPostUserRaw1 = &ptttype.UserecRaw{
+		Version:    4194,
+		UserID:     ptttype.UserID_t{65, 49}, //A1
+		RealName:   ptttype.RealName_t{67, 111, 100, 105, 110, 103, 77, 97, 110},
+		Nickname:   ptttype.Nickname_t{175, 171},
+		PasswdHash: ptttype.Passwd_t{0x62, 0x68, 0x77, 0x76, 0x4f, 0x4a, 0x74, 0x66, 0x54, 0x31, 0x54, 0x41, 0x49, 0x00},
+
+		UFlag:        33557088,
+		UserLevel:    7 | ptttype.PERM_LOGINOK,
+		NumLoginDays: 2,
+		NumPosts:     0,
+		FirstLogin:   1600681288,
+		LastLogin:    1600756094,
+		LastHost:     ptttype.IPv4_t{53, 57, 46, 49, 50, 52, 46, 49, 54, 55, 46, 50, 50, 54},
+		Address:      ptttype.Address_t{183, 115, 166, 203, 191, 164, 164, 108, 181, 234, 182, 109, 175, 81, 166, 179, 167, 248, 53, 52, 51, 184, 185},
+		Over18:       true,
+		Pager:        ptttype.PAGER_ON,
+		Career:       ptttype.Career_t{165, 254, 180, 186, 179, 110, 197, 233},
+		LastSeen:     1600681288,
+	}
 }

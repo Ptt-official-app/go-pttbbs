@@ -7,4 +7,6 @@ var (
 
 	ARTICLE_CLASS_REPLY   = []byte("R:")
 	ARTICLE_CLASS_FORWARD = []byte{0xc2, 0xe0}
+
+	STR_DOTS = []byte{0xa1, 0x4b}
 )

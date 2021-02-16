@@ -100,6 +100,8 @@ var EMPTY_USER_INFO_RAW = UserInfoRaw{}
 const USER_INFO_RAW_SZ = unsafe.Sizeof(EMPTY_USER_INFO_RAW)
 const USER_INFO_USER_ID_OFFSET = unsafe.Offsetof(EMPTY_USER_INFO_RAW.UserID)
 const USER_INFO_PID_OFFSET = unsafe.Offsetof(EMPTY_USER_INFO_RAW.Pid)
+const USER_INFO_MODE_OFFSET = unsafe.Offsetof(EMPTY_USER_INFO_RAW.Mode)
+const USER_INFO_MODE_SZ = unsafe.Sizeof(EMPTY_USER_INFO_RAW.Mode)
 
 type FriendOnline uint32
 

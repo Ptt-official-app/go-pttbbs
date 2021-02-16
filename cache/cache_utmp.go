@@ -87,7 +87,7 @@ func SearchUListUserID(userID *ptttype.UserID_t) (ptttype.UtmpID, *ptttype.UserI
 		}
 	}
 
-	return 0, nil
+	return -1, nil
 }
 
 func SearchUListPID(pid types.Pid_t) (ptttype.UtmpID, *ptttype.UserInfoRaw) {
@@ -174,5 +174,26 @@ func SearchUListPID(pid types.Pid_t) (ptttype.UtmpID, *ptttype.UserInfoRaw) {
 		}
 	}
 
-	return 0, nil
+	return -1, nil
+}
+
+//SetUtmpMode
+//
+//XXX skip utmp for now.
+func SetUtmpMode(uid ptttype.Uid, mode ptttype.UserOpMode) (err error) {
+
+	/*
+		pid := uid.ToPid()
+		utmpID, _ := SearchUListPID(pid)
+		if utmpID == -1 {
+			return ErrNotFound
+		}
+		Shm.WriteAt(
+			unsafe.Offsetof(Shm.Raw.UInfo)+ptttype.USER_INFO_RAW_SZ*uintptr(utmpID)+ptttype.USER_INFO_MODE_OFFSET,
+			ptttype.USER_INFO_MODE_SZ,
+			unsafe.Pointer(&mode),
+		)
+	*/
+
+	return nil
 }

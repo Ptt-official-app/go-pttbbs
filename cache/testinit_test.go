@@ -35,12 +35,16 @@ func teardownTest() {
 func shmSetupTest() {
 	SetIsTest()
 
+	types.SetIsTest()
+
 	ptttype.SetIsTest()
 
 }
 
 func shmTeardownTest() {
 	ptttype.UnsetIsTest()
+
+	types.UnsetIsTest()
 
 	UnsetIsTest()
 	time.Sleep(1 * time.Millisecond)

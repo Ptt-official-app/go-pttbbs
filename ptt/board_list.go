@@ -31,7 +31,7 @@ func LoadBoardSummary(user *ptttype.UserecRaw, uid ptttype.Uid, bid ptttype.Bid)
 	if err != nil {
 		return nil, err
 	}
-	isGroupOp := groupOp(user, board)
+	isGroupOp := groupOp(user, uid, board)
 	state := boardPermStat(user, uid, board, bid)
 	boardStat := newBoardStat(bidInCache, state, board, isGroupOp)
 
@@ -98,7 +98,7 @@ func loadHotBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idx uint8) *pttt
 	//board-stat
 	//assuming that the hot-boards can be accessed by the public.
 	bid := bidInCache.ToBid()
-	isGroupOp := groupOp(user, board)
+	isGroupOp := groupOp(user, uid, board)
 	state := boardPermStat(user, uid, board, bid)
 	if (board.Brdname[0] == '\x00') ||
 		(board.BrdAttr&(ptttype.BRD_GROUPBOARD|ptttype.BRD_SYMBOLIC) != 0) ||
@@ -141,7 +141,7 @@ func loadBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, bid ptttype.Bid) (b
 		unsafe.Pointer(board),
 	)
 
-	isGroupOp := groupOp(user, board)
+	isGroupOp := groupOp(user, uid, board)
 	state := boardPermStat(user, uid, board, bid)
 	if (board.Brdname[0] == '\x00') ||
 		(board.BrdAttr&(ptttype.BRD_GROUPBOARD|ptttype.BRD_SYMBOLIC) != 0) ||
@@ -312,7 +312,7 @@ func loadAutoCompleteBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idxInSt
 	}
 
 	bid := bidInCache.ToBid()
-	isGroupOp := groupOp(user, board)
+	isGroupOp := groupOp(user, uid, board)
 	state := boardPermStat(user, uid, board, bid)
 	if (board.Brdname[0] == '\x00') ||
 		(board.BrdAttr&(ptttype.BRD_GROUPBOARD|ptttype.BRD_SYMBOLIC) != 0) ||
@@ -348,7 +348,7 @@ func loadGeneralBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idxInStore p
 	)
 
 	bid := bidInCache.ToBid()
-	isGroupOp := groupOp(user, board)
+	isGroupOp := groupOp(user, uid, board)
 	state := boardPermStat(user, uid, board, bid)
 	if (board.Brdname[0] == '\x00') ||
 		(board.BrdAttr&(ptttype.BRD_GROUPBOARD|ptttype.BRD_SYMBOLIC) != 0) ||
@@ -459,25 +459,6 @@ func parseBoardSummary(user *ptttype.UserecRaw, uid ptttype.Uid, boardStat *pttt
 	summary = ptttype.NewBoardSummaryRaw(boardStat, lastPostTime, total)
 
 	return summary
-}
-
-//groupOp
-//
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1579
-func groupOp(user *ptttype.UserecRaw, board *ptttype.BoardHeaderRaw) bool {
-	if user.UserLevel.HasUserPerm(ptttype.PERM_NOCITIZEN) {
-		return false
-	}
-
-	if user.UserLevel.HasUserPerm(ptttype.PERM_BOARD) {
-		return true
-	}
-
-	if is_uBM(&user.UserID, &board.BM) {
-		return true
-	}
-
-	return false
 }
 
 func FindBoardStartIdxByName(boardID *ptttype.BoardID_t, isAsc bool) (startIdx ptttype.SortIdx, err error) {

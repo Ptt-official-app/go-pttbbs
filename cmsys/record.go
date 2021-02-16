@@ -5,11 +5,9 @@ import (
 	"encoding/binary"
 	"io"
 	"os"
-	"syscall"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
-	"github.com/sirupsen/logrus"
 )
 
 func GetNumRecords(filename string, size uintptr) int {
@@ -243,13 +241,12 @@ func SubstituteRecord(filename string, data interface{}, theSize uintptr, idxInS
 		return err
 	}
 
-	err = PttLock(file, offset, theSize, syscall.F_WRLCK)
+	err = GoPttLock(file, filename, offset, theSize)
 	if err != nil {
 		return err
 	}
-	defer PttLock(file, offset, theSize, syscall.F_UNLCK)
+	defer GoPttUnlock(file, filename, offset, theSize)
 
-	logrus.Infof("SubstituteRecord: to write: filename: %v offset: %v data: %v", filename, offset, data)
 	err = binary.Write(file, binary.LittleEndian, data)
 	if err != nil {
 		return err
@@ -258,36 +255,36 @@ func SubstituteRecord(filename string, data interface{}, theSize uintptr, idxInS
 	return nil
 }
 
-func AppendRecord(filename string, data interface{}, theSize uintptr) (err error) {
+func AppendRecord(filename string, data interface{}, theSize uintptr) (idx ptttype.SortIdx, err error) {
 	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, os.FileMode(ptttype.DEFAULT_FILE_CREATE_PERM))
 	if err != nil {
-		return err
+		return 0, err
 	}
 	defer file.Close()
 
 	fd := file.Fd()
-	err = syscall.Flock(int(fd), syscall.LOCK_EX)
+	err = GoFlock(fd, filename)
 	if err != nil {
-		return err
+		return 0, err
 	}
-	defer syscall.Flock(int(fd), syscall.LOCK_UN)
+	defer GoFunlock(fd, filename)
 
 	fsize, err := file.Seek(0, io.SeekEnd)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
-	idxInStore := fsize / int64(theSize)
+	idxInStore := ptttype.SortIdxInStore(fsize / int64(theSize))
 	offset := int64(idxInStore) * int64(theSize)
 	_, err = file.Seek(offset, io.SeekStart)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	err = binary.Write(file, binary.LittleEndian, data)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
-	return nil
+	return idxInStore.ToSortIdx(), nil
 }

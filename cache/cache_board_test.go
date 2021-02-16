@@ -1084,3 +1084,80 @@ func TestAddbrdTouchCache(t *testing.T) {
 		})
 	}
 }
+
+func TestSetLastPosttime(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	ReloadBCache()
+
+	type args struct {
+		bid   ptttype.Bid
+		nowTS types.Time4
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantErr  bool
+		expected types.Time4
+	}{
+		// TODO: Add test cases.
+		{
+			args:     args{bid: 10, nowTS: 1234567890},
+			expected: 1234567890,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := SetLastPosttime(tt.args.bid, tt.args.nowTS); (err != nil) != tt.wantErr {
+				t.Errorf("SetLastPosttime() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			lastposttime, _ := GetLastPosttime(tt.args.bid)
+			testutil.TDeepEqual(t, "lastposttime", lastposttime, tt.expected)
+		})
+	}
+}
+
+func TestTouchBPostNum(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	ReloadBCache()
+
+	type args struct {
+		bid   ptttype.Bid
+		delta int32
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantErr  bool
+		expected int32
+	}{
+		// TODO: Add test cases.
+		{
+			args:     args{bid: 10, delta: 1},
+			expected: 1,
+		},
+		{
+			args:     args{bid: 10, delta: 2},
+			expected: 3,
+		},
+	}
+
+	var wg sync.WaitGroup
+	for _, tt := range tests {
+		wg.Add(1)
+		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
+			if err := TouchBPostNum(tt.args.bid, tt.args.delta); (err != nil) != tt.wantErr {
+				t.Errorf("TouchBPostNum() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			total := GetBTotal(tt.args.bid)
+			testutil.TDeepEqual(t, "total", total, tt.expected)
+		})
+		wg.Wait()
+	}
+}

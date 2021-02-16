@@ -134,7 +134,7 @@ func newUserInfoRaw(uid ptttype.Uid, user *ptttype.UserecRaw, ip *ptttype.IPv4_t
 	//2. the pid is fixed by user.
 	//3. user.nickname should not be affected.
 	uinfo := &ptttype.UserInfoRaw{
-		Pid:      types.Pid_t(uid) + types.Pid_t(types.DEFAULT_PID_MAX),
+		Pid:      uid.ToPid(),
 		Uid:      uid,
 		Mode:     op,
 		UserID:   user.UserID,

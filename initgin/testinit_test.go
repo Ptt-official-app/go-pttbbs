@@ -25,13 +25,14 @@ func setupTest() {
 	cache.SetIsTest()
 	cmbbs.SetIsTest()
 
+	types.SetIsTest()
+	ptttype.SetIsTest()
+
 	log.Infof("setupTest: to initAllConfig: sem_key: %v", ptttype.PASSWDSEM_KEY)
 
 	_ = InitAllConfig("./testcase/test.ini")
 
 	gin.SetMode(gin.TestMode)
-
-	ptttype.SetIsTest()
 
 	_ = types.CopyFileToFile("./testcase/.PASSWDS1", "./testcase/.PASSWDS")
 	_ = types.CopyFileToFile("./testcase/.BRD1", "./testcase/.BRD")
@@ -58,6 +59,7 @@ func teardownTest() {
 
 	_ = cache.CloseSHM()
 
+	os.Remove("./testcase/.post")
 	os.Remove("./testcase/.fresh")
 	os.RemoveAll("./testcase/home")
 	os.RemoveAll("./testcase/boards")
@@ -65,6 +67,7 @@ func teardownTest() {
 	os.Remove("./testcase/.PASSWDS")
 
 	ptttype.UnsetIsTest()
+	types.UnsetIsTest()
 
 	cmbbs.UnsetIsTest()
 	cache.UnsetIsTest()

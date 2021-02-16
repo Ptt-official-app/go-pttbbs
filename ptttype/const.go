@@ -124,3 +124,20 @@ var (
 	STR_SPACE   = " \t\n\r"
 	BYTES_SPACE = []byte(STR_SPACE)
 )
+
+var (
+	ANONYMOUS_ID       = &UserID_t{'A', 'n', 'o', 'n', 'y', 'm', 'o', 'u', 's', '.'}
+	ANONYMOUS_ID_BYTES = types.CstrToBytes(ANONYMOUS_ID[:])
+	ANONYMOUS_NICKNAME = []byte{0xb2, 0x71, 0xb2, 0x71, 0xa7, 0xda, 0xac, 0x4f, 0xbd, 0xd6, 0x20, 0x3f, 0x20, 0x5e, 0x6f, 0x5e} //猜猜我是誰 ? ^o^
+	ANONYMOUS_HOST     = []byte{0xb0, 0xce, 0xa6, 0x57, 0xa4, 0xd1, 0xa8, 0xcf, 0xaa, 0xba, 0xae, 0x61}                         //匿名天使的家
+)
+
+const (
+	//https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L15
+	NEWIDPOST_LIMIT_DAYS = 14
+)
+
+var (
+	PATTERN_ANSI_MOVECMD = []byte("ABCDfjHJRu")
+	PATTERN_ANSI_CODE    = []byte("0123456789;,[")
+)

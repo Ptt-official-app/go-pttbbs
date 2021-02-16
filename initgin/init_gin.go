@@ -39,6 +39,7 @@ func InitGin() (*gin.Engine, error) {
 
 	//article
 	router.GET(withPrefix(api.GET_ARTICLE_R), api.GetArticleWrapper)
+	router.POST(withPrefix(api.CREATE_ARTICLE_R), api.CreateArticleWrapper)
 
 	//user
 	router.GET(withPrefix(api.GET_USER_R), api.GetUserWrapper)

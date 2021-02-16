@@ -19,10 +19,11 @@ var (
 	// pttbbs.conf
 	//////////
 	/* 定義 BBS 站名位址 */
-	BBSNAME    = "新批踢踢"      /* 中文站名 */
-	BBSENAME   = "PTT2"      /* 英文站名 */
-	MYHOSTNAME = "ptt2.cc"   /* 網路位址 */
-	MYIP       = "127.0.0.1" /* IP位址 */
+	BBSNAME      = "新批踢踢" /* 中文站名 */
+	BBSNAME_BIG5 = []byte{0xb7, 0x73, 0xa7, 0xe5, 0xbd, 0xf0, 0xbd, 0xf0}
+	BBSENAME     = "PTT2"      /* 英文站名 */
+	MYHOSTNAME   = "ptt2.cc"   /* 網路位址 */
+	MYIP         = "127.0.0.1" /* IP位址 */
 
 	/* 定義是否查詢文章的 web 版 URL，及 URL 用的 hostname/prefix */
 	QUERY_ARTICLE_URL = true                   /* 是否提供查詢文章 URL */
@@ -36,43 +37,58 @@ var (
 	/* *** 以下為預設板名 (見 include/config.h) *** */
 
 	/* 安全紀錄 */
-	BN_SECURITY = "Security"
+	BN_SECURITY_s = "Security"
+	BN_SECURITY   = ToBoardID([]byte(BN_SECURITY_s))
 	/* 動態看板的家 */
-	BN_NOTE = "Note"
+	BN_NOTE_s = "Note"
+	BN_NOTE   = ToBoardID([]byte(BN_NOTE_s))
 	/* 紀錄 */
-	BN_RECORD = "Record"
+	BN_RECORD_s = "Record"
+	BN_RECORD   = ToBoardID([]byte(BN_RECORD_s))
 
 	/* SYSOP 板 */
-	BN_SYSOP = "SYSOP"
+	BN_SYSOP_s = "SYSOP"
+	BN_SYSOP   = ToBoardID([]byte(BN_SYSOP_s))
 	/* 測試板 */
-	BN_TEST = "Test"
+	BN_TEST_s = "Test"
+	BN_TEST   = ToBoardID([]byte(BN_TEST_s))
 	/* 發生錯誤時建議的回報板名為此板 */
-	BN_BUGREPORT = BBSMNAME + "Bug"
+	BN_BUGREPORT_s = BBSMNAME + "Bug"
+	BN_BUGREPORT   = ToBoardID([]byte(BN_BUGREPORT_s))
 	/* 法律訴訟的板 */
-	BN_LAW = BBSMNAME + "Law"
+	BN_LAW_s = BBSMNAME + "Law"
+	BN_LAW   = ToBoardID([]byte(BN_LAW_s))
 	/* 新手板(會自動進我的最愛) */
-	BN_NEWBIE = BBSMNAME + "NewHand"
+	BN_NEWBIE_s = BBSMNAME + "NewHand"
+	BN_NEWBIE   = ToBoardID([]byte(BN_NEWBIE_s))
 	/* 找看板(會自動進我的最愛) */
-	BN_ASKBOARD = "AskBoard"
+	BN_ASKBOARD_s = "AskBoard"
+	BN_ASKBOARD   = ToBoardID([]byte(BN_ASKBOARD_s))
 	/* 外國板 */
-	BN_FOREIGN = BBSMNAME + "Foreign"
+	BN_FOREIGN_s = BBSMNAME + "Foreign"
+	BN_FOREIGN   = ToBoardID([]byte(BN_FOREIGN_s))
 
 	/* *** 以下為定義時會多出功能的板名 *** */
 
 	/* 若定義, 提供美工特別用板 */
-	BN_ARTDSN = "Artdsn"
+	BN_ARTDSN_s = "Artdsn"
+	BN_ARTDSN   = ToBoardID([]byte(BN_ARTDSN_s))
 
 	/* 若定義，該板發文不受行限或是可上傳 */
-	BN_BBSMOVIE = "BBSmovie"
+	BN_BBSMOVIE_s = "BBSmovie"
+	BN_BBSMOVIE   = ToBoardID([]byte(BN_BBSMOVIE_s))
 
 	// /* 若定義，則.... */
-	BN_WHOAMI = "WhoAmI"
+	BN_WHOAMI_s = "WhoAmI"
+	BN_WHOAMI   = ToBoardID([]byte(BN_WHOAMI_s))
 
 	/* 若定義, 則全站所有五子棋/象棋棋譜都會紀錄在此板 */
 	IS_BN_FIVECHESS_LOG_INFERRED = true
-	BN_FIVECHESS_LOG             = BBSMNAME + "Five"
+	BN_FIVECHESS_LOG_s           = BBSMNAME + "Five"
+	BN_FIVECHESS_LOG             = ToBoardID([]byte(BN_FIVECHESS_LOG_s))
 	IS_BN_CCHESS_LOG_INFERRED    = true
-	BN_CCHESS_LOG                = BBSMNAME + "CChess"
+	BN_CCHESS_LOG_s              = BBSMNAME + "CChess"
+	BN_CCHESS_LOG                = ToBoardID([]byte(BN_CCHESS_LOG_s))
 
 	/* 若定義，則動態看板會動態檢查爭議性字眼 */
 	BN_NOTE_AGGCHKDIR = "<點歌> 動態看板"
@@ -277,9 +293,9 @@ var (
 
 	MUTT_PATH = "mutt"
 
-	DEFAULT_FOLDER_CREATE_PERM = 0755
+	DEFAULT_FOLDER_CREATE_PERM = os.FileMode(0755)
 
-	DEFAULT_FILE_CREATE_PERM = 0644
+	DEFAULT_FILE_CREATE_PERM = os.FileMode(0644)
 
 	SHM_KEY = types.Key_t(1228)
 
@@ -297,21 +313,29 @@ var (
 	/////////////////////////////////////////////////////////////////////////////
 	// Default Board Names 預設看板名稱
 
-	BN_ID_PROBLEM = "SYSOP"
+	BN_ID_PROBLEM_s = "SYSOP"
+	BN_ID_PROBLEM   = ToBoardID([]byte(BN_ID_PROBLEM_s))
 
-	BN_DELETED = "deleted"
+	BN_DELETED_s = "deleted"
+	BN_DELETED   = ToBoardID([]byte(BN_DELETED_s))
 
-	BN_JUNK = "junk"
+	BN_JUNK_s = "junk"
+	BN_JUNK   = ToBoardID([]byte(BN_JUNK_s))
 
-	BN_POLICELOG = "PoliceLog"
+	BN_POLICELOG_s = "PoliceLog"
+	BN_POLICELOG   = ToBoardID([]byte(BN_POLICELOG_s))
 
-	BN_UNANONYMOUS = "UnAnonymous"
+	BN_UNANONYMOUS_s = "UnAnonymous"
+	BN_UNANONYMOUS   = ToBoardID([]byte(BN_UNANONYMOUS_s))
 
-	BN_NEWIDPOST = "NEWIDPOST"
+	BN_NEWIDPOST_s = "NEWIDPOST"
+	BN_NEWIDPOST   = ToBoardID([]byte(BN_NEWIDPOST_s))
 
-	BN_ALLPOST = "ALLPOST"
+	BN_ALLPOST_s = "ALLPOST"
+	BN_ALLPOST   = ToBoardID([]byte(BN_ALLPOST_s))
 
-	BN_ALLHIDPOST = "ALLHIDPOST"
+	BN_ALLHIDPOST_s = "ALLHIDPOST"
+	BN_ALLHIDPOST   = ToBoardID([]byte(BN_ALLHIDPOST_s))
 
 	/////////////////////////////////////////////////////////////////////////////
 	// Performance Parameters 效能參數
@@ -526,4 +550,21 @@ var (
 	HAVE_USERAGREEMENT_ACCEPTABLE         = BBSHOME +
 		string(os.PathSeparator) +
 		HAVE_USERAGREEMENT_ACCEPTABLE_POSTFIX
+)
+
+var (
+	//https://github.com/ptt/pttbbs/blob/master/mbbsd/cal.c#L23
+	ASSESS = true
+
+	//https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L608
+	ALLOW_FREE_TN_ANNOUNCE = false
+
+	//https://github.com/ptt/pttbbs/blob/master/common/bbs/string.c#L67
+	USE_LEGACY_FORWARD = false
+
+	//https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L1202
+	USE_LIVE_ALLPOST = false
+
+	//https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L402
+	USE_AID_URL = false
 )

@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"reflect"
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
@@ -312,23 +313,49 @@ func TestSubstituteRecord(t *testing.T) {
 }
 
 func TestAppendRecord(t *testing.T) {
+	filename := "./testcase/testAppendRecord.txt"
+	defer os.Remove(filename)
+
 	type args struct {
 		filename string
 		data     interface{}
 		theSize  uintptr
 	}
 	tests := []struct {
-		name    string
-		args    args
-		wantErr bool
+		name        string
+		args        args
+		expectedIdx ptttype.SortIdx
+		wantErr     bool
 	}{
 		// TODO: Add test cases.
+		{
+			args:        args{filename: filename, data: testArticleSummary0.FileHeaderRaw, theSize: ptttype.FILE_HEADER_RAW_SZ},
+			expectedIdx: 1,
+		},
+		{
+			args:        args{filename: filename, data: testArticleSummary1.FileHeaderRaw, theSize: ptttype.FILE_HEADER_RAW_SZ},
+			expectedIdx: 2,
+		},
+		{
+			args:        args{filename: filename, data: testArticleSummary2.FileHeaderRaw, theSize: ptttype.FILE_HEADER_RAW_SZ},
+			expectedIdx: 3,
+		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
-			if err := AppendRecord(tt.args.filename, tt.args.data, tt.args.theSize); (err != nil) != tt.wantErr {
+			defer wg.Done()
+			gotIdx, err := AppendRecord(tt.args.filename, tt.args.data, tt.args.theSize)
+			if (err != nil) != tt.wantErr {
 				t.Errorf("AppendRecord() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotIdx, tt.expectedIdx) {
+				t.Errorf("AppendRecord() = %v, want %v", gotIdx, tt.expectedIdx)
 			}
 		})
+		wg.Wait()
 	}
 }

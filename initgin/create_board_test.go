@@ -13,6 +13,7 @@ func Test_CreateBoard(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
+	_ = ptt.SetupNewUser(testNewPostUserRaw1)
 	_ = ptt.SetupNewUser(testUserecRaw3)
 
 	params := &api.CreateBoardParams{

@@ -222,3 +222,86 @@ func SetUserID(uid ptttype.Uid, userID *ptttype.UserID_t) (err error) {
 
 	return nil
 }
+
+//CooldownTimeOf
+//https://github.com/ptt/pttbbs/blob/master/include/cmbbs.h#L97
+func CooldownTimeOf(uid ptttype.Uid) (cooldowntime types.Time4) {
+	uidInCache := uid.ToUidInStore()
+
+	Shm.ReadAt(
+		unsafe.Offsetof(Shm.Raw.CooldownTime)+types.TIME4_SZ*uintptr(uidInCache),
+		types.TIME4_SZ,
+		unsafe.Pointer(&cooldowntime),
+	)
+
+	//types.Time4 is int32, not uint32
+	//we use 0x7FFFFFF0 instead of 0xFFFFFFF0
+	return cooldowntime & 0x7FFFFFF0
+}
+
+func SetCooldownTime(uid ptttype.Uid, cooldowntime types.Time4) (err error) {
+
+	uidInCache := uid.ToUidInStore()
+	posttimes := PosttimesOf(uid)
+
+	newCooldowntime := cooldowntime | posttimes
+
+	Shm.WriteAt(
+		unsafe.Offsetof(Shm.Raw.CooldownTime)+types.TIME4_SZ*uintptr(uidInCache),
+		types.TIME4_SZ,
+		unsafe.Pointer(&newCooldowntime),
+	)
+
+	return nil
+}
+
+func AddCooldownTime(uid ptttype.Uid, minutes int) (err error) {
+	cooldowntime := CooldownTimeOf(uid)
+	base := types.NowTS()
+	if base < cooldowntime {
+		base = cooldowntime
+	}
+
+	base += types.Time4(minutes) * 60
+	base &= 0x7FFFFFF0
+
+	return SetCooldownTime(uid, base)
+}
+
+//PosttimesOf
+//https://github.com/ptt/pttbbs/blob/master/include/cmbbs.h#L98
+func PosttimesOf(uid ptttype.Uid) (posttimes types.Time4) {
+	uidInCache := uid.ToUidInStore()
+
+	Shm.ReadAt(
+		unsafe.Offsetof(Shm.Raw.CooldownTime)+types.TIME4_SZ*uintptr(uidInCache),
+		types.TIME4_SZ,
+		unsafe.Pointer(&posttimes),
+	)
+
+	return posttimes & 0xF
+}
+
+func SetPosttimes(uid ptttype.Uid, posttimes types.Time4) (err error) {
+
+	uidInCache := uid.ToUidInStore()
+	cooldowntime := CooldownTimeOf(uid)
+	newPosttimes := cooldowntime | posttimes
+
+	Shm.WriteAt(
+		unsafe.Offsetof(Shm.Raw.CooldownTime)+types.TIME4_SZ*uintptr(uidInCache),
+		types.TIME4_SZ,
+		unsafe.Pointer(&newPosttimes),
+	)
+
+	return nil
+}
+
+func AddPosttimes(uid ptttype.Uid, times int) (err error) {
+	posttimes := PosttimesOf(uid)
+	newPosttimes := posttimes + types.Time4(times)
+	if newPosttimes >= 0xf {
+		newPosttimes = posttimes | 0xf
+	}
+	return SetPosttimes(uid, newPosttimes)
+}

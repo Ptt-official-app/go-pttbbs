@@ -4,6 +4,7 @@ import (
 	"bytes"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
+	"github.com/Ptt-official-app/go-pttbbs/types"
 	"github.com/Ptt-official-app/go-pttbbs/types/ansi"
 )
 
@@ -113,4 +114,53 @@ func isEscapeParam(x byte) bool {
 
 func isEscapeCommand(x byte) bool {
 	return ESCAPE_FLAG[x]&2 != 0
+}
+
+func StrcaseStartsWith(str []byte, prefix []byte) (isValid bool) {
+	strLower := bytes.ToLower(str)
+	prefixLower := bytes.ToLower(prefix)
+	return bytes.HasPrefix(strLower, prefixLower)
+}
+
+func Trim(str []byte) (newStr []byte) {
+	str = types.CstrToBytes(str)
+	return bytes.TrimRight(str, " ")
+}
+
+func DBCSSafeTrim(str []byte) (newStr []byte) {
+	if len(str) < 1 {
+		return str
+	}
+
+	if DBCSStatus(str, len(str)-1) == DBCS_LEADING {
+		str = str[:len(str)-1]
+	}
+
+	return str
+}
+
+func DBCSStatus(str []byte, pos int) (status DBCSStatus_t) {
+
+	status = DBCS_ASCII
+
+	for ; pos >= 0; pos-- {
+		c := str[0]
+		str = str[1:]
+		status = DBCSNextStatus(c, status)
+		if len(str) == 0 {
+			break
+		}
+	}
+
+	return status
+}
+
+func DBCSNextStatus(c byte, prevStatus DBCSStatus_t) (newStatus DBCSStatus_t) {
+	if prevStatus == DBCS_LEADING {
+		return DBCS_TRAILING
+	}
+	if c >= 0x80 {
+		return DBCS_LEADING
+	}
+	return DBCS_ASCII
 }

@@ -53,3 +53,19 @@ const BOARD_HEADER_TITLE_OFFSET = unsafe.Offsetof(EMPTY_BOARD_HEADER_RAW.Title)
 const BOARD_HEADER_BRD_ATTR_OFFSET = unsafe.Offsetof(EMPTY_BOARD_HEADER_RAW.BrdAttr)
 const BOARD_HEADER_FIRST_CHILD_OFFSET = unsafe.Offsetof(EMPTY_BOARD_HEADER_RAW.FirstChild)
 const BOARD_HEADER_BM_OFFSET = unsafe.Offsetof(EMPTY_BOARD_HEADER_RAW.BM)
+const BOARD_HEADER_NUSER_OFFSET = unsafe.Offsetof(EMPTY_BOARD_HEADER_RAW.NUser)
+
+//IsOpenBRD
+//
+//https://github.com/ptt/pttbbs/blob/master/include/perm.h#L74
+func (b *BoardHeaderRaw) IsOpenBRD() (isValid bool) {
+	if b.BrdAttr&(BRD_HIDE|BRD_TOP) != 0 {
+		return false
+	}
+
+	if (b.Level != 0) && (b.BrdAttr&BRD_POSTMASK == 0) && (b.Level & ^(PERM_BASIC|PERM_CHAT|PERM_PAGE|PERM_POST|PERM_LOGINOK) != 0) {
+		return false
+	}
+
+	return true
+}

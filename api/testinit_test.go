@@ -17,6 +17,7 @@ func setupTest() {
 	cache.SetIsTest()
 	cmbbs.SetIsTest()
 
+	types.SetIsTest()
 	ptttype.SetIsTest()
 
 	_ = types.CopyFileToFile("./testcase/.PASSWDS1", "./testcase/.PASSWDS")
@@ -47,6 +48,7 @@ func teardownTest() {
 
 	_ = cache.CloseSHM()
 
+	os.Remove("./testcase/.post")
 	os.Remove("./testcase/.fresh")
 	os.RemoveAll("./testcase/home")
 	os.RemoveAll("./testcase/boards")
@@ -54,6 +56,7 @@ func teardownTest() {
 	os.Remove("./testcase/.PASSWDS")
 
 	ptttype.UnsetIsTest()
+	types.UnsetIsTest()
 
 	cmbbs.UnsetIsTest()
 	cache.UnsetIsTest()
