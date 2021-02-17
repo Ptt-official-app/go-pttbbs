@@ -190,3 +190,28 @@ func TestTime4_CdateMdHMS(t *testing.T) {
 		})
 	}
 }
+
+func TestTime4_Cdatemd(t *testing.T) {
+	tests := []struct {
+		name     string
+		tr       Time4
+		expected string
+	}{
+		// TODO: Add test cases.
+		{
+			tr:       Time4(1234567890),
+			expected: " 2/14",
+		},
+		{
+			tr:       Time4(1256167890),
+			expected: "10/22",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.tr.Cdatemd(); got != tt.expected {
+				t.Errorf("Time4.Cdatemd() = %v, want %v", got, tt.expected)
+			}
+		})
+	}
+}
