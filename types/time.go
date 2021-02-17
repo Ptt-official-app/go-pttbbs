@@ -73,8 +73,12 @@ func (t Time4) CdateMd() string {
 //
 //Print month/day in string
 //5+1 bytes, " 1/31\0"
-func (t Time4) Cdatemd() string {
-	return t.ToLocal().Format("_1/02")
+func (t Time4) Cdatemd() (str string) {
+	str = t.ToLocal().Format("1/02")
+	if len(str) == 4 {
+		str = " " + str
+	}
+	return str
 }
 
 //CdateMdHM
