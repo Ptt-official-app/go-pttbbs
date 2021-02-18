@@ -1,6 +1,7 @@
 package cmbbs
 
 import (
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
@@ -47,8 +48,12 @@ func TestStampfile(t *testing.T) {
 			expected: expected0,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			logrus.Infof("TestSamplefile: heade: %v", tt.args.header)
 			_, err := Stampfile(tt.args.boardFilename, tt.args.header)
 			if (err != nil) != tt.wantErr {
@@ -61,6 +66,7 @@ func TestStampfile(t *testing.T) {
 
 			testutil.TDeepEqual(t, "got", tt.args.header, expected0)
 		})
+		wg.Wait()
 	}
 }
 
@@ -106,8 +112,11 @@ func TestStampfileU(t *testing.T) {
 			expected: expected0,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			_, err := StampfileU(tt.args.boardFilename, tt.args.header)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StampfileU() error = %v, wantErr %v", err, tt.wantErr)
@@ -119,6 +128,7 @@ func TestStampfileU(t *testing.T) {
 			testutil.TDeepEqual(t, "got", tt.args.header, expected0)
 
 		})
+		wg.Wait()
 	}
 }
 
@@ -157,13 +167,18 @@ func Test_fhdrStamp(t *testing.T) {
 			args: args{boardFilename: boardFilename, header: header0, theType: ptttype.STAMP_LINK},
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			_, err := fhdrStamp(tt.args.boardFilename, tt.args.header, tt.args.theType)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("fhdrStamp() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 		})
+		wg.Wait()
 	}
 }

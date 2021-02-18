@@ -2,6 +2,7 @@ package ptt
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 	"unsafe"
 
@@ -13,6 +14,8 @@ import (
 )
 
 func TestLoginQuery(t *testing.T) {
+	setupTest()
+	defer teardownTest()
 
 	userid1 := ptttype.UserID_t{}
 	copy(userid1[:], []byte("SYSOP"))
@@ -41,10 +44,12 @@ func TestLoginQuery(t *testing.T) {
 			wantErr:  true,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
-			setupTest()
-			defer teardownTest()
+			defer wg.Done()
 
 			gotUid, got, err := LoginQuery(tt.args.userID, tt.args.passwd, tt.args.ip)
 			if (err != nil) != tt.wantErr {
@@ -59,9 +64,13 @@ func TestLoginQuery(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func Test_newUserInfoRaw(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
 	type args struct {
 		uid  ptttype.Uid
 		user *ptttype.UserecRaw
@@ -86,13 +95,17 @@ func Test_newUserInfoRaw(t *testing.T) {
 			expectedOrigNickname: testNewUserInfoRawNickname,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			logrus.Infof("tt.args.ip: %v", tt.args.ip)
 			got := newUserInfoRaw(tt.args.uid, tt.args.user, tt.args.ip, tt.args.op)
 			tt.expected.LastAct = got.LastAct
 			testutil.TDeepEqual(t, "got", got, tt.expected)
 		})
+		wg.Wait()
 	}
 }
 
@@ -161,8 +174,12 @@ func TestLogin(t *testing.T) {
 			wantErr:      true,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotUid, gotUser, err := Login(tt.args.userID, tt.args.passwd, tt.args.ip)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Login() error = %v, wantErr %v", err, tt.wantErr)
@@ -175,5 +192,6 @@ func TestLogin(t *testing.T) {
 				t.Errorf("Login() gotUser = %v, want %v", gotUser, tt.expectedUser)
 			}
 		})
+		wg.Wait()
 	}
 }

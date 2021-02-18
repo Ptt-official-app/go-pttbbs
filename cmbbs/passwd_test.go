@@ -12,8 +12,9 @@ import (
 )
 
 func TestPasswdLoadUser(t *testing.T) {
-	//setupTest moves to for-loop
-	//teardownTest moves to for-loop
+	setupTest()
+	defer teardownTest()
+
 	userID1 := ptttype.UserID_t{}
 	copy(userID1[:], []byte("SYSOP"))
 
@@ -34,10 +35,12 @@ func TestPasswdLoadUser(t *testing.T) {
 			expected1: testUserecRaw1,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
-			setupTest()
-			defer teardownTest()
+			defer wg.Done()
 
 			got, got1, err := PasswdLoadUser(tt.args.userID)
 			if (err != nil) != tt.wantErr {
@@ -49,12 +52,13 @@ func TestPasswdLoadUser(t *testing.T) {
 			}
 			testutil.TDeepEqual(t, "userec", got1, tt.expected1)
 		})
+		wg.Wait()
 	}
 }
 
 func TestPasswdQuery(t *testing.T) {
-	//setupTest moves to for-loop
-	//teardownTest moves to for-loop
+	setupTest()
+	defer teardownTest()
 	type args struct {
 		uid ptttype.Uid
 	}
@@ -70,10 +74,11 @@ func TestPasswdQuery(t *testing.T) {
 			expected: testUserecRaw1,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
-			setupTest()
-			defer teardownTest()
+			defer wg.Done()
 
 			got, err := PasswdQuery(tt.args.uid)
 			if (err != nil) != tt.wantErr {
@@ -85,11 +90,12 @@ func TestPasswdQuery(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestCheckPasswd(t *testing.T) {
-	//setupTest moves to for-loop
-	//teardownTest moves to for-loop
+	setupTest()
+	defer teardownTest()
 
 	input1 := []byte{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', 0}
 	input2 := []byte{'0', '1', '2', '4', '4', '5', '6', '7', '8', '9', '0', '1', 0}
@@ -116,10 +122,11 @@ func TestCheckPasswd(t *testing.T) {
 			expected: false,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
-			setupTest()
-			defer teardownTest()
+			defer wg.Done()
 
 			got, err := CheckPasswd(tt.args.expected, tt.args.input)
 			if (err != nil) != tt.wantErr {
@@ -131,6 +138,7 @@ func TestCheckPasswd(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestGenPasswd(t *testing.T) {
@@ -162,8 +170,12 @@ func TestGenPasswd(t *testing.T) {
 			args: args{[]byte("!@#$5ks")},
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotPasswdHash, err := GenPasswd(tt.args.passwd)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GenPasswd() error = %v, wantErr %v", err, tt.wantErr)
@@ -175,6 +187,7 @@ func TestGenPasswd(t *testing.T) {
 				t.Errorf("GenPasswd: unable to pass CheckPasswd: passwd: %v gotPasswdHash: %v", tt.args.passwd, gotPasswdHash)
 			}
 		})
+		wg.Wait()
 	}
 }
 
@@ -242,19 +255,24 @@ func TestPasswdInit(t *testing.T) {
 		// TODO: Add test cases.
 		{},
 	}
-
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if err := PasswdInit(); (err != nil) != tt.wantErr {
 				t.Errorf("PasswdInit() error = %v, wantErr %v", err, tt.wantErr)
 			}
 			defer PasswdDestroy()
 		})
+		wg.Wait()
 	}
 
 }
 
 func TestPasswdUpdate(t *testing.T) {
+	setupTest()
+	defer teardownTest()
 
 	defer PasswdUpdate(1, testUserecRaw1)
 
@@ -278,11 +296,12 @@ func TestPasswdUpdate(t *testing.T) {
 			expected: testUserecRaw1,
 		},
 	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			setupTest()
-			defer teardownTest()
 
+	var wg sync.WaitGroup
+	for _, tt := range tests {
+		wg.Add(1)
+		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if err := PasswdUpdate(tt.args.uid, tt.args.user); (err != nil) != tt.wantErr {
 				t.Errorf("PasswdUpdate() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -291,6 +310,7 @@ func TestPasswdUpdate(t *testing.T) {
 			testutil.TDeepEqual(t, "userec", userecRaw, tt.expected)
 
 		})
+		wg.Wait()
 	}
 }
 
@@ -359,8 +379,12 @@ func TestPasswdUpdateEmail(t *testing.T) {
 			args: args{uid: 1, email: email0},
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if err := PasswdUpdateEmail(tt.args.uid, tt.args.email); (err != nil) != tt.wantErr {
 				t.Errorf("PasswdUpdateEmail() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -370,6 +394,7 @@ func TestPasswdUpdateEmail(t *testing.T) {
 			testutil.TDeepEqual(t, "email", &user.Email, tt.args.email)
 		})
 	}
+	wg.Wait()
 }
 
 func TestPasswdQueryUserLevel(t *testing.T) {
@@ -391,8 +416,12 @@ func TestPasswdQueryUserLevel(t *testing.T) {
 			expectedUserLevel: 536871943,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotUserLevel, err := PasswdQueryUserLevel(tt.args.uid)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("PasswdQueryUserLevel() error = %v, wantErr %v", err, tt.wantErr)
@@ -403,6 +432,7 @@ func TestPasswdQueryUserLevel(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestPasswdUpdateUserLevel2(t *testing.T) {
@@ -479,8 +509,11 @@ func TestPasswdGetUserLevel2(t *testing.T) {
 			args: args{&testUserecRaw1.UserID},
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotUserLevel2, err := PasswdGetUserLevel2(tt.args.userID)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("PasswdGetUserLevel2() error = %v, wantErr %v", err, tt.wantErr)
@@ -491,4 +524,5 @@ func TestPasswdGetUserLevel2(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }

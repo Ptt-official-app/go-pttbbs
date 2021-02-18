@@ -2,6 +2,7 @@ package ptt
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/cache"
@@ -56,8 +57,12 @@ func Test_mNewbrd(t *testing.T) {
 			expectedBid:   13,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotBoard, gotBid, err := mNewbrd(tt.args.user, tt.args.clsBid, tt.args.brdname, tt.args.brdClass, tt.args.brdTitle, tt.args.bms, tt.args.brdAttr, tt.args.level, tt.args.chessCountry, tt.args.isGroup, tt.args.isRecover)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("mNewbrd() error = %v, wantErr %v", err, tt.wantErr)
@@ -70,6 +75,7 @@ func Test_mNewbrd(t *testing.T) {
 				t.Errorf("mNewbrd() gotBid = %v, want %v", gotBid, tt.expectedBid)
 			}
 		})
+		wg.Wait()
 	}
 }
 
@@ -104,8 +110,12 @@ func Test_addBoardRecord(t *testing.T) {
 			expectedBid: 13,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotBid, err := addBoardRecord(tt.args.board)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("addBoardRecord() error = %v, wantErr %v", err, tt.wantErr)
@@ -118,5 +128,6 @@ func Test_addBoardRecord(t *testing.T) {
 			got, _ := cache.GetBCache(gotBid)
 			testutil.TDeepEqual(t, "got", got, tt.args.board)
 		})
+		wg.Wait()
 	}
 }

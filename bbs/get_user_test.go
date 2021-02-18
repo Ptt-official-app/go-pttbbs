@@ -2,6 +2,7 @@ package bbs
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 )
 
@@ -24,8 +25,11 @@ func TestGetUser(t *testing.T) {
 			expectedUser: testUserec1,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotUser, err := GetUser(tt.args.uuserID)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetUser() error = %v, wantErr %v", err, tt.wantErr)
@@ -36,4 +40,5 @@ func TestGetUser(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }

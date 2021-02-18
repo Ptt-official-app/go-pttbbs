@@ -2,6 +2,7 @@ package ptt
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/cache"
@@ -41,8 +42,12 @@ func Test_reginitFav(t *testing.T) {
 			expected: testFav0,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if err := reginitFav(tt.args.uid, tt.args.user); (err != nil) != tt.wantErr {
 				t.Errorf("reginitFav() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -56,6 +61,7 @@ func Test_reginitFav(t *testing.T) {
 			testutil.TDeepEqual(t, "got", got, tt.expected)
 		})
 	}
+	wg.Wait()
 }
 
 func TestGetFavorites(t *testing.T) {
@@ -103,8 +109,11 @@ func TestGetFavorites(t *testing.T) {
 			expectedContent: expectedContent,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotContent, _, err := GetFavorites(tt.args.userID, tt.args.retrieveTS)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetFavorites() error = %v, wantErr %v", err, tt.wantErr)
@@ -115,4 +124,5 @@ func TestGetFavorites(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }

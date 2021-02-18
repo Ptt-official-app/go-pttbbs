@@ -1,6 +1,7 @@
 package api
 
 import (
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
@@ -83,8 +84,11 @@ func TestLoadGeneralArticles(t *testing.T) {
 			},
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotResult, err := LoadGeneralArticles(tt.args.remoteAddr, tt.args.uuserID, tt.args.params, tt.args.path)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadGeneralArticles() error = %v, wantErr %v", err, tt.wantErr)
@@ -93,4 +97,5 @@ func TestLoadGeneralArticles(t *testing.T) {
 			testutil.TDeepEqual(t, "got", gotResult, tt.expectedResult)
 		})
 	}
+	wg.Wait()
 }

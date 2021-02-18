@@ -3,6 +3,7 @@ package initgin
 import (
 	"net/http"
 	"net/http/httptest"
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/api"
@@ -34,9 +35,11 @@ func Test_GetFavorites(t *testing.T) {
 			},
 		},
 	}
-
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			router, _ := InitGin()
 
 			jwt := getJwt(router, tt.args.username, tt.args.passwd)
@@ -49,4 +52,5 @@ func Test_GetFavorites(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }

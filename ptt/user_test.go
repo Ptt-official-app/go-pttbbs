@@ -13,6 +13,9 @@ import (
 )
 
 func Test_killUser(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
 	userID1 := &ptttype.UserID_t{}
 	copy(userID1[:], []byte("CodingMan"))
 
@@ -33,10 +36,12 @@ func Test_killUser(t *testing.T) {
 			args: args{uid: 1, userID: userID1},
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
-			setupTest()
-			defer teardownTest()
+			defer wg.Done()
 
 			if err := killUser(tt.args.uid, tt.args.userID); (err != nil) != tt.wantErr {
 				t.Errorf("killUser() error = %v, wantErr %v", err, tt.wantErr)
@@ -52,10 +57,15 @@ func Test_killUser(t *testing.T) {
 			}
 
 		})
+		wg.Wait()
 	}
 }
 
 func Test_tryDeleteHomePath(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	defer os.RemoveAll("./testcase/tmp")
 
 	userID1 := &ptttype.UserID_t{}
 	copy(userID1[:], []byte("CodingMan"))
@@ -73,13 +83,11 @@ func Test_tryDeleteHomePath(t *testing.T) {
 			args: args{userID1},
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
-			setupTest()
-			defer func() {
-				teardownTest()
-				os.RemoveAll("./testcase/tmp")
-			}()
+			defer wg.Done()
 
 			homepath := path.SetHomePath(tt.args.userID)
 			_, err := os.Stat(homepath)
@@ -96,6 +104,7 @@ func Test_tryDeleteHomePath(t *testing.T) {
 				t.Errorf("tryDeleteHomePath: still with hoem-path: homepath: %v", homepath)
 			}
 		})
+		wg.Wait()
 	}
 }
 
@@ -189,8 +198,11 @@ func TestChangeEmail(t *testing.T) {
 			},
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if err := ChangeEmail(tt.args.userID, tt.args.email); (err != nil) != tt.wantErr {
 				t.Errorf("ChangeEmail() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -198,6 +210,7 @@ func TestChangeEmail(t *testing.T) {
 			user, _ := GetUser(tt.args.userID)
 			testutil.TDeepEqual(t, "email", &user.Email, tt.args.email)
 		})
+		wg.Wait()
 	}
 }
 
@@ -234,13 +247,17 @@ func TestCheckPasswd(t *testing.T) {
 			wantErr: true,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if err := CheckPasswd(tt.args.userID, tt.args.passwd, tt.args.ip); (err != nil) != tt.wantErr {
 				t.Errorf("CheckPasswd() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestChangeUserLevel2(t *testing.T) {
@@ -317,8 +334,12 @@ func TestGetUid(t *testing.T) {
 			expectedUid: 1,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotUid, err := GetUid(tt.args.userID)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetUid() error = %v, wantErr %v", err, tt.wantErr)
@@ -329,4 +350,5 @@ func TestGetUid(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }

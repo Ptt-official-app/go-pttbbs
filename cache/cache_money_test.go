@@ -1,6 +1,7 @@
 package cache
 
 import (
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
@@ -48,8 +49,11 @@ func TestSetUMoney(t *testing.T) {
 			want: money,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			got, err := SetUMoney(tt.args.uid, tt.args.money)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("SetUMoney() error = %v, wantErr %v", err, tt.wantErr)
@@ -59,6 +63,7 @@ func TestSetUMoney(t *testing.T) {
 				t.Errorf("SetUMoney() = %v, want %v", got, tt.want)
 			}
 		})
+		wg.Wait()
 	}
 }
 
@@ -113,8 +118,11 @@ func TestDeUMoney(t *testing.T) {
 			want: 0,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			got, err := DeUMoney(tt.args.uid, tt.args.money)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("DeUMoney() error = %v, wantErr %v", err, tt.wantErr)
@@ -124,5 +132,6 @@ func TestDeUMoney(t *testing.T) {
 				t.Errorf("DeUMoney() = %v, want %v", got, tt.want)
 			}
 		})
+		wg.Wait()
 	}
 }

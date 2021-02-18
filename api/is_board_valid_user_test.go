@@ -2,6 +2,7 @@ package api
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
@@ -37,8 +38,11 @@ func TestIsBoardValidUser(t *testing.T) {
 			expectedResult: result0,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotResult, err := IsBoardValidUser(tt.args.remoteAddr, tt.args.uuserID, tt.args.params, tt.args.path)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("IsBoardValidUser() error = %v, wantErr %v", err, tt.wantErr)
@@ -49,4 +53,5 @@ func TestIsBoardValidUser(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }

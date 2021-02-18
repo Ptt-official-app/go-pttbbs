@@ -297,8 +297,12 @@ func TestSubstituteRecord(t *testing.T) {
 			expected: testArticleSummary3.FileHeaderRaw,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if err := SubstituteRecord(tt.args.filename, tt.args.data, tt.args.theSize, tt.args.idxInStore); (err != nil) != tt.wantErr {
 				t.Errorf("SubstituteRecord() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -309,6 +313,7 @@ func TestSubstituteRecord(t *testing.T) {
 			_ = binary.Read(file, binary.LittleEndian, got)
 			testutil.TDeepEqual(t, "got", got, tt.expected)
 		})
+		wg.Wait()
 	}
 }
 

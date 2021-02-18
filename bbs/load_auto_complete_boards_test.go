@@ -2,6 +2,7 @@ package bbs
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 )
 
@@ -39,8 +40,11 @@ func TestLoadAutoCompleteBoards(t *testing.T) {
 			expectedNextIdxStr: "EditExp",
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotSummaries, gotNextIdxStr, err := LoadAutoCompleteBoards(tt.args.uuserID, tt.args.startIdxStr, tt.args.nBoards, tt.args.keyword, tt.args.isAsc)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadAutoCompleteBoards() error = %v, wantErr %v", err, tt.wantErr)
@@ -54,4 +58,5 @@ func TestLoadAutoCompleteBoards(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }

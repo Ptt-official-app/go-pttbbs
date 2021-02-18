@@ -2,6 +2,7 @@ package ptt
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
@@ -32,12 +33,17 @@ func Test_pwcuRegCompleteJustify(t *testing.T) {
 			args: args{ptttype.Uid(2), userID2, reg2},
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if err := pwcuRegCompleteJustify(tt.args.uid, tt.args.userID, tt.args.justify); (err != nil) != tt.wantErr {
 				t.Errorf("pwcuRegCompleteJustify() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
+		wg.Wait()
 	}
 }
 
@@ -63,17 +69,25 @@ func Test_pwcuBitDisableLevel(t *testing.T) {
 			args: args{2, userID2, ptttype.PERM_BASIC},
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if err := pwcuBitDisableLevel(tt.args.uid, tt.args.userID, tt.args.perm); (err != nil) != tt.wantErr {
 				t.Errorf("pwcuBitDisableLevel() error = %v, wantErr %v", err, tt.wantErr)
 			}
 
 		})
+		wg.Wait()
 	}
 }
 
 func Test_pwcuSetByBit(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
 	type args struct {
 		perm  ptttype.PERM
 		mask  ptttype.PERM
@@ -94,14 +108,16 @@ func Test_pwcuSetByBit(t *testing.T) {
 			expected: ptttype.PERM_BASIC,
 		},
 	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			setupTest()
-			defer teardownTest()
 
+	var wg sync.WaitGroup
+	for _, tt := range tests {
+		wg.Add(1)
+		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := pwcuSetByBit(tt.args.perm, tt.args.mask, tt.args.isSet); !reflect.DeepEqual(got, tt.expected) {
 				t.Errorf("pwcuSetByBit() = %v, want %v", got, tt.expected)
 			}
 		})
+		wg.Wait()
 	}
 }

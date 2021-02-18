@@ -3,6 +3,7 @@ package api
 import (
 	"os"
 	"reflect"
+	"sync"
 	"testing"
 	"time"
 
@@ -82,8 +83,12 @@ func TestGetArticle(t *testing.T) {
 			wantErr:        true,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotResult, err := GetArticle(tt.args.remoteAddr, tt.args.uuserID, tt.args.params, tt.args.path)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetArticle() error = %v, wantErr %v", err, tt.wantErr)
@@ -94,4 +99,5 @@ func TestGetArticle(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
