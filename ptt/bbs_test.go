@@ -85,8 +85,11 @@ func TestReadPost(t *testing.T) {
 			wantErr:         true,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotContent, gotMtime, err := ReadPost(tt.args.user, tt.args.uid, tt.args.boardID, tt.args.bid, tt.args.filename, tt.args.retrieveTS)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ReadPost() error = %v, wantErr %v", err, tt.wantErr)
@@ -100,6 +103,7 @@ func TestReadPost(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestNewPost(t *testing.T) {
@@ -118,7 +122,7 @@ func TestNewPost(t *testing.T) {
 	class0 := []byte("test")
 	title0 := []byte("this is a test")
 	fullTitle0 := ptttype.Title_t{}
-	copy(fullTitle0[:], []byte("[test]this is a test"))
+	copy(fullTitle0[:], []byte("[test] this is a test"))
 	owner0 := ptttype.Owner_t{}
 	copy(owner0[:], []byte("A1"))
 	expectedSummary0 := &ptttype.ArticleSummaryRaw{
@@ -157,8 +161,8 @@ func TestNewPost(t *testing.T) {
 		0x29, 0x20, 0xac, 0xdd, 0xaa, 0x4f, //) 看板
 		0x3a, 0x20, 0x57, 0x68, 0x6f, 0x41, 0x6d, 0x49, 0x0a, //: WhoAmI
 		0xbc, 0xd0, 0xc3, 0x44, 0x3a, 0x20, 0x5b, 0x74, 0x65, 0x73, //標題: [tes
-		0x74, 0x5d, 0x74, 0x68, 0x69, 0x73, 0x20, 0x69, 0x73, 0x20, //t]this is
-		0x61, 0x20, 0x74, 0x65, 0x73, 0x74, 0x0a, //a test
+		0x74, 0x5d, 0x20, 0x74, 0x68, 0x69, 0x73, 0x20, 0x69, 0x73, //t] this is
+		0x20, 0x61, 0x20, 0x74, 0x65, 0x73, 0x74, 0x0a, // a test
 		0xae, 0xc9, 0xb6, 0xa1, 0x3a, 0x20, 0x00, 0x00, 0x00, 0x20, //時間: 000
 		0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x20, 0x00, 0x00, 0x3a, //000 00 00:
 		0x00, 0x00, 0x3a, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x0a, //00:00 0000
@@ -181,8 +185,8 @@ func TestNewPost(t *testing.T) {
 	}
 
 	removeIdxes := []int{
-		60, 61, 62, 64, 65, 66, 68, 69, 71, 72, 74, 75, 77, 78, 80, 81, 82, 83, //時間
-		190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 203, 204, 205, //文章網址
+		61, 62, 63, 65, 66, 67, 69, 70, 72, 73, 75, 76, 78, 79, 81, 82, 83, 84, //時間
+		191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 204, 205, 206, //文章網址
 	}
 
 	type args struct {

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
@@ -37,8 +38,11 @@ func TestLoadBoardsByBids(t *testing.T) {
 			expectedResult: expected,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotResult, err := LoadBoardsByBids(tt.args.remoteAddr, tt.args.uuserID, tt.args.params)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadBoardsByBids() error = %v, wantErr %v", err, tt.wantErr)
@@ -48,4 +52,5 @@ func TestLoadBoardsByBids(t *testing.T) {
 			testutil.TDeepEqual(t, "result", gotResult, tt.expectedResult)
 		})
 	}
+	wg.Wait()
 }

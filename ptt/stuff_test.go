@@ -1,6 +1,7 @@
 package ptt
 
 import (
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
@@ -53,11 +54,16 @@ func Test_is_uBM(t *testing.T) {
 			expected: false,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := is_uBM(tt.args.userID, tt.args.bm); got != tt.expected {
 				t.Errorf("is_uBM() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }

@@ -1,6 +1,9 @@
 package bbs
 
-import "testing"
+import (
+	"sync"
+	"testing"
+)
 
 func TestCheckExistsUser(t *testing.T) {
 	setupTest()
@@ -28,8 +31,11 @@ func TestCheckExistsUser(t *testing.T) {
 			wantErr: true,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotUuserID, err := CheckExistsUser(tt.args.username)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CheckExistsUser() error = %v, wantErr %v", err, tt.wantErr)
@@ -39,5 +45,6 @@ func TestCheckExistsUser(t *testing.T) {
 				t.Errorf("CheckExistsUser() = %v, want %v", gotUuserID, tt.expectedUuserID)
 			}
 		})
+		wg.Wait()
 	}
 }

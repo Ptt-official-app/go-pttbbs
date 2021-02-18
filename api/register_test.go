@@ -1,10 +1,13 @@
 package api
 
 import (
+	"sync"
 	"testing"
 )
 
 func TestRegister(t *testing.T) {
+	setupTest()
+	defer teardownTest()
 	type args struct {
 		params interface{}
 	}
@@ -19,11 +22,11 @@ func TestRegister(t *testing.T) {
 			args: args{params: &RegisterParams{Username: "C1", Passwd: "567"}},
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
-			setupTest()
-			defer teardownTest()
-
+			defer wg.Done()
 			got, err := Register(testIP, tt.args.params)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Register() error = %v, wantErr %v", err, tt.wantErr)
@@ -41,5 +44,6 @@ func TestRegister(t *testing.T) {
 				return
 			}
 		})
+		wg.Wait()
 	}
 }

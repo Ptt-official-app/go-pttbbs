@@ -1,6 +1,7 @@
 package bbs
 
 import (
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
@@ -35,11 +36,15 @@ func TestIsSysop(t *testing.T) {
 			expectedIsValid: false,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if gotIsValid := IsSysop(tt.args.uuserID, tt.args.perm); gotIsValid != tt.expectedIsValid {
 				t.Errorf("IsSysop() = %v, want %v", gotIsValid, tt.expectedIsValid)
 			}
 		})
 	}
+	wg.Wait()
 }

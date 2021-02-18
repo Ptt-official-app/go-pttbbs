@@ -1,6 +1,7 @@
 package bbs
 
 import (
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/testutil"
@@ -33,8 +34,11 @@ func TestRegister(t *testing.T) {
 			expectedUserID: testUserec6.UUserID,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 
 			gotUserID, err := Register(tt.args.username, tt.args.passwd, tt.args.ip, tt.args.email, tt.args.nickname, tt.args.realname, tt.args.career, tt.args.address, tt.args.over18)
 			if (err != nil) != tt.wantErr {
@@ -44,5 +48,6 @@ func TestRegister(t *testing.T) {
 
 			testutil.TDeepEqual(t, "register", gotUserID, tt.expectedUserID)
 		})
+		wg.Wait()
 	}
 }

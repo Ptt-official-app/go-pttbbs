@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/api"
@@ -34,8 +35,11 @@ func Test_Login(t *testing.T) {
 			}, // json: {}
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			router, _ := InitGin()
 
 			w := httptest.NewRecorder()
@@ -56,5 +60,6 @@ func Test_Login(t *testing.T) {
 			log.Infof("jwt: %v", jwt)
 
 		})
+		wg.Wait()
 	}
 }

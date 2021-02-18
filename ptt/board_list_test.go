@@ -148,8 +148,8 @@ func TestLoadGeneralBoards(t *testing.T) {
 			testutil.TDeepEqual(t, "nextSummary", gotNextSummary, tt.expectedNextSummary)
 
 		})
-		wg.Wait()
 	}
+	wg.Wait()
 }
 
 func TestLoadBoardSummary(t *testing.T) {
@@ -182,8 +182,12 @@ func TestLoadBoardSummary(t *testing.T) {
 			expectedSummary: testBoardSummary10,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotSummary, err := LoadBoardSummary(tt.args.user, tt.args.uid, tt.args.bid)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadBoardSummary() error = %v, wantErr %v", err, tt.wantErr)
@@ -193,6 +197,7 @@ func TestLoadBoardSummary(t *testing.T) {
 			testutil.TDeepEqual(t, "summary", gotSummary, tt.expectedSummary)
 		})
 	}
+	wg.Wait()
 }
 
 func TestLoadHotBoards(t *testing.T) {
@@ -229,8 +234,12 @@ func TestLoadHotBoards(t *testing.T) {
 			expectedSummary: []*ptttype.BoardSummaryRaw{testBoardSummary10, testBoardSummary1, testBoardSummary8},
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotSummary, err := LoadHotBoards(tt.args.user, tt.args.uid)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadHotBoards() error = %v, wantErr %v", err, tt.wantErr)
@@ -241,6 +250,7 @@ func TestLoadHotBoards(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestLoadBoardsByBids(t *testing.T) {
@@ -268,8 +278,12 @@ func TestLoadBoardsByBids(t *testing.T) {
 			expectedSummaries: []*ptttype.BoardSummaryRaw{testBoardSummary10, testBoardSummary1, testBoardSummary8},
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotSummaries, err := LoadBoardsByBids(tt.args.user, tt.args.uid, tt.args.bids)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadBoardsByBids() error = %v, wantErr %v", err, tt.wantErr)
@@ -280,6 +294,7 @@ func TestLoadBoardsByBids(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestFindBoardStartIdxByName(t *testing.T) {
@@ -304,8 +319,12 @@ func TestFindBoardStartIdxByName(t *testing.T) {
 			expectedStartIdx: 12,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotStartIdx, err := FindBoardStartIdxByName(tt.args.boardID, tt.args.isAsc)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("FindBoardStartIdxByName() error = %v, wantErr %v", err, tt.wantErr)
@@ -316,6 +335,7 @@ func TestFindBoardStartIdxByName(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestFindBoardStartIdxByClass(t *testing.T) {
@@ -341,8 +361,12 @@ func TestFindBoardStartIdxByClass(t *testing.T) {
 			expectedStartIdx: 12,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotStartIdx, err := FindBoardStartIdxByClass(tt.args.cls, tt.args.boardID, tt.args.isAsc)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("FindBoardStartIdxByClass() error = %v, wantErr %v", err, tt.wantErr)
@@ -353,6 +377,7 @@ func TestFindBoardStartIdxByClass(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestLoadAutoCompleteBoards(t *testing.T) {
@@ -388,8 +413,12 @@ func TestLoadAutoCompleteBoards(t *testing.T) {
 			expectedNextSummary: nil,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotSummaries, gotNextSummary, err := LoadAutoCompleteBoards(tt.args.user, tt.args.uid, tt.args.startIdx, tt.args.nBoards, tt.args.keyword, tt.args.isAsc)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadAutoCompleteBoards() error = %v, wantErr %v", err, tt.wantErr)
@@ -403,6 +432,7 @@ func TestLoadAutoCompleteBoards(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestFindBoardAutoCompleteStartIdx(t *testing.T) {
@@ -439,8 +469,11 @@ func TestFindBoardAutoCompleteStartIdx(t *testing.T) {
 			expectedStartIdx: -1,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotStartIdx, err := FindBoardAutoCompleteStartIdx(tt.args.keyword, tt.args.isAsc)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("FindBoardAutoCompleteStartIdx() error = %v, wantErr %v", err, tt.wantErr)
@@ -451,4 +484,5 @@ func TestFindBoardAutoCompleteStartIdx(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }

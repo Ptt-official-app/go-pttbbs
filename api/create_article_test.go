@@ -1,6 +1,7 @@
 package api
 
 import (
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
@@ -16,7 +17,7 @@ func TestCreateArticle(t *testing.T) {
 
 	class0 := []byte("test")
 	title0 := []byte("this is a test")
-	fullTitle0 := []byte("[test]this is a test")
+	fullTitle0 := []byte("[test] this is a test")
 	content0 := [][]byte{[]byte("test1"), []byte("test2")}
 	ip0 := "127.0.0.1"
 
@@ -61,8 +62,12 @@ func TestCreateArticle(t *testing.T) {
 			expectedResult: expected0,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotResult, err := CreateArticle(tt.args.remoteAddr, tt.args.uuser, tt.args.params, tt.args.path)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CreateArticle() error = %v, wantErr %v", err, tt.wantErr)
@@ -78,5 +83,6 @@ func TestCreateArticle(t *testing.T) {
 
 			testutil.TDeepEqual(t, "result", result, tt.expectedResult)
 		})
+		wg.Wait()
 	}
 }

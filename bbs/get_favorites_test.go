@@ -2,6 +2,7 @@ package bbs
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/types"
@@ -47,8 +48,11 @@ func TestGetFavorites(t *testing.T) {
 			expectedContent: expectedContent,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotContent, _, err := GetFavorites(tt.args.uuserID, tt.args.retrieveTS)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetFavorites() error = %v, wantErr %v", err, tt.wantErr)
@@ -59,4 +63,5 @@ func TestGetFavorites(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }

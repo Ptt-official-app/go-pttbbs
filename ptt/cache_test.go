@@ -2,6 +2,7 @@ package ptt
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 	"time"
 	"unsafe"
@@ -12,6 +13,9 @@ import (
 )
 
 func Test_getNewUtmpEnt(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
 	type args struct {
 		uinfo *ptttype.UserInfoRaw
 	}
@@ -33,8 +37,11 @@ func Test_getNewUtmpEnt(t *testing.T) {
 			expectedUtmpID: 5,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			time.Sleep(tt.sleepTS * time.Second)
 			gotUtmpID, err := getNewUtmpEnt(tt.args.uinfo)
 			if (err != nil) != tt.wantErr {
@@ -54,6 +61,7 @@ func Test_getNewUtmpEnt(t *testing.T) {
 
 			testutil.TDeepEqual(t, "got", got, tt.args.uinfo)
 		})
+		wg.Wait()
 	}
 }
 
@@ -81,8 +89,11 @@ func TestGetUser(t *testing.T) {
 			expectedUser: testUserecRaw1,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotUser, err := GetUser(tt.args.userID)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetUser() error = %v, wantErr %v", err, tt.wantErr)
@@ -93,6 +104,7 @@ func TestGetUser(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestGetUserLevel(t *testing.T) {
@@ -114,8 +126,11 @@ func TestGetUserLevel(t *testing.T) {
 			expectedUserLevel: 536871943,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotUserLevel, err := GetUserLevel(tt.args.userID)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetUserLevel() error = %v, wantErr %v", err, tt.wantErr)
@@ -126,6 +141,7 @@ func TestGetUserLevel(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestGetUser2(t *testing.T) {
@@ -149,8 +165,11 @@ func TestGetUser2(t *testing.T) {
 			expectedUser: testUserec2Raw1,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotUser, err := GetUser2(tt.args.userID)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetUser2() error = %v, wantErr %v", err, tt.wantErr)
@@ -161,4 +180,5 @@ func TestGetUser2(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }

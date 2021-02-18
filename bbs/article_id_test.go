@@ -30,6 +30,7 @@ func TestToArticleID(t *testing.T) {
 			expected: articleID,
 		},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := ToArticleID(tt.args.filename, tt.args.ownerID); got != tt.expected {

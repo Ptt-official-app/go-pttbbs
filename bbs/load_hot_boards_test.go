@@ -1,6 +1,7 @@
 package bbs
 
 import (
+	"sync"
 	"testing"
 	"unsafe"
 
@@ -41,8 +42,12 @@ func TestLoadHotBoards(t *testing.T) {
 			expectedSummary: []*BoardSummary{testBoardSummary11, testBoardSummary6, testBoardSummary8},
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotSummary, err := LoadHotBoards(tt.args.uuserID)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadHotBoards() error = %v, wantErr %v", err, tt.wantErr)
@@ -52,4 +57,5 @@ func TestLoadHotBoards(t *testing.T) {
 			testutil.TDeepEqual(t, "summary", gotSummary, tt.expectedSummary)
 		})
 	}
+	wg.Wait()
 }

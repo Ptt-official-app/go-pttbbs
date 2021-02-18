@@ -1,6 +1,9 @@
 package bbs
 
-import "testing"
+import (
+	"sync"
+	"testing"
+)
 
 func TestCheckPasswd(t *testing.T) {
 	setupTest()
@@ -25,11 +28,15 @@ func TestCheckPasswd(t *testing.T) {
 			wantErr: true,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if err := CheckPasswd(tt.args.uuserID, tt.args.passwd, tt.args.ip); (err != nil) != tt.wantErr {
 				t.Errorf("CheckPasswd() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
+	wg.Wait()
 }

@@ -2,6 +2,7 @@ package ptt
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 	"unsafe"
 
@@ -88,13 +89,18 @@ func Test_isVisibleStat(t *testing.T) {
 			expected: true,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := isVisibleStat(tt.args.me, tt.args.uentp, tt.args.friStat); got != tt.expected {
 				t.Errorf("isVisibleStat() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func Test_friendStat(t *testing.T) {
@@ -134,13 +140,17 @@ func Test_friendStat(t *testing.T) {
 			expectedHit: ptttype.FRIEND_STAT_HFM | ptttype.FRIEND_STAT_IFH,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if gotHit := friendStat(tt.args.meID, tt.args.me, tt.args.uentID, tt.args.uentp); !reflect.DeepEqual(gotHit, tt.expectedHit) {
 				t.Errorf("friendStat() = %v, want %v", gotHit, tt.expectedHit)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func Test_myWrite(t *testing.T) {
@@ -199,8 +209,12 @@ func Test_myWrite(t *testing.T) {
 			expectedMsgCount: 1,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotMsgCount, err := myWrite(tt.args.myUtmpID, tt.args.myInfo, tt.args.pid, tt.args.prompt, tt.args.flag, tt.args.putmpID, tt.args.puin)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("myWrite() error = %v, wantErr %v", err, tt.wantErr)
@@ -210,5 +224,6 @@ func Test_myWrite(t *testing.T) {
 				t.Errorf("myWrite() = %v, want %v", gotMsgCount, tt.expectedMsgCount)
 			}
 		})
+		wg.Wait()
 	}
 }

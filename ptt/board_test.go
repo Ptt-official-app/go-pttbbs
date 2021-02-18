@@ -2,6 +2,7 @@ package ptt
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/cache"
@@ -36,13 +37,18 @@ func Test_boardPermStatNormally(t *testing.T) {
 			expected: ptttype.NBRD_BOARD,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := boardPermStatNormally(tt.args.user, tt.args.uid, tt.args.board, tt.args.bid); !reflect.DeepEqual(got, tt.expected) {
 				t.Errorf("boardPermStatNormally() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestIsBoardValidUser(t *testing.T) {
@@ -74,8 +80,11 @@ func TestIsBoardValidUser(t *testing.T) {
 			expectedIsValid: true,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotIsValid, err := IsBoardValidUser(tt.args.user, tt.args.uid, tt.args.boardID, tt.args.bid)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("IsBoardValidUser() error = %v, wantErr %v", err, tt.wantErr)
@@ -86,6 +95,7 @@ func TestIsBoardValidUser(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestNewBoard(t *testing.T) {
@@ -142,8 +152,12 @@ func TestNewBoard(t *testing.T) {
 			expectedNewBoard: testBoardSummary13,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotNewBoard, err := NewBoard(tt.args.user, tt.args.uid, tt.args.clsBid, tt.args.brdname, tt.args.brdClass, tt.args.brdTitle, tt.args.BMs, tt.args.brdAttr, tt.args.level, tt.args.chessCountry, tt.args.isGroup)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("NewBoard() error = %v, wantErr %v", err, tt.wantErr)
@@ -154,4 +168,5 @@ func TestNewBoard(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
