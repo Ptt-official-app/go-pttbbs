@@ -130,9 +130,3 @@ You can do following for the swagger-api:
 2. cd apidoc; pip install . && pip uninstall apidoc -y && python setup develop; cd ..
 3. ./scripts/swagger.sh
 4. connect to [http://localhost:8080](http://localhost:8080)
-
-## Relationship with https://github.com/PichuChen/go-bbs
-
-[PiChuChen's go-bbs](https://github.com/PichuChen/go-bbs) was the first repo
-in Ptt-official-app intending to be the backend. This repository is intending to have
-another approach to implement the go-version of the bbs.

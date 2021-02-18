@@ -2,6 +2,7 @@ package api
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 	"unsafe"
 
@@ -48,8 +49,11 @@ func TestLoadHotBoards(t *testing.T) {
 			expectedResult: result0,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotResult, err := LoadHotBoards(tt.args.remoteAddr, tt.args.uuserID, tt.args.params)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadHotBoards() error = %v, wantErr %v", err, tt.wantErr)
@@ -60,4 +64,5 @@ func TestLoadHotBoards(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }

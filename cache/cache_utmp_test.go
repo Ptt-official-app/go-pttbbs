@@ -2,6 +2,7 @@ package cache
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 	"unsafe"
 
@@ -81,11 +82,15 @@ func TestSearchUListUserID(t *testing.T) {
 			expected: &testUserInfo5,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			_, got := SearchUListUserID(tt.args.userID)
 			testutil.TDeepEqual(t, "userinfo", got, tt.expected)
 		})
+		wg.Wait()
 	}
 }
 
@@ -168,8 +173,11 @@ func TestSearchUListPID(t *testing.T) {
 			expected1: nil,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			got, got1 := SearchUListPID(tt.args.pid)
 			if !reflect.DeepEqual(got, tt.expected) {
 				t.Errorf("SearchUListPID() got = %v, want %v", got, tt.expected)
@@ -178,5 +186,6 @@ func TestSearchUListPID(t *testing.T) {
 				t.Errorf("SearchUListPID() got1 = %v, want %v", got1, tt.expected1)
 			}
 		})
+		wg.Wait()
 	}
 }

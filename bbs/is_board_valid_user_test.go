@@ -1,6 +1,9 @@
 package bbs
 
-import "testing"
+import (
+	"sync"
+	"testing"
+)
 
 func TestIsBoardValidUser(t *testing.T) {
 	setupTest()
@@ -22,8 +25,11 @@ func TestIsBoardValidUser(t *testing.T) {
 			expectedIsValid: true,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotIsValid, err := IsBoardValidUser(tt.args.uuserID, tt.args.boardID)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("IsBoardValidUser() error = %v, wantErr %v", err, tt.wantErr)
@@ -34,4 +40,5 @@ func TestIsBoardValidUser(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }

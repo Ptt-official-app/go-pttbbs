@@ -1,6 +1,7 @@
 package bbs
 
 import (
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptt"
@@ -16,7 +17,7 @@ func TestCreateArticle(t *testing.T) {
 
 	class0 := []byte("test")
 	title0 := []byte("this is a test")
-	fullTitle0 := []byte("[test]this is a test")
+	fullTitle0 := []byte("[test] this is a test")
 	content0 := [][]byte{[]byte("test1"), []byte("test2")}
 	ip0 := "127.0.0.1"
 
@@ -55,8 +56,11 @@ func TestCreateArticle(t *testing.T) {
 			expectedSummary: expectedSummary0,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotSummary, err := CreateArticle(tt.args.uuserID, tt.args.bboardID, tt.args.posttype, tt.args.title, tt.args.content, tt.args.ip)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CreateArticle() error = %v, wantErr %v", err, tt.wantErr)
@@ -70,5 +74,6 @@ func TestCreateArticle(t *testing.T) {
 			gotSummary.Idx = ""
 			testutil.TDeepEqual(t, "summary", gotSummary, tt.expectedSummary)
 		})
+		wg.Wait()
 	}
 }

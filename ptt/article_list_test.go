@@ -247,8 +247,8 @@ func TestLoadGeneralArticles(t *testing.T) {
 
 			}
 		})
-		wg.Wait()
 	}
+	wg.Wait()
 }
 
 func TestFindArticleStartAid(t *testing.T) {

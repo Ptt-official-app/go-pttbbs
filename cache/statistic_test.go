@@ -2,6 +2,7 @@ package cache
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 	"unsafe"
 
@@ -40,23 +41,28 @@ func TestStatInc(t *testing.T) {
 			expected: 2,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if err := StatInc(tt.args.stats); (err != nil) != tt.wantErr {
 				t.Errorf("StatInc() error = %v, wantErr %v", err, tt.wantErr)
 			}
+
+			out := uint32(0)
+			Shm.ReadAt(
+				unsafe.Offsetof(Shm.Raw.Statistic)+types.UINT32_SZ*uintptr(ptttype.STAT_BOARDREC),
+				unsafe.Sizeof(Shm.Raw.Statistic[ptttype.STAT_BOARDREC]),
+				unsafe.Pointer(&out),
+			)
+
+			if !reflect.DeepEqual(out, tt.expected) {
+				t.Errorf("StatInc() out: %v expected: %v", out, tt.expected)
+			}
 		})
-
-		out := uint32(0)
-		Shm.ReadAt(
-			unsafe.Offsetof(Shm.Raw.Statistic)+types.UINT32_SZ*uintptr(ptttype.STAT_BOARDREC),
-			unsafe.Sizeof(Shm.Raw.Statistic[ptttype.STAT_BOARDREC]),
-			unsafe.Pointer(&out),
-		)
-
-		if !reflect.DeepEqual(out, tt.expected) {
-			t.Errorf("StatInc() out: %v expected: %v", out, tt.expected)
-		}
+		wg.Wait()
 	}
 }
 
@@ -96,8 +102,12 @@ func TestReadStat(t *testing.T) {
 			expected: 2,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			got, err := ReadStat(tt.args.stats)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ReadStat() error = %v, wantErr %v", err, tt.wantErr)
@@ -108,6 +118,7 @@ func TestReadStat(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestCleanStat(t *testing.T) {
@@ -127,8 +138,11 @@ func TestCleanStat(t *testing.T) {
 		// TODO: Add test cases.
 		{},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			CleanStat()
 
 			statsBoardRec, _ := ReadStat(ptttype.STAT_BOARDREC)
@@ -136,5 +150,6 @@ func TestCleanStat(t *testing.T) {
 				t.Errorf("CleanStat() statsBoardRec: %v", statsBoardRec)
 			}
 		})
+		wg.Wait()
 	}
 }

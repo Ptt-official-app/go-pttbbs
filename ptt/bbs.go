@@ -286,12 +286,15 @@ func checkBoardAnonymous(board *ptttype.BoardHeaderRaw) bool {
 	return board.BrdAttr&ptttype.BRD_ANONYMOUS != 0
 }
 
+//doPostArticleFullTitle
+//
+//https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L1348
 func doPostArticleFullTitle(posttype []byte, title []byte) (fullTitle []byte) {
 	if len(posttype) == 0 {
 		return title
 	}
 
-	return bytes.Join([][]byte{{'['}, posttype, {']'}, title}, []byte{})
+	return bytes.Join([][]byte{{'['}, posttype, {']', ' '}, title}, []byte{})
 }
 
 func checkCooldown(user *ptttype.UserecRaw, uid ptttype.Uid, board *ptttype.BoardHeaderRaw, bid ptttype.Bid) (isCooldown bool, err error) {

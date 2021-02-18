@@ -49,8 +49,12 @@ func TestLoadUHash(t *testing.T) {
 		// TODO: Add test cases.
 		{},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			var err error
 			if err = LoadUHash(); (err != nil) != tt.wantErr {
 				t.Errorf("loadUHash() error = %v, wantErr %v", err, tt.wantErr)
@@ -84,6 +88,7 @@ func TestLoadUHash(t *testing.T) {
 			}
 
 		})
+		wg.Wait()
 	}
 }
 
@@ -217,9 +222,12 @@ func TestInitFillUHash(t *testing.T) {
 			args: args{true},
 		},
 	}
-	for _, tt := range tests {
 
+	var wg sync.WaitGroup
+	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			setupTest()
 			defer teardownTest()
 
@@ -263,5 +271,6 @@ func TestInitFillUHash(t *testing.T) {
 			}
 
 		})
+		wg.Wait()
 	}
 }

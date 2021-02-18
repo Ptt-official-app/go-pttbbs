@@ -2,6 +2,7 @@ package shm
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 	"unsafe"
 
@@ -56,27 +57,35 @@ func TestCreateShm(t *testing.T) {
 	firstGoodShmID := 0
 	var firstGoodShmaddr unsafe.Pointer
 	defer CloseShm(firstGoodShmID, firstGoodShmaddr)
+
+	var wg sync.WaitGroup
 	for idx, tt := range tests {
-		gotShmid, gotShmaddr, gotIsNew, err := CreateShm(tt.args.key, tt.args.size, tt.args.is_usehugetlb)
-		log.Infof("(%v/%v): after CreateShm: gotShmid: %v gotShmaddr: %v gotIsNew: %v e: %v", idx, tt.name, gotShmid, gotShmaddr, gotIsNew, err)
+		wg.Add(1)
+		t.Run(tt.name, func(t *testing.T) {
 
-		if (err != nil) != tt.wantErr {
-			t.Errorf("(%v/%v): CreateShm() error = %v, wantErr %v", idx, tt.name, err, tt.wantErr)
-			return
-		}
+			defer wg.Done()
+			gotShmid, gotShmaddr, gotIsNew, err := CreateShm(tt.args.key, tt.args.size, tt.args.is_usehugetlb)
+			log.Infof("(%v/%v): after CreateShm: gotShmid: %v gotShmaddr: %v gotIsNew: %v e: %v", idx, tt.name, gotShmid, gotShmaddr, gotIsNew, err)
 
-		log.Infof("shm_test.CreateShm: to check firstGoodShmID: %v %v", firstGoodShmID, firstGoodShmaddr)
-		if firstGoodShmID == 0 {
-			firstGoodShmID = gotShmid
-			firstGoodShmaddr = gotShmaddr
-		}
+			if (err != nil) != tt.wantErr {
+				t.Errorf("(%v/%v): CreateShm() error = %v, wantErr %v", idx, tt.name, err, tt.wantErr)
+				return
+			}
 
-		if tt.wantShmid != 0 && gotShmid != tt.wantShmid {
-			t.Errorf("%v: CreateShm() gotShmid = %v, expected %v", tt.name, gotShmid, tt.wantShmid)
-		}
-		if gotIsNew != tt.wantIsNew {
-			t.Errorf("%v: CreateShm() gotIsNew = %v, expected %v", tt.name, gotIsNew, tt.wantIsNew)
-		}
+			log.Infof("shm_test.CreateShm: to check firstGoodShmID: %v %v", firstGoodShmID, firstGoodShmaddr)
+			if firstGoodShmID == 0 {
+				firstGoodShmID = gotShmid
+				firstGoodShmaddr = gotShmaddr
+			}
+
+			if tt.wantShmid != 0 && gotShmid != tt.wantShmid {
+				t.Errorf("%v: CreateShm() gotShmid = %v, expected %v", tt.name, gotShmid, tt.wantShmid)
+			}
+			if gotIsNew != tt.wantIsNew {
+				t.Errorf("%v: CreateShm() gotIsNew = %v, expected %v", tt.name, gotIsNew, tt.wantIsNew)
+			}
+		})
+		wg.Wait()
 	}
 }
 
@@ -105,11 +114,18 @@ func TestCloseShm(t *testing.T) {
 			wantErr: true,
 		},
 	}
+	var wg sync.WaitGroup
 	for idx, tt := range tests {
-		err := CloseShm(tt.args.shmid, tt.args.shmaddr)
-		if (err != nil) != tt.wantErr {
-			t.Errorf("(%v/%v) CloseShm: e: %v wantErr: %v", idx, tt.name, err, tt.wantErr)
-		}
+		wg.Add(1)
+		t.Run(tt.name, func(t *testing.T) {
+
+			defer wg.Done()
+			err := CloseShm(tt.args.shmid, tt.args.shmaddr)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("(%v/%v) CloseShm: e: %v wantErr: %v", idx, tt.name, err, tt.wantErr)
+			}
+		})
+		wg.Wait()
 	}
 }
 
@@ -156,8 +172,11 @@ func TestOpenShm(t *testing.T) {
 			wantErr:   true,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotShmid, _, err := OpenShm(tt.args.key, tt.args.size, tt.args.is_usehugetlb)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("OpenShm() error = %v, wantErr %v", err, tt.wantErr)
@@ -167,6 +186,7 @@ func TestOpenShm(t *testing.T) {
 				t.Errorf("OpenShm() gotShmid = %v, expected %v", gotShmid, tt.wantShmid)
 			}
 		})
+		wg.Wait()
 	}
 
 }
@@ -236,8 +256,12 @@ func TestReadAt(t *testing.T) {
 			expected: want3,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			ReadAt(tt.args.shmaddr, tt.args.offset, tt.args.size, tt.args.outptr)
 
 			if !reflect.DeepEqual(tt.read, tt.expected) {
@@ -245,6 +269,7 @@ func TestReadAt(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 
 }
 
@@ -312,8 +337,12 @@ func TestWriteAt(t *testing.T) {
 			expected: empty1,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			WriteAt(tt.args.shmaddr, tt.args.offset, tt.args.size, tt.args.inptr)
 
 			ReadAt(shmaddr, 0, 40, readptr)
@@ -322,6 +351,7 @@ func TestWriteAt(t *testing.T) {
 			}
 
 		})
+		wg.Wait()
 	}
 
 }
@@ -360,8 +390,12 @@ func TestIncUint32(t *testing.T) {
 			expected: 1,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			IncUint32(tt.args.shmaddr, tt.args.offset)
 
 			out := uint32(0)
@@ -370,6 +404,7 @@ func TestIncUint32(t *testing.T) {
 				t.Errorf("IncUint32() out: %v expected: %v", out, tt.expected)
 			}
 		})
+		wg.Wait()
 	}
 }
 
@@ -404,8 +439,12 @@ func TestSetOrUint32(t *testing.T) {
 			expected: 0x00000055,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			SetOrUint32(tt.args.shmaddr, tt.args.offset, tt.args.flag)
 
 			out := uint32(0)
@@ -419,6 +458,7 @@ func TestSetOrUint32(t *testing.T) {
 				t.Errorf("SetOrUint32() out: %v expected: %v", out, tt.expected)
 			}
 		})
+		wg.Wait()
 	}
 }
 
@@ -453,8 +493,12 @@ func TestInnerSetInt32(t *testing.T) {
 			expected: 8,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			InnerSetInt32(tt.args.shmaddr, tt.args.offsetSrc, tt.args.offsetDst)
 
 			out := int32(0)
@@ -468,6 +512,7 @@ func TestInnerSetInt32(t *testing.T) {
 				t.Errorf("InnerSetInt32(): %v expected: %v", out, tt.expected)
 			}
 		})
+		wg.Wait()
 	}
 }
 
@@ -498,8 +543,11 @@ func TestMemset(t *testing.T) {
 			},
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			Memset(tt.args.shmaddr, tt.args.offset, tt.args.c, tt.args.size)
 
 			out := [20]byte{}
@@ -514,6 +562,7 @@ func TestMemset(t *testing.T) {
 				t.Errorf("Memset: %v expected: %v", out, tt.expected)
 			}
 		})
+		wg.Wait()
 	}
 }
 
@@ -659,45 +708,49 @@ func TestQsortCmpBoardName(t *testing.T) {
 			expected: expected,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			QsortCmpBoardName(tt.args.shmaddr, tt.args.offset, tt.args.n)
+
+			outName := ptttype.BoardID_t{}
+			outTitle := ptttype.BoardTitle_t{}
+			the_idx := int32(0)
+			for i := 0; i < 5; i++ {
+				ReadAt(
+					tt.args.shmaddr,
+					tt.args.offset+i*int(types.INT32_SZ),
+					types.INT32_SZ,
+					unsafe.Pointer(&the_idx),
+				)
+				ReadAt(
+					tt.args.shmaddr,
+					1200+int(ptttype.BOARD_HEADER_RAW_SZ)*int(the_idx)+int(ptttype.BOARD_HEADER_BRDNAME_OFFSET),
+					ptttype.BOARD_ID_SZ,
+					unsafe.Pointer(&outName),
+				)
+
+				theBytes := types.CstrToBytes(outName[:])
+				if !reflect.DeepEqual(theBytes, tt.expected[i].Name[:]) {
+					t.Errorf("QsortCmpBoardName (name): (%v/5) (%v) expected: (%v)", i, string(theBytes), string(tt.expected[i].Name[:]))
+				}
+
+				ReadAt(
+					tt.args.shmaddr,
+					1200+int(ptttype.BOARD_HEADER_RAW_SZ)*int(the_idx)+int(ptttype.BOARD_HEADER_TITLE_OFFSET),
+					ptttype.BOARD_TITLE_SZ,
+					unsafe.Pointer(&outTitle),
+				)
+
+				theBytes = types.CstrToBytes(outTitle[:])
+				if !reflect.DeepEqual(theBytes, tt.expected[i].Title[:]) {
+					t.Errorf("QsortCmpBoardName: (title): (%v/5) %v expected: %v", i, string(theBytes), string(tt.expected[i].Title[:]))
+				}
+			}
 		})
-
-		outName := ptttype.BoardID_t{}
-		outTitle := ptttype.BoardTitle_t{}
-		the_idx := int32(0)
-		for i := 0; i < 5; i++ {
-			ReadAt(
-				tt.args.shmaddr,
-				tt.args.offset+i*int(types.INT32_SZ),
-				types.INT32_SZ,
-				unsafe.Pointer(&the_idx),
-			)
-			ReadAt(
-				tt.args.shmaddr,
-				1200+int(ptttype.BOARD_HEADER_RAW_SZ)*int(the_idx)+int(ptttype.BOARD_HEADER_BRDNAME_OFFSET),
-				ptttype.BOARD_ID_SZ,
-				unsafe.Pointer(&outName),
-			)
-
-			theBytes := types.CstrToBytes(outName[:])
-			if !reflect.DeepEqual(theBytes, tt.expected[i].Name[:]) {
-				t.Errorf("QsortCmpBoardName (name): (%v/5) (%v) expected: (%v)", i, string(theBytes), string(tt.expected[i].Name[:]))
-			}
-
-			ReadAt(
-				tt.args.shmaddr,
-				1200+int(ptttype.BOARD_HEADER_RAW_SZ)*int(the_idx)+int(ptttype.BOARD_HEADER_TITLE_OFFSET),
-				ptttype.BOARD_TITLE_SZ,
-				unsafe.Pointer(&outTitle),
-			)
-
-			theBytes = types.CstrToBytes(outTitle[:])
-			if !reflect.DeepEqual(theBytes, tt.expected[i].Title[:]) {
-				t.Errorf("QsortCmpBoardName: (title): (%v/5) %v expected: %v", i, string(theBytes), string(tt.expected[i].Title[:]))
-			}
-		}
+		wg.Wait()
 	}
 }
 
@@ -843,44 +896,48 @@ func TestQsortCmpBoardClass(t *testing.T) {
 			expected: expected,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			QsortCmpBoardClass(tt.args.shmaddr, tt.args.offset, tt.args.n)
+
+			outName := ptttype.BoardID_t{}
+			outTitle := ptttype.BoardTitle_t{}
+			the_idx := int32(0)
+			for i := 0; i < 5; i++ {
+				ReadAt(
+					tt.args.shmaddr,
+					tt.args.offset+i*int(types.INT32_SZ),
+					types.INT32_SZ,
+					unsafe.Pointer(&the_idx),
+				)
+				ReadAt(
+					tt.args.shmaddr,
+					1200+int(ptttype.BOARD_HEADER_RAW_SZ)*int(the_idx)+int(ptttype.BOARD_HEADER_BRDNAME_OFFSET),
+					ptttype.BOARD_ID_SZ,
+					unsafe.Pointer(&outName),
+				)
+
+				theBytes := types.CstrToBytes(outName[:])
+				if !reflect.DeepEqual(theBytes, tt.expected[i].Name[:]) {
+					t.Errorf("QsortCmpBoardClass (name): (%v/5) (%v) expected: (%v)", i, string(theBytes), string(tt.expected[i].Name[:]))
+				}
+
+				ReadAt(
+					tt.args.shmaddr,
+					1200+int(ptttype.BOARD_HEADER_RAW_SZ)*int(the_idx)+int(ptttype.BOARD_HEADER_TITLE_OFFSET),
+					ptttype.BOARD_TITLE_SZ,
+					unsafe.Pointer(&outTitle),
+				)
+
+				theBytes = types.CstrToBytes(outTitle[:])
+				if !reflect.DeepEqual(theBytes, tt.expected[i].Title[:]) {
+					t.Errorf("QsortCmpBoardClass: (title): (%v/5) %v expected: %v", i, string(theBytes), string(tt.expected[i].Title[:]))
+				}
+			}
 		})
-
-		outName := ptttype.BoardID_t{}
-		outTitle := ptttype.BoardTitle_t{}
-		the_idx := int32(0)
-		for i := 0; i < 5; i++ {
-			ReadAt(
-				tt.args.shmaddr,
-				tt.args.offset+i*int(types.INT32_SZ),
-				types.INT32_SZ,
-				unsafe.Pointer(&the_idx),
-			)
-			ReadAt(
-				tt.args.shmaddr,
-				1200+int(ptttype.BOARD_HEADER_RAW_SZ)*int(the_idx)+int(ptttype.BOARD_HEADER_BRDNAME_OFFSET),
-				ptttype.BOARD_ID_SZ,
-				unsafe.Pointer(&outName),
-			)
-
-			theBytes := types.CstrToBytes(outName[:])
-			if !reflect.DeepEqual(theBytes, tt.expected[i].Name[:]) {
-				t.Errorf("QsortCmpBoardClass (name): (%v/5) (%v) expected: (%v)", i, string(theBytes), string(tt.expected[i].Name[:]))
-			}
-
-			ReadAt(
-				tt.args.shmaddr,
-				1200+int(ptttype.BOARD_HEADER_RAW_SZ)*int(the_idx)+int(ptttype.BOARD_HEADER_TITLE_OFFSET),
-				ptttype.BOARD_TITLE_SZ,
-				unsafe.Pointer(&outTitle),
-			)
-
-			theBytes = types.CstrToBytes(outTitle[:])
-			if !reflect.DeepEqual(theBytes, tt.expected[i].Title[:]) {
-				t.Errorf("QsortCmpBoardClass: (title): (%v/5) %v expected: %v", i, string(theBytes), string(tt.expected[i].Title[:]))
-			}
-		}
+		wg.Wait()
 	}
 }

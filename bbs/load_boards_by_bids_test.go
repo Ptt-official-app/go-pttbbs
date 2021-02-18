@@ -1,6 +1,7 @@
 package bbs
 
 import (
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
@@ -29,8 +30,11 @@ func TestLoadBoardsByBids(t *testing.T) {
 			expectedSummaries: []*BoardSummary{testBoardSummary6, testBoardSummary7, testBoardSummary11, testBoardSummary8},
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotSummaries, err := LoadBoardsByBids(tt.args.uuserID, tt.args.bids)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadBoardsByBids() error = %v, wantErr %v", err, tt.wantErr)
@@ -40,4 +44,5 @@ func TestLoadBoardsByBids(t *testing.T) {
 			testutil.TDeepEqual(t, "summaries", gotSummaries, tt.expectedSummaries)
 		})
 	}
+	wg.Wait()
 }

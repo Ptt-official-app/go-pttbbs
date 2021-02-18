@@ -2,6 +2,7 @@ package ptt
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
@@ -31,8 +32,11 @@ func TestInitCurrentUser(t *testing.T) {
 			expected1: testUserecRaw1,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			got, got1, err := InitCurrentUser(tt.args.userID)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("InitCurrentUser() error = %v, wantErr %v", err, tt.wantErr)
@@ -45,6 +49,7 @@ func TestInitCurrentUser(t *testing.T) {
 				t.Errorf("InitCurrentUser() got1 = %v, expected1 %v", got1, tt.expected1)
 			}
 		})
+		wg.Wait()
 	}
 }
 
@@ -66,12 +71,16 @@ func Test_passwdSyncUpdate(t *testing.T) {
 			args: args{uid: ptttype.Uid(1), user: testUserecRaw1},
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if err := passwdSyncUpdate(tt.args.uid, tt.args.user); (err != nil) != tt.wantErr {
 				t.Errorf("passwdSyncUpdate() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
+		wg.Wait()
 	}
 }
 
@@ -94,8 +103,12 @@ func Test_passwdSyncQuery(t *testing.T) {
 			expected: testUserecRaw1,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			got, err := passwdSyncQuery(tt.args.uid)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("passwdSyncQuery() error = %v, wantErr %v", err, tt.wantErr)
@@ -105,6 +118,7 @@ func Test_passwdSyncQuery(t *testing.T) {
 				t.Errorf("passwdSyncQuery() = %v, want %v", got, tt.expected)
 			}
 		})
+		wg.Wait()
 	}
 }
 
@@ -127,8 +141,12 @@ func TestInitCurrentUserByUid(t *testing.T) {
 			expectedUser: testUserecRaw1,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotUser, err := InitCurrentUserByUid(tt.args.uid)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("InitCurrentUserByUid() error = %v, wantErr %v", err, tt.wantErr)
@@ -138,5 +156,6 @@ func TestInitCurrentUserByUid(t *testing.T) {
 				t.Errorf("InitCurrentUserByUid() = %v, want %v", gotUser, tt.expectedUser)
 			}
 		})
+		wg.Wait()
 	}
 }

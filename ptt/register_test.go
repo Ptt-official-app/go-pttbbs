@@ -15,6 +15,9 @@ import (
 )
 
 func Test_registerCountEmail(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
 	type args struct {
 		user  *ptttype.UserecRaw
 		email *ptttype.Email_t
@@ -29,11 +32,11 @@ func Test_registerCountEmail(t *testing.T) {
 		{},
 		{},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
-			setupTest()
-			defer teardownTest()
-
+			defer wg.Done()
 			gotCount, err := registerCountEmail(tt.args.user, tt.args.email)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("registerCountEmail() error = %v, wantErr %v", err, tt.wantErr)
@@ -44,9 +47,12 @@ func Test_registerCountEmail(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func Test_getSystemUaVersion(t *testing.T) {
+	setupTest()
+	defer teardownTest()
 	tests := []struct {
 		name     string
 		expected uint8
@@ -54,20 +60,24 @@ func Test_getSystemUaVersion(t *testing.T) {
 		// TODO: Add test cases.
 		{expected: 128},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
-			setupTest()
-			defer teardownTest()
+			defer wg.Done()
 
 			if got := getSystemUaVersion(); got != tt.expected {
 				t.Errorf("getSystemUaVersion() = %v, expected %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestSetupNewUser(t *testing.T) {
-	//setup/teardown move to for-loop
+	setupTest()
+	defer teardownTest()
 
 	type args struct {
 		user *ptttype.UserecRaw
@@ -84,10 +94,12 @@ func TestSetupNewUser(t *testing.T) {
 			expected: testSetupNewUser1,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
-			setupTest()
-			defer teardownTest()
+			defer wg.Done()
 
 			if err := SetupNewUser(tt.args.user); (err != nil) != tt.wantErr {
 				t.Errorf("SetupNewUser() error = %v, wantErr %v", err, tt.wantErr)
@@ -104,6 +116,7 @@ func TestSetupNewUser(t *testing.T) {
 				t.Errorf("SetupNewUser (InitCurrentUser): got: %v expected: %v", got, tt.expected)
 			}
 		})
+		wg.Wait()
 	}
 }
 
@@ -145,8 +158,12 @@ func Test_isToCleanUser(t *testing.T) {
 			expected: true,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if tt.isDelete {
 				os.Remove(ptttype.FN_FRESH)
 			} else {
@@ -166,6 +183,7 @@ func Test_isToCleanUser(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func Test_touchFresh(t *testing.T) {
@@ -179,12 +197,16 @@ func Test_touchFresh(t *testing.T) {
 		// TODO: Add test cases.
 		{},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if err := touchFresh(); (err != nil) != tt.wantErr {
 				t.Errorf("touchFresh() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
+		wg.Wait()
 	}
 }
 
@@ -209,8 +231,11 @@ func Test_checkAndExpireAccount(t *testing.T) {
 			expected: -87067,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			got, err := checkAndExpireAccount(tt.args.uid, tt.args.user, tt.args.expireRange)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("checkAndExpireAccount() error = %v, wantErr %v", err, tt.wantErr)
@@ -220,6 +245,7 @@ func Test_checkAndExpireAccount(t *testing.T) {
 				t.Errorf("checkAndExpireAccount() = %v, expected %v", got, tt.expected)
 			}
 		})
+		wg.Wait()
 	}
 }
 
@@ -263,8 +289,11 @@ func Test_computeUserExpireValue(t *testing.T) {
 			expected: false,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			got := computeUserExpireValue(tt.args.user)
 			if got < 0 && tt.expected {
 				t.Errorf("computeUserExpireValue() = %v, expected %v", got, tt.expected)
@@ -273,6 +302,7 @@ func Test_computeUserExpireValue(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestNewRegister(t *testing.T) {
@@ -316,8 +346,12 @@ func TestNewRegister(t *testing.T) {
 			expectedUID: 6,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotUid, got, err := NewRegister(tt.args.userID, tt.args.passwd, tt.args.fromHost, tt.args.email, tt.args.isEmailVerified, tt.args.isAdbannerUSong, tt.args.nickname, tt.args.realname, tt.args.career, tt.args.address, tt.args.over18)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("NewRegister() error = %v, wantErr %v", err, tt.wantErr)
@@ -339,6 +373,7 @@ func TestNewRegister(t *testing.T) {
 
 			testutil.TDeepEqual(t, "userec", got, tt.expected)
 		})
+		wg.Wait()
 	}
 }
 
@@ -363,12 +398,16 @@ func Test_ensureErasingOldUser(t *testing.T) {
 			args: args{2, userID2},
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if err := ensureErasingOldUser(tt.args.uid, tt.args.userID); (err != nil) != tt.wantErr {
 				t.Errorf("ensureErasingOldUser() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
+		wg.Wait()
 	}
 }
 
@@ -386,12 +425,17 @@ func Test_tryCleanUser(t *testing.T) {
 		{},
 		{},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if err := tryCleanUser(); (err != nil) != tt.wantErr {
 				t.Errorf("tryCleanUser() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
+		wg.Wait()
 	}
 }
 
@@ -413,12 +457,16 @@ func Test_registerCheckAndUpdateEmaildb(t *testing.T) {
 			args: args{testUserecRaw2, email2},
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if err := registerCheckAndUpdateEmaildb(tt.args.user, tt.args.email); (err != nil) != tt.wantErr {
 				t.Errorf("registerCheckAndUpdateEmaildb() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
+		wg.Wait()
 	}
 }
 
@@ -601,11 +649,15 @@ func TestCheckEmailAllowRejectLists(t *testing.T) {
 			wantErr: true,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if err := CheckEmailAllowRejectLists(tt.args.email); (err != nil) != tt.wantErr {
 				t.Errorf("CheckEmailAllowRejectLists() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
+	wg.Wait()
 }

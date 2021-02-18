@@ -168,8 +168,12 @@ func TestReloadBCache(t *testing.T) {
 			expectedBCacheTitle:   testBCacheTitle,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			ReloadBCache()
 
 			nBoard := int32(0)
@@ -210,6 +214,7 @@ func TestReloadBCache(t *testing.T) {
 			}
 
 		})
+		wg.Wait()
 	}
 }
 
@@ -228,8 +233,12 @@ func Test_reloadCacheLoadBottom(t *testing.T) {
 			expected: 1,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			reloadCacheLoadBottom()
 			nBottom := uint8(0)
 			Shm.ReadAt(
@@ -243,6 +252,7 @@ func Test_reloadCacheLoadBottom(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestGetBTotal(t *testing.T) {
@@ -275,13 +285,18 @@ func TestGetBTotal(t *testing.T) {
 			expectedTotal: total1,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if gotTotal := GetBTotal(tt.args.bid); gotTotal != tt.expectedTotal {
 				t.Errorf("GetBTotal() = %v, want %v", gotTotal, tt.expectedTotal)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestSetBTotal(t *testing.T) {
@@ -307,8 +322,11 @@ func TestSetBTotal(t *testing.T) {
 			expectedLastPostTime: 1607203395,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if err := SetBTotal(tt.args.bid); (err != nil) != tt.wantErr {
 				t.Errorf("SetBTotal() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -329,6 +347,7 @@ func TestSetBTotal(t *testing.T) {
 				t.Errorf("SetBTotal: lastPostTime: %v want: %v", lastPostTime, tt.expectedLastPostTime)
 			}
 		})
+		wg.Wait()
 	}
 }
 
@@ -353,8 +372,12 @@ func TestSetBottomTotal(t *testing.T) {
 			expectedTotal: 1,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if err := SetBottomTotal(tt.args.bid); (err != nil) != tt.wantErr {
 				t.Errorf("SetBottomTotal() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -373,6 +396,7 @@ func TestSetBottomTotal(t *testing.T) {
 			}
 
 		})
+		wg.Wait()
 	}
 }
 
@@ -407,8 +431,11 @@ func TestGetBid(t *testing.T) {
 			expectedBid: 1,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotBid, err := GetBid(tt.args.boardID)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetBid() error = %v, wantErr %v", err, tt.wantErr)
@@ -419,6 +446,7 @@ func TestGetBid(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestFindBoardIdxByName(t *testing.T) {
@@ -550,8 +578,12 @@ func TestFindBoardIdxByName(t *testing.T) {
 			expectedIdx: 2,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotIdx, err := FindBoardIdxByName(tt.args.boardID, tt.args.isAsc)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("FindBoardIdxByName() error = %v, wantErr %v", err, tt.wantErr)
@@ -1160,4 +1192,5 @@ func TestTouchBPostNum(t *testing.T) {
 		})
 		wg.Wait()
 	}
+	wg.Wait()
 }

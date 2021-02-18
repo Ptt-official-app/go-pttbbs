@@ -1,6 +1,9 @@
 package bbs
 
-import "testing"
+import (
+	"sync"
+	"testing"
+)
 
 func TestChangeEmail(t *testing.T) {
 	setupTest()
@@ -20,8 +23,11 @@ func TestChangeEmail(t *testing.T) {
 			args: args{userID: "SYSOP", email: "test@ptt.test"},
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if err := ChangeEmail(tt.args.userID, tt.args.email); (err != nil) != tt.wantErr {
 				t.Errorf("ChangeEmail() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -32,5 +38,6 @@ func TestChangeEmail(t *testing.T) {
 				t.Errorf("ChangeEmail: %v email: %v", user.Email, tt.args.email)
 			}
 		})
+		wg.Wait()
 	}
 }

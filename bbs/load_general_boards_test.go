@@ -1,6 +1,7 @@
 package bbs
 
 import (
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
@@ -50,8 +51,12 @@ func TestLoadGeneralBoards(t *testing.T) {
 			expectedNextIdxStr: "",
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 
 			gotSummaries, gotNextIdx, err := LoadGeneralBoards(tt.args.uuserID, tt.args.startIdxStr, tt.args.nBoards, tt.args.title, tt.args.keyword, tt.args.isAsc, tt.args.sortBy)
 			if (err != nil) != tt.wantErr {
@@ -66,4 +71,5 @@ func TestLoadGeneralBoards(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }

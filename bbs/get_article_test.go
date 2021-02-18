@@ -3,6 +3,7 @@ package bbs
 import (
 	"os"
 	"reflect"
+	"sync"
 	"testing"
 	"time"
 
@@ -46,8 +47,11 @@ func TestGetArticle(t *testing.T) {
 			expectedMtime:   1607209066,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotContent, gotMtime, err := GetArticle(tt.args.uuserID, tt.args.bboardID, tt.args.articleID, tt.args.retrieveTS)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetArticle() error = %v, wantErr %v", err, tt.wantErr)
@@ -61,4 +65,5 @@ func TestGetArticle(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }

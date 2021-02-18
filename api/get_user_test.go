@@ -1,6 +1,7 @@
 package api
 
 import (
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
@@ -32,8 +33,11 @@ func TestGetUser(t *testing.T) {
 			expectedResult: expected,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotResult, err := GetUser(tt.args.remoteAddr, tt.args.uuserID, tt.args.params, tt.args.path)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetUser() error = %v, wantErr %v", err, tt.wantErr)
@@ -44,4 +48,5 @@ func TestGetUser(t *testing.T) {
 			testutil.TDeepEqual(t, "got", got, tt.expectedResult)
 		})
 	}
+	wg.Wait()
 }

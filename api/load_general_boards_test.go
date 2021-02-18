@@ -2,6 +2,7 @@ package api
 
 import (
 	"strconv"
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
@@ -39,8 +40,11 @@ func TestLoadGeneralBoards(t *testing.T) {
 			expected: expected,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			got, err := LoadGeneralBoards(testIP, tt.args.uuserID, tt.args.params)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadGeneralBoards() error = %v, wantErr %v", err, tt.wantErr)
@@ -53,4 +57,5 @@ func TestLoadGeneralBoards(t *testing.T) {
 			testutil.TDeepEqual(t, "boards", theGot.Boards, theExpected.Boards)
 		})
 	}
+	wg.Wait()
 }
