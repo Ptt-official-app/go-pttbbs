@@ -211,8 +211,16 @@ def _get_fav(uid):
 
 
 @app.route(_with_app_prefix('/existsuser'), methods=['POST'])
-def _check_exists_user(uid):
+def _check_exists_user():
     """
     swagger_from_file: apidoc/check_exists_user.yaml
+    """
+    return ''
+
+
+@app.route(_with_app_prefix('/version'), methods=['GET'])
+def _version():
+    """
+    swagger_from_file: apidoc/version.yaml
     """
     return ''
