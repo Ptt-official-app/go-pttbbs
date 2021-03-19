@@ -3,11 +3,11 @@ FROM bbsdocker/imageptt:letflatcenable
 
 # golang on debian
 WORKDIR /opt
-RUN curl -L https://dl.google.com/go/go1.15.3.linux-amd64.tar.gz | tar -zxv && \
+RUN curl -L https://dl.google.com/go/go1.16.2.linux-amd64.tar.gz | tar -zxv && \
     mv go /usr/local
 
 RUN DEBIAN_FRONTEND=noninteractive &&  \
-    apt install -y \
+    apt update && apt install -y \
         bmake \
         gcc \
         g++ \
