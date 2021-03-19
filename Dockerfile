@@ -30,7 +30,7 @@ RUN cp 01-config-docker.go.template ptttype/00-config-production.go && \
 
 USER bbs
 WORKDIR /srv/go-pttbbs
-RUN go build -tags production
+RUN go build -ldflags "-X github.com/Ptt-official-app/go-pttbbs/types.GIT_VERSION=$(git rev-parse --short HEAD)" -tags production
 RUN ./scripts/rebuild_pttbbs.sh
 
 # mkdir -p /opt/bbs
