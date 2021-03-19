@@ -20,6 +20,7 @@ func InitGin() (*gin.Engine, error) {
 	router.OPTIONS("/*path", api.OptionsWrapper)
 
 	router.POST(withPrefix(api.INDEX_R), api.IndexWrapper)
+	router.GET(withPrefix(api.GET_VERSION_R), api.GetVersionWrapper)
 
 	//login/register
 	router.POST(withPrefix(api.LOGIN_R), api.LoginWrapper)
