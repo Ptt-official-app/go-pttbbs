@@ -45,10 +45,14 @@ func TDeepEqual(t *testing.T, prompt string, got interface{}, expected interface
 		if zerothKind != reflect.Ptr && zerothKind != reflect.Array && zerothKind != reflect.Slice {
 			for i := 0; i < lenGot; i++ {
 				gotVal := valueOfGot.Index(i).Interface()
+				if i >= lenExpect {
+					t.Errorf("%v: (%v/%v): %v lenExpect: %v", prompt, i, lenGot, gotVal, lenExpect)
+					continue
+				}
 				expectedVal := valueOfExpect.Index(i).Interface()
 
 				if gotVal != expectedVal {
-					t.Errorf("%v: (%v/%v): (%v/%v) expected: (%v/%v)", i, lenGot, prompt, gotVal, reflect.TypeOf(gotVal), expectedVal, reflect.TypeOf(expectedVal))
+					t.Errorf("%v: (%v/%v): (%v/%v) expected: (%v/%v)", prompt, i, lenGot, gotVal, reflect.TypeOf(gotVal), expectedVal, reflect.TypeOf(expectedVal))
 				}
 			}
 
