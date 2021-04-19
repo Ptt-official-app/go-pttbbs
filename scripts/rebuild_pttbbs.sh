@@ -18,6 +18,9 @@ echo "#define NOKILLWATERBALL" >> /home/bbs/pttbbs/pttbbs.conf
 # 6. add HOTBOARDCACHE
 echo "#define HOTBOARDCACHE (10)" >> /home/bbs/pttbbs/pttbbs.conf
 
+# 7. update max user to 200000
+sed -i 's/.*#define MAX_USERS.*/#define MAX_USERS (200000)/g' /home/bbs/pttbbs/pttbbs.conf
+
 # 7. update max-active user to 100
 sed -i 's/.*#define MAX_ACTIVE.*/#define MAX_ACTIVE (100)/g' /home/bbs/pttbbs/pttbbs.conf
 
