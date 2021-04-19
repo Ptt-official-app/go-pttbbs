@@ -224,3 +224,11 @@ def _version():
     swagger_from_file: apidoc/version.yaml
     """
     return ''
+
+
+@app.route(_with_app_prefix('/admin/reloaduhash'), methods=['GET'])
+def _version():
+    """
+    swagger_from_file: apidoc/reload_uhash.yaml
+    """
+    return ''
