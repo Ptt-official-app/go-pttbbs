@@ -40,6 +40,6 @@ RUN ./scripts/openrestry.sh
 
 # cmd
 WORKDIR /home/bbs
-CMD ["sh", "-c", "cp /opt/bbs/bin/* /home/bbs/bin && sudo -iu bbs /home/bbs/bin/shmctl init && sudo -iu bbs /home/bbs/bin/logind && /usr/bin/openresty && sudo -iu bbs /srv/go-pttbbs/go-pttbbs -ini production.ini"]
+CMD ["sh", "-c", "sudo -iu bbs /home/bbs/bin/shmctl init && sudo -iu bbs /home/bbs/bin/logind && /usr/bin/openresty && sudo -iu bbs /srv/go-pttbbs/go-pttbbs -ini production.ini"]
 
 EXPOSE 3456
