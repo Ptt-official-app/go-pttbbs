@@ -227,7 +227,7 @@ def _version():
 
 
 @app.route(_with_app_prefix('/admin/reloaduhash'), methods=['GET'])
-def _version():
+def _reloaduhash():
     """
     swagger_from_file: apidoc/reload_uhash.yaml
     """
