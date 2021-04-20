@@ -56,6 +56,7 @@ func InitGin() (*gin.Engine, error) {
 
 	//admin
 	router.GET(withPrefix(api.RELOAD_UHASH_R), api.ReloadUHashWrapper)
+	router.POST(withPrefix(api.SET_USER_PERM_R), api.SetUserPermWrapper)
 
 	return router, nil
 }

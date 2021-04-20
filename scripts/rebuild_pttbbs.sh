@@ -24,6 +24,9 @@ sed -i 's/.*#define MAX_USERS.*/#define MAX_USERS (200000)/g' /home/bbs/pttbbs/p
 # 7. update max-active user to 100
 sed -i 's/.*#define MAX_ACTIVE.*/#define MAX_ACTIVE (100)/g' /home/bbs/pttbbs/pttbbs.conf
 
+# 7. update max board to 8192
+sed -i 's/.*#define MAX_BOARD.*/#define MAX_BOARD (8192)/g' /home/bbs/pttbbs/pttbbs.conf
+
 # 8. shm_offset.c
 cp /srv/go-pttbbs/c-pttbbs/shm_offset.c /home/bbs/pttbbs/util
 cp /home/bbs/pttbbs/util/Makefile /home/bbs/pttbbs/util/Makefile.c-pttbbs

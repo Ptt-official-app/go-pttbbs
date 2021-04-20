@@ -11,7 +11,7 @@ const (
 
 	MAX_ACTIVE = 100 /* 最多同時上站人數 */
 
-	MAX_BOARD = 1024 /* 最大開板個數 */
+	MAX_BOARD = 8192 /* 最大開板個數 */
 
 	//////////
 	//config.h

@@ -10,6 +10,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs/path"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/testutil"
+	"github.com/sirupsen/logrus"
 )
 
 func Test_killUser(t *testing.T) {
@@ -351,4 +352,62 @@ func TestGetUid(t *testing.T) {
 		})
 	}
 	wg.Wait()
+}
+
+func TestSetUserPerm(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	origPerm := testUserecRaw2.UserLevel
+	newPerm := ptttype.PERM_DEFAULT | ptttype.PERM_ADMIN | ptttype.PERM_LOGINOK
+
+	logrus.Infof("TestSetUserPerm: origPerm: %v newPerm: %v", origPerm, newPerm)
+
+	type args struct {
+		userec    *ptttype.UserecRaw
+		setUid    ptttype.Uid
+		setUserec *ptttype.UserecRaw
+		perm      ptttype.PERM
+	}
+	tests := []struct {
+		name             string
+		args             args
+		expectedNewPerm  ptttype.PERM
+		expectedNewPerm2 ptttype.PERM
+		wantErr          bool
+	}{
+		// TODO: Add test cases.
+		{
+			args:             args{userec: testUserecRaw1, setUid: 2, setUserec: testUserecRaw2, perm: newPerm},
+			expectedNewPerm:  newPerm,
+			expectedNewPerm2: newPerm,
+		},
+		{
+			args:             args{userec: testUserecRaw1, setUid: 2, setUserec: testUserecRaw2, perm: origPerm},
+			expectedNewPerm:  origPerm,
+			expectedNewPerm2: origPerm,
+		},
+	}
+
+	var wg sync.WaitGroup
+	for _, tt := range tests {
+		wg.Add(1)
+		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
+			gotNewPerm, err := SetUserPerm(tt.args.userec, tt.args.setUid, tt.args.setUserec, tt.args.perm)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("SetUserPerm() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotNewPerm, tt.expectedNewPerm) {
+				t.Errorf("SetUserPerm() = %v, want %v", gotNewPerm, tt.expectedNewPerm)
+			}
+
+			newUser, _ := InitCurrentUserByUid(tt.args.setUid)
+			if !reflect.DeepEqual(newUser.UserLevel, tt.expectedNewPerm) {
+				t.Errorf("SetUserPerm() newUser: %v want: %v", newUser.UserLevel, tt.expectedNewPerm)
+			}
+		})
+		wg.Wait()
+	}
 }
