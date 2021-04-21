@@ -163,3 +163,17 @@ func ChangeUserLevel2(userID *ptttype.UserID_t, perm ptttype.PERM2, isSet bool) 
 
 	return cmbbs.PasswdGetUserLevel2(userID)
 }
+
+//SetUserPerm
+//https://github.com/ptt/pttbbs/blob/master/mbbsd/user.c#L1166
+func SetUserPerm(userec *ptttype.UserecRaw, setUid ptttype.Uid, setUserec *ptttype.UserecRaw, perm ptttype.PERM) (newPerm ptttype.PERM, err error) {
+
+	setUserec.UserLevel = perm
+
+	err = passwdSyncUpdate(setUid, setUserec)
+	if err != nil {
+		return ptttype.PERM_INVALID, err
+	}
+
+	return perm, nil
+}
