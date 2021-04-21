@@ -1,0 +1,33 @@
+setUserPerm
+---
+tags:
+  - admin
+  - user
+parameters:
+  - '$ref': '#/definitions/Host'
+  - '$ref': '#/definitions/XForwardedFor'
+  - '$ref': '#/definitions/Authorization'
+  - name: uid
+    in: path
+    type: string
+    required: true
+    description: username
+  - name: params
+    in: body
+    required: true
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      type: object
+      properties:
+        perm:
+          description: <a href="https://github.com/Ptt-official-app/go-pttbbs/blob/main/ptttype/perm.go">https://github.com/Ptt-official-app/go-pttbbs/blob/main/ptttype/perm.go</a>
+          type: number
+responses:
+  200:
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      type: object
+      properties:
+        perm:
+          type: number
+          description: https://github.com/Ptt-official-app/go-pttbbs/blob/main/ptttype/perm.go

@@ -232,3 +232,11 @@ def _reloaduhash():
     swagger_from_file: apidoc/reload_uhash.yaml
     """
     return ''
+
+
+@app.route(_with_app_prefix('/admin/user/<uid>/setperm'), methods=['POST'])
+def _set_user_perm(uid):
+    """
+    swagger_from_file: apidoc/set_user_perm.yaml
+    """
+    return ''
