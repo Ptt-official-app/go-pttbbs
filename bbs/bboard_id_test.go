@@ -13,6 +13,10 @@ func TestBBoardID_ToBrdname(t *testing.T) {
 			b:        BBoardID("10_WhoAmI"),
 			expected: "WhoAmI",
 		},
+		{
+			b:        BBoardID("50_C_Chat"),
+			expected: "C_Chat",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
