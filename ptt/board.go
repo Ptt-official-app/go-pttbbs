@@ -3,6 +3,7 @@ package ptt
 import (
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
+	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
 func IsBoardValidUser(user *ptttype.UserecRaw, uid ptttype.Uid, boardID *ptttype.BoardID_t, bid ptttype.Bid) (isValid bool, err error) {
@@ -157,4 +158,9 @@ func groupOp(user *ptttype.UserecRaw, uid ptttype.Uid, board *ptttype.BoardHeade
 	}
 
 	return isValid
+}
+
+func isReadonlyBoard(boardID *ptttype.BoardID_t) bool {
+	return types.Cstrcasecmp(boardID[:], ptttype.BN_SECURITY[:]) == 0 ||
+		types.Cstrcasecmp(boardID[:], ptttype.BN_ALLPOST[:]) == 0
 }

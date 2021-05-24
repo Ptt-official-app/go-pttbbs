@@ -12,11 +12,17 @@ const (
 
 func (r RestrictReason) String() string {
 	switch r {
+	case RESTRICT_REASON_NONE:
+		return "none"
 	case RESTRICT_REASON_FORBIDDEN:
 		return "forbidden"
 	case RESTRICT_REASON_HIDDEN:
 		return "hidden"
+	case RESTRICT_REASON_NUMLOGIN_DAYS:
+		return "logindays"
+	case RESTRICT_REASON_BADPOST:
+		return "badpost"
 	default:
-		return ""
+		return "invalid"
 	}
 }

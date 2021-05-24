@@ -2,16 +2,17 @@ package cmsys
 
 import (
 	"os"
+	"sync"
 	"syscall"
 	"time"
 )
 
-//PttLock
+//pttLock
 //
 //XXX https://github.com/ptt/pttbbs/issues/100
 //Need to sync with ptt-code.
 //Requires file to be writable.
-func PttLock(file *os.File, offset int64, theSize uintptr, mode int) (err error) {
+func pttLock(file *os.File, offset int64, theSize uintptr, mode int) (err error) {
 	fd := file.Fd()
 
 	lock_it := &syscall.Flock_t{
@@ -38,9 +39,9 @@ func PttLock(file *os.File, offset int64, theSize uintptr, mode int) (err error)
 //We use single lock for now.
 func GoPttLock(file *os.File, filename string, offset int64, theSize uintptr) (err error) {
 
-	lock.Lock()
+	lockFD(file.Fd())
 
-	return PttLock(file, offset, theSize, syscall.F_WRLCK)
+	return pttLock(file, offset, theSize, syscall.F_WRLCK)
 }
 
 //GoPttUnlock
@@ -49,9 +50,9 @@ func GoPttLock(file *os.File, filename string, offset int64, theSize uintptr) (e
 //We use single lock for now.
 func GoPttUnlock(file *os.File, filename string, offset int64, theSize uintptr) (err error) {
 
-	defer lock.Unlock()
+	defer unlockFD(file.Fd())
 
-	return PttLock(file, offset, theSize, syscall.F_UNLCK)
+	return pttLock(file, offset, theSize, syscall.F_UNLCK)
 }
 
 //GoFlock
@@ -59,9 +60,19 @@ func GoPttUnlock(file *os.File, filename string, offset int64, theSize uintptr) 
 //Original Flock has no effect with multi-thread process.
 //We use single lock for now.
 func GoFlock(fd uintptr, filename string) (err error) {
-	lock.Lock()
+	lockFD(fd)
 
 	return syscall.Flock(int(fd), syscall.LOCK_EX)
+}
+
+//GoFlock
+//
+//Original Flock has no effect with multi-thread process.
+//We use single lock for now.
+func GoFlockExNb(fd uintptr, filename string) (err error) {
+	lockFD(fd)
+
+	return syscall.Flock(int(fd), syscall.LOCK_EX|syscall.LOCK_NB)
 }
 
 //GoFunlock
@@ -69,7 +80,39 @@ func GoFlock(fd uintptr, filename string) (err error) {
 //Original Flock has no effect with multi-thread process.
 //We use single lock for now.
 func GoFunlock(fd uintptr, filename string) (err error) {
-	defer lock.Unlock()
+	defer unlockFD(fd)
 
 	return syscall.Flock(int(fd), syscall.LOCK_UN)
+}
+
+func lockFD(fd uintptr) (err error) {
+	lock.Lock()
+	defer lock.Unlock()
+
+	_, ok := lockFDMap[fd]
+	if ok {
+		return ErrPttLock
+	}
+
+	theLock := &sync.Mutex{}
+
+	theLock.Lock()
+	lockFDMap[fd] = theLock
+
+	return nil
+}
+
+func unlockFD(fd uintptr) (err error) {
+	lock.Lock()
+	defer lock.Unlock()
+
+	theLock, ok := lockFDMap[fd]
+	if !ok {
+		return ErrPttLock
+	}
+
+	theLock.Unlock()
+	delete(lockFDMap, fd)
+
+	return nil
 }

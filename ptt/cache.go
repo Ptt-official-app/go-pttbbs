@@ -5,6 +5,7 @@ import (
 
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs"
+	"github.com/Ptt-official-app/go-pttbbs/cmbbs/path"
 	"github.com/Ptt-official-app/go-pttbbs/cmsys"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
@@ -149,4 +150,51 @@ func getNewUtmpEnt(uinfo *ptttype.UserInfoRaw) (utmpID ptttype.UtmpID, err error
 	}
 
 	return ptttype.UtmpID(-1), ErrNewUtmp
+}
+
+func postpermMsg(user *ptttype.UserecRaw, board *ptttype.BoardHeaderRaw) (err error) {
+	if isReadonlyBoard(&board.Brdname) {
+		return ErrReadOnly
+	}
+
+	if user.UserLevel.HasUserPerm(ptttype.PERM_SYSOP) {
+		return nil
+	}
+
+	err = bannedMsg(user, board)
+	if err != nil {
+		return err
+	}
+
+	if types.Cstrcmp(board.Brdname[:], ptttype.DEFAULT_BOARD) == 0 {
+		return nil
+	}
+
+	if board.BrdAttr.HasPerm(ptttype.BRD_GUESTPOST) {
+		return nil
+	}
+
+	return nil
+}
+
+func bannedMsg(user *ptttype.UserecRaw, board *ptttype.BoardHeaderRaw) (err error) {
+	if ptttype.USE_NEW_BAN_SYSTEM {
+		expireTS := isBannedByBoard(user, board)
+		nowTS := types.NowTS()
+		if expireTS > nowTS {
+			return ErrBanned
+		}
+	} else {
+		filename, err := path.SetBFile(&board.Brdname, ptttype.FN_WATER)
+		if err != nil {
+			return err
+		}
+
+		if cmsys.FileExistsRecord(filename, user.UserID[:]) {
+			return ErrBanned
+		}
+
+	}
+
+	return nil
 }
