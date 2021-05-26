@@ -38,3 +38,7 @@ const (
 )
 
 const BRD_ATTR_SZ = unsafe.Sizeof(BrdAttr(0))
+
+func (b BrdAttr) HasPerm(perm BrdAttr) bool {
+	return b&perm != 0
+}

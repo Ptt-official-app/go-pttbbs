@@ -567,4 +567,7 @@ var (
 
 	//https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L402
 	USE_AID_URL = false
+
+	//https://github.com/ptt/pttbbs/blob/master/mbbsd/cache.c#L189
+	USE_NEW_BAN_SYSTEM = false
 )

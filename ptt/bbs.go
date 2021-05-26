@@ -150,6 +150,12 @@ func DoPostArticle(
 		return nil, ErrNotPermitted
 	}
 
+	//check-post-perm2
+	err = CheckPostPerm2(user, board)
+	if err != nil {
+		return nil, err
+	}
+
 	reason, err := getBoardRestrictionReason(user, uid, board, bid)
 	if err != nil {
 		return nil, err
@@ -546,4 +552,12 @@ func GetWebURL(board *ptttype.BoardHeaderRaw, fhdr *ptttype.FileHeaderRaw) (url 
 	}
 
 	return ptttype.URL_PREFIX + "/" + folder + "/" + fn + ext
+}
+
+func CheckPostPerm2(user *ptttype.UserecRaw, board *ptttype.BoardHeaderRaw) (err error) {
+	return CheckModifyPerm(user, board)
+}
+
+func CheckModifyPerm(user *ptttype.UserecRaw, board *ptttype.BoardHeaderRaw) (err error) {
+	return postpermMsg(user, board)
 }

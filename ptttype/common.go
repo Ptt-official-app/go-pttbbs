@@ -7,6 +7,10 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types/ansi"
 )
 
+var (
+	DEFAULT_BOARD = STR_SYSOP
+)
+
 const (
 	//////////
 	// common.h
@@ -15,9 +19,6 @@ const (
 	STR_REGNEW = "new"   // 用來建新帳號的名稱
 
 	STR_RECOVER = "/recover" // recover function
-
-	// XXX DEFAULT_BOARD
-	//#define DEFAULT_BOARD   str_sysop
 
 	// BBS Configuration Files
 	FN_CONF_EDITABLE    = "etc/editable"       // 站務可編輯的系統檔案列表

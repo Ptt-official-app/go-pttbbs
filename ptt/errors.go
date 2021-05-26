@@ -20,6 +20,8 @@ var (
 	ErrInvalidEmail  = errors.New("invalid email")
 	ErrTooManyBoards = errors.New("too many boards")
 	ErrCooldown      = errors.New("cooldown")
+	ErrReadOnly      = errors.New("read only")
+	ErrBanned        = errors.New("banned")
 )
 
 func FatalLockedUser(userID *ptttype.UserID_t) error {

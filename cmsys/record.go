@@ -73,6 +73,41 @@ func GetRecords(boardID *ptttype.BoardID_t, filename string, startIdx ptttype.So
 	return summaries, nil
 }
 
+func GetRecord(dirFilename string, filename *ptttype.Filename_t, total int) (idx ptttype.SortIdx, fhdr *ptttype.FileHeaderRaw, err error) {
+	createTime, err := filename.CreateTime()
+	if err != nil {
+		return 0, nil, err
+	}
+	idx, err = FindRecordStartIdx(dirFilename, total, createTime, filename, true)
+	if err != nil {
+		return 0, nil, err
+	}
+
+	file, err := os.Open(dirFilename)
+	if err != nil {
+		if os.IsNotExist(err) {
+			err = nil
+		}
+		return 0, nil, err
+	}
+	defer file.Close()
+
+	idxInFile := idx.ToSortIdxInStore()
+	_, err = file.Seek(int64(ptttype.FILE_HEADER_RAW_SZ)*int64(idxInFile), os.SEEK_SET)
+	if err != nil {
+		return 0, nil, err
+	}
+
+	fhdr = &ptttype.FileHeaderRaw{}
+	err = binary.Read(file, binary.LittleEndian, fhdr)
+	if err != nil {
+		return 0, nil, err
+	}
+
+	return idx, fhdr, nil
+
+}
+
 //FindRecordStartIdx
 //
 //startIdx should be 1-total.

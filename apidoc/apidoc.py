@@ -138,6 +138,14 @@ def _create_article(bid, aid):
     return ''
 
 
+@app.route(_with_app_prefix('/board/<bid>/article/<aid>/comment'), methods=['POST'])
+def _create_comment(bid, aid):
+    """
+    swagger_from_file: apidoc/create_comment.yaml
+    """
+    return ''
+
+
 @app.route(_with_app_prefix('/user/<uid>/information'), methods=['GET'])
 def _get_user(uid):
     """

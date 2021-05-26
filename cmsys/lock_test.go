@@ -56,7 +56,7 @@ func TestPttLock(t *testing.T) {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
-			if err := PttLock(tt.args.file, tt.args.offset, tt.args.theSize, tt.args.mode); (err != nil) != tt.wantErr {
+			if err := pttLock(tt.args.file, tt.args.offset, tt.args.theSize, tt.args.mode); (err != nil) != tt.wantErr {
 				t.Errorf("PttLock() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -106,7 +106,7 @@ func TestPttLock2(t *testing.T) {
 			logrus.Infof("PttLock2: start: name: %v presleep: %v postsleep: %v", tt.name, tt.presleep, tt.postsleep)
 			time.Sleep(time.Duration(tt.presleep) * time.Second)
 			file.Seek(0, 0)
-			err := PttLock(tt.args.file, tt.args.offset, tt.args.theSize, syscall.F_WRLCK)
+			err := pttLock(tt.args.file, tt.args.offset, tt.args.theSize, syscall.F_WRLCK)
 			logrus.Infof("PttLock2: after: PttLock: e: %v", err)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("PttLock() error = %v, wantErr %v", err, tt.wantErr)
@@ -122,7 +122,7 @@ func TestPttLock2(t *testing.T) {
 				time.Sleep(time.Duration(postsleep) * time.Second)
 
 				file.Seek(0, 0)
-				err := PttLock(tt.args.file, tt.args.offset, tt.args.theSize, syscall.F_UNLCK)
+				err := pttLock(tt.args.file, tt.args.offset, tt.args.theSize, syscall.F_UNLCK)
 				if err != nil {
 					t.Errorf("PttLock() error = %v", err)
 				}
