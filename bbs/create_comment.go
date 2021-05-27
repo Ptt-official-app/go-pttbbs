@@ -5,6 +5,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/ptt"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
+	"github.com/sirupsen/logrus"
 )
 
 func CreateComment(userID UUserID, boardID BBoardID, articleID ArticleID, commentType ptttype.CommentType, content []byte, ip string) (comment []byte, mtime types.Time4, err error) {
@@ -31,6 +32,7 @@ func CreateComment(userID UUserID, boardID BBoardID, articleID ArticleID, commen
 
 	filename := articleID.ToFilename()
 
+	logrus.Infof("bbs.CreateComment: to ptt.Recommend: commentType: %v", commentType)
 	comment, mtime, err = ptt.Recommend(userecRaw, uid, boardIDRaw, bid, filename, commentType, content, ipRaw, from)
 	if err != nil {
 		return nil, 0, err

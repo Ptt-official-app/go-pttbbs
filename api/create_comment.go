@@ -5,6 +5,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 const CREATE_COMMENT_R = "/board/:bid/article/:aid/comment"
@@ -45,6 +46,8 @@ func CreateComment(remoteAddr string, uuserID bbs.UUserID, params interface{}, p
 	if !ok {
 		return nil, ErrInvalidPath
 	}
+
+	logrus.Infof("CreateComment: commentType: %v", theParams.CommentType)
 
 	content, mtime, err := bbs.CreateComment(uuserID, thePath.BBoardID, thePath.ArticleID, theParams.CommentType, theParams.Content, remoteAddr)
 	if err != nil {

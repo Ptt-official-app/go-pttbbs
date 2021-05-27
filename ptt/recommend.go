@@ -80,6 +80,7 @@ func Recommend(
 
 	//put recommand
 	comment, err = FormatCommentString(user, board, commentType, content, ip, from)
+	logrus.Infof("Recommmend: after FormatCommentString: commentType: %v comment: %v e: %v", commentType, string(comment), err)
 	if err != nil {
 		return nil, 0, err
 	}
