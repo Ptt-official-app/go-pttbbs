@@ -94,7 +94,7 @@ var (
 	BN_NOTE_AGGCHKDIR = "<點歌> 動態看板"
 
 	/* 若定義則啟用修文自動合併系統 */
-	EDITPOST_SMARTMERGE = false
+	EDITPOST_SMARTMERGE = true
 
 	/* 可以設定多重進站畫面 */
 	MULTI_WELCOME_LOGIN = false
