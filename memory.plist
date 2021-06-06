@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+ <key>Label</key>
+ <string>shmemsetup</string>
+ <key>UserName</key>
+ <string>root</string>
+ <key>GroupName</key>
+ <string>wheel</string>
+ <key>ProgramArguments</key>
+ <array>
+  <string>/usr/sbin/sysctl</string>
+  <string>-w</string>
+  <string>kern.sysv.shmmax=16777216</string>
+  <string>kern.sysv.shmmin=1</string>
+  <string>kern.sysv.shmmni=128</string>
+  <string>kern.sysv.shmseg=32</string>
+  <string>kern.sysv.shmall=4096</string>
+ </array>
+ <key>KeepAlive</key>
+ <false/>
+ <key>RunAtLoad</key>
+ <true/>
+</dict>
+</plist>

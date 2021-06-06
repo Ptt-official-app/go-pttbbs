@@ -52,6 +52,13 @@ You can do the following to run with ./scripts/run.sh:
     kern.sysv.shmseg=32
     kern.sysv.shmall=4096
     ```
+    
+    For Mac Big Sur or after, the setting in `/etc/sysctl.conf` would be **deprecated**, therefore, we can use alternative way to set up shm.
+    Copy `memory.plist` daemon to `/Library/LaunchDaemons` then reboot
+    ```sh
+    sudo cp memory.plist /Library/LaunchDaemons/memory.plist
+    ```
+
 * Check that we do have 16M shared-mem
     ```
     sysctl -a|grep shm
