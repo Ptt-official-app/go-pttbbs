@@ -13,4 +13,4 @@ project=go-pttbbs-tunepasswd
 
 docker container stop ${project}
 docker container rm ${project}
-docker run --name ${project} -v ${BBSHOME}:/home/bbs ${GOPTTBBS_IMAGE} /opt/bbs/bin/tunepasswd
+docker run --rm --name ${project} -v ${BBSHOME}:/home/bbs ${GOPTTBBS_IMAGE} /opt/bbs/bin/tunepasswd
