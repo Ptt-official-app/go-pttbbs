@@ -111,7 +111,7 @@ func loadGeneralArticlesToStartIdx(
 	if err != nil {
 		return -1, err
 	}
-	filename, _ := articleID.ToRaw()
+	filename := articleID.ToRaw()
 
 	startIdx, err = ptt.FindArticleStartIdx(userecRaw, uid, boardIDRaw, bid, createTime, filename, isDesc)
 

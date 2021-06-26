@@ -33,7 +33,7 @@ func NewArticleSummaryFromRaw(bboardID BBoardID, articleSummaryRaw *ptttype.Arti
 	ownerID := ToUUserID(articleSummaryRaw.Owner.ToUserID())
 	articleSummary := &ArticleSummary{
 		BBoardID:   bboardID,
-		ArticleID:  ToArticleID(&articleSummaryRaw.Filename, ownerID),
+		ArticleID:  ToArticleID(&articleSummaryRaw.Filename),
 		IsDeleted:  articleSummaryRaw.IsDeleted(),
 		Filename:   filename,
 		CreateTime: createTime,
@@ -67,7 +67,7 @@ func deserializeArticleIdxStr(idxStr string) (createTime types.Time4, articleID 
 	createTime = types.Time4(createTime_i)
 
 	articleID = ArticleID(theList[1])
-	filename, _ := articleID.ToRaw()
+	filename := articleID.ToRaw()
 	createTimeFromArticleID, err := filename.CreateTime()
 	if err != nil {
 		return 0, "", err

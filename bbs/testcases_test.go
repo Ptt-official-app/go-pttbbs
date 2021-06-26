@@ -361,7 +361,7 @@ func initTestVars() {
 
 	testArticleSummary0 = &ArticleSummary{
 		BBoardID:   BBoardID("10_WhoAmI"),
-		ArticleID:  "1Vo_M_CDSYSOP",
+		ArticleID:  "1Vo_M_CD",
 		IsDeleted:  false,
 		Filename:   "M.1607202239.A.30D",
 		CreateTime: 1607202239,
@@ -374,12 +374,12 @@ func initTestVars() {
 		},
 
 		Class: []byte{0xb0, 0xdd, 0xc3, 0x44},
-		Idx:   "1607202239@1Vo_M_CDSYSOP",
+		Idx:   "1607202239@1Vo_M_CD",
 	}
 
 	testArticleSummary1 = &ArticleSummary{
 		BBoardID:   BBoardID("10_WhoAmI"),
-		ArticleID:  "1Vo_f30DSYSOP",
+		ArticleID:  "1Vo_f30D",
 		IsDeleted:  false,
 		Filename:   "M.1607203395.A.00D",
 		CreateTime: 1607203395,
@@ -394,7 +394,7 @@ func initTestVars() {
 		Filemode: ptttype.FILE_MARKED,
 
 		Class: []byte{0xa4, 0xdf, 0xb1, 0x6f},
-		Idx:   "1607203395@1Vo_f30DSYSOP",
+		Idx:   "1607203395@1Vo_f30D",
 	}
 
 	testContent1 = []byte{

@@ -23,7 +23,7 @@ func TestGetArticle(t *testing.T) {
 	goodParams := &GetArticleParams{}
 	goodPath := &GetArticlePath{
 		BBoardID:  bbs.BBoardID("10_WhoAmI"),
-		ArticleID: bbs.ArticleID("1Vo_M_CDSYSOP"),
+		ArticleID: bbs.ArticleID("1Vo_M_CD"),
 	}
 	goodExpectedResult := &GetArticleResult{
 		MTime:   1607209066,

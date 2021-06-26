@@ -17,7 +17,7 @@ func TestGetArticle(t *testing.T) {
 
 	filename1 := &ptttype.Filename_t{}
 	copy(filename1[:], []byte("M.1607202239.A.30D"))
-	articleID := ToArticleID(filename1, "SYSOP")
+	articleID := ToArticleID(filename1)
 
 	filename := "testcase/boards/W/WhoAmI/M.1607202239.A.30D"
 	mtime := time.Unix(1607209066, 0)

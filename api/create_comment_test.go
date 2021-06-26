@@ -14,7 +14,7 @@ func TestCreateComment(t *testing.T) {
 
 	filename1 := &ptttype.Filename_t{}
 	copy(filename1[:], []byte("M.1607202239.A.30D"))
-	articleID := bbs.ToArticleID(filename1, "SYSOP")
+	articleID := bbs.ToArticleID(filename1)
 
 	params0 := &CreateCommentParams{
 		CommentType: ptttype.COMMENT_TYPE_RECOMMEND,

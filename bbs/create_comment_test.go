@@ -14,7 +14,7 @@ func TestCreateComment(t *testing.T) {
 
 	filename1 := &ptttype.Filename_t{}
 	copy(filename1[:], []byte("M.1607202239.A.30D"))
-	articleID := ToArticleID(filename1, "SYSOP")
+	articleID := ToArticleID(filename1)
 
 	content0 := []byte("test123")
 	expected0 := []byte("\x1b[1;37m\xb1\xc0 \x1b[33mCodingMan\x1b[m\x1b[33m: test123                                              \x1b[m 05/26 10:25\n")
