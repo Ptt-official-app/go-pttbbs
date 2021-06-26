@@ -42,7 +42,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 			expectedResult: &LoadGeneralArticlesResult{
 				Articles:       []*bbs.ArticleSummary{testArticleSummary1},
 				IsNewest:       true,
-				NextIdx:        "1607202239@1Vo_M_CDSYSOP",
+				NextIdx:        "1607202239@1Vo_M_CD",
 				NextCreateTime: 1607202239,
 				StartNumIdx:    2,
 			},
@@ -51,7 +51,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 			args: args{
 				uuserID: "SYSOP",
 				params: &LoadGeneralArticlesParams{
-					StartIdx:  "1607203395@1Vo_f30DSYSOP",
+					StartIdx:  "1607203395@1Vo_f30D",
 					NArticles: 2,
 					Desc:      true,
 				},
@@ -69,7 +69,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 			args: args{
 				uuserID: "SYSOP",
 				params: &LoadGeneralArticlesParams{
-					StartIdx:  "1607203395@1Vo_f30DSYSOP",
+					StartIdx:  "1607203395@1Vo_f30D",
 					NArticles: 1,
 					Desc:      true,
 				},
@@ -78,7 +78,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 			expectedResult: &LoadGeneralArticlesResult{
 				Articles:       []*bbs.ArticleSummary{testArticleSummary1},
 				IsNewest:       true,
-				NextIdx:        "1607202239@1Vo_M_CDSYSOP",
+				NextIdx:        "1607202239@1Vo_M_CD",
 				NextCreateTime: 1607202239,
 				StartNumIdx:    2,
 			},

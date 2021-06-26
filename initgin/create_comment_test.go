@@ -26,7 +26,7 @@ func Test_CreateComment(t *testing.T) {
 
 	filename0 := &ptttype.Filename_t{}
 	copy(filename0[:], []byte("M.1607202239.A.30D"))
-	articleID0 := bbs.ToArticleID(filename0, "SYSOP")
+	articleID0 := bbs.ToArticleID(filename0)
 
 	type args struct {
 		path     string
