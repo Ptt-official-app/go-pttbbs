@@ -28,6 +28,21 @@ You can do the following to start with docker-compose:
 * login at `http://localhost:3456/v1/login`
 * `telnet localhost 8888` and use the account that you registered.
 
+## Init BBS Home
+
+You can do the following to init bbs-home:
+
+* `./scripts/docker_initbbs.sh [BBSHOME] pttofficialapps/go-pttbbs:latest`
+* `./scripts/docker_initpasswd.sh [BBSHOME] pttofficialapps/go-pttbbs:latest [N_USER]`
+
+## Increase Users in Docker
+
+You can do the following to increase users in docker:
+
+* compile new docker image (as GOPTTBBS_IMAGE) with new MAX_USER in config.go
+* `./scripts/docker_tunepasswd.sh [BBSHOME] [GOPTTBBS_IMAGE]`
+
+
 ## Testing
 
 ```

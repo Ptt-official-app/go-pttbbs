@@ -13,16 +13,10 @@ project=go-pttbbs-initbbs
 
 docker container stop ${project}
 docker container rm ${project}
-docker run --name ${project} -v ${BBSHOME}:/home/bbs ${GOPTTBBS_IMAGE} /opt/bbs/bin/initbbs -DoIt
+docker run --rm --name ${project} -v ${BBSHOME}:/home/bbs ${GOPTTBBS_IMAGE} /opt/bbs/bin/initbbs -DoIt
 
-docker container stop ${project}
-docker container rm ${project}
-docker run --name ${project} -v ${BBSHOME}:/home/bbs ${GOPTTBBS_IMAGE} sh -c 'mkdir -p /home/bbs/bin && cp /opt/bbs/bin/* /home/bbs/bin'
+docker run --rm --name ${project} -v ${BBSHOME}:/home/bbs ${GOPTTBBS_IMAGE} sh -c 'mkdir -p /home/bbs/bin && cp /opt/bbs/bin/* /home/bbs/bin'
 
-docker container stop ${project}
-docker container rm ${project}
 docker run --name ${project} -v ${BBSHOME}:/home/bbs ${GOPTTBBS_IMAGE} sh -c 'mkdir -p /home/bbs/etc && cp /opt/bbs/etc/* /home/bbs/etc'
 
-docker container stop ${project}
-docker container rm ${project}
 docker run --name ${project} -v ${BBSHOME}:/home/bbs ${GOPTTBBS_IMAGE} sh -c 'mkdir -p /home/bbs/wsproxy && cp -R /opt/bbs/wsproxy/* /home/bbs/wsproxy'
