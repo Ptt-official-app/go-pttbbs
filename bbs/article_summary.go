@@ -45,16 +45,16 @@ func NewArticleSummaryFromRaw(bboardID BBoardID, articleSummaryRaw *ptttype.Arti
 		Class:      articleSummaryRaw.Class,
 		Filemode:   articleSummaryRaw.Filemode,
 	}
-	articleSummary.Idx = serializeArticleIdxStr(articleSummary)
+	articleSummary.Idx = SerializeArticleIdxStr(articleSummary)
 
 	return articleSummary
 }
 
-func serializeArticleIdxStr(summary *ArticleSummary) (idxStr string) {
+func SerializeArticleIdxStr(summary *ArticleSummary) (idxStr string) {
 	return strconv.Itoa(int(summary.CreateTime)) + "@" + string(summary.ArticleID)
 }
 
-func deserializeArticleIdxStr(idxStr string) (createTime types.Time4, articleID ArticleID, err error) {
+func DeserializeArticleIdxStr(idxStr string) (createTime types.Time4, articleID ArticleID, err error) {
 	theList := strings.Split(idxStr, "@")
 	if len(theList) != 2 {
 		return 0, "", ErrInvalidParams
