@@ -107,7 +107,7 @@ func loadGeneralArticlesToStartIdx(
 		}
 	}
 
-	createTime, articleID, err := deserializeArticleIdxStr(startIdxStr)
+	createTime, articleID, err := DeserializeArticleIdxStr(startIdxStr)
 	if err != nil {
 		return -1, err
 	}
@@ -119,7 +119,7 @@ func loadGeneralArticlesToStartIdx(
 }
 
 func loadGeneralArticlesSameCreateTime(userecRaw *ptttype.UserecRaw, uid ptttype.Uid, boardID BBoardID, boardIDRaw *ptttype.BoardID_t, bid ptttype.Bid, startIdxStr string, isDesc bool) (summaries []*ArticleSummary, startNumIdx ptttype.SortIdx, err error) {
-	createTime, _, err := deserializeArticleIdxStr(startIdxStr)
+	createTime, _, err := DeserializeArticleIdxStr(startIdxStr)
 	if err != nil {
 		return nil, 0, err
 	}
