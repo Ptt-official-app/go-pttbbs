@@ -182,3 +182,54 @@ func TestGetUser2(t *testing.T) {
 	}
 	wg.Wait()
 }
+
+func Test_postpermMsg(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	type args struct {
+		uid   ptttype.Uid
+		user  *ptttype.UserecRaw
+		bid   ptttype.Bid
+		board *ptttype.BoardHeaderRaw
+	}
+	tests := []struct {
+		name           string
+		isNewBanSystem bool
+		args           args
+		wantErr        bool
+	}{
+		// TODO: Add test cases.
+		{
+			name:    "no pttype.PERM_POST",
+			args:    args{uid: 2, user: testUserecRaw2, bid: 10, board: testBoardHeaderRaw2},
+			wantErr: true,
+		},
+		{
+			name:           "banned",
+			args:           args{uid: 2, user: testNewPostUser2, bid: 10, board: testBoardHeaderRaw2},
+			wantErr:        true,
+			isNewBanSystem: true,
+		},
+		{
+			name: "no ban in old system",
+			args: args{uid: 2, user: testNewPostUser2, bid: 10, board: testBoardHeaderRaw2},
+		},
+	}
+	var wg sync.WaitGroup
+	for _, tt := range tests {
+		wg.Add(1)
+		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
+
+			ptttype.USE_NEW_BAN_SYSTEM = tt.isNewBanSystem
+			defer func() {
+				ptttype.USE_NEW_BAN_SYSTEM = true
+			}()
+
+			if err := postpermMsg(tt.args.uid, tt.args.user, tt.args.bid, tt.args.board); (err != nil) != tt.wantErr {
+				t.Errorf("postpermMsg() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}

@@ -23,8 +23,8 @@ func TestRecommend(t *testing.T) {
 	copy(boardID[:], "WhoAmI")
 	filename0 := &ptttype.Filename_t{}
 	copy(filename0[:], "M.1607203395.A.00D")
-	expected0 := []byte("\x1b[1;37m\xb1\xc0 \x1b[33mCodingMan\x1b[m\x1b[33m: test123                                              \x1b[m 05/26 10:25\n")
-	expected1 := []byte("\x1b[1;31m\xa1\xf7 \x1b[33mCodingMan\x1b[m\x1b[33m:test456                                            \x1b[m\xb1\xc0 05/27 02:31\n")
+	expected0 := []byte("\x1b[1;37m\xb1\xc0 \x1b[33mA1\x1b[m\x1b[33m: test123                                                     \x1b[m 05/26 10:25\n")
+	expected1 := []byte("\x1b[1;31m\xa1\xf7 \x1b[33mA1\x1b[m\x1b[33m:test456                                                   \x1b[m\xb1\xc0 05/27 02:31\n")
 
 	type args struct {
 		user        *ptttype.UserecRaw
@@ -47,11 +47,11 @@ func TestRecommend(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{
-			args:            args{user: testUserecRaw2, uid: 2, boardID: boardID, bid: 10, filename: filename0, commentType: ptttype.COMMENT_TYPE_RECOMMEND, content: []byte("test123")},
+			args:            args{user: testNewPostUser1, uid: 2, boardID: boardID, bid: 10, filename: filename0, commentType: ptttype.COMMENT_TYPE_RECOMMEND, content: []byte("test123")},
 			expectedComment: expected0,
 		},
 		{
-			args:            args{user: testUserecRaw2, uid: 2, boardID: boardID, bid: 10, filename: filename0, commentType: ptttype.COMMENT_TYPE_RECOMMEND, content: []byte("test456")},
+			args:            args{user: testNewPostUser1, uid: 2, boardID: boardID, bid: 10, filename: filename0, commentType: ptttype.COMMENT_TYPE_RECOMMEND, content: []byte("test456")},
 			isOldRecommend:  true,
 			isSmartMerge:    true,
 			expectedComment: expected1,

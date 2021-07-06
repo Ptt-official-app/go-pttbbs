@@ -22,6 +22,9 @@ var (
 	ErrCooldown      = errors.New("cooldown")
 	ErrReadOnly      = errors.New("read only")
 	ErrBanned        = errors.New("banned")
+	ErrNoPost        = errors.New("no post")
+	ErrRestricted    = errors.New("restricted")
+	ErrViolateLaw    = errors.New("violate law")
 )
 
 func FatalLockedUser(userID *ptttype.UserID_t) error {

@@ -175,6 +175,26 @@ func DashS(filename string) (theSize int64) {
 	return info.Size()
 }
 
+func DashD(filename string) (isDir bool) {
+	info, err := os.Stat(filename)
+	if err != nil {
+		return false
+	}
+
+	return info.IsDir()
+}
+
+func DashF(filename string) (isExists bool, err error) {
+	_, err = os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
 func OpenCreate(filename string, flags int) (file *os.File, err error) {
 	return os.OpenFile(filename, flags|os.O_CREATE, DEFAULT_FILE_CREATE_PERM)
 }

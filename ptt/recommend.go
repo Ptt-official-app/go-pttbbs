@@ -32,7 +32,7 @@ func Recommend(
 	}
 
 	//check-post-perm2
-	err = CheckPostPerm2(user, board)
+	err = CheckPostPerm2(uid, user, bid, board)
 	if err != nil {
 		return nil, 0, err
 	}
