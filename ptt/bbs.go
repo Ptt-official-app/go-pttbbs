@@ -151,7 +151,7 @@ func DoPostArticle(
 	}
 
 	//check-post-perm2
-	err = CheckPostPerm2(user, board)
+	err = CheckPostPerm2(uid, user, bid, board)
 	if err != nil {
 		return nil, err
 	}
@@ -554,10 +554,10 @@ func GetWebURL(board *ptttype.BoardHeaderRaw, fhdr *ptttype.FileHeaderRaw) (url 
 	return ptttype.URL_PREFIX + "/" + folder + "/" + fn + ext
 }
 
-func CheckPostPerm2(user *ptttype.UserecRaw, board *ptttype.BoardHeaderRaw) (err error) {
-	return CheckModifyPerm(user, board)
+func CheckPostPerm2(uid ptttype.Uid, user *ptttype.UserecRaw, bid ptttype.Bid, board *ptttype.BoardHeaderRaw) (err error) {
+	return CheckModifyPerm(uid, user, bid, board)
 }
 
-func CheckModifyPerm(user *ptttype.UserecRaw, board *ptttype.BoardHeaderRaw) (err error) {
-	return postpermMsg(user, board)
+func CheckModifyPerm(uid ptttype.Uid, user *ptttype.UserecRaw, bid ptttype.Bid, board *ptttype.BoardHeaderRaw) (err error) {
+	return postpermMsg(uid, user, bid, board)
 }

@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
+	"github.com/Ptt-official-app/go-pttbbs/ptt"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/testutil"
 )
@@ -11,6 +12,8 @@ import (
 func TestCreateComment(t *testing.T) {
 	setupTest()
 	defer teardownTest()
+
+	_ = ptt.SetupNewUser(testNewPostUserRaw1)
 
 	filename1 := &ptttype.Filename_t{}
 	copy(filename1[:], []byte("M.1607202239.A.30D"))
@@ -25,7 +28,7 @@ func TestCreateComment(t *testing.T) {
 		ArticleID: articleID,
 	}
 	expected0 := &CreateCommentResult{
-		Content: []byte("\x1b[1;37m\xb1\xc0 \x1b[33mCodingMan\x1b[m\x1b[33m: test123                                              \x1b[m 05/26 10:25\n"),
+		Content: []byte("\x1b[1;37m\xb1\xc0 \x1b[33mA1\x1b[m\x1b[33m: test123                                                     \x1b[m 05/26 10:25\n"),
 	}
 
 	type args struct {
@@ -42,7 +45,7 @@ func TestCreateComment(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{
-			args:           args{remoteAddr: testIP, uuserID: "CodingMan", params: params0, path: path0},
+			args:           args{remoteAddr: testIP, uuserID: "A1", params: params0, path: path0},
 			expectedResult: expected0,
 		},
 	}

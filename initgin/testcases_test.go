@@ -83,7 +83,7 @@ func initTestVars() {
 		PasswdHash: ptttype.Passwd_t{0x62, 0x68, 0x77, 0x76, 0x4f, 0x4a, 0x74, 0x66, 0x54, 0x31, 0x54, 0x41, 0x49, 0x00},
 
 		UFlag:        33557088,
-		UserLevel:    7 | ptttype.PERM_LOGINOK,
+		UserLevel:    7 | ptttype.PERM_LOGINOK | ptttype.PERM_POST,
 		NumLoginDays: 2,
 		NumPosts:     0,
 		FirstLogin:   1600681288,

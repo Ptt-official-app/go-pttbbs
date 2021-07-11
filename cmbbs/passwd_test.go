@@ -219,11 +219,13 @@ func TestPasswdLock(t *testing.T) {
 			sleep: 5,
 		},
 	}
-	wait := make(chan bool, len(tests))
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			nameChan := make(chan string)
 			go func() {
+				defer wg.Done()
 				name := <-nameChan
 				logrus.Infof("TestPasswdLock: %v: start", name)
 				time.Sleep(tt.initSleep * time.Millisecond)
@@ -234,14 +236,12 @@ func TestPasswdLock(t *testing.T) {
 				time.Sleep(tt.sleep * time.Millisecond)
 				logrus.Infof("TestPasswdLock: %v: done. to unlock", name)
 				PasswdUnlock()
-				wait <- true
 			}()
 			nameChan <- tt.name
 		})
 	}
-	for i := 0; i < len(tests); i++ {
-		<-wait
-	}
+	wg.Wait()
+
 }
 
 func TestPasswdInit(t *testing.T) {
