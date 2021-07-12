@@ -1,8 +1,14 @@
 package bbs
 
-import "testing"
+import (
+	"sync"
+	"testing"
+)
 
 func TestBBoardID_ToBrdname(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
 	tests := []struct {
 		name     string
 		b        BBoardID
@@ -18,11 +24,16 @@ func TestBBoardID_ToBrdname(t *testing.T) {
 			expected: "C_Chat",
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := tt.b.ToBrdname(); got != tt.expected {
 				t.Errorf("BBoardID.ToBrdname() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }

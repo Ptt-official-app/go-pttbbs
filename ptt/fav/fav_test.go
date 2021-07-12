@@ -48,8 +48,11 @@ func TestFavLoad(t *testing.T) {
 			expected: nil,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			got, err := Load(tt.args.userID)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("FavLoad() error = %v, wantErr %v", err, tt.wantErr)
@@ -70,6 +73,7 @@ func TestFavLoad(t *testing.T) {
 
 			testutil.TDeepEqual(t, "got", got, tt.expected)
 		})
+		wg.Wait()
 	}
 }
 
@@ -238,6 +242,9 @@ func TestFavRaw_AddBoard(t *testing.T) {
 }
 
 func TestFavRaw_AddLine(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
 	f0 := NewFavRaw(nil)
 	ft0 := &FavType{FAVT_LINE, 1, &FavLine{1}}
 
@@ -264,8 +271,12 @@ func TestFavRaw_AddLine(t *testing.T) {
 			expected:        expected0,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			f := tt.f
 			gotFavType, err := f.AddLine()
 			if (err != nil) != tt.wantErr {
@@ -280,10 +291,14 @@ func TestFavRaw_AddLine(t *testing.T) {
 
 			testutil.TDeepEqual(t, "expected", f, tt.expected)
 		})
+		wg.Wait()
 	}
 }
 
 func TestFavRaw_AddFolder(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
 	f0 := NewFavRaw(nil)
 	ft0 := &FavType{FAVT_FOLDER, 1, &FavFolder{Fid: 1, ThisFolder: NewFavRaw(nil)}}
 
@@ -310,8 +325,12 @@ func TestFavRaw_AddFolder(t *testing.T) {
 			expected:        expected0,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			f := tt.f
 			gotFavType, err := f.AddFolder()
 			if (err != nil) != tt.wantErr {
@@ -332,5 +351,6 @@ func TestFavRaw_AddFolder(t *testing.T) {
 
 			testutil.TDeepEqual(t, "expected", f, tt.expected)
 		})
+		wg.Wait()
 	}
 }

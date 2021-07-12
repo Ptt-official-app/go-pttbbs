@@ -3,9 +3,11 @@ package initgin
 import (
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
+	"github.com/gin-gonic/gin"
 )
 
 var (
+	router              *gin.Engine
 	testUserec          *bbs.Userec
 	testUserecRaw3      *ptttype.UserecRaw
 	testNewPostUserRaw1 *ptttype.UserecRaw
@@ -14,6 +16,10 @@ var (
 func initTestVars() {
 	if testUserec != nil {
 		return
+	}
+
+	if router == nil {
+		router, _ = InitGin()
 	}
 
 	testUserec = &bbs.Userec{

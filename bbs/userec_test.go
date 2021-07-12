@@ -1,6 +1,7 @@
 package bbs
 
 import (
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
@@ -28,11 +29,15 @@ func TestNewUserecFromRaw(t *testing.T) {
 			expected: testUserec1,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			got := NewUserecFromRaw(tt.args.userecraw, tt.args.userec2raw)
 
 			testutil.TDeepEqual(t, "userec", got, tt.expected)
 		})
 	}
+	wg.Wait()
 }

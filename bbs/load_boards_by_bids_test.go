@@ -43,6 +43,6 @@ func TestLoadBoardsByBids(t *testing.T) {
 
 			testutil.TDeepEqual(t, "summaries", gotSummaries, tt.expectedSummaries)
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }

@@ -1,6 +1,7 @@
 package ptt
 
 import (
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/cache"
@@ -68,8 +69,12 @@ func TestFormatCommentString(t *testing.T) {
 			expectedComment: expected2,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotComment, err := FormatCommentString(tt.args.user, tt.args.board, tt.args.commentType, tt.args.content, tt.args.ip, tt.args.from)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("FormatCommentString() error = %v, wantErr %v", err, tt.wantErr)
@@ -79,5 +84,6 @@ func TestFormatCommentString(t *testing.T) {
 			theLen := len(tt.expectedComment) - 12
 			testutil.TDeepEqual(t, "got", gotComment[:theLen], tt.expectedComment[:theLen])
 		})
+		wg.Wait()
 	}
 }
