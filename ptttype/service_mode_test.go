@@ -1,6 +1,7 @@
 package ptttype
 
 import (
+	"sync"
 	"testing"
 )
 
@@ -28,13 +29,17 @@ func TestServiceMode_String(t *testing.T) {
 			expected: "UNKNOWN",
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := tt.s.String(); got != tt.expected {
 				t.Errorf("ServiceMode.String() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func Test_stringToServiceMode(t *testing.T) {
@@ -64,11 +69,15 @@ func Test_stringToServiceMode(t *testing.T) {
 			expected: DEV,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := stringToServiceMode(tt.args.str); got != tt.expected {
 				t.Errorf("stringToServiceMode() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io/ioutil"
 	"os"
+	"sync"
 	"testing"
 )
 
@@ -28,13 +29,17 @@ func TestIsDir(t *testing.T) {
 			args: args{"_non_exist_"},
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := IsDir(tt.args.path); got != tt.expected {
 				t.Errorf("IsDir() = %v, expected %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestCopyFileToFile(t *testing.T) {
@@ -55,8 +60,11 @@ func TestCopyFileToFile(t *testing.T) {
 			args: args{src: "./testcase/file1", dst: "./testcase/file"},
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if err := CopyFileToFile(tt.args.src, tt.args.dst); (err != nil) != tt.wantErr {
 				t.Errorf("CopyFileToFile() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -69,6 +77,7 @@ func TestCopyFileToFile(t *testing.T) {
 			os.RemoveAll(tt.args.dst)
 		})
 	}
+	wg.Wait()
 }
 
 func TestCopyFile(t *testing.T) {
@@ -118,8 +127,11 @@ func TestCopyFile(t *testing.T) {
 			dst:  "./testcase/to-dir-3/file2",
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if err := CopyFile(tt.args.src, tt.args.dst); (err != nil) != tt.wantErr {
 				t.Errorf("CopyFile() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -142,6 +154,7 @@ func TestCopyFile(t *testing.T) {
 			os.RemoveAll(tt.args.dst)
 		})
 	}
+	wg.Wait()
 }
 
 func TestRename(t *testing.T) {
@@ -201,8 +214,11 @@ func TestRename(t *testing.T) {
 			dst:  "./testcase/to-dir-4/to-dir-5/file2",
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			_ = CopyFile("./testcase/file1", "./testcase/file1.orig")
 			defer Rename("./testcase/file1.orig", "./testcase/file1")
 
@@ -225,6 +241,7 @@ func TestRename(t *testing.T) {
 			os.RemoveAll(tt.args.dst)
 		})
 	}
+	wg.Wait()
 }
 
 func TestMkdir(t *testing.T) {
@@ -257,11 +274,15 @@ func TestMkdir(t *testing.T) {
 			args: args{path: path1},
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if err := Mkdir(tt.args.path); (err != nil) != tt.wantErr {
 				t.Errorf("Mkdir() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
+	wg.Wait()
 }

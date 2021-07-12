@@ -2,6 +2,7 @@ package main
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 )
 
@@ -32,8 +33,11 @@ func Test_initAllConfig(t *testing.T) {
 			wantErr: true,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			err := initAllConfig(tt.args.filename)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("initConfig() error = %v, wantErr %v", err, tt.wantErr)
@@ -48,6 +52,7 @@ func Test_initAllConfig(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func Test_initMain(t *testing.T) {
@@ -61,11 +66,15 @@ func Test_initMain(t *testing.T) {
 		// TODO: Add test cases.
 		{wantErr: true},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if err := initMain(); (err != nil) != tt.wantErr {
 				t.Errorf("initMain() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
+	wg.Wait()
 }

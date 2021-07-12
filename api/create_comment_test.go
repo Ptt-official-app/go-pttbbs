@@ -1,6 +1,7 @@
 package api
 
 import (
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
@@ -49,8 +50,11 @@ func TestCreateComment(t *testing.T) {
 			expectedResult: expected0,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotResult, err := CreateComment(tt.args.remoteAddr, tt.args.uuserID, tt.args.params, tt.args.path)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CreateComment() error = %v, wantErr %v", err, tt.wantErr)
@@ -61,5 +65,6 @@ func TestCreateComment(t *testing.T) {
 			theLen := len(got.Content) - 12
 			testutil.TDeepEqual(t, "got", got.Content[:theLen], tt.expectedResult.Content[:theLen])
 		})
+		wg.Wait()
 	}
 }

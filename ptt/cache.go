@@ -178,7 +178,7 @@ func postpermMsg(uid ptttype.Uid, user *ptttype.UserecRaw, bid ptttype.Bid, boar
 	}
 
 	if !user.UserLevel.HasUserPerm(ptttype.PERM_POST) {
-		return ErrNoPost
+		return ErrPermitNoPost
 	}
 
 	//秘密看板特別處理.

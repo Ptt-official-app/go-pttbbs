@@ -1,6 +1,7 @@
 package ptttype
 
 import (
+	"sync"
 	"testing"
 )
 
@@ -26,13 +27,17 @@ func TestPERM_HasUserPerm(t *testing.T) {
 			expected: true,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := tt.p.HasUserPerm(tt.args.perm); got != tt.expected {
 				t.Errorf("PERM.HasUserPerm() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestPERM_HasBasicUserPerm(t *testing.T) {
@@ -57,11 +62,15 @@ func TestPERM_HasBasicUserPerm(t *testing.T) {
 			expected: false,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := tt.p.HasBasicUserPerm(tt.args.perm); got != tt.expected {
 				t.Errorf("PERM.HasBasicUserPerm() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }

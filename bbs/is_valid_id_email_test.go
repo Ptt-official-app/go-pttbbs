@@ -20,7 +20,7 @@ func TestIsValidIDEmail(t *testing.T) {
 			args: args{email: "abc@gmail.com"},
 		},
 		{
-			name:    "A-fail",
+			name:    "A-rejected",
 			args:    args{email: "abd@gmail.com"},
 			wantErr: true,
 		},
@@ -45,12 +45,12 @@ func TestIsValidIDEmail(t *testing.T) {
 			args: args{email: "test3@ntu.edu.tw"},
 		},
 		{
-			name:    "S-fail",
+			name:    "S-rejected",
 			args:    args{email: "test@ntu.edu.sg"},
 			wantErr: true,
 		},
 		{
-			name:    "S-fail",
+			name:    "S-rejected",
 			args:    args{email: "test@csie.ntu.edu.tw"},
 			wantErr: true,
 		},

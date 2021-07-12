@@ -5,7 +5,6 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/cmsys"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
-	"github.com/sirupsen/logrus"
 )
 
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L2768
@@ -57,11 +56,9 @@ func Recommend(
 	if err != nil {
 		return nil, 0, err
 	}
-	logrus.Infof("Recommmend: boardID: %v dirFilename: %v", string(boardID[:]), dirFilename)
 
 	//check record permission
 	total, err := cache.GetBTotalWithRetry(bid)
-	logrus.Infof("Recommmend: after GetGetBTotalWithRetry: total: %v e: %v", total, err)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -70,7 +67,6 @@ func Recommend(
 	}
 
 	idx, fhdr, err := cmsys.GetRecord(dirFilename, filename, int(total))
-	logrus.Infof("Recommmend: after GetRecord: idx: %v fhdr: %v e: %v", idx, fhdr, err)
 	if err != nil {
 		return nil, 0, err
 	}

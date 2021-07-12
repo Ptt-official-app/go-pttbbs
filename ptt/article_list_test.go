@@ -471,3 +471,71 @@ func TestLoadGeneralArticlesSameCreateTime(t *testing.T) {
 	}
 	wg.Wait()
 }
+
+func TestLoadBottomArticles(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	cache.ReloadBCache()
+
+	boardID := &ptttype.BoardID_t{}
+	copy(boardID[:], []byte("WhoAmI"))
+	bid := ptttype.Bid(10)
+
+	boardID1 := &ptttype.BoardID_t{}
+	copy(boardID1[:], []byte("SYSOP"))
+	bid1 := ptttype.Bid(1)
+
+	type args struct {
+		user       *ptttype.UserecRaw
+		uid        ptttype.Uid
+		boardIDRaw *ptttype.BoardID_t
+		bid        ptttype.Bid
+	}
+	tests := []struct {
+		name              string
+		args              args
+		expectedSummaries []*ptttype.ArticleSummaryRaw
+		wantErr           bool
+	}{
+		// TODO: Add test cases.
+		{
+			args: args{
+				user:       testUserecRaw1,
+				uid:        1,
+				boardIDRaw: boardID,
+				bid:        bid,
+			},
+			expectedSummaries: []*ptttype.ArticleSummaryRaw{testBottomSummary1},
+		},
+		{
+			args: args{
+				user:       testUserecRaw1,
+				uid:        1,
+				boardIDRaw: boardID1,
+				bid:        bid1,
+			},
+			expectedSummaries: nil,
+		},
+	}
+	var wg sync.WaitGroup
+	for _, tt := range tests {
+		wg.Add(1)
+		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
+			gotSummaries, err := LoadBottomArticles(tt.args.user, tt.args.uid, tt.args.boardIDRaw, tt.args.bid)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("LoadBottomArticles() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			for _, each := range gotSummaries {
+				each.BoardID = nil
+				copy(each.Multi[:], []byte{0, 0, 0, 0})
+			}
+
+			testutil.TDeepEqual(t, "summaries", gotSummaries, tt.expectedSummaries)
+		})
+	}
+	wg.Wait()
+}

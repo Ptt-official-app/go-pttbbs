@@ -2,12 +2,16 @@ package api
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
 )
 
 func TestVerifyJwt(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
 	type args struct {
 		raw string
 	}
@@ -35,8 +39,11 @@ func TestVerifyJwt(t *testing.T) {
 			expectedUserID: bbs.UUserID("SYSOP2"),
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotUserID, _, err := VerifyJwt(tt.args.raw)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("VerifyJwt() error = %v, wantErr %v", err, tt.wantErr)
@@ -47,6 +54,7 @@ func TestVerifyJwt(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestVerifyEmailJwt(t *testing.T) {
@@ -73,8 +81,11 @@ func TestVerifyEmailJwt(t *testing.T) {
 			expectedEmail:  "test@ptt.test",
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotUserID, gotClientInfo, gotEmail, err := VerifyEmailJwt(tt.args.raw, CONTEXT_CHANGE_EMAIL)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("VerifyEmailJwt() error = %v, wantErr %v", err, tt.wantErr)
@@ -91,4 +102,5 @@ func TestVerifyEmailJwt(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
