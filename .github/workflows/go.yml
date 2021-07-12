@@ -30,6 +30,11 @@ jobs:
         fi
 
     - name: Build
+      env:
+        CGO_CFLAGS: '-g'
+        CGO_CXXFLAGS: '-g'
+        CGO_FFLAGS: '-g'
+        CGO_LDFLAGS: '-g'
       run: go build -v ./...
 
     - name: Test
