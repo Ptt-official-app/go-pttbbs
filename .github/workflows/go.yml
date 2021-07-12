@@ -33,13 +33,15 @@ jobs:
       run: go build -v ./...
 
     - name: Test
-      run: go test -v ./... -cover
+      run: |
+        go clean -testcache
+        go test -p 1 -v ./... -cover
 
     - name: Coverage
       run: |
         ipcrm -S 0x00007ffb
         ipcrm -M 0x0000fffe
-        go test ./... -cover -coverprofile cover.out
+        go test ./... -p 1 -cover -coverprofile cover.out
         
     - name: Upload coverage report
       uses: codecov/codecov-action@v1

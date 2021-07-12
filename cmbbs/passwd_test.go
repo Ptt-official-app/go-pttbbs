@@ -221,8 +221,10 @@ func TestPasswdLock(t *testing.T) {
 	}
 	var wg sync.WaitGroup
 	for _, tt := range tests {
-		wg.Add(1)
+		wg.Add(2)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
+
 			nameChan := make(chan string)
 			go func() {
 				defer wg.Done()

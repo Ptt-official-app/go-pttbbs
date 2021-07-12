@@ -76,8 +76,8 @@ func TestCopyFileToFile(t *testing.T) {
 
 			os.RemoveAll(tt.args.dst)
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestCopyFile(t *testing.T) {
@@ -153,8 +153,8 @@ func TestCopyFile(t *testing.T) {
 
 			os.RemoveAll(tt.args.dst)
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestRename(t *testing.T) {
@@ -240,8 +240,8 @@ func TestRename(t *testing.T) {
 
 			os.RemoveAll(tt.args.dst)
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestMkdir(t *testing.T) {
@@ -283,6 +283,6 @@ func TestMkdir(t *testing.T) {
 				t.Errorf("Mkdir() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }

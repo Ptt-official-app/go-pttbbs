@@ -52,7 +52,6 @@ func Test_CreateArticle(t *testing.T) {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
-			router, _ := InitGin()
 
 			jwt := getJwt(router, tt.args.username, tt.args.passwd)
 			w := httptest.NewRecorder()

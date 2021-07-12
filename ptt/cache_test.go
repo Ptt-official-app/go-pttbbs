@@ -231,5 +231,6 @@ func Test_postpermMsg(t *testing.T) {
 				t.Errorf("postpermMsg() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
+		wg.Wait()
 	}
 }

@@ -138,13 +138,18 @@ func TestNumBoards(t *testing.T) {
 			expected: 12,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := NumBoards(); got != tt.expected {
 				t.Errorf("NumBoards() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestReloadBCache(t *testing.T) {
@@ -174,6 +179,7 @@ func TestReloadBCache(t *testing.T) {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
+
 			ReloadBCache()
 
 			nBoard := int32(0)
@@ -594,6 +600,7 @@ func TestFindBoardIdxByName(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestFindBoardIdxByClass(t *testing.T) {
@@ -756,8 +763,11 @@ func TestFindBoardIdxByClass(t *testing.T) {
 			expectedIdx: 12,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotIdx, err := FindBoardIdxByClass(tt.args.cls, tt.args.boardID, tt.args.isAsc)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("FindBoardIdxByClass() error = %v, wantErr %v", err, tt.wantErr)
@@ -768,6 +778,7 @@ func TestFindBoardIdxByClass(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestFindBoardAutoCompleteStartIdx(t *testing.T) {
@@ -836,8 +847,11 @@ func TestFindBoardAutoCompleteStartIdx(t *testing.T) {
 			expectedStartIdx: -1,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotStartIdx, err := FindBoardAutoCompleteStartIdx(tt.args.keyword, tt.args.isAsc)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("FindBoardAutoCompleteStartIdx() error = %v, wantErr %v", err, tt.wantErr)
@@ -848,6 +862,7 @@ func TestFindBoardAutoCompleteStartIdx(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestGetBTotalWithRetry(t *testing.T) {
@@ -871,8 +886,12 @@ func TestGetBTotalWithRetry(t *testing.T) {
 			expectedTotal: 2,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotTotal, err := GetBTotalWithRetry(tt.args.bid)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetBTotalWithRetry() error = %v, wantErr %v", err, tt.wantErr)
@@ -883,6 +902,7 @@ func TestGetBTotalWithRetry(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestNHots(t *testing.T) {
@@ -900,13 +920,18 @@ func TestNHots(t *testing.T) {
 			expectedNhots: 0,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if gotNhots := NHots(); gotNhots != tt.expectedNhots {
 				t.Errorf("NHots() = %v, want %v", gotNhots, tt.expectedNhots)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestSanitizeBMs(t *testing.T) {
@@ -945,13 +970,18 @@ func TestSanitizeBMs(t *testing.T) {
 			expectedParsedBMs: expected1,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if gotParsedBMs := SanitizeBMs(tt.args.bms); !reflect.DeepEqual(gotParsedBMs, tt.expectedParsedBMs) {
 				t.Errorf("SanitizeBMs() = %v, want %v", gotParsedBMs, tt.expectedParsedBMs)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestParseBMList(t *testing.T) {
@@ -988,13 +1018,17 @@ func TestParseBMList(t *testing.T) {
 			expectedUids: expected1,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if gotUids := ParseBMList(tt.args.bms); !reflect.DeepEqual(gotUids, tt.expectedUids) {
 				t.Errorf("ParseBMList() = %v, want %v", gotUids, tt.expectedUids)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestResetBoard(t *testing.T) {
@@ -1021,8 +1055,11 @@ func TestResetBoard(t *testing.T) {
 			expected: expected0,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if err := ResetBoard(tt.args.bid); (err != nil) != tt.wantErr {
 				t.Errorf("ResetBoard() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -1030,6 +1067,7 @@ func TestResetBoard(t *testing.T) {
 			got, _ := GetBCache(tt.args.bid)
 			testutil.TDeepEqual(t, "got", got, tt.expected)
 		})
+		wg.Wait()
 	}
 }
 
@@ -1061,8 +1099,12 @@ func Test_buildBMCache(t *testing.T) {
 			expected: expected0,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			buildBMCache(tt.args.bid)
 
 			got := [4]ptttype.Uid{0, 0, 0, 0}
@@ -1078,6 +1120,7 @@ func Test_buildBMCache(t *testing.T) {
 
 			testutil.TDeepEqual(t, "got", got[:], tt.expected)
 		})
+		wg.Wait()
 	}
 }
 
@@ -1103,8 +1146,12 @@ func TestAddbrdTouchCache(t *testing.T) {
 			expectedBid: 13,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotBid, err := AddbrdTouchCache()
 			if (err != nil) != tt.wantErr {
 				t.Errorf("AddbrdTouchCache() error = %v, wantErr %v", err, tt.wantErr)
@@ -1114,6 +1161,7 @@ func TestAddbrdTouchCache(t *testing.T) {
 				t.Errorf("AddbrdTouchCache() = %v, want %v", gotBid, tt.expectedBid)
 			}
 		})
+		wg.Wait()
 	}
 }
 
@@ -1139,8 +1187,12 @@ func TestSetLastPosttime(t *testing.T) {
 			expected: 1234567890,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if err := SetLastPosttime(tt.args.bid, tt.args.nowTS); (err != nil) != tt.wantErr {
 				t.Errorf("SetLastPosttime() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -1148,6 +1200,8 @@ func TestSetLastPosttime(t *testing.T) {
 			lastposttime, _ := GetLastPosttime(tt.args.bid)
 			testutil.TDeepEqual(t, "lastposttime", lastposttime, tt.expected)
 		})
+
+		wg.Wait()
 	}
 }
 
@@ -1192,5 +1246,4 @@ func TestTouchBPostNum(t *testing.T) {
 		})
 		wg.Wait()
 	}
-	wg.Wait()
 }
