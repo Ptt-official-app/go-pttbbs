@@ -5,19 +5,15 @@ import (
 	"net/http/httptest"
 	"sync"
 	"testing"
-
-	"github.com/Ptt-official-app/go-pttbbs/api"
 )
 
-func Test_Index(t *testing.T) {
+func Test_LoadBottomArticles(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	params := &api.IndexParams{}
-
 	type args struct {
 		path     string
-		username string //this is for user-login
+		username string
 		passwd   string
 		params   interface{}
 	}
@@ -28,11 +24,10 @@ func Test_Index(t *testing.T) {
 		// TODO: Add test cases.
 		{
 			args: args{
-				path:     api.INDEX_R,
+				path:     "/board/10_WhoAmI/articles/bottom",
 				username: "SYSOP",
 				passwd:   "123123",
-				params:   params,
-			}, // json: input: {}, output: {"Data": "index"}
+			},
 		},
 	}
 	var wg sync.WaitGroup
@@ -44,7 +39,7 @@ func Test_Index(t *testing.T) {
 
 			jwt := getJwt(router, tt.args.username, tt.args.passwd)
 			w := httptest.NewRecorder()
-			req := setRequest(tt.args.path, params, jwt, nil, "POST")
+			req := setRequest(tt.args.path, tt.args.params, jwt, nil, "GET")
 			router.ServeHTTP(w, req)
 
 			if w.Code != http.StatusOK {

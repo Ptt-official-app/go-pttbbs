@@ -1,6 +1,9 @@
 package ptttype
 
-import "testing"
+import (
+	"sync"
+	"testing"
+)
 
 func TestSortByCategory_String(t *testing.T) {
 	tests := []struct {
@@ -42,11 +45,15 @@ func TestSortByCategory_String(t *testing.T) {
 			expected: "unknown",
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := tt.d.String(); got != tt.expected {
 				t.Errorf("SortByCategory.String() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }

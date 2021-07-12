@@ -51,6 +51,19 @@ func GetBTotalWithRetry(bid ptttype.Bid) (total int32, err error) {
 	return total, nil
 }
 
+func GetBottomTotal(bid ptttype.Bid) (total int32) {
+	bidInCache := bid.ToBidInStore()
+
+	var total_u8 uint8
+	Shm.ReadAt(
+		unsafe.Offsetof(Shm.Raw.NBottom)+types.UINT8_SZ*uintptr(bidInCache),
+		types.UINT8_SZ,
+		unsafe.Pointer(&total_u8),
+	)
+
+	return int32(total_u8)
+}
+
 func GetBTotal(bid ptttype.Bid) (total int32) {
 	bidInCache := bid.ToBidInStore()
 
@@ -387,12 +400,8 @@ func ReloadBCache() {
 
 	SortBCache()
 
-	//XXX do not do reloadCacheLoadBottom in test
-	if IsTest {
-		return
-	}
-
-	go reloadCacheLoadBottom()
+	//XXX reloadCacheLoadBottom as front-process
+	reloadCacheLoadBottom()
 }
 
 //SortBCache
@@ -471,8 +480,8 @@ func reloadCacheLoadBottom() {
 
 		var n_uint8 = uint8(n)
 		Shm.WriteAt(
-			unsafe.Offsetof(Shm.Raw.NBottom)+unsafe.Sizeof(n_uint8)*i,
-			1,
+			unsafe.Offsetof(Shm.Raw.NBottom)+types.UINT8_SZ*i,
+			types.UINT8_SZ,
 			unsafe.Pointer(&n_uint8),
 		)
 	}

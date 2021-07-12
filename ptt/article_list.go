@@ -2,6 +2,7 @@ package ptt
 
 import (
 	"github.com/Ptt-official-app/go-pttbbs/cache"
+	"github.com/Ptt-official-app/go-pttbbs/cmbbs/path"
 	"github.com/Ptt-official-app/go-pttbbs/cmsys"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
@@ -69,6 +70,38 @@ func LoadGeneralArticles(user *ptttype.UserecRaw, uid ptttype.Uid, boardIDRaw *p
 	}
 
 	return summaries, isNewest, nextSummary, startIdx, nil
+}
+
+func LoadBottomArticles(user *ptttype.UserecRaw, uid ptttype.Uid, boardIDRaw *ptttype.BoardID_t, bid ptttype.Bid) (summaries []*ptttype.ArticleSummaryRaw, err error) {
+	//1. check perm.
+	board, err := cache.GetBCache(bid)
+	if err != nil {
+		return nil, err
+	}
+
+	statAttr := boardPermStat(user, uid, board, bid)
+	if statAttr == ptttype.NBRD_INVALID {
+		return nil, ErrNotPermitted
+	}
+
+	//2. bcache preparation.
+	total := cache.GetBottomTotal(bid)
+	if total == 0 {
+		return nil, nil
+	}
+
+	//3. get records
+	filename, err := path.SetBFile(boardIDRaw, ptttype.FN_DIR_BOTTOM)
+	if err != nil {
+		return nil, err
+	}
+
+	summaries, err = cmsys.GetRecords(boardIDRaw, filename, 1, int(total), false)
+	if err != nil {
+		return nil, err
+	}
+
+	return summaries, nil
 }
 
 func FindArticleStartIdx(user *ptttype.UserecRaw, uid ptttype.Uid, boardID *ptttype.BoardID_t, bid ptttype.Bid, createTime types.Time4, filename *ptttype.Filename_t, isDesc bool) (startIdx ptttype.SortIdx, err error) {

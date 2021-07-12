@@ -13,5 +13,5 @@ require (
 	github.com/stretchr/testify v1.7.0
 	golang.org/x/text v0.3.3
 	google.golang.org/protobuf v1.25.0
-	gopkg.in/square/go-jose.v2 v2.5.1
+	gopkg.in/square/go-jose.v2 v2.6.0
 )

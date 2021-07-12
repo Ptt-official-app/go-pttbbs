@@ -93,6 +93,17 @@ func TestLoadUHash(t *testing.T) {
 }
 
 func Test_fillUHash(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	err := NewSHM(TestShmKey, ptttype.USE_HUGETLB, true)
+	if err != nil {
+		return
+	}
+	defer CloseSHM()
+
+	_ = LoadUHash()
+
 	//move setupTest in for-loop
 	wantHashHead := [1 << ptttype.HASH_BITS]int32{}
 	wantNextInHash := [ptttype.MAX_USERS]int32{}
@@ -140,17 +151,6 @@ func Test_fillUHash(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
 
-			setupTest()
-			defer teardownTest()
-
-			err := NewSHM(TestShmKey, ptttype.USE_HUGETLB, true)
-			if err != nil {
-				return
-			}
-			defer CloseSHM()
-
-			_ = LoadUHash()
-
 			if err := fillUHash(tt.args.isOnfly); (err != nil) != tt.wantErr {
 				t.Errorf("fillUHash() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -187,6 +187,19 @@ func Test_fillUHash(t *testing.T) {
 }
 
 func TestInitFillUHash(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	logrus.Infof("HASH_BITS: %v", ptttype.HASH_BITS)
+
+	err := NewSHM(TestShmKey, ptttype.USE_HUGETLB, true)
+	if err != nil {
+		return
+	}
+	defer CloseSHM()
+
+	_ = LoadUHash()
+
 	wantHashHead := [1 << ptttype.HASH_BITS]int32{}
 	wantNextInHash := [ptttype.MAX_USERS]int32{}
 	for idx := range wantHashHead {
@@ -228,18 +241,6 @@ func TestInitFillUHash(t *testing.T) {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
-			setupTest()
-			defer teardownTest()
-
-			logrus.Infof("HASH_BITS: %v", ptttype.HASH_BITS)
-
-			err := NewSHM(TestShmKey, ptttype.USE_HUGETLB, true)
-			if err != nil {
-				return
-			}
-			defer CloseSHM()
-
-			_ = LoadUHash()
 
 			InitFillUHash(tt.args.isOnfly)
 

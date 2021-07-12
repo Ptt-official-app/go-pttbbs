@@ -2,6 +2,7 @@ package types
 
 import (
 	"bytes"
+	"sync"
 	"testing"
 )
 
@@ -68,8 +69,11 @@ func Test_initBig5(t *testing.T) {
 			expectedBig5FromUtf8: []byte{0x9d, 0x7b},
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if err := initBig5(); (err != nil) != tt.wantErr {
 				t.Errorf("initBig5() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -85,9 +89,13 @@ func Test_initBig5(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestUtf8ToBig5(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
 	r1 := "今晚我想來點﹖然後呢？～1﹢1=？test所以勒～"
 
 	expected1 := []byte{0xa4, 0xb5, 0xb1, 0xdf, 0xa7, 0xda, 0xb7, 0x51, 0xa8, 0xd3, 0xc2, 0x49, 0xa1, 0x53, 0xb5, 0x4d, 0xab, 0xe1, 0xa9, 0x4f, 0xa1, 0x48, 0xa1, 0xe3, 0x31, 0xa1, 0xde, 0x31, 0x3d, 0xa1, 0x48, 0x74, 0x65, 0x73, 0x74, 0xa9, 0xd2, 0xa5, 0x48, 0xb0, 0xc7, 0xa1, 0xe3}
@@ -129,8 +137,11 @@ func TestUtf8ToBig5(t *testing.T) {
 			expectedBig5: expected3,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			r := tt.r
 			big5 := Utf8ToBig5(r)
 
@@ -139,9 +150,12 @@ func TestUtf8ToBig5(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestRune_Big5ToUtf8(t *testing.T) {
+	setupTest()
+	defer teardownTest()
 
 	r1 := []byte{
 		0xa4, 0xb5, 0xb1, 0xdf, 0xa7, 0xda, 0xb7, 0x51, //今晚我想
@@ -181,8 +195,11 @@ func TestRune_Big5ToUtf8(t *testing.T) {
 			expectedUtf8: expected2,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			r := tt.r
 			utf8 := Big5ToUtf8(r)
 
@@ -191,4 +208,5 @@ func TestRune_Big5ToUtf8(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }

@@ -2,12 +2,15 @@ package api
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
 )
 
 func TestGetTokenInfo(t *testing.T) {
+	setupTest()
+	defer teardownTest()
 
 	jwt, _ := CreateToken("SYSOP", "")
 	params0 := &GetTokenInfoParams{Jwt: jwt}
@@ -30,8 +33,12 @@ func TestGetTokenInfo(t *testing.T) {
 			expectedResult: result0,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotResult, err := GetTokenInfo(tt.args.remoteAddr, tt.args.uuserID, tt.args.params)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetTokenInfo() error = %v, wantErr %v", err, tt.wantErr)
@@ -42,4 +49,5 @@ func TestGetTokenInfo(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }

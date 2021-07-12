@@ -2,6 +2,7 @@ package ptttype
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/types"
@@ -57,13 +58,17 @@ func TestBoardTitle_t_RealTitle(t *testing.T) {
 			expected: expected2,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := tt.tr.RealTitle(); !reflect.DeepEqual(got, tt.expected) {
 				t.Errorf("BoardTitle_t.RealTitle() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestBoardTitle_t_BoardClass(t *testing.T) {
@@ -119,13 +124,17 @@ func TestBoardTitle_t_BoardClass(t *testing.T) {
 			expected: expected3,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := tt.tr.BoardClass(); !reflect.DeepEqual(got, tt.expected) {
 				t.Errorf("BoardTitle_t.BoardClass() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestBoardTitle_t_BoardType(t *testing.T) {
@@ -181,13 +190,17 @@ func TestBoardTitle_t_BoardType(t *testing.T) {
 			expected: expected3,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := tt.tr.BoardType(); !reflect.DeepEqual(got, tt.expected) {
 				t.Errorf("BoardTitle_t.BoardType() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestBM_t_ToBMs(t *testing.T) {
@@ -214,8 +227,12 @@ func TestBM_t_ToBMs(t *testing.T) {
 			expected: expected0,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
+
 			got := tt.bm.ToBMs()
 			if !reflect.DeepEqual(got, tt.expected) {
 				t.Errorf("BM_t.ToBMs() = %v, want %v", got, tt.expected)
@@ -231,6 +248,7 @@ func TestBM_t_ToBMs(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestFilename_t_CreateTime(t *testing.T) {
@@ -254,8 +272,11 @@ func TestFilename_t_CreateTime(t *testing.T) {
 			expected: expected0,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			got, err := tt.f.CreateTime()
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Filename_t.CreateTime() error = %v, wantErr %v", err, tt.wantErr)
@@ -266,6 +287,7 @@ func TestFilename_t_CreateTime(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestFilename_t_Postfix(t *testing.T) {
@@ -288,13 +310,17 @@ func TestFilename_t_Postfix(t *testing.T) {
 			expected: expected0,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := tt.f.Postfix(); !reflect.DeepEqual(got, tt.expected) {
 				t.Errorf("Filename_t.Postfix() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestFilename_t_ToAidu(t *testing.T) {
@@ -344,13 +370,17 @@ func TestFilename_t_ToAidu(t *testing.T) {
 			expected: expected3,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := tt.f.ToAidu(); got != tt.expected {
 				t.Errorf("Filename_t.ToAidu() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestFilename_t_Type(t *testing.T) {
@@ -378,13 +408,17 @@ func TestFilename_t_Type(t *testing.T) {
 			expected: RECORD_TYPE_G,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := tt.f.Type(); got != tt.expected {
 				t.Errorf("Filename_t.Type() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestAidu_Type(t *testing.T) {
@@ -411,13 +445,17 @@ func TestAidu_Type(t *testing.T) {
 			expected: expected1,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := tt.a.Type(); got != tt.expected {
 				t.Errorf("Aidu.Type() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestAidu_Time(t *testing.T) {
@@ -438,13 +476,17 @@ func TestAidu_Time(t *testing.T) {
 			expected: expected0,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := tt.a.Time(); !reflect.DeepEqual(got, tt.expected) {
 				t.Errorf("Aidu.Time() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestAidu_ToFN(t *testing.T) {
@@ -474,8 +516,11 @@ func TestAidu_ToFN(t *testing.T) {
 			expected: expected1,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := tt.a.ToFN(); !reflect.DeepEqual(got, tt.expected) {
 				t.Errorf("Aidu.ToFN() = %v, want %v", got, tt.expected)
 				for idx, each := range got {
@@ -486,6 +531,7 @@ func TestAidu_ToFN(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestAidu_ToAidc(t *testing.T) {
@@ -560,13 +606,17 @@ func TestAidu_ToAidc(t *testing.T) {
 			expected: expected6,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := tt.a.ToAidc(); !reflect.DeepEqual(got, tt.expected) {
 				t.Errorf("Aidu.ToAidc() = %v, want %v", string(got[:]), string(tt.expected[:]))
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestAidc_ToAidu(t *testing.T) {
@@ -596,13 +646,17 @@ func TestAidc_ToAidu(t *testing.T) {
 			expectedAidu: expected1,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if gotAidu := tt.a.ToAidu(); gotAidu != tt.expectedAidu {
 				t.Errorf("Aidc.ToAidu() = %x, want %x", gotAidu, tt.expectedAidu)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestOwner_t_ToUserID(t *testing.T) {
@@ -625,13 +679,17 @@ func TestOwner_t_ToUserID(t *testing.T) {
 			expected: u,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := tt.o.ToUserID(); !reflect.DeepEqual(got, tt.expected) {
 				t.Errorf("Owner_t.ToUserID() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestUserID_t_IsValid(t *testing.T) {
@@ -721,13 +779,17 @@ func TestUserID_t_IsValid(t *testing.T) {
 			expected: true,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := tt.u.IsValid(); got != tt.expected {
 				t.Errorf("UserID_t.IsValid() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestTitle_t_ToClass(t *testing.T) {
@@ -774,13 +836,17 @@ func TestTitle_t_ToClass(t *testing.T) {
 			expected: []byte("\xa4\xbd\xa7\x69"),
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := tt.tr.ToClass(); !reflect.DeepEqual(got, tt.expected) {
 				t.Errorf("Title_t.ToClass() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestUserID_t_IsGuest(t *testing.T) {
@@ -815,11 +881,15 @@ func TestUserID_t_IsGuest(t *testing.T) {
 			expected: false,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := tt.u.IsGuest(); got != tt.expected {
 				t.Errorf("UserID_t.IsGuest() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }

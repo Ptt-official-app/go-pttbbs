@@ -22,7 +22,7 @@ var (
 	ErrCooldown      = errors.New("cooldown")
 	ErrReadOnly      = errors.New("read only")
 	ErrBanned        = errors.New("banned")
-	ErrNoPost        = errors.New("no post")
+	ErrPermitNoPost  = errors.New("permit no post")
 	ErrRestricted    = errors.New("restricted")
 	ErrViolateLaw    = errors.New("violate law")
 )

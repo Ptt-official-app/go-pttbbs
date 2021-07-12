@@ -9,7 +9,6 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs/path"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
-	"github.com/sirupsen/logrus"
 )
 
 func bakumanMakeTagFilename(userID *ptttype.UserID_t, obj types.Cstr, objectType string, isCreateFile bool) (filename string, err error) {
@@ -32,7 +31,6 @@ func bakumanMakeTagFilename(userID *ptttype.UserID_t, obj types.Cstr, objectType
 }
 
 func bakumanGetInfo(filename string) (expireTS types.Time4, reason string, err error) {
-	logrus.Infof("bakumanGetInfo: start: filename: %v", filename)
 	file, err := os.Open(filename)
 	if err != nil {
 		return 0, "", err
@@ -43,7 +41,6 @@ func bakumanGetInfo(filename string) (expireTS types.Time4, reason string, err e
 
 	//expireTS
 	line, err := types.ReadLine(buf)
-	logrus.Infof("bakumanGetInfo: after read 1st line: line: %v e: %v", line, err)
 	if err != nil {
 		return 0, "", err
 	}
@@ -51,16 +48,12 @@ func bakumanGetInfo(filename string) (expireTS types.Time4, reason string, err e
 	theTS, _ := strconv.Atoi(string(line))
 	expireTS = types.Time4(theTS)
 
-	logrus.Infof("bakumanGetInfo: expireTS: %v line: %v", expireTS, string(line))
-
 	//reason
 	line, err = types.ReadLine(buf)
 	if err == nil {
 		line = bytes.TrimSpace(line)
 		reason = string(line)
 	}
-
-	logrus.Infof("bakumanGetInfo: expireTS: %v reason: %v", expireTS, reason)
 
 	return expireTS, reason, nil
 }

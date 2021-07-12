@@ -10,7 +10,6 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
 	"github.com/Ptt-official-app/go-pttbbs/types/ansi"
-	"github.com/sirupsen/logrus"
 )
 
 func FormatCommentString(user *ptttype.UserecRaw, board *ptttype.BoardHeaderRaw, commentType ptttype.CommentType, content []byte, ip *ptttype.IPv4_t, from []byte) (comment []byte, err error) {
@@ -176,7 +175,6 @@ func doAddRecommendSmartMerge(filename string, comment []byte) (err error) {
 func ModifyDirLite(dirFilename string, idx ptttype.SortIdx, filename *ptttype.Filename_t, mtime types.Time4, title *ptttype.Title_t, owner *ptttype.Owner_t, theDate *ptttype.Date_t, recommend int8, multi []byte, enableModes ptttype.FileMode, disableModes ptttype.FileMode) (err error) {
 
 	sz := types.DashS(dirFilename)
-	logrus.Infof("ModifyDirLite: dirFilename: %v sz: %v", dirFilename, sz)
 	if sz < int64(ptttype.FILE_HEADER_RAW_SZ)*int64(idx) {
 		return ptttype.ErrInvalidIdx
 	}

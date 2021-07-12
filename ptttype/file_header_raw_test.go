@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"reflect"
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/types"
@@ -59,13 +60,17 @@ func TestFileRefer_Flag(t *testing.T) {
 			expected: 0x1,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := tt.f.Flag(); got != tt.expected {
 				t.Errorf("FileRefer.Flag() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestFileHeaderRaw_Money(t *testing.T) {
@@ -104,8 +109,12 @@ func TestFileHeaderRaw_Money(t *testing.T) {
 			expectedMoney: 5,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			f := tt.record
 			logrus.Infof("tt.records: %v", tt.record)
 			if gotMoney := f.Money(); gotMoney != tt.expectedMoney {
@@ -113,6 +122,7 @@ func TestFileHeaderRaw_Money(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestFileHeaderRaw_AnonUID(t *testing.T) {
@@ -152,14 +162,18 @@ func TestFileHeaderRaw_AnonUID(t *testing.T) {
 			expectedAnonUID: 5,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			f := tt.record
 			if gotAnonUID := f.AnonUID(); gotAnonUID != tt.expectedAnonUID {
 				t.Errorf("FileHeaderRaw.AnonUID() = %v, want %v", gotAnonUID, tt.expectedAnonUID)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestFileHeaderRaw_VoteLimits(t *testing.T) {
@@ -199,14 +213,18 @@ func TestFileHeaderRaw_VoteLimits(t *testing.T) {
 			expected: &VoteLimits{Post: 5},
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			f := tt.record
 			if got := f.VoteLimits(); !reflect.DeepEqual(got, tt.expected) {
 				t.Errorf("FileHeaderRaw.VoteLimits() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestFileHeaderRaw_VoteLimitPosts(t *testing.T) {
@@ -246,14 +264,19 @@ func TestFileHeaderRaw_VoteLimitPosts(t *testing.T) {
 			expected: 5,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			f := tt.record
 			if got := f.VoteLimitPosts(); got != tt.expected {
 				t.Errorf("FileHeaderRaw.VoteLimitPosts() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestFileHeaderRaw_VoteLimitLogins(t *testing.T) {
@@ -293,14 +316,19 @@ func TestFileHeaderRaw_VoteLimitLogins(t *testing.T) {
 			expected: 0,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			f := tt.record
 			if got := f.VoteLimitLogins(); got != tt.expected {
 				t.Errorf("FileHeaderRaw.VoteLimitLogins() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestFileHeaderRaw_VoteLimitRegTime(t *testing.T) {
@@ -340,8 +368,12 @@ func TestFileHeaderRaw_VoteLimitRegTime(t *testing.T) {
 			expected: 0,
 		},
 	}
+
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			f := &FileHeaderRaw{
 				Filename:  tt.fields.Filename,
 				Modified:  tt.fields.Modified,
@@ -360,6 +392,7 @@ func TestFileHeaderRaw_VoteLimitRegTime(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestFileHeaderRaw_VoteLimitBadpost(t *testing.T) {
@@ -399,14 +432,18 @@ func TestFileHeaderRaw_VoteLimitBadpost(t *testing.T) {
 			expected: 0,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			f := tt.record
 			if got := f.VoteLimitBadpost(); got != tt.expected {
 				t.Errorf("FileHeaderRaw.VoteLimitBadpost() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestFileHeaderRaw_IsDeleted(t *testing.T) {
@@ -454,8 +491,11 @@ func TestFileHeaderRaw_IsDeleted(t *testing.T) {
 			expected: true,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			f := &FileHeaderRaw{
 				Filename:  tt.fields.Filename,
 				Modified:  tt.fields.Modified,
@@ -474,4 +514,5 @@ func TestFileHeaderRaw_IsDeleted(t *testing.T) {
 			}
 		})
 	}
+	wg.Wait()
 }

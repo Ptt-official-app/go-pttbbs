@@ -2,6 +2,7 @@ package types
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 )
 
@@ -46,13 +47,17 @@ func TestCstrToBytes(t *testing.T) {
 			expected: []byte("01234"),
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := CstrToBytes(tt.args.cstr); !reflect.DeepEqual(got, tt.expected) {
 				t.Errorf("CstrToBytes() = %v, expected %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestCstrToString(t *testing.T) {
@@ -97,16 +102,23 @@ func TestCstrToString(t *testing.T) {
 			expected: "01234",
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := CstrToString(tt.args.cstr); got != tt.expected {
 				t.Errorf("CstrToString() = %v, expected %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestCstrcmp(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
 	type args struct {
 		cstr1 Cstr
 		cstr2 Cstr
@@ -218,16 +230,23 @@ func TestCstrcmp(t *testing.T) {
 			expected: -52,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := Cstrcmp(tt.args.cstr1, tt.args.cstr2); got != tt.expected {
 				t.Errorf("Cstrcmp() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestCstrTolower(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
 	type args struct {
 		cstr Cstr
 	}
@@ -242,16 +261,23 @@ func TestCstrTolower(t *testing.T) {
 			expected: Cstr([]byte("0123456789abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz!@#$%^&*()_-+=[]{}")),
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := CstrTolower(tt.args.cstr); !reflect.DeepEqual(got, tt.expected) {
 				t.Errorf("CstrTolower() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestCstrstr(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
 	type args struct {
 		cstr   Cstr
 		substr Cstr
@@ -301,13 +327,17 @@ func TestCstrstr(t *testing.T) {
 			expected: -1,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := Cstrstr(tt.args.cstr, tt.args.substr); got != tt.expected {
 				t.Errorf("Cstrstr() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }
 
 func TestCstrcasecmp(t *testing.T) {

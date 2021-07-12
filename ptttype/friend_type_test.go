@@ -1,6 +1,9 @@
 package ptttype
 
-import "testing"
+import (
+	"sync"
+	"testing"
+)
 
 func TestFriendType_Filename(t *testing.T) {
 	tests := []struct {
@@ -38,11 +41,15 @@ func TestFriendType_Filename(t *testing.T) {
 			expected: FN_VISIBLE,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			if got := tt.f.Filename(); got != tt.expected {
 				t.Errorf("FriendType.Filename() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
+	wg.Wait()
 }

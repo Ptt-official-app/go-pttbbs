@@ -34,6 +34,8 @@ var (
 	testArticleSummary0 *ArticleSummary
 	testArticleSummary1 *ArticleSummary
 
+	testBottomSummary1 *ArticleSummary
+
 	testContent1 []byte
 )
 
@@ -392,6 +394,27 @@ func initTestVars() {
 		},
 
 		Filemode: ptttype.FILE_MARKED,
+
+		Class: []byte{0xa4, 0xdf, 0xb1, 0x6f},
+		Idx:   "1607203395@1Vo_f30D",
+	}
+
+	testBottomSummary1 = &ArticleSummary{
+		BBoardID:   BBoardID("10_WhoAmI"),
+		ArticleID:  "1Vo_f30D",
+		IsDeleted:  false,
+		Filename:   "M.1607203395.A.00D",
+		CreateTime: 1607203395,
+		MTime:      1607203394,
+		Owner:      "SYSOP",
+		Title: []byte{
+			0x5b, 0xa4, 0xdf, 0xb1, 0x6f, 0x5d, 0x20, 0xb5,
+			0x4d, 0xab, 0xe1, 0xa9, 0x4f, 0xa1, 0x48, 0xa1,
+			0xe3,
+		},
+
+		Filemode: ptttype.FILE_MULTI,
+		Money:    -2147483646,
 
 		Class: []byte{0xa4, 0xdf, 0xb1, 0x6f},
 		Idx:   "1607203395@1Vo_f30D",

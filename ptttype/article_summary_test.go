@@ -1,6 +1,7 @@
 package ptttype
 
 import (
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/testutil"
@@ -25,12 +26,16 @@ func TestNewArticleSummaryRaw(t *testing.T) {
 			expected: testArticleSummary1,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			got := NewArticleSummaryRaw(tt.args.aid, tt.args.boardID, tt.args.header)
 			got.BoardID = tt.expected.BoardID
 
 			testutil.TDeepEqual(t, "summary", got, tt.expected)
 		})
 	}
+	wg.Wait()
 }
