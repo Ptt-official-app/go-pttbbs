@@ -32,9 +32,19 @@ jobs:
     - name: Build
       run: go build -v ./...
 
+    - name: go-clean
+      run: go clean -testcache
+
+    - name: clean semaphore
+      run: ipcrm -S 0x00007ffb; echo 1
+      continue-on-error: true
+
+    - name: clean shm
+      run: ipcrm -M 0x0000fffe; echo 1
+      continue-on-error: true
+
     - name: Test
       run: |
-        go clean -testcache
         go test -p 1 -v ./... -cover
 
     - name: Coverage
