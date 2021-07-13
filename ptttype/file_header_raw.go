@@ -18,7 +18,7 @@ type FileHeaderRaw struct {
 	Title     Title_t
 	/* TODO this multi is a mess now. */
 	Pad2  byte
-	Multi [4]byte //union as either money (int) or anon_uid (int) or vote_limits (4 unsigned char) or refer (2 unsigned int)
+	Multi [4]byte // union as either money (int) or anon_uid (int) or vote_limits (4 unsigned char) or refer (2 unsigned int)
 
 	//union {
 	///* TODO: MOVE money to outside multi!!!!!! */
@@ -46,7 +46,7 @@ var EMPTY_FILE_HEADER_RAW = FileHeaderRaw{}
 
 const FILE_HEADER_RAW_SZ = unsafe.Sizeof(EMPTY_FILE_HEADER_RAW)
 
-//XXX need to ensure Multi.
+// XXX need to ensure Multi.
 type VoteLimits struct {
 	Post    uint8
 	Logins  uint8
@@ -54,7 +54,7 @@ type VoteLimits struct {
 	Badpost uint8
 }
 
-//XXX need to ensure FileRefer.
+// XXX need to ensure FileRefer.
 type FileRefer uint32
 
 func (f FileRefer) Ref() uint32 {
@@ -66,25 +66,25 @@ func (f FileRefer) Flag() uint8 {
 }
 
 func (f *FileHeaderRaw) Money() (money int32) {
-	buf := bytes.NewBuffer(f.Multi[:4])
-	_ = binary.Read(buf, binary.LittleEndian, &money)
+	buf := bytes.NewReader(f.Multi[:4])
+	_ = types.BinaryRead(buf, binary.LittleEndian, &money)
 	return money
 }
 
-func (f *FileHeaderRaw) SetMoney(money int32) {
+func (f *FileHeaderRaw) SetMoney(money int32) (err error) {
 	buf := bytes.NewBuffer(f.Multi[:4])
-	_ = binary.Write(buf, binary.LittleEndian, &money)
+	return types.BinaryWrite(buf, binary.LittleEndian, &money)
 }
 
 func (f *FileHeaderRaw) AnonUID() (anonUID int32) {
-	buf := bytes.NewBuffer(f.Multi[:4])
-	_ = binary.Read(buf, binary.LittleEndian, &anonUID)
+	buf := bytes.NewReader(f.Multi[:4])
+	_ = types.BinaryRead(buf, binary.LittleEndian, &anonUID)
 	return anonUID
 }
 
-func (f *FileHeaderRaw) SetAnonUID(uid Uid) {
+func (f *FileHeaderRaw) SetAnonUID(uid Uid) (err error) {
 	buf := bytes.NewBuffer(f.Multi[:4])
-	_ = binary.Write(buf, binary.LittleEndian, &uid)
+	return types.BinaryWrite(buf, binary.LittleEndian, &uid)
 }
 
 func (f *FileHeaderRaw) VoteLimits() *VoteLimits {
@@ -108,5 +108,5 @@ func (f *FileHeaderRaw) VoteLimitBadpost() uint8 {
 }
 
 func (f *FileHeaderRaw) IsDeleted() bool {
-	return f.Filename[0] == '.' || f.Owner[0] == '-'
+	return (f.Filename[0] == '.') || (f.Owner[0] == '-')
 }

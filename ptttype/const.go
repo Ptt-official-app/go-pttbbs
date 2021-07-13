@@ -57,6 +57,8 @@ const (
 	USHM_SIZE = MAX_ACTIVE * 41 / 40
 
 	MAX_BMs = 4
+
+	TODAYISSZ = 20
 )
 
 const (

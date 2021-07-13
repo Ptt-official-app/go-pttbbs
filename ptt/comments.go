@@ -13,19 +13,18 @@ import (
 )
 
 func FormatCommentString(user *ptttype.UserecRaw, board *ptttype.BoardHeaderRaw, commentType ptttype.CommentType, content []byte, ip *ptttype.IPv4_t, from []byte) (comment []byte, err error) {
-
 	isLogIP := board.BrdAttr.HasPerm(ptttype.BRD_IPLOGRECMD)
 	maxlen := 78 -
-		3 - //lead
-		6 - //date
-		1 - //space
-		6 //time
+		3 - // lead
+		6 - // date
+		1 - // space
+		6 // time
 
 	if isLogIP {
-		maxlen -= 15 //ip
+		maxlen -= 15 // ip
 	}
 
-	//tail
+	// tail
 
 	nowTSStr := types.NowTS().CdateMdHM()
 	tail := make([]byte, 0, len(nowTSStr)+ptttype.IPV4LEN+len(from)+3)
@@ -154,7 +153,6 @@ func doAddRecommendNoSmartMerge(filename string, comment []byte) (err error) {
 }
 
 func doAddRecommendSmartMerge(filename string, comment []byte) (err error) {
-
 	file, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
 		return err
@@ -173,7 +171,6 @@ func doAddRecommendSmartMerge(filename string, comment []byte) (err error) {
 }
 
 func ModifyDirLite(dirFilename string, idx ptttype.SortIdx, filename *ptttype.Filename_t, mtime types.Time4, title *ptttype.Title_t, owner *ptttype.Owner_t, theDate *ptttype.Date_t, recommend int8, multi []byte, enableModes ptttype.FileMode, disableModes ptttype.FileMode) (err error) {
-
 	sz := types.DashS(dirFilename)
 	if sz < int64(ptttype.FILE_HEADER_RAW_SZ)*int64(idx) {
 		return ptttype.ErrInvalidIdx
@@ -192,7 +189,7 @@ func ModifyDirLite(dirFilename string, idx ptttype.SortIdx, filename *ptttype.Fi
 	}
 
 	fhdr := &ptttype.FileHeaderRaw{}
-	err = binary.Read(file, binary.LittleEndian, fhdr)
+	err = types.BinaryRead(file, binary.LittleEndian, fhdr)
 	if err != nil {
 		return err
 	}
@@ -236,7 +233,7 @@ func ModifyDirLite(dirFilename string, idx ptttype.SortIdx, filename *ptttype.Fi
 	if err != nil {
 		return err
 	}
-	err = binary.Write(file, binary.LittleEndian, fhdr)
+	err = types.BinaryWrite(file, binary.LittleEndian, fhdr)
 
 	return err
 }

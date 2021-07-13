@@ -8,6 +8,9 @@ import (
 )
 
 func Test_is_uBM(t *testing.T) {
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
+
 	bm := &ptttype.BM_t{}
 	user0 := &ptttype.UserID_t{}
 	user1 := &ptttype.UserID_t{}
@@ -64,6 +67,6 @@ func Test_is_uBM(t *testing.T) {
 				t.Errorf("is_uBM() = %v, want %v", got, tt.expected)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }

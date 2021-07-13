@@ -88,7 +88,7 @@ func NewRegister(
 	over18 bool,
 ) (uid ptttype.Uid, user *ptttype.UserecRaw, err error) {
 
-	//https://github.com/ptt/pttbbs/blob/master/mbbsd/register.c#L723
+	// https://github.com/ptt/pttbbs/blob/master/mbbsd/register.c#L723
 	if isBadUserID(userID) {
 		return 0, nil, ptttype.ErrInvalidUserID
 	}
@@ -126,6 +126,7 @@ func NewRegister(
 	// line: 857
 	passwdHash, err := cmbbs.GenPasswd(passwd)
 	if err != nil {
+		log.Errorf("register.NewRegister: unable to GenPasswd: e: %v", err)
 		return 0, nil, err
 	}
 	copy(newUser.PasswdHash[:], passwdHash[:])
@@ -157,6 +158,7 @@ func NewRegister(
 
 	err = ensureErasingOldUser(uid, userID)
 	if err != nil {
+		log.Errorf("register.NewRegister: unable to ensureErasingOldUser: e: %v", err)
 		return 0, nil, err
 	}
 
@@ -166,10 +168,11 @@ func NewRegister(
 	if isEmailVerified {
 		emailErr := registerCheckAndUpdateEmaildb(newUser, &newUser.Email)
 		if emailErr == nil {
-			justify := ptttype.Reg_t{}
+			justify := &ptttype.Reg_t{}
 			copy(justify[:ptttype.REGLEN], []byte(fmt.Sprintf("<E-Mail>: %v", types.NowTS().Cdate())))
-			err = pwcuRegCompleteJustify(uid, userID, &justify)
+			err = pwcuRegCompleteJustify(uid, userID, justify)
 			if err != nil {
+				log.Errorf("register.NewRegister: unable to pwcuRegCompleteJustify: uid: %v userID: %v justify: %v e: %v", uid, userID, justify, err)
 				return 0, nil, err
 			}
 		}
@@ -177,6 +180,7 @@ func NewRegister(
 
 	user, err = passwdSyncQuery(uid)
 	if err != nil {
+		log.Errorf("register.NewRegister: unable to passwdSyncQuery: uid: %v e: %v", uid, err)
 		return 0, nil, err
 	}
 	return uid, user, nil
@@ -200,7 +204,6 @@ func ensureErasingOldUser(uid ptttype.Uid, userID *ptttype.UserID_t) (err error)
 }
 
 func registerCheckAndUpdateEmaildb(user *ptttype.UserecRaw, email *ptttype.Email_t) (err error) {
-
 	_, err = registerCountEmail(user, email)
 	if err != nil {
 		return err
@@ -225,7 +228,6 @@ func registerCheckAndUpdateEmaildb(user *ptttype.UserecRaw, email *ptttype.Email
 }
 
 func registerCountEmail(user *ptttype.UserecRaw, email *ptttype.Email_t) (count int, err error) {
-
 	if ptttype.USE_EMAILDB {
 		r, err := emailDBCheckEmail(&user.UserID, email)
 		if err != nil {
@@ -275,6 +277,7 @@ func SetupNewUser(user *ptttype.UserecRaw) error {
 	//
 	uid, err := cache.DoSearchUserRaw(&user.UserID, nil)
 	if err != nil {
+		log.Errorf("SetupNewUser: unable to DoSearchUserRaw userID: userID: %v e: %v", user.UserID, err)
 		return err
 	}
 
@@ -285,33 +288,38 @@ func SetupNewUser(user *ptttype.UserecRaw) error {
 	/* Lazy method : 先找尋已經清除的過期帳號 */
 	uid, err = cache.DoSearchUserRaw(&ptttype.EMPTY_USER_ID, nil)
 	if err != nil {
+		log.Errorf("SetupNewUser: unable to DoSearchUserRaw empty-user-id: e: %v", err)
 		return err
 	}
 
-	if uid == 0 { //unable to find empty user.
+	if uid == 0 { // unable to find empty user.
 		err := tryCleanUser()
 		if err != nil {
+			log.Errorf("SetupNewUser: unable to tryCleanUser: e: %v", err)
 			return err
 		}
 	}
 
-	//init passwd-semaphores
-	//XXX move to init-config as 1-time setup.
-	//err = cmbbs.PasswdInit()
+	// init passwd-semaphores
+	// XXX move to init-config as 1-time setup.
+	// err = cmbbs.PasswdInit()
 
 	err = cmbbs.PasswdLock()
 	if err != nil {
+		log.Errorf("SetupNewUser: unable to PasswdLock: e: %v", err)
 		return err
 	}
 	defer cmbbs.PasswdUnlock()
 
 	uid, err = cache.DoSearchUserRaw(&ptttype.EMPTY_USER_ID, nil)
 	if err != nil {
+		log.Errorf("SetupNewUser: unable to DoSearchUserRaw empty-user-id 2: e: %v", err)
 		return err
 	}
 
 	err = cache.SetUserID(uid, &user.UserID)
 	if err != nil {
+		log.Errorf("SetupNewUser: unable to SetUserID: userID: %v e: %v", user.UserID, err)
 		return err
 	}
 
@@ -319,6 +327,7 @@ func SetupNewUser(user *ptttype.UserecRaw) error {
 
 	err = passwdSyncUpdate(uid, user)
 	if err != nil {
+		log.Errorf("SetupNewUser: unable to passwdSyncUpdate: uid: %v userID: %v e: %v", uid, user.UserID, err)
 		return err
 	}
 
@@ -326,7 +335,6 @@ func SetupNewUser(user *ptttype.UserecRaw) error {
 }
 
 func tryCleanUser() error {
-
 	isToCleanUser, err := isToCleanUser()
 	if err != nil {
 		return err
@@ -358,7 +366,7 @@ func tryCleanUser() error {
 	return nil
 }
 
-//isToCleanUser
+// isToCleanUser
 func isToCleanUser() (bool, error) {
 	theStat, err := os.Stat(ptttype.FN_FRESH)
 	if err != nil {
@@ -371,7 +379,7 @@ func isToCleanUser() (bool, error) {
 	return theStat.ModTime().Before(time.Now().Add(-3600 * types.TS_TO_NANO_TS)), nil
 }
 
-//touchFresh
+// touchFresh
 func touchFresh() error {
 	file, err := os.OpenFile(ptttype.FN_FRESH, os.O_CREATE|os.O_RDWR, 0600)
 	if err != nil {
@@ -425,7 +433,7 @@ func CheckEmailAllowRejectLists(email string) (err error) {
 		return err
 	}
 
-	//allow
+	// allow
 	isAllow := false
 	for _, each := range ptttype.ALLOW_EMAIL_LIST {
 		isValid, err := each.IsValid(email)
@@ -471,7 +479,6 @@ func ensureNewestAllowRejectLists() (err error) {
 
 func ensureNewestAllowRejectListCore(filename string, origList []*ptttype.AllowRejectEmail, origUpdateTS types.Time4) (newList []*ptttype.AllowRejectEmail, newUpdateNanoTS types.Time4, err error) {
 	theStat, err := os.Stat(filename)
-
 	if err != nil {
 		if os.IsNotExist(err) {
 			err = nil
@@ -520,10 +527,10 @@ func isBadUserID(userID *ptttype.UserID_t) bool {
 		return true
 	}
 
-	//XXX looks like bug in c-pttbbs.
-	//https://github.com/ptt/pttbbs/blob/master/mbbsd/register.c#L104
-	//We shouldn't allow guest directly being registered.
-	//refer https://github.com/ptt/pttbbs/wiki/INSTALL#%EF%BC%98-%E5%8F%96%E5%BE%97%E7%AB%99%E9%95%B7%E6%AC%8A%E9%99%90
+	// XXX looks like bug in c-pttbbs.
+	// https://github.com/ptt/pttbbs/blob/master/mbbsd/register.c#L104
+	// We shouldn't allow guest directly being registered.
+	// refer https://github.com/ptt/pttbbs/wiki/INSTALL#%EF%BC%98-%E5%8F%96%E5%BE%97%E7%AB%99%E9%95%B7%E6%AC%8A%E9%99%90
 	//  to have guest.
 	if ptttype.STR_GUEST != "" {
 		if types.Cstrcasecmp(userID[:], []byte(ptttype.STR_GUEST)) == 0 {

@@ -1,6 +1,8 @@
 package initgin
 
 import (
+	"runtime"
+
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 )
@@ -95,4 +97,13 @@ func initTestVars() {
 		Career:       ptttype.Career_t{165, 254, 180, 186, 179, 110, 197, 233},
 		LastSeen:     1600681288,
 	}
+
+}
+
+func freeTestVars() {
+	testUserec = nil
+	testUserecRaw3 = nil
+	testNewPostUserRaw1 = nil
+
+	runtime.GC()
 }

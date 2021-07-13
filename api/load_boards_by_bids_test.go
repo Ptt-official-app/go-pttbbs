@@ -10,8 +10,8 @@ import (
 )
 
 func TestLoadBoardsByBids(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	params := &LoadBoardsByBidsParams{
 		Bids: []ptttype.Bid{6, 7, 11, 8},
@@ -51,6 +51,6 @@ func TestLoadBoardsByBids(t *testing.T) {
 
 			testutil.TDeepEqual(t, "result", gotResult, tt.expectedResult)
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }

@@ -23,7 +23,6 @@ func GetTokenInfoWrapper(c *gin.Context) {
 }
 
 func GetTokenInfo(remoteAddr string, uuserID bbs.UUserID, params interface{}) (result interface{}, err error) {
-
 	theParams, ok := params.(*GetTokenInfoParams)
 	if !ok {
 		return nil, ErrInvalidParams
@@ -33,7 +32,6 @@ func GetTokenInfo(remoteAddr string, uuserID bbs.UUserID, params interface{}) (r
 	if err != nil {
 		return nil, err
 	}
-
 	if userID != uuserID {
 		return nil, ErrInvalidUser
 	}

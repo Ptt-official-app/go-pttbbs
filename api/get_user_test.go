@@ -9,8 +9,8 @@ import (
 )
 
 func TestGetUser(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	path := &GetUserPath{UserID: "SYSOP"}
 	expected := GetUserResult(testUserec)
@@ -47,6 +47,6 @@ func TestGetUser(t *testing.T) {
 			got := gotResult.(GetUserResult)
 			testutil.TDeepEqual(t, "got", got, tt.expectedResult)
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }

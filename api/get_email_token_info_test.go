@@ -9,8 +9,8 @@ import (
 )
 
 func TestGetEmailTokenInfo(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	jwt, _ := CreateEmailToken("SYSOP", "", "test@ptt.test", CONTEXT_CHANGE_EMAIL)
 	params0 := &GetEmailTokenInfoParams{Jwt: jwt, Context: CONTEXT_CHANGE_EMAIL}
@@ -47,6 +47,6 @@ func TestGetEmailTokenInfo(t *testing.T) {
 				t.Errorf("GetEmailTokenInfo() = %v, want %v", gotResult, tt.expectedResult)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }

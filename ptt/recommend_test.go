@@ -14,8 +14,8 @@ import (
 )
 
 func TestRecommend(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	cache.ReloadBCache()
 
@@ -104,7 +104,6 @@ func TestRecommend(t *testing.T) {
 			if fhdr.Recommend <= origFhdr.Recommend {
 				t.Errorf("Recommend: recommend: %v orig: %v", fhdr.Recommend, origFhdr.Recommend)
 			}
-
 		})
 		wg.Wait()
 	}

@@ -9,8 +9,8 @@ import (
 )
 
 func TestIsBoardValidUser(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	path0 := &IsBoardValidUserPath{
 		BoardID: "10_WhoAmI",
@@ -52,6 +52,6 @@ func TestIsBoardValidUser(t *testing.T) {
 				t.Errorf("IsBoardValidUser() = %v, want %v", gotResult, tt.expectedResult)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }

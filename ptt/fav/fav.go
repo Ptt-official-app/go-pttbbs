@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	_OFFSET_SAVE_MILLI_TS = 10000 //should not save the fav-board again within 10 sec.
+	_OFFSET_SAVE_MILLI_TS = 10000 // should not save the fav-board again within 10 sec.
 )
 
 //FavRaw
@@ -81,7 +81,7 @@ func Load(userID *ptttype.UserID_t) (favrec *FavRaw, err error) {
 
 	// version
 	version := int16(0)
-	err = binary.Read(file, binary.LittleEndian, &version)
+	err = types.BinaryRead(file, binary.LittleEndian, &version)
 	if err != nil {
 		return nil, err
 	}
@@ -131,7 +131,7 @@ func (f *FavRaw) Save(userID *ptttype.UserID_t) (*FavRaw, error) {
 	defer file.Close()
 
 	version := FAV_VERSION
-	err = binary.Write(file, binary.LittleEndian, &version)
+	err = types.BinaryWrite(file, binary.LittleEndian, &version)
 	if err != nil {
 		return nil, err
 	}
@@ -141,13 +141,13 @@ func (f *FavRaw) Save(userID *ptttype.UserID_t) (*FavRaw, error) {
 		return nil, err
 	}
 
-	//to rename
+	// to rename
 	err = os.Rename(tmpFilename, filename)
 	if err != nil {
 		return nil, err
 	}
 
-	//mtime is embedded in Load.
+	// mtime is embedded in Load.
 	newFav, err = Load(userID)
 	if err != nil {
 		return nil, err
@@ -284,15 +284,15 @@ func (f *FavRaw) WriteFavrec(file *os.File) error {
 		return nil
 	}
 
-	err := binary.Write(file, binary.LittleEndian, &f.NBoards)
+	err := types.BinaryWrite(file, binary.LittleEndian, &f.NBoards)
 	if err != nil {
 		return err
 	}
-	err = binary.Write(file, binary.LittleEndian, &f.NLines)
+	err = types.BinaryWrite(file, binary.LittleEndian, &f.NLines)
 	if err != nil {
 		return err
 	}
-	err = binary.Write(file, binary.LittleEndian, &f.NFolders)
+	err = types.BinaryWrite(file, binary.LittleEndian, &f.NFolders)
 	if err != nil {
 		return err
 	}
@@ -300,11 +300,11 @@ func (f *FavRaw) WriteFavrec(file *os.File) error {
 
 	for i := int16(0); i < total; i++ {
 		ft := f.Favh[i]
-		err := binary.Write(file, binary.LittleEndian, &ft.TheType)
+		err := types.BinaryWrite(file, binary.LittleEndian, &ft.TheType)
 		if err != nil {
 			return err
 		}
-		err = binary.Write(file, binary.LittleEndian, &ft.Attr)
+		err = types.BinaryWrite(file, binary.LittleEndian, &ft.Attr)
 		if err != nil {
 			return err
 		}
@@ -315,11 +315,11 @@ func (f *FavRaw) WriteFavrec(file *os.File) error {
 			if favFolder == nil {
 				return ErrInvalidFavFolder
 			}
-			err = binary.Write(file, binary.LittleEndian, &favFolder.Fid)
+			err = types.BinaryWrite(file, binary.LittleEndian, &favFolder.Fid)
 			if err != nil {
 				return err
 			}
-			err = binary.Write(file, binary.LittleEndian, &favFolder.Title)
+			err = types.BinaryWrite(file, binary.LittleEndian, &favFolder.Title)
 			if err != nil {
 				return err
 			}
@@ -367,17 +367,17 @@ func (f *FavRaw) WriteFavrec(file *os.File) error {
 func ReadFavrec(file *os.File) (favrec *FavRaw, err error) {
 	// https://github.com/ptt/pttbbs/blob/master/mbbsd/fav.c
 	favrec = NewFavRaw(nil)
-	err = binary.Read(file, binary.LittleEndian, &favrec.NBoards)
+	err = types.BinaryRead(file, binary.LittleEndian, &favrec.NBoards)
 	if err != nil {
 		return nil, ErrInvalidFavRecord
 	}
 
-	err = binary.Read(file, binary.LittleEndian, &favrec.NLines)
+	err = types.BinaryRead(file, binary.LittleEndian, &favrec.NLines)
 	if err != nil {
 		return nil, ErrInvalidFavRecord
 	}
 
-	err = binary.Read(file, binary.LittleEndian, &favrec.NFolders)
+	err = types.BinaryRead(file, binary.LittleEndian, &favrec.NFolders)
 	if err != nil {
 		return nil, ErrInvalidFavRecord
 	}
@@ -391,7 +391,7 @@ func ReadFavrec(file *os.File) (favrec *FavRaw, err error) {
 		ft := &FavType{}
 		favrec.Favh[i] = ft
 
-		err = binary.Read(file, binary.LittleEndian, &ft.TheType)
+		err = types.BinaryRead(file, binary.LittleEndian, &ft.TheType)
 		if err != nil {
 			return nil, ErrInvalidFavType
 		}
@@ -399,7 +399,7 @@ func ReadFavrec(file *os.File) (favrec *FavRaw, err error) {
 			return nil, ErrInvalidFavType
 		}
 
-		err = binary.Read(file, binary.LittleEndian, &ft.Attr)
+		err = types.BinaryRead(file, binary.LittleEndian, &ft.Attr)
 		if err != nil {
 			return nil, ErrInvalidFavType
 		}
@@ -410,11 +410,11 @@ func ReadFavrec(file *os.File) (favrec *FavRaw, err error) {
 			if favFolder == nil {
 				return nil, ErrInvalidFavFolder
 			}
-			err = binary.Read(file, binary.LittleEndian, &favFolder.Fid)
+			err = types.BinaryRead(file, binary.LittleEndian, &favFolder.Fid)
 			if err != nil {
 				return nil, ErrInvalidFavFolder
 			}
-			err = binary.Read(file, binary.LittleEndian, &favFolder.Title)
+			err = types.BinaryRead(file, binary.LittleEndian, &favFolder.Title)
 			if err != nil {
 				return nil, ErrInvalidFavFolder
 			}
@@ -476,7 +476,7 @@ func ReadFavrec(file *os.File) (favrec *FavRaw, err error) {
 }
 
 func (f *FavRaw) AddBoard(bid ptttype.Bid) (favType *FavType, err error) {
-	//check whether already added
+	// check whether already added
 	favBoard, err := f.GetBoard(bid)
 	if err != nil {
 		return nil, err

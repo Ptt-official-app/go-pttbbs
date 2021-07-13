@@ -2,31 +2,37 @@ package api
 
 import (
 	"os"
+	"time"
 
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
+	"github.com/sirupsen/logrus"
 )
 
-var (
-	testIP = "127.0.0.1"
-)
+var testIP = "127.0.0.1"
 
-func setupTest() {
-	cache.SetIsTest()
-	cmbbs.SetIsTest()
-
+func setupTest(name string) {
 	types.SetIsTest()
 	ptttype.SetIsTest()
 
-	_ = types.CopyFileToFile("./testcase/.PASSWDS1", "./testcase/.PASSWDS")
+	cache.SetIsTest()
+	cmbbs.SetIsTest()
 
-	_ = types.CopyFileToFile("./testcase/.BRD1", "./testcase/.BRD")
+	err := types.CopyFileToFile("./testcase/.PASSWDS1", "./testcase/.PASSWDS")
+	logrus.Infof("%v: after copy .PASSWDS: e: %v", name, err)
 
-	_ = types.CopyDirToDir("./testcase/boards1", "./testcase/boards")
+	err = types.CopyFileToFile("./testcase/.BRD1", "./testcase/.BRD")
+	logrus.Infof("%v: after copy .BRD: e: %v", name, err)
 
-	_ = types.CopyDirToDir("./testcase/home1", "./testcase/home")
+	err = types.CopyDirToDir("./testcase/boards1", "./testcase/boards")
+	logrus.Infof("%v: after copy boards: e: %v", name, err)
+
+	err = types.CopyDirToDir("./testcase/home1", "./testcase/home")
+	logrus.Infof("%v: after copy home: e: %v", name, err)
+
+	time.Sleep(10 * time.Millisecond)
 
 	_ = cache.NewSHM(types.Key_t(cache.TestShmKey), ptttype.USE_HUGETLB, true)
 	_ = cache.AttachSHM()
@@ -42,23 +48,46 @@ func setupTest() {
 	initTestVars()
 }
 
-func teardownTest() {
+func teardownTest(name string) {
+	defer time.Sleep(1 * time.Millisecond)
 
-	_ = cmbbs.PasswdDestroy()
+	defer func() {
+		types.UnsetIsTest()
+	}()
 
-	_ = cache.CloseSHM()
+	defer ptttype.UnsetIsTest()
 
-	os.Remove("./testcase/.post")
-	os.Remove("./testcase/.fresh")
-	os.RemoveAll("./testcase/home")
-	os.RemoveAll("./testcase/boards")
-	os.Remove("./testcase/.BRD")
-	os.Remove("./testcase/.PASSWDS")
+	defer cache.UnsetIsTest()
 
-	ptttype.UnsetIsTest()
-	types.UnsetIsTest()
+	defer cmbbs.UnsetIsTest()
 
-	cmbbs.UnsetIsTest()
-	cache.UnsetIsTest()
+	defer func() {
+		os.Remove("./testcase/.PASSWDS")
+		logrus.Infof("%v: after remove .PASSWDS", name)
+	}()
 
+	defer func() {
+		os.Remove("./testcase/.BRD")
+		logrus.Infof("%v: after remove .BRD", name)
+	}()
+
+	defer func() {
+		os.RemoveAll("./testcase/boards")
+		logrus.Infof("%v: after remove boards", name)
+	}()
+
+	defer func() {
+		os.RemoveAll("./testcase/home")
+		logrus.Infof("%v: after remove home", name)
+	}()
+
+	defer os.Remove("./testcase/.fresh")
+
+	defer os.Remove("./testcase/.post")
+
+	defer cache.CloseSHM()
+
+	defer cmbbs.PasswdDestroy()
+
+	defer freeTestVars()
 }

@@ -13,8 +13,8 @@ import (
 )
 
 func Test_reginitFav(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	cache.ReloadBCache()
 
@@ -60,13 +60,13 @@ func Test_reginitFav(t *testing.T) {
 
 			testutil.TDeepEqual(t, "got", got, tt.expected)
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestGetFavorites(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	userID0 := &ptttype.UserID_t{}
 	copy(userID0[:], []byte("CodingMan"))
@@ -123,6 +123,6 @@ func TestGetFavorites(t *testing.T) {
 				t.Errorf("GetFavorites() gotContent = %v, want %v", gotContent, tt.expectedContent)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }

@@ -231,8 +231,12 @@ func TestPasswdLock(t *testing.T) {
 				name := <-nameChan
 				logrus.Infof("TestPasswdLock: %v: start", name)
 				time.Sleep(tt.initSleep * time.Millisecond)
-				if err := PasswdLock(); (err != nil) != tt.wantErr {
+				err := PasswdLock()
+				if (err != nil) != tt.wantErr {
 					t.Errorf("TestPasswdLock: PasswdLock() error = %v, wantErr %v", err, tt.wantErr)
+				}
+				if err != nil {
+					return
 				}
 				logrus.Infof("TestPasswdLock: %v: got lock", name)
 				time.Sleep(tt.sleep * time.Millisecond)

@@ -75,7 +75,7 @@ type SHMRaw struct {
 	/* pttcache */
 	Notes   [ptttype.MAX_ADBANNER][256 * ptttype.MAX_ADBANNER_HEIGHT]byte
 	Gap18   [types.INT32_SZ]byte
-	TodayIs [20]byte
+	TodayIs [ptttype.TODAYISSZ]byte
 	// FIXME remove it
 	NeverUsedNNotes_ [ptttype.MAX_ADBANNER_SECTION]int32 /* 一節中有幾個 看板 */
 	Gap19            [types.INT32_SZ]byte

@@ -12,8 +12,8 @@ import (
 )
 
 func TestLoadGeneralArticles(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	cache.ReloadBCache()
 
@@ -244,16 +244,15 @@ func TestLoadGeneralArticles(t *testing.T) {
 
 			if gotStartNumIdx != tt.expectedStartNumIdx {
 				t.Errorf("LoadGeneralArticles() startNumIdx = %v, want %v", gotStartNumIdx, tt.expectedStartNumIdx)
-
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestFindArticleStartAid(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	cache.ReloadBCache()
 
@@ -395,13 +394,13 @@ func TestFindArticleStartAid(t *testing.T) {
 				t.Errorf("FindArticleStartAid() = %v, want %v", gotStartAid, tt.expectedStartAid)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestLoadGeneralArticlesSameCreateTime(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	cache.ReloadBCache()
 
@@ -460,21 +459,19 @@ func TestLoadGeneralArticlesSameCreateTime(t *testing.T) {
 
 			if gotStartNumIdx != tt.expectedStartNumIdx {
 				t.Errorf("LoadGeneralArticlesSameCreateTime() startNumIdx = %v, want %v", gotStartNumIdx, tt.expectedStartNumIdx)
-
 			}
 
 			if gotEndNumIdx != tt.expectedEndNumIdx {
 				t.Errorf("LoadGeneralArticlesSameCreateTime() endNumIdx = %v, want %v", gotEndNumIdx, tt.expectedEndNumIdx)
-
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestLoadBottomArticles(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	cache.ReloadBCache()
 
@@ -536,6 +533,6 @@ func TestLoadBottomArticles(t *testing.T) {
 
 			testutil.TDeepEqual(t, "summaries", gotSummaries, tt.expectedSummaries)
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }

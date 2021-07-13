@@ -30,7 +30,6 @@ func SetIDEmailWrapper(c *gin.Context) {
 }
 
 func SetIDEmail(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (result interface{}, err error) {
-
 	theParams, ok := params.(*SetIDEmailParams)
 	if !ok {
 		return nil, ErrInvalidParams
@@ -42,6 +41,7 @@ func SetIDEmail(remoteAddr string, uuserID bbs.UUserID, params interface{}, path
 	}
 
 	isValid, email := userInfoIsValidEmailUser(uuserID, thePath.UserID, theParams.Jwt, CONTEXT_SET_ID_EMAIL, true)
+
 	if !isValid {
 		return nil, ErrInvalidUser
 	}

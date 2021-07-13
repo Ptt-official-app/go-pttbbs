@@ -89,7 +89,7 @@ func SetBBSHOME(bbshome string) string {
 		string(os.PathSeparator) +
 		HAVE_USERAGREEMENT_ACCEPTABLE_POSTFIX
 
-	//common.go
+	// common.go
 	FN_CONF_BANIP = BBSHOME + // 禁止連線的 IP 列表
 		string(os.PathSeparator) +
 		FN_CONF_BANIP_POSTFIX
@@ -100,7 +100,7 @@ func SetBBSHOME(bbshome string) string {
 		string(os.PathSeparator) +
 		FN_BOARD_POSTFIX
 
-	//const.go
+	// const.go
 	FN_FRESH = BBSHOME + string(os.PathSeparator) + FN_FRESH_POSTFIX /* mbbsd/register.c line: 381 */
 
 	FN_ALLOW_EMAIL_LIST = BBSHOME + string(os.PathSeparator) + FN_ALLOW_EMAIL_LIST_POSTFIX
@@ -205,7 +205,6 @@ func setMyHostname(myHostname string) string {
 	}
 
 	return origMyHostname
-
 }
 
 //setRecycleBinName

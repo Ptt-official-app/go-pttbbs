@@ -6,11 +6,12 @@ import (
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 )
 
 func TestVerifyJwt(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	type args struct {
 		raw string
@@ -34,9 +35,9 @@ func TestVerifyJwt(t *testing.T) {
 			args:    args{raw: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFeHBpcmUiOjE2MDgzMzA0NTYsIlVzZXJJRCI6IlNZU09QMiJ9.G6gKhrGRysMAvOJb6rMmsvqxm7MuUwOkHhII7D73Ijc"},
 			wantErr: true,
 		},
-		{ //XXX expires at 2270-11-01 09:53:32
-			args:           args{raw: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGkiOiIiLCJleHAiOjk0OTM0MjI4MTIsInN1YiI6IlNZU09QMiJ9.VbixNBxg4h5FCyTmvhtVzBJ4HsE5_va-MPZzR8TLaY8"},
-			expectedUserID: bbs.UUserID("SYSOP2"),
+		{ // XXX expires at 2031-07-14 06:33:12
+			args:           args{raw: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGkiOiIiLCJleHAiOjE5NDE3OTE1OTIsInN1YiI6IlNZU09QIn0.hOUS-mN2KZeykTl8CMcJoFUafEC6o6LxNz7awisjhPI"},
+			expectedUserID: bbs.UUserID("SYSOP"),
 		},
 	}
 	var wg sync.WaitGroup
@@ -53,15 +54,16 @@ func TestVerifyJwt(t *testing.T) {
 				t.Errorf("VerifyJwt() = %v, want %v", gotUserID, tt.expectedUserID)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestVerifyEmailJwt(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
-	token, _ := CreateEmailToken("SYSOP", "", "test@ptt.test", CONTEXT_CHANGE_EMAIL)
+	// token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGkiOiIiLCJjdHgiOiJlbWFpbCIsImVtbCI6InRlc3RAcHR0LnRlc3QiLCJleHAiOjE5NDE3OTE4MDUsInN1YiI6IlNZU09QIn0.u5POkY8IrdzgQuEPnwaZM4gjadXW586c5uYAFmgISns
+	token, _ := CreateEmailToken("SYSOP", "", "test@ptt.test", "email")
 
 	type args struct {
 		raw string
@@ -101,6 +103,34 @@ func TestVerifyEmailJwt(t *testing.T) {
 				t.Errorf("VerifyEmailJwt() gotEmail = %v, want %v", gotEmail, tt.expectedEmail)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
+}
+
+func Test_parseJwtClaim(t *testing.T) {
+	type args struct {
+		raw string
+	}
+	tests := []struct {
+		name       string
+		args       args
+		expectedCl *JwtClaim
+		wantErr    bool
+	}{
+		// TODO: Add test cases.
+		{
+			args:       args{raw: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGkiOiIiLCJleHAiOjE5NDE3OTE1OTIsInN1YiI6IlNZU09QIn0.hOUS-mN2KZeykTl8CMcJoFUafEC6o6LxNz7awisjhPI"},
+			expectedCl: &JwtClaim{UUserID: "SYSOP", Expire: 1941791592},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotCl, err := parseJwtClaim(tt.args.raw)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("parseJwtClaim() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			testutil.TDeepEqual(t, "got", gotCl, tt.expectedCl)
+		})
+	}
 }

@@ -9,8 +9,8 @@ import (
 )
 
 func TestInitCurrentUser(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	userid1 := ptttype.UserID_t{}
 	copy(userid1[:], []byte("SYSOP"))
@@ -54,8 +54,8 @@ func TestInitCurrentUser(t *testing.T) {
 }
 
 func Test_passwdSyncUpdate(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	type args struct {
 		uid  ptttype.Uid
@@ -85,8 +85,8 @@ func Test_passwdSyncUpdate(t *testing.T) {
 }
 
 func Test_passwdSyncQuery(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	type args struct {
 		uid ptttype.Uid
@@ -123,8 +123,8 @@ func Test_passwdSyncQuery(t *testing.T) {
 }
 
 func TestInitCurrentUserByUid(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	type args struct {
 		uid ptttype.Uid

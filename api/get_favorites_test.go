@@ -9,8 +9,8 @@ import (
 )
 
 func TestGetFavorites(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	content0 := []byte{
 		0x23, 0x0d, 0x03, 0x00, 0x02, 0x01, 0x01, 0x01,
@@ -69,6 +69,6 @@ func TestGetFavorites(t *testing.T) {
 				t.Errorf("GetFavorites() = %v, want %v", gotResult, tt.expectedResult)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }

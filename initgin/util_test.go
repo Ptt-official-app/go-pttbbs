@@ -11,6 +11,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/api"
 	"github.com/gin-gonic/gin"
 	"github.com/google/go-querystring/query"
+	"github.com/sirupsen/logrus"
 )
 
 func setRequest(path string, params interface{}, jwt string, headers map[string]string, method string) *http.Request {
@@ -45,6 +46,11 @@ func getJwt(router *gin.Engine, userID string, passwd string) string {
 	router.ServeHTTP(w, req)
 
 	body, _ := ioutil.ReadAll(w.Body)
+
+	if w.Code != 200 {
+		logrus.Errorf("getJwt: unable to get Jwt: userID: %v passwd: %v code: %v body: %v", userID, passwd, w.Code, string(body))
+	}
+
 	resultLogin := &api.LoginResult{}
 	_ = json.Unmarshal(body, resultLogin)
 	jwt := resultLogin.Jwt

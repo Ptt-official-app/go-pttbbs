@@ -75,7 +75,7 @@ func mNewbrd(
 		return nil, 0, ptttype.ErrBoardIDAlreadyExists
 	}
 
-	//mkdir
+	// mkdir
 	dirname := path.SetBPath(brdname)
 	err = types.Mkdir(dirname)
 	if os.IsExist(err) && isRecover {
@@ -85,10 +85,10 @@ func mNewbrd(
 		return nil, 0, err
 	}
 
-	//BMs
+	// BMs
 	parsedBMs := cache.SanitizeBMs(bms)
 
-	//title
+	// title
 	title := &ptttype.BoardTitle_t{}
 	copy(title[:4], brdClass)
 	copy(title[7:], brdTitle)
@@ -99,7 +99,7 @@ func mNewbrd(
 		copy(title[5:7], ptttype.BRD_SYMBOL_BOARD)
 	}
 
-	//brdAttr
+	// brdAttr
 	if ptttype.DEFAULT_AUTOCPLOG {
 		brdAttr |= ptttype.BRD_CPLOG
 	}
@@ -111,13 +111,13 @@ func mNewbrd(
 		brdAttr &= ^ptttype.BRD_GROUPBOARD
 	}
 
-	//level
+	// level
 	if !user.UserLevel.HasUserPerm(ptttype.PERM_BOARD) || brdAttr&ptttype.BRD_HIDE != 0 {
 		brdAttr &= ^ptttype.BRD_POSTMASK
 		level = 0
 	}
 
-	//board
+	// board
 	board = &ptttype.BoardHeaderRaw{
 		Brdname:      *brdname,
 		Title:        *title,

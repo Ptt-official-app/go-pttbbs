@@ -1,16 +1,16 @@
 package api
 
 import (
-	"reflect"
 	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 )
 
 func TestLoadAutoCompleteBoards(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	params := &LoadAutoCompleteBoardsParams{
 		StartIdx: "ALLPOST",
@@ -51,10 +51,8 @@ func TestLoadAutoCompleteBoards(t *testing.T) {
 				t.Errorf("LoadAutoCompleteBoards() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.expected) {
-				t.Errorf("LoadAutoCompleteBoards() = %v, want %v", got, tt.expected)
-			}
+			testutil.TDeepEqual(t, "got", got, tt.expected)
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }

@@ -1,8 +1,11 @@
 package api
 
 import (
+	"runtime"
+
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
+	"github.com/sirupsen/logrus"
 )
 
 var (
@@ -26,6 +29,9 @@ var (
 
 func initTestVars() {
 	if testBoardSummary6 != nil {
+		if testUserec == nil || testUserec.Nickname == nil || testUserec.Nickname[0] == 0 {
+			logrus.Errorf("api.initTestVars: invalid testUserec: %v", testUserec)
+		}
 		return
 	}
 
@@ -293,4 +299,25 @@ func initTestVars() {
 		0xd3, 0xa6, 0xdb, 0x3a, 0x20, 0x31, 0x37, 0x32, 0x2e,
 		0x31, 0x38, 0x2e, 0x30, 0x2e, 0x31, 0x0a,
 	}
+}
+
+func freeTestVars() {
+	testUserecRaw3 = nil
+	testUserec = nil
+	testBoardSummary6 = nil
+	testBoardSummary7 = nil
+	testBoardSummary8 = nil
+	testBoardSummary11 = nil
+	testBoardSummary13 = nil
+	testBoardSummary14 = nil
+	testBoardSummary15 = nil
+
+	testNewPostUserRaw1 = nil
+
+	testArticleSummary0 = nil
+	testArticleSummary1 = nil
+	testBottomSummary1 = nil
+	testContent1 = nil
+
+	runtime.GC()
 }

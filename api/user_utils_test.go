@@ -8,8 +8,8 @@ import (
 )
 
 func Test_userIsValidUser(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	type args struct {
 		uuserID      bbs.UUserID
@@ -32,6 +32,6 @@ func Test_userIsValidUser(t *testing.T) {
 				t.Errorf("userIsValidUser() = %v, want %v", gotIsValid, tt.expectedIsValid)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }

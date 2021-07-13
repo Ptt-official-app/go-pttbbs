@@ -13,8 +13,8 @@ import (
 )
 
 func Test_getNewUtmpEnt(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	type args struct {
 		uinfo *ptttype.UserInfoRaw
@@ -66,8 +66,8 @@ func Test_getNewUtmpEnt(t *testing.T) {
 }
 
 func TestGetUser(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	userID1 := &ptttype.UserID_t{}
 	copy(userID1[:], []byte("SYSOP"))
@@ -103,13 +103,13 @@ func TestGetUser(t *testing.T) {
 				t.Errorf("GetUser() = %v, want %v", gotUser, tt.expectedUser)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestGetUserLevel(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	type args struct {
 		userID *ptttype.UserID_t
@@ -140,13 +140,13 @@ func TestGetUserLevel(t *testing.T) {
 				t.Errorf("GetUserLevel() = %v, want %v", gotUserLevel, tt.expectedUserLevel)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestGetUser2(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	testUserec2Raw1 := &ptttype.Userec2Raw{}
 
@@ -179,13 +179,13 @@ func TestGetUser2(t *testing.T) {
 				t.Errorf("GetUser2() = %v, want %v", gotUser, tt.expectedUser)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func Test_postpermMsg(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	type args struct {
 		uid   ptttype.Uid

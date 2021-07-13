@@ -1,8 +1,11 @@
 package ptt
 
 import (
+	"runtime"
+
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
+	"github.com/sirupsen/logrus"
 )
 
 var (
@@ -431,6 +434,9 @@ var (
 
 func initVars() {
 	if testTitle13 != nil {
+		if testBoardSummary13.Brdname == nil || testBoardSummary13.Brdname[0] == 0 {
+			logrus.Errorf("initVars: invalid testBoardSummary13: %v", testBoardSummary13)
+		}
 		return
 	}
 
@@ -446,4 +452,11 @@ func initVars() {
 		StatAttr: ptttype.NBRD_FAV,
 		BrdAttr:  0x200000,
 	}
+}
+
+func freeTestVars() {
+	testTitle13 = nil
+	testBoardSummary13 = nil
+
+	runtime.GC()
 }

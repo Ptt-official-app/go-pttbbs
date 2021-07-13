@@ -11,8 +11,8 @@ import (
 )
 
 func TestGetArticle(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	// keep chtime for testing
 	filename := "testcase/boards/W/WhoAmI/M.1607202239.A.30D"
@@ -98,6 +98,6 @@ func TestGetArticle(t *testing.T) {
 				t.Errorf("GetArticle() = %v, want %v", gotResult, tt.expectedResult)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }

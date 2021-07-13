@@ -43,7 +43,6 @@ func TestGetNumRecords(t *testing.T) {
 }
 
 func TestGetRecords(t *testing.T) {
-
 	boardID := &ptttype.BoardID_t{}
 	copy(boardID[:], []byte("WhoAmI"))
 	filename0 := "./testcase/DIR"
@@ -77,7 +76,7 @@ func TestGetRecords(t *testing.T) {
 	defer os.RemoveAll(filename4)
 	file, _ := os.OpenFile(filename4, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 	defer file.Close()
-	_ = binary.Write(file, binary.LittleEndian, fileHeaders)
+	_ = types.BinaryWrite(file, binary.LittleEndian, fileHeaders)
 
 	startIdx4 := ptttype.SortIdx(2)
 	n4 := 100
@@ -167,7 +166,7 @@ func TestFindRecordStartAid(t *testing.T) {
 	defer os.RemoveAll(filename)
 	file, _ := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 	defer file.Close()
-	_ = binary.Write(file, binary.LittleEndian, fileHeaders)
+	_ = types.BinaryWrite(file, binary.LittleEndian, fileHeaders)
 
 	type args struct {
 		dirFilename string
@@ -275,9 +274,9 @@ func TestSubstituteRecord(t *testing.T) {
 	file, _ := os.OpenFile(filename, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
 	defer file.Close()
 
-	binary.Write(file, binary.LittleEndian, testArticleSummary0.FileHeaderRaw)
-	binary.Write(file, binary.LittleEndian, testArticleSummary1.FileHeaderRaw)
-	binary.Write(file, binary.LittleEndian, testArticleSummary2.FileHeaderRaw)
+	types.BinaryWrite(file, binary.LittleEndian, testArticleSummary0.FileHeaderRaw)
+	types.BinaryWrite(file, binary.LittleEndian, testArticleSummary1.FileHeaderRaw)
+	types.BinaryWrite(file, binary.LittleEndian, testArticleSummary2.FileHeaderRaw)
 
 	type args struct {
 		filename   string
@@ -310,7 +309,7 @@ func TestSubstituteRecord(t *testing.T) {
 			got := &ptttype.FileHeaderRaw{}
 			offset := int64(ptttype.FILE_HEADER_RAW_SZ) * int64(tt.args.idxInStore)
 			_, _ = file.Seek(offset, io.SeekStart)
-			_ = binary.Read(file, binary.LittleEndian, got)
+			_ = types.BinaryRead(file, binary.LittleEndian, got)
 			testutil.TDeepEqual(t, "got", got, tt.expected)
 		})
 		wg.Wait()

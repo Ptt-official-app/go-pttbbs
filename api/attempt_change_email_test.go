@@ -10,8 +10,8 @@ import (
 )
 
 func TestAttemptChangeEmail(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	params0 := &AttemptChangeEmailParams{
 		ClientInfo: "test_clientinfo",

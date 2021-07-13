@@ -35,13 +35,13 @@ func Test_Login(t *testing.T) {
 			}, // json: {}
 		},
 	}
+
+	router, _ := InitGin()
 	var wg sync.WaitGroup
 	for _, tt := range tests {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
-
-			router, _ := InitGin()
 
 			w := httptest.NewRecorder()
 			req := setRequest(tt.args.path, tt.args.params, "", nil, "POST")

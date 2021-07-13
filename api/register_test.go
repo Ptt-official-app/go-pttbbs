@@ -6,8 +6,9 @@ import (
 )
 
 func TestRegister(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
+
 	type args struct {
 		params interface{}
 	}

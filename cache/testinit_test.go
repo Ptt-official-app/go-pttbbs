@@ -2,7 +2,6 @@ package cache
 
 import (
 	"os"
-	"time"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
@@ -20,32 +19,32 @@ func setupTest() {
 
 	Shm.Reset()
 
+	_ = types.CopyFileToFile("./testcase/.PASSWDS1", "./testcase/.PASSWDS")
 	_ = types.CopyFileToFile("./testcase/.BRD1", "./testcase/.BRD")
 
 }
 
 func teardownTest() {
-	os.Remove("./testcase/.BRD")
+	defer shmTeardownTest()
 
-	CloseSHM()
+	defer CloseSHM()
 
-	shmTeardownTest()
+	defer os.Remove("./testcase/.PASSWDS")
+	defer os.Remove("./testcase/.BRD")
 }
 
 func shmSetupTest() {
-	SetIsTest()
-
 	types.SetIsTest()
 
 	ptttype.SetIsTest()
 
+	SetIsTest()
 }
 
 func shmTeardownTest() {
-	ptttype.UnsetIsTest()
+	defer types.UnsetIsTest()
 
-	types.UnsetIsTest()
+	defer ptttype.UnsetIsTest()
 
-	UnsetIsTest()
-	time.Sleep(1 * time.Millisecond)
+	defer UnsetIsTest()
 }

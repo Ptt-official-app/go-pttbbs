@@ -7,7 +7,6 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs/path"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
-	"github.com/sirupsen/logrus"
 )
 
 func TryFav4Load(userID *ptttype.UserID_t, filename string) (favrec *FavRaw, err error) {
@@ -36,31 +35,27 @@ func TryFav4Load(userID *ptttype.UserID_t, filename string) (favrec *FavRaw, err
 
 	bakFilename, err := path.SetHomeFile(userID, FAV+".bak")
 	if err != nil {
-		logrus.Warnf("fav.TryFav4Load: unable to SetHomeFile (skip FAV.bak): userID: %v e: %v", userID, err)
 		return favrec, nil
 	}
 	// XXX copy new fav-filename to bak in pttbbs
-	err = types.CopyFile(filename, bakFilename)
-	if err != nil {
-		logrus.Warnf("fav.TryFav4Load: unable to CopyFile (no FAV.bak): filename: %v bakFilename: %v e: %v", filename, bakFilename, err)
-	}
+	_ = types.CopyFile(filename, bakFilename)
 
 	return favrec, nil
 }
 
 func fav4ReadFavrec(file *os.File) (*FavRaw, error) {
 	favrec := NewFavRaw(nil)
-	err := binary.Read(file, binary.LittleEndian, &favrec.NBoards)
+	err := types.BinaryRead(file, binary.LittleEndian, &favrec.NBoards)
 	if err != nil {
 		return nil, ErrInvalidFav4Record
 	}
 
-	err = binary.Read(file, binary.LittleEndian, &favrec.NLines)
+	err = types.BinaryRead(file, binary.LittleEndian, &favrec.NLines)
 	if err != nil {
 		return nil, ErrInvalidFav4Record
 	}
 
-	err = binary.Read(file, binary.LittleEndian, &favrec.NFolders)
+	err = types.BinaryRead(file, binary.LittleEndian, &favrec.NFolders)
 	if err != nil {
 		return nil, ErrInvalidFav4Record
 	}
@@ -74,11 +69,11 @@ func fav4ReadFavrec(file *os.File) (*FavRaw, error) {
 		ft := &FavType{}
 		favrec.Favh[i] = ft
 
-		err = binary.Read(file, binary.LittleEndian, &ft.TheType)
+		err = types.BinaryRead(file, binary.LittleEndian, &ft.TheType)
 		if err != nil {
 			return nil, ErrInvalidFav4Record
 		}
-		err = binary.Read(file, binary.LittleEndian, &ft.Attr)
+		err = types.BinaryRead(file, binary.LittleEndian, &ft.Attr)
 		if err != nil {
 			return nil, ErrInvalidFav4Record
 		}

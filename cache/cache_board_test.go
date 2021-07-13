@@ -85,27 +85,27 @@ func TestIsHiddenBoardFriend(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{
-			args:     args{0, 0}, //board: SYSOP user: SYSOP
+			args:     args{0, 0}, // board: SYSOP user: SYSOP
 			expected: true,
 		},
 		{
-			args:     args{0, 1}, //board: SYSOP user: CodingMan
+			args:     args{0, 1}, // board: SYSOP user: CodingMan
 			expected: false,
 		},
 		{
-			args:     args{0, 2}, //board: SYSOP user: pichu
+			args:     args{0, 2}, // board: SYSOP user: pichu
 			expected: false,
 		},
 		{
-			args:     args{0, 3}, //board: SYSOP user: Kahou
+			args:     args{0, 3}, // board: SYSOP user: Kahou
 			expected: true,
 		},
 		{
-			args:     args{0, 4}, //board: SYSOP user: Kahou2
+			args:     args{0, 4}, // board: SYSOP user: Kahou2
 			expected: false,
 		},
 		{
-			args:     args{0, 5}, //board: SYSOP user: (non-exist)
+			args:     args{0, 5}, // board: SYSOP user: (non-exist)
 			expected: false,
 		},
 	}
@@ -218,7 +218,6 @@ func TestReloadBCache(t *testing.T) {
 			if !reflect.DeepEqual(bsortedByClass, tt.expectedSortedByClass) {
 				t.Errorf("bsorted-by-class = %v, want %v", bsortedByClass, tt.expectedSortedByClass)
 			}
-
 		})
 		wg.Wait()
 	}
@@ -400,7 +399,6 @@ func TestSetBottomTotal(t *testing.T) {
 			if total != tt.expectedTotal {
 				t.Errorf("SetBottomTotal: total: %v want: %v", total, tt.expectedTotal)
 			}
-
 		})
 		wg.Wait()
 	}
@@ -1134,7 +1132,7 @@ func TestAddbrdTouchCache(t *testing.T) {
 	defer file.Close()
 
 	_, _ = file.Seek(0, io.SeekEnd)
-	_ = binary.Write(file, binary.LittleEndian, &testBoardHeader13)
+	_ = types.BinaryWrite(file, binary.LittleEndian, &testBoardHeader13)
 
 	tests := []struct {
 		name        string

@@ -14,6 +14,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/sem"
 	"github.com/Ptt-official-app/go-pttbbs/types"
+	log "github.com/sirupsen/logrus"
 )
 
 //GenPasswd
@@ -49,7 +50,7 @@ func CheckPasswd(expected []byte, input []byte) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	return bytes.Equal(pw, expected), nil //requires the passwd-hash be exact match.
+	return bytes.Equal(pw, expected), nil // requires the passwd-hash be exact match.
 }
 
 func LogAttempt(userID *ptttype.UserID_t, ip *ptttype.IPv4_t, isWithUserHome bool) {
@@ -109,7 +110,7 @@ func PasswdQuery(uid ptttype.Uid) (*ptttype.UserecRaw, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = binary.Read(file, binary.LittleEndian, user)
+	err = types.BinaryRead(file, binary.LittleEndian, user)
 	if err != nil {
 		return nil, err
 	}
@@ -141,7 +142,7 @@ func PasswdQueryPasswd(uid ptttype.Uid) (passwdHash *ptttype.Passwd_t, err error
 	if err != nil {
 		return nil, err
 	}
-	err = binary.Read(file, binary.LittleEndian, passwdHash)
+	err = types.BinaryRead(file, binary.LittleEndian, passwdHash)
 	if err != nil {
 		return nil, err
 	}
@@ -172,7 +173,7 @@ func PasswdQueryUserLevel(uid ptttype.Uid) (userLevel ptttype.PERM, err error) {
 	if err != nil {
 		return ptttype.PERM_INVALID, err
 	}
-	err = binary.Read(file, binary.LittleEndian, &userLevel)
+	err = types.BinaryRead(file, binary.LittleEndian, &userLevel)
 	if err != nil {
 		return ptttype.PERM_INVALID, err
 	}
@@ -197,7 +198,7 @@ func PasswdUpdate(uid ptttype.Uid, user *ptttype.UserecRaw) error {
 		return err
 	}
 
-	err = binary.Write(file, binary.LittleEndian, user)
+	err = types.BinaryWrite(file, binary.LittleEndian, user)
 	if err != nil {
 		return err
 	}
@@ -223,7 +224,7 @@ func PasswdUpdatePasswd(uid ptttype.Uid, passwdHash *ptttype.Passwd_t) error {
 		return err
 	}
 
-	err = binary.Write(file, binary.LittleEndian, passwdHash)
+	err = types.BinaryWrite(file, binary.LittleEndian, passwdHash)
 	if err != nil {
 		return err
 	}
@@ -249,7 +250,7 @@ func PasswdUpdateEmail(uid ptttype.Uid, email *ptttype.Email_t) error {
 		return err
 	}
 
-	err = binary.Write(file, binary.LittleEndian, email)
+	err = types.BinaryWrite(file, binary.LittleEndian, email)
 	if err != nil {
 		return err
 	}
@@ -275,7 +276,7 @@ func PasswdGetUser2(userID *ptttype.UserID_t) (user *ptttype.Userec2Raw, err err
 
 	user = &ptttype.Userec2Raw{}
 
-	err = binary.Read(file, binary.LittleEndian, user)
+	err = types.BinaryRead(file, binary.LittleEndian, user)
 	if err != nil {
 		return nil, err
 	}
@@ -304,7 +305,7 @@ func PasswdGetUserLevel2(userID *ptttype.UserID_t) (userLevel2 ptttype.PERM2, er
 		return ptttype.PERM2_INVALID, err
 	}
 
-	err = binary.Read(file, binary.LittleEndian, &userLevel2)
+	err = types.BinaryRead(file, binary.LittleEndian, &userLevel2)
 	if err != nil {
 		return ptttype.PERM2_INVALID, err
 	}
@@ -336,7 +337,7 @@ func PasswdUpdateUserLevel2(userID *ptttype.UserID_t, perm ptttype.PERM2, isSet 
 	}
 
 	userLevel2 := ptttype.PERM2(0)
-	err = binary.Read(file, binary.LittleEndian, &userLevel2)
+	err = types.BinaryRead(file, binary.LittleEndian, &userLevel2)
 	if isSet {
 		userLevel2 |= perm
 	} else {
@@ -348,7 +349,7 @@ func PasswdUpdateUserLevel2(userID *ptttype.UserID_t, perm ptttype.PERM2, isSet 
 	if err != nil {
 		return err
 	}
-	err = binary.Write(file, binary.LittleEndian, &userLevel2)
+	err = types.BinaryWrite(file, binary.LittleEndian, &userLevel2)
 	if err != nil {
 		return err
 	}
@@ -360,7 +361,7 @@ func PasswdUpdateUserLevel2(userID *ptttype.UserID_t, perm ptttype.PERM2, isSet 
 	}
 
 	updateTS := types.NowTS()
-	err = binary.Write(file, binary.LittleEndian, &updateTS)
+	err = types.BinaryWrite(file, binary.LittleEndian, &updateTS)
 	if err != nil {
 		return err
 	}
@@ -385,7 +386,7 @@ func passwdCheckPasswd2(filename string) (err error) {
 			Version: ptttype.PASSWD2_VERSION,
 		}
 
-		return binary.Write(file, binary.LittleEndian, userec2)
+		return types.BinaryWrite(file, binary.LittleEndian, userec2)
 	}
 
 	diffSize := int64(ptttype.USEREC2_RAW_SZ) - stat.Size()
@@ -412,6 +413,10 @@ func passwdCheckPasswd2(filename string) (err error) {
 
 func PasswdInit() error {
 	if Sem != nil {
+		if Sem.SemID == 0 {
+			log.Errorf("PasswdInit: SemID is invalid")
+			return ErrSemInvalid
+		}
 		return nil
 	}
 
@@ -465,27 +470,23 @@ func PasswdUnlock() error {
 //                 Just let PasswdInit do the checking to avoid
 //                 the duplication of sem.
 func PasswdDestroy() error {
+	if !IsTest {
+		return ErrInvalidOp
+	}
+
+	if Sem == nil {
+		return ErrSemNotExists
+	}
+
+	err := Sem.Destroy(0)
+	if err != nil {
+		log.Errorf("cmbbs.PasswdDestroy: unable to close: e: %v", err)
+		return err
+	}
+
+	Sem = nil
+
+	log.Infof("cmbbs.PasswdDestroy: done")
+
 	return nil
-
-	/*
-		if !IsTest {
-			return ErrInvalidOp
-		}
-
-		if Sem == nil {
-			return ErrSemNotExists
-		}
-
-		err := Sem.Destroy(0)
-		if err != nil {
-			log.Errorf("cmbbs.PasswdDestroy: unable to close: e: %v", err)
-			return err
-		}
-
-		Sem = nil
-
-		log.Infof("cmbbs.PasswdDestroy: done")
-
-		return nil
-	*/
 }

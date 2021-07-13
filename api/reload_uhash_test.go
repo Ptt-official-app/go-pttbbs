@@ -9,8 +9,8 @@ import (
 )
 
 func TestReloadUHash(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	type args struct {
 		remoteAddr string

@@ -9,10 +9,10 @@ import (
 )
 
 func TestIndex(t *testing.T) {
-	setupTest()
-	defer teardownTest()
-	//setupTest moves inside for-loop
-	//teardownTest moves inside for-loop
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
+	// setupTest moves inside for-loop
+	// teardownTest moves inside for-loop
 
 	type args struct {
 		uuserID bbs.UUserID
@@ -46,6 +46,6 @@ func TestIndex(t *testing.T) {
 				t.Errorf("Index() = %v, want %v", got, tt.expected)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }

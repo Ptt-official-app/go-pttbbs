@@ -43,11 +43,12 @@ func LoadUHash() (err error) {
 		}
 
 		// line: 61
-		zeroByte := '\x00'
+		// use golang style.
+		todayIsZeroBytes := [ptttype.TODAYISSZ]byte{}
 		Shm.WriteAt(
 			unsafe.Offsetof(Shm.Raw.TodayIs),
-			unsafe.Sizeof(Shm.Raw.TodayIs[0]),
-			unsafe.Pointer(&zeroByte),
+			unsafe.Sizeof(Shm.Raw.TodayIs),
+			unsafe.Pointer(&todayIsZeroBytes),
 		)
 
 		// line: 62
