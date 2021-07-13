@@ -7,6 +7,7 @@ import (
 
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 )
 
 func Test_boardPermStatNormally(t *testing.T) {
@@ -163,10 +164,8 @@ func TestNewBoard(t *testing.T) {
 				t.Errorf("NewBoard() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(gotNewBoard, tt.expectedNewBoard) {
-				t.Errorf("NewBoard() gotNewBoard = %v, want %v", gotNewBoard, tt.expectedNewBoard)
-			}
+			testutil.TDeepEqual(t, "got", gotNewBoard, tt.expectedNewBoard)
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
