@@ -47,6 +47,8 @@ func Test_CreateBoard(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
 
+			router, _ := InitGin()
+
 			jwt := getJwt(router, tt.args.username, tt.args.passwd)
 			w := httptest.NewRecorder()
 			req := setRequest(tt.args.path, tt.args.params, jwt, nil, "POST")

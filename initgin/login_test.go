@@ -41,6 +41,8 @@ func Test_Login(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
 
+			router, _ := InitGin()
+
 			w := httptest.NewRecorder()
 			req := setRequest(tt.args.path, tt.args.params, "", nil, "POST")
 			router.ServeHTTP(w, req)
