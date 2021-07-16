@@ -2,6 +2,7 @@ package initgin
 
 import (
 	"os"
+	"time"
 
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs"
@@ -16,17 +17,16 @@ import (
 var ()
 
 func setupTest() {
-
 	jww.SetLogOutput(os.Stderr)
-	//jww.SetLogThreshold(jww.LevelDebug)
-	//jww.SetStdoutThreshold(jww.LevelDebug)
+	// jww.SetLogThreshold(jww.LevelDebug)
+	// jww.SetStdoutThreshold(jww.LevelDebug)
 	log.SetLevel(log.DebugLevel)
-
-	cache.SetIsTest()
-	cmbbs.SetIsTest()
 
 	types.SetIsTest()
 	ptttype.SetIsTest()
+
+	cache.SetIsTest()
+	cmbbs.SetIsTest()
 
 	log.Infof("setupTest: to initAllConfig: sem_key: %v", ptttype.PASSWDSEM_KEY)
 
@@ -39,6 +39,8 @@ func setupTest() {
 
 	_ = types.CopyDirToDir("./testcase/boards1", "./testcase/boards")
 	_ = types.CopyDirToDir("./testcase/home1", "./testcase/home")
+
+	time.Sleep(1 * time.Millisecond)
 
 	_ = cache.NewSHM(types.Key_t(cache.TestShmKey), ptttype.USE_HUGETLB, true)
 	_ = cache.AttachSHM()
@@ -55,20 +57,26 @@ func setupTest() {
 }
 
 func teardownTest() {
-	_ = cmbbs.PasswdDestroy()
+	defer time.Sleep(1 * time.Millisecond)
 
-	_ = cache.CloseSHM()
+	defer types.UnsetIsTest()
 
-	os.Remove("./testcase/.post")
-	os.Remove("./testcase/.fresh")
-	os.RemoveAll("./testcase/home")
-	os.RemoveAll("./testcase/boards")
-	os.Remove("./testcase/.BRD")
-	os.Remove("./testcase/.PASSWDS")
+	defer ptttype.UnsetIsTest()
 
-	ptttype.UnsetIsTest()
-	types.UnsetIsTest()
+	defer cache.UnsetIsTest()
 
-	cmbbs.UnsetIsTest()
-	cache.UnsetIsTest()
+	defer cmbbs.UnsetIsTest()
+
+	defer os.Remove("./testcase/.PASSWDS")
+	defer os.Remove("./testcase/.BRD")
+	defer os.RemoveAll("./testcase/boards")
+	defer os.RemoveAll("./testcase/home")
+	defer os.Remove("./testcase/.fresh")
+	defer os.Remove("./testcase/.post")
+
+	defer cache.CloseSHM()
+
+	defer cmbbs.PasswdDestroy()
+
+	defer freeTestVars()
 }

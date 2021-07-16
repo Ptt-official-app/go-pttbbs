@@ -15,8 +15,8 @@ import (
 )
 
 func Test_registerCountEmail(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	type args struct {
 		user  *ptttype.UserecRaw
@@ -46,13 +46,13 @@ func Test_registerCountEmail(t *testing.T) {
 				t.Errorf("registerCountEmail() = %v, expected %v", gotCount, tt.expectedCount)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func Test_getSystemUaVersion(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 	tests := []struct {
 		name     string
 		expected uint8
@@ -71,13 +71,13 @@ func Test_getSystemUaVersion(t *testing.T) {
 				t.Errorf("getSystemUaVersion() = %v, expected %v", got, tt.expected)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestSetupNewUser(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	type args struct {
 		user *ptttype.UserecRaw
@@ -121,8 +121,8 @@ func TestSetupNewUser(t *testing.T) {
 }
 
 func Test_isToCleanUser(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	file, err := os.OpenFile(ptttype.FN_FRESH, os.O_CREATE|os.O_WRONLY, 0600)
 	if err != nil {
@@ -182,13 +182,13 @@ func Test_isToCleanUser(t *testing.T) {
 				t.Errorf("isToCleanUser() = %v, expected %v", got, tt.expected)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func Test_touchFresh(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	tests := []struct {
 		name    string
@@ -211,8 +211,8 @@ func Test_touchFresh(t *testing.T) {
 }
 
 func Test_checkAndExpireAccount(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	type args struct {
 		uid         ptttype.Uid
@@ -250,8 +250,8 @@ func Test_checkAndExpireAccount(t *testing.T) {
 }
 
 func Test_computeUserExpireValue(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	user1 := &ptttype.UserecRaw{}
 	user1.UserLevel |= ptttype.PERM_XEMPT
@@ -301,13 +301,13 @@ func Test_computeUserExpireValue(t *testing.T) {
 				t.Errorf("computeUserExpireValue() = %v, expected %v", got, tt.expected)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestNewRegister(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	type args struct {
 		userID          *ptttype.UserID_t
@@ -378,8 +378,8 @@ func TestNewRegister(t *testing.T) {
 }
 
 func Test_ensureErasingOldUser(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	userID2 := &ptttype.UserID_t{}
 	copy(userID2[:], []byte("CodingMan"))
@@ -412,8 +412,8 @@ func Test_ensureErasingOldUser(t *testing.T) {
 }
 
 func Test_tryCleanUser(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	_ = os.Remove(ptttype.FN_FRESH)
 
@@ -471,8 +471,8 @@ func Test_registerCheckAndUpdateEmaildb(t *testing.T) {
 }
 
 func TestRegister(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	testNewUserID := &ptttype.UserID_t{}
 	copy(testNewUserID[:], []byte(ptttype.STR_REGNEW))
@@ -587,8 +587,8 @@ func TestRegister(t *testing.T) {
 }
 
 func TestCheckEmailAllowRejectLists(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	type args struct {
 		email string
@@ -658,6 +658,6 @@ func TestCheckEmailAllowRejectLists(t *testing.T) {
 				t.Errorf("CheckEmailAllowRejectLists() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }

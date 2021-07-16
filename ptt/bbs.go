@@ -32,15 +32,14 @@ func ReadPost(
 	mtime types.Time4,
 	err error,
 ) {
-
-	//1. check valid filename
+	// 1. check valid filename
 	if filename[0] == 'L' || filename[0] == 0 {
 		return nil, 0, ErrInvalidParams
 	}
 
 	cache.StatInc(ptttype.STAT_READPOST)
 
-	//2. check perm.
+	// 2. check perm.
 	board, err := cache.GetBCache(bid)
 	if err != nil {
 		return nil, 0, err
@@ -51,13 +50,13 @@ func ReadPost(
 		return nil, 0, ErrNotPermitted
 	}
 
-	//3. get filename
+	// 3. get filename
 	theFilename, err := path.SetBFile(boardID, filename.String())
 	if err != nil {
 		return nil, 0, err
 	}
 
-	//4. check mtime
+	// 4. check mtime
 	stat, err := os.Stat(theFilename)
 	if err != nil {
 		return nil, 0, err
@@ -78,8 +77,8 @@ func ReadPost(
 		return nil, 0, err
 	}
 
-	//XXX do not do brc for now.
-	//brcAddList(boardID, filename, updateTS)
+	// XXX do not do brc for now.
+	// brcAddList(boardID, filename, updateTS)
 
 	return content, mtime, nil
 }
@@ -150,7 +149,7 @@ func DoPostArticle(
 		return nil, ErrNotPermitted
 	}
 
-	//check-post-perm2
+	// check-post-perm2
 	err = CheckPostPerm2(uid, user, bid, board)
 	if err != nil {
 		return nil, err
@@ -172,7 +171,7 @@ func DoPostArticle(
 		return nil, ErrCooldown
 	}
 
-	//do not permit user without loginok.
+	// do not permit user without loginok.
 	if !user.UserLevel.HasUserPerm(ptttype.PERM_LOGINOK) {
 		return nil, ErrNotPermitted
 	}
@@ -277,7 +276,7 @@ func DoPostArticle(
 		_ = cache.AddPosttimes(uid, 1)
 	}
 
-	//XXX no USE_POSTD for now.
+	// XXX no USE_POSTD for now.
 
 	summary = ptttype.NewArticleSummaryRaw(idx, boardID, postfile)
 
@@ -304,7 +303,6 @@ func doPostArticleFullTitle(posttype []byte, title []byte) (fullTitle []byte) {
 }
 
 func checkCooldown(user *ptttype.UserecRaw, uid ptttype.Uid, board *ptttype.BoardHeaderRaw, bid ptttype.Bid) (isCooldown bool, err error) {
-
 	limit := [8]int{4000, 1, 2000, 2, 1000, 3, -1, 10}
 
 	nowTS := types.NowTS()
@@ -317,7 +315,7 @@ func checkCooldown(user *ptttype.UserecRaw, uid ptttype.Uid, board *ptttype.Boar
 		return false, nil
 	}
 
-	//XXX ignoring currmode == MODE_BOARD
+	// XXX ignoring currmode == MODE_BOARD
 	if user.UserLevel.HasUserPerm(ptttype.PERM_SYSOP) {
 		return false, nil
 	}
@@ -392,8 +390,8 @@ func isTnAnnounce(title []byte) (isValid bool) {
 	return bytes.Equal(title[:len(ptttype.TN_ANNOUNCE_BIG5)], ptttype.TN_ANNOUNCE_BIG5)
 }
 
-//isModeBoard
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L376
+// isModeBoard
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L376
 func isModeBoard(
 	user *ptttype.UserecRaw,
 	uid ptttype.Uid,
@@ -473,7 +471,7 @@ func doCrosspost(
 		copy(fh.Owner[:], user.UserID[:])
 	}
 
-	//new title
+	// new title
 	newTitle := make([]byte, 0, ptttype.TTLEN)
 	if prefix != nil {
 		newTitle = append(newTitle, prefix...)
@@ -489,7 +487,7 @@ func doCrosspost(
 	fh.Title = ptttype.Title_t{}
 	copy(fh.Title[:], newTitle)
 
-	//filename
+	// filename
 	if types.DashS(filename) > 0 {
 		nowTS := types.NowTS()
 		theLog := fmt.Sprintf("%v %v->%v %v: %v\n", nowTS.Cdatelite(), string(currboardBytes), types.CstrToString(boardID[:]), types.CstrToString(fh.Filename[:]), types.CstrToString(fh.Title[:]))
@@ -514,7 +512,7 @@ func doCrosspost(
 		return nil, err
 	}
 
-	//use filename.CreateTime as lastPosttime.
+	// use filename.CreateTime as lastPosttime.
 	lastPosttime, err := fh.Filename.CreateTime()
 	if err != nil {
 		return nil, err
@@ -541,7 +539,6 @@ func dbcsSafeTrimTitle(title []byte, theLen int) (newTitle []byte) {
 }
 
 func GetWebURL(board *ptttype.BoardHeaderRaw, fhdr *ptttype.FileHeaderRaw) (url string) {
-
 	folder := types.CstrToString(board.Brdname[:])
 	fn := types.CstrToString(fhdr.Filename[:])
 	ext := ".html"

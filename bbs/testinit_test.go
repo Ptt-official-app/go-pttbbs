@@ -2,6 +2,7 @@ package bbs
 
 import (
 	"os"
+	"time"
 
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs"
@@ -12,11 +13,11 @@ import (
 var ()
 
 func setupTest() {
-	cache.SetIsTest()
-	cmbbs.SetIsTest()
-
 	types.SetIsTest()
 	ptttype.SetIsTest()
+
+	cache.SetIsTest()
+	cmbbs.SetIsTest()
 
 	_ = types.CopyFileToFile("./testcase/.PASSWDS1", "./testcase/.PASSWDS")
 
@@ -25,6 +26,8 @@ func setupTest() {
 	_ = types.CopyDirToDir("./testcase/boards1", "./testcase/boards")
 
 	_ = types.CopyDirToDir("./testcase/home1", "./testcase/home")
+
+	time.Sleep(1 * time.Millisecond)
 
 	_ = cache.NewSHM(types.Key_t(cache.TestShmKey), ptttype.USE_HUGETLB, true)
 	_ = cache.AttachSHM()
@@ -40,25 +43,31 @@ func setupTest() {
 }
 
 func teardownTest() {
-	freeTestVars()
+	defer time.Sleep(1 * time.Millisecond)
 
-	os.Remove("./testcase/.post")
-	os.Remove("./testcase/.fresh")
+	defer types.UnsetIsTest()
 
-	_ = cmbbs.PasswdDestroy()
+	defer ptttype.UnsetIsTest()
 
-	_ = cache.CloseSHM()
+	defer cache.UnsetIsTest()
 
-	os.RemoveAll("./testcase/home")
-	os.RemoveAll("./testcase/boards")
+	defer cmbbs.UnsetIsTest()
 
-	os.Remove("./testcase/.BRD")
-	os.Remove("./testcase/.PASSWDS")
+	defer os.Remove("./testcase/.PASSWDS")
 
-	ptttype.UnsetIsTest()
+	defer os.Remove("./testcase/.BRD")
 
-	types.UnsetIsTest()
+	defer os.RemoveAll("./testcase/boards")
 
-	cmbbs.UnsetIsTest()
-	cache.UnsetIsTest()
+	defer os.RemoveAll("./testcase/home")
+
+	defer os.Remove("./testcase/.fresh")
+
+	defer os.Remove("./testcase/.post")
+
+	defer cache.CloseSHM()
+
+	defer cmbbs.PasswdDestroy()
+
+	defer freeTestVars()
 }

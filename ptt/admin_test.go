@@ -11,8 +11,8 @@ import (
 )
 
 func Test_mNewbrd(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	cache.ReloadBCache()
 
@@ -80,8 +80,8 @@ func Test_mNewbrd(t *testing.T) {
 }
 
 func Test_addBoardRecord(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	cache.ReloadBCache()
 

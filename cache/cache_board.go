@@ -17,6 +17,10 @@ import (
 )
 
 func GetBCache(bid ptttype.Bid) (board *ptttype.BoardHeaderRaw, err error) {
+	if !bid.IsValid() {
+		return nil, ptttype.ErrInvalidBid
+	}
+
 	bidInCache := bid.ToBidInStore()
 
 	board = &ptttype.BoardHeaderRaw{}
@@ -30,7 +34,11 @@ func GetBCache(bid ptttype.Bid) (board *ptttype.BoardHeaderRaw, err error) {
 }
 
 func GetBTotalWithRetry(bid ptttype.Bid) (total int32, err error) {
-	//2. bcache preparation.
+	if !bid.IsValid() {
+		return 0, ptttype.ErrInvalidBid
+	}
+
+	// 2. bcache preparation.
 	total = GetBTotal(bid)
 	if total == 0 {
 		err = SetBTotal(bid)
@@ -43,7 +51,7 @@ func GetBTotalWithRetry(bid ptttype.Bid) (total int32, err error) {
 		}
 
 		total = GetBTotal(bid)
-		if total == 0 { //no data
+		if total == 0 { // no data
 			return 0, nil
 		}
 	}
@@ -52,6 +60,10 @@ func GetBTotalWithRetry(bid ptttype.Bid) (total int32, err error) {
 }
 
 func GetBottomTotal(bid ptttype.Bid) (total int32) {
+	if !bid.IsValid() {
+		return 0
+	}
+
 	bidInCache := bid.ToBidInStore()
 
 	var total_u8 uint8
@@ -65,6 +77,10 @@ func GetBottomTotal(bid ptttype.Bid) (total int32) {
 }
 
 func GetBTotal(bid ptttype.Bid) (total int32) {
+	if !bid.IsValid() {
+		return 0
+	}
+
 	bidInCache := bid.ToBidInStore()
 
 	Shm.ReadAt(
@@ -84,6 +100,7 @@ func SetBTotal(bid ptttype.Bid) (err error) {
 	if !bid.IsValid() {
 		return ptttype.ErrInvalidBid
 	}
+
 	board, err := GetBCache(bid)
 	if err != nil {
 		return err
@@ -125,16 +142,16 @@ func SetBTotal(bid ptttype.Bid) (err error) {
 		return nil
 	}
 
-	//https://github.com/ptt/pttbbs/blob/master/common/bbs/cache.c#L633
-	//lastPostTime is in filename (create-time), starting from 2nd bytes
-	//ptttype.FileHeaderRaw
+	// https://github.com/ptt/pttbbs/blob/master/common/bbs/cache.c#L633
+	// lastPostTime is in filename (create-time), starting from 2nd bytes
+	// ptttype.FileHeaderRaw
 	_, err = file.Seek(int64(nArticles-1)*int64(ptttype.FILE_HEADER_RAW_SZ), 0)
 	if err != nil {
 		return err
 	}
 
 	articleFilename := &ptttype.Filename_t{}
-	err = binary.Read(file, binary.LittleEndian, articleFilename)
+	err = types.BinaryRead(file, binary.LittleEndian, articleFilename)
 	if err != nil {
 		return err
 	}
@@ -181,13 +198,12 @@ func SetBottomTotal(bid ptttype.Bid) error {
 
 	bidInCache := bid.ToBidInStore()
 	zero8 := uint8(0)
-	const uint8sz = unsafe.Sizeof(zero8)
 	n := uint8(cmsys.GetNumRecords(bottomFilename, ptttype.FILE_HEADER_RAW_SZ))
 	if n > 5 {
 		_ = syscall.Unlink(bottomFilename)
 		Shm.WriteAt(
-			unsafe.Offsetof(Shm.Raw.NBottom)+uint8sz*uintptr(bidInCache),
-			uint8sz,
+			unsafe.Offsetof(Shm.Raw.NBottom)+types.UINT8_SZ*uintptr(bidInCache),
+			types.UINT8_SZ,
 			unsafe.Pointer(&zero8),
 		)
 
@@ -195,17 +211,20 @@ func SetBottomTotal(bid ptttype.Bid) error {
 	}
 
 	Shm.WriteAt(
-		unsafe.Offsetof(Shm.Raw.NBottom)+uint8sz*uintptr(bidInCache),
-		uint8sz,
+		unsafe.Offsetof(Shm.Raw.NBottom)+types.UINT8_SZ*uintptr(bidInCache),
+		types.UINT8_SZ,
 		unsafe.Pointer(&n),
 	)
 
 	return nil
-
 }
 
 func IsHiddenBoardFriend(bidInCache ptttype.BidInStore, uidInCache ptttype.UidInStore) bool {
-	//hbfl time
+	if !bidInCache.ToBid().IsValid() || !uidInCache.ToUid().IsValid() {
+		return false
+	}
+
+	// hbfl time
 	var loadTime types.Time4
 	pLoadTime := &loadTime
 
@@ -247,6 +266,10 @@ func IsHiddenBoardFriend(bidInCache ptttype.BidInStore, uidInCache ptttype.UidIn
 }
 
 func HbflReload(bidInCache ptttype.BidInStore) {
+	if !bidInCache.ToBid().IsValid() {
+		return
+	}
+
 	brdname := &ptttype.BoardID_t{}
 
 	Shm.ReadAt(
@@ -277,7 +300,7 @@ func HbflReload(bidInCache ptttype.BidInStore) {
 		if len(line) == 0 {
 			break
 		}
-		theList := bytes.Split(line, []byte{' '}) //The \x00 is taken care of by scanner.
+		theList := bytes.Split(line, []byte{' '}) // The \x00 is taken care of by scanner.
 
 		eachUserID := &ptttype.UserID_t{}
 		copy(eachUserID[:], theList[0][:])
@@ -296,7 +319,7 @@ func HbflReload(bidInCache ptttype.BidInStore) {
 
 		hbfl[num] = uid
 
-		num++ // num++ is in the end of the for.
+		num++ // num++ is in the end of the for. (no num++ for the continue conditions)
 	}
 
 	hbfl[0] = ptttype.Uid(types.NowTS())
@@ -330,7 +353,7 @@ func NHots() (nhots uint8) {
 //https://github.com/ptt/pttbbs/blob/master/common/bbs/cache.c#L458
 func ReloadBCache() {
 	var busystate int32
-	for i := 0; i < 10; i++ { //Is it ok that we don't use mutex or semaphore here?
+	for i := 0; i < 10; i++ { // Is it ok that we don't use mutex or semaphore here?
 		Shm.ReadAt(
 			unsafe.Offsetof(Shm.Raw.BBusyState),
 			types.INT32_SZ,
@@ -341,14 +364,30 @@ func ReloadBCache() {
 		}
 		time.Sleep(1 * time.Second)
 	}
-	// should we check that the busystate is still != 0 and return?
+	// XXX should we check that the busystate is still != 0 and return?
+	reloadBCacheCore()
 
-	busystate = 1
+	SortBCache()
+
+	// XXX reloadCacheLoadBottom as front-process
+	reloadCacheLoadBottom()
+}
+
+func reloadBCacheCore() {
+	busystate := int32(1)
 	Shm.WriteAt(
 		unsafe.Offsetof(Shm.Raw.BBusyState),
 		types.INT32_SZ,
 		unsafe.Pointer(&busystate),
 	)
+	defer func() {
+		busystate = 0
+		Shm.WriteAt(
+			unsafe.Offsetof(Shm.Raw.BBusyState),
+			types.INT32_SZ,
+			unsafe.Pointer(&busystate),
+		)
+	}()
 
 	theBytes, err := reloadBCacheReadFile()
 	if err != nil {
@@ -356,7 +395,7 @@ func ReloadBCache() {
 	}
 
 	const bcachesz = unsafe.Sizeof(Shm.Raw.BCache)
-	var theSize = bcachesz
+	theSize := bcachesz
 	lenTheBytes := uintptr(len(theBytes))
 	if lenTheBytes < theSize {
 		theSize = lenTheBytes
@@ -390,22 +429,10 @@ func ReloadBCache() {
 		unsafe.Offsetof(Shm.Raw.BTouchTime),
 		unsafe.Offsetof(Shm.Raw.BUptime),
 	)
-
-	busystate = 0
-	Shm.WriteAt(
-		unsafe.Offsetof(Shm.Raw.BBusyState),
-		types.INT32_SZ,
-		unsafe.Pointer(&busystate),
-	)
-
-	SortBCache()
-
-	//XXX reloadCacheLoadBottom as front-process
-	reloadCacheLoadBottom()
 }
 
-//SortBCache
-//XXX TODO: implement
+// SortBCache
+// XXX TODO: implement
 func SortBCache() {
 	var busystate int32
 	pbusystate := &busystate
@@ -441,7 +468,7 @@ func SortBCache() {
 	Shm.QsortCmpBoardClass()
 
 	// for-loop cleaning first-child
-	//init vars
+	// init vars
 	val := [ptttype.BSORT_BY_MAX]ptttype.Bid{}
 	bnumber := Shm.GetBNumber()
 
@@ -478,7 +505,7 @@ func reloadCacheLoadBottom() {
 			n = 5
 		}
 
-		var n_uint8 = uint8(n)
+		n_uint8 := uint8(n)
 		Shm.WriteAt(
 			unsafe.Offsetof(Shm.Raw.NBottom)+types.UINT8_SZ*i,
 			types.UINT8_SZ,
@@ -515,7 +542,7 @@ func GetBid(boardID *ptttype.BoardID_t) (bid ptttype.Bid, err error) {
 }
 
 func getBidByNameCore(boardID *ptttype.BoardID_t) (idx ptttype.SortIdxInStore, bid ptttype.Bid, err error) {
-	//wait 1 second for bbusystate
+	// wait 1 second for bbusystate
 	bbusystate := int32(0)
 	Shm.ReadAt(
 		unsafe.Offsetof(Shm.Raw.BBusyState),
@@ -526,11 +553,11 @@ func getBidByNameCore(boardID *ptttype.BoardID_t) (idx ptttype.SortIdxInStore, b
 		time.Sleep(1 * time.Second)
 	}
 
-	//start and end
+	// start and end
 	start := int32(0)
 	end := Shm.GetBNumber()
 	end--
-	if end < 0 { //unable to get bid
+	if end < 0 { // unable to get bid
 		return -1, 0, nil
 	}
 
@@ -577,7 +604,7 @@ func getBidByNameCore(boardID *ptttype.BoardID_t) (idx ptttype.SortIdxInStore, b
 }
 
 func getBidByClassCore(cls []byte, boardID *ptttype.BoardID_t) (idx ptttype.SortIdxInStore, bid ptttype.Bid, err error) {
-	//wait 1 second for bbusystate
+	// wait 1 second for bbusystate
 	bbusystate := int32(0)
 	Shm.ReadAt(
 		unsafe.Offsetof(Shm.Raw.BBusyState),
@@ -588,11 +615,11 @@ func getBidByClassCore(cls []byte, boardID *ptttype.BoardID_t) (idx ptttype.Sort
 		time.Sleep(1 * time.Second)
 	}
 
-	//start and end
+	// start and end
 	start := int32(0)
 	end := Shm.GetBNumber()
 	end--
-	if end < 0 { //unable to get bid
+	if end < 0 { // unable to get bid
 		return -1, 0, nil
 	}
 
@@ -650,7 +677,6 @@ func getBidByClassCore(cls []byte, boardID *ptttype.BoardID_t) (idx ptttype.Sort
 }
 
 func FindBoardIdxByName(boardID *ptttype.BoardID_t, isAsc bool) (idx ptttype.SortIdx, err error) {
-
 	idxInStore, bid, err := getBidByNameCore(boardID)
 	if bid.IsValid() && err == nil {
 		return idxInStore.ToSortIdx(), nil
@@ -677,6 +703,11 @@ func FindBoardIdxByName(boardID *ptttype.BoardID_t, isAsc bool) (idx ptttype.Sor
 				bidInCache_ptr,
 			)
 
+			if !bidInCache.ToBid().IsValid() {
+				idxInStore = -1
+				break
+			}
+
 			Shm.ReadAt(
 				bcacheOffset+uintptr(bidInCache)*ptttype.BOARD_HEADER_RAW_SZ+ptttype.BOARD_HEADER_BRDNAME_OFFSET,
 				ptttype.BOARD_ID_SZ,
@@ -699,6 +730,11 @@ func FindBoardIdxByName(boardID *ptttype.BoardID_t, isAsc bool) (idx ptttype.Sor
 				bidInCache_ptr,
 			)
 
+			if !bidInCache.ToBid().IsValid() {
+				idxInStore = -1
+				break
+			}
+
 			Shm.ReadAt(
 				bcacheOffset+uintptr(bidInCache)*ptttype.BOARD_HEADER_RAW_SZ+ptttype.BOARD_HEADER_BRDNAME_OFFSET,
 				ptttype.BOARD_ID_SZ,
@@ -719,7 +755,6 @@ func FindBoardIdxByName(boardID *ptttype.BoardID_t, isAsc bool) (idx ptttype.Sor
 }
 
 func FindBoardIdxByClass(cls []byte, boardID *ptttype.BoardID_t, isAsc bool) (idx ptttype.SortIdx, err error) {
-
 	idxInStore, bid, err := getBidByClassCore(cls, boardID)
 	if bid.IsValid() && err == nil {
 		return idxInStore.ToSortIdx(), nil
@@ -750,11 +785,17 @@ func FindBoardIdxByClass(cls []byte, boardID *ptttype.BoardID_t, isAsc bool) (id
 				bidInCache_ptr,
 			)
 
+			if !bidInCache.ToBid().IsValid() {
+				idxInStore = -1
+				break
+			}
+
 			Shm.ReadAt(
 				bcacheOffset+uintptr(bidInCache)*ptttype.BOARD_HEADER_RAW_SZ+ptttype.BOARD_HEADER_TITLE_OFFSET,
 				ptttype.BOARD_TITLE_SZ,
 				titleInCache_ptr,
 			)
+
 			clsInCache := titleInCache.BoardClass()
 
 			Shm.ReadAt(
@@ -778,6 +819,11 @@ func FindBoardIdxByClass(cls []byte, boardID *ptttype.BoardID_t, isAsc bool) (id
 				ptttype.BID_IN_STORE_SZ,
 				bidInCache_ptr,
 			)
+
+			if !bidInCache.ToBid().IsValid() {
+				idxInStore = -1
+				break
+			}
 
 			Shm.ReadAt(
 				bcacheOffset+uintptr(bidInCache)*ptttype.BOARD_HEADER_RAW_SZ+ptttype.BOARD_HEADER_TITLE_OFFSET,
@@ -806,7 +852,6 @@ func FindBoardIdxByClass(cls []byte, boardID *ptttype.BoardID_t, isAsc bool) (id
 }
 
 func cmpBoardByClass(cls []byte, boardID *ptttype.BoardID_t, clsInCache []byte, boardIDInCache *ptttype.BoardID_t) int {
-
 	j := types.Cstrcmp(cls, clsInCache)
 	if j != 0 {
 		return j
@@ -816,12 +861,11 @@ func cmpBoardByClass(cls []byte, boardID *ptttype.BoardID_t, clsInCache []byte, 
 }
 
 func FindBoardAutoCompleteStartIdx(keyword []byte, isAsc bool) (startIdx ptttype.SortIdx, err error) {
-
 	boardID := findBoardClosetKeyword(keyword, isAsc)
 	nBoard_i32 := Shm.GetBNumber()
 	nBoard := ptttype.SortIdxInStore(nBoard_i32)
 
-	//find the closet keyword
+	// find the closet keyword
 	idx, err := FindBoardIdxByName(boardID, !isAsc)
 	if err != nil {
 		return -1, err
@@ -844,16 +888,21 @@ func FindBoardAutoCompleteStartIdx(keyword []byte, isAsc bool) (startIdx ptttype
 	boardIDInCache := &ptttype.BoardID_t{}
 	boardIDInCache_ptr := unsafe.Pointer(boardIDInCache)
 
-	const MAX_ITER = 3
 	// it should be either current idx or the next idx
+	const MAX_ITER_FIND_AUTO_COMPLETE = 3
 	if isAsc {
 		i := 0
-		for ; i < MAX_ITER && idxInStore < nBoard; i, idxInStore = i+1, idxInStore+1 {
+		for ; i < MAX_ITER_FIND_AUTO_COMPLETE && idxInStore < nBoard; i, idxInStore = i+1, idxInStore+1 {
 			Shm.ReadAt(
 				bsortedOffset+uintptr(idxInStore)*ptttype.BID_IN_STORE_SZ,
 				ptttype.BID_IN_STORE_SZ,
 				bidInCache_ptr,
 			)
+
+			if !bidInCache.ToBid().IsValid() {
+				idxInStore = -1
+				break
+			}
 
 			Shm.ReadAt(
 				bcacheOffset+uintptr(bidInCache)*ptttype.BOARD_HEADER_RAW_SZ+ptttype.BOARD_HEADER_BRDNAME_OFFSET,
@@ -865,21 +914,26 @@ func FindBoardAutoCompleteStartIdx(keyword []byte, isAsc bool) (startIdx ptttype
 			j := types.Cstrcasecmp(keyword, boardIDInCachePrefix)
 			if j == 0 {
 				break
-			} else if j < 0 { //keyword is already < boardIDInCachePrefix, we can't find fit anymore.
+			} else if j < 0 { // keyword is already < boardIDInCachePrefix, we can't find fit anymore.
 				return -1, nil
 			}
 		}
-		if i == MAX_ITER || idxInStore == nBoard {
+		if i == MAX_ITER_FIND_AUTO_COMPLETE || idxInStore == nBoard {
 			idxInStore = -1
 		}
 	} else {
 		i := 0
-		for ; i < MAX_ITER && idxInStore >= 0; i, idxInStore = i+1, idxInStore-1 {
+		for ; i < MAX_ITER_FIND_AUTO_COMPLETE && idxInStore >= 0; i, idxInStore = i+1, idxInStore-1 {
 			Shm.ReadAt(
 				bsortedOffset+uintptr(idxInStore)*ptttype.BID_IN_STORE_SZ,
 				ptttype.BID_IN_STORE_SZ,
 				bidInCache_ptr,
 			)
+
+			if !bidInCache.ToBid().IsValid() {
+				idxInStore = -1
+				break
+			}
 
 			Shm.ReadAt(
 				bcacheOffset+uintptr(bidInCache)*ptttype.BOARD_HEADER_RAW_SZ+ptttype.BOARD_HEADER_BRDNAME_OFFSET,
@@ -891,11 +945,11 @@ func FindBoardAutoCompleteStartIdx(keyword []byte, isAsc bool) (startIdx ptttype
 			j := types.Cstrcasecmp(keyword, boardIDInCachePrefix)
 			if j == 0 {
 				break
-			} else if j > 0 { //keyword is already > boardIDInCachePrefix, we can't find fit anymore.
+			} else if j > 0 { // keyword is already > boardIDInCachePrefix, we can't find fit anymore.
 				return -1, nil
 			}
 		}
-		if i == MAX_ITER {
+		if i == MAX_ITER_FIND_AUTO_COMPLETE {
 			idxInStore = -1
 		}
 	}
@@ -904,7 +958,6 @@ func FindBoardAutoCompleteStartIdx(keyword []byte, isAsc bool) (startIdx ptttype
 	}
 
 	return idxInStore.ToSortIdx(), nil
-
 }
 
 func findBoardClosetKeyword(keyword []byte, isAsc bool) (boardID *ptttype.BoardID_t) {
@@ -947,7 +1000,7 @@ func SanitizeBMs(bms *ptttype.BM_t) (parsedBMs *ptttype.BM_t) {
 }
 
 func ParseBMList(bms *ptttype.BM_t) (uids *[ptttype.MAX_BMs]ptttype.Uid) {
-	//init uids
+	// init uids
 	uids = &[ptttype.MAX_BMs]ptttype.Uid{}
 	for idx := 0; idx < ptttype.MAX_BMs; idx++ {
 		uids[idx] = -1
@@ -965,7 +1018,7 @@ func ParseBMList(bms *ptttype.BM_t) (uids *[ptttype.MAX_BMs]ptttype.Uid) {
 		copy(userIDs[idx][:], each)
 	}
 
-	//parse user-ids
+	// parse user-ids
 	idxUid := 0
 	for _, each := range userIDs {
 		uid, err := SearchUserRaw(each, nil)
@@ -1032,7 +1085,7 @@ func ResetBoard(bid ptttype.Bid) (err error) {
 	if err != nil {
 		return err
 	}
-	err = binary.Read(file, binary.LittleEndian, board)
+	err = types.BinaryRead(file, binary.LittleEndian, board)
 	if err != nil {
 		return err
 	}
@@ -1049,6 +1102,10 @@ func ResetBoard(bid ptttype.Bid) (err error) {
 }
 
 func buildBMCache(bid ptttype.Bid) {
+	if !bid.IsValid() {
+		return
+	}
+
 	BMs := &ptttype.BM_t{}
 	bidInCache := bid.ToBidInStore()
 	Shm.ReadAt(
@@ -1057,7 +1114,7 @@ func buildBMCache(bid ptttype.Bid) {
 		unsafe.Pointer(BMs),
 	)
 
-	//reset uids
+	// reset uids
 	resetUids := [ptttype.MAX_BMs]ptttype.Uid{}
 	for idx := 0; idx < ptttype.MAX_BMs; idx++ {
 		resetUids[idx] = -1
@@ -1070,7 +1127,7 @@ func buildBMCache(bid ptttype.Bid) {
 		unsafe.Pointer(&resetUids),
 	)
 
-	//set uids
+	// set uids
 	uids := ParseBMList(BMs)
 
 	if len(uids) == 0 {
@@ -1103,6 +1160,9 @@ func AddbrdTouchCache() (bid ptttype.Bid, err error) {
 }
 
 func SetLastPosttime(bid ptttype.Bid, nowTS types.Time4) (err error) {
+	if !bid.IsValid() {
+		return ptttype.ErrInvalidBid
+	}
 
 	bidInCache := bid.ToBidInStore()
 	Shm.WriteAt(
@@ -1115,6 +1175,10 @@ func SetLastPosttime(bid ptttype.Bid, nowTS types.Time4) (err error) {
 }
 
 func GetLastPosttime(bid ptttype.Bid) (lastposttime types.Time4, err error) {
+	if !bid.IsValid() {
+		return 0, ptttype.ErrInvalidBid
+	}
+
 	bidInCache := bid.ToBidInStore()
 	Shm.ReadAt(
 		unsafe.Offsetof(Shm.Raw.LastPostTime)+types.TIME4_SZ*uintptr(bidInCache),
@@ -1126,6 +1190,10 @@ func GetLastPosttime(bid ptttype.Bid) (lastposttime types.Time4, err error) {
 }
 
 func TouchBPostNum(bid ptttype.Bid, delta int32) (err error) {
+	if !bid.IsValid() {
+		return ptttype.ErrInvalidBid
+	}
+
 	bidInCache := bid.ToBidInStore()
 	total := int32(0)
 	Shm.ReadAt(

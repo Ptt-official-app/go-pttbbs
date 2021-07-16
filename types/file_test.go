@@ -2,8 +2,11 @@ package types
 
 import (
 	"bytes"
+	"encoding/binary"
+	"io"
 	"io/ioutil"
 	"os"
+	"strings"
 	"sync"
 	"testing"
 )
@@ -284,5 +287,74 @@ func TestMkdir(t *testing.T) {
 			}
 		})
 		wg.Wait()
+	}
+}
+
+func TestBinaryRead(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	type temp struct {
+		A int32
+		B [15]byte
+		C int32
+	}
+	str0 := "\x01\x02\x00\x00abcdefghijklmno\x03\x04\x05\x00\x00"
+	r0 := strings.NewReader(str0)
+	data0 := &temp{}
+	expectedB0 := [15]byte{}
+	copy(expectedB0[:], []byte("abcdefghijklmno"))
+	expected0 := &temp{
+		A: 513,
+		B: expectedB0,
+		C: 1284,
+	}
+
+	str1 := "abcdefghijklmno"
+	r1 := strings.NewReader(str1)
+	data1 := [15]byte{}
+	expected1 := [15]byte{}
+	copy(expected1[:], expectedB0[:])
+
+	str2 := "abcdefghijklmno"
+	r2 := strings.NewReader(str2)
+	data2 := make([]byte, 15)
+	expected2 := make([]byte, 15)
+	copy(expected2[:], expectedB0[:])
+
+	type args struct {
+		reader io.ReadSeeker
+		order  binary.ByteOrder
+		data   interface{}
+	}
+	tests := []struct {
+		name     string
+		args     args
+		expected interface{}
+		wantErr  bool
+	}{
+		// TODO: Add test cases.
+		{
+			name:     "struct-ptr",
+			args:     args{reader: r0, order: binary.LittleEndian, data: data0},
+			expected: expected0,
+		},
+		{
+			name:     "array",
+			args:     args{reader: r1, order: binary.LittleEndian, data: &data1},
+			expected: &expected1,
+		},
+		{
+			name:     "slice",
+			args:     args{reader: r2, order: binary.LittleEndian, data: data2},
+			expected: expected2,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := BinaryRead(tt.args.reader, tt.args.order, tt.args.data); (err != nil) != tt.wantErr {
+				t.Errorf("BinaryRead() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
 	}
 }

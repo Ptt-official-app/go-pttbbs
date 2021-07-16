@@ -18,7 +18,7 @@ func setupTest() {
 }
 
 func teardownTest() {
-	UnsetIsTest()
+	defer types.UnsetIsTest()
 
-	types.UnsetIsTest()
+	defer UnsetIsTest()
 }

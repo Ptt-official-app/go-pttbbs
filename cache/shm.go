@@ -41,7 +41,9 @@ func NewSHM(key types.Key_t, isUseHugeTlb bool, isCreate bool) error {
     }
 
     log.Infof("cache.NewSHM: SHMSIZE: %v SHM_RAW_SZ: %v SHMALIGNEDSIZE: %v", SHMSIZE, SHM_RAW_SZ, ptttype.SHMALIGNEDSIZE)
-    debugShm()
+    if !IsTest {
+        debugShm()
+    }
 
     size := SHMSIZE
 
@@ -124,7 +126,7 @@ func NewSHM(key types.Key_t, isUseHugeTlb bool, isCreate bool) error {
         log.Warnf("cache.NewSHM: is expected to create, but not: key: %v", key)
     }
 
-    log.Infof("cache.NewSHM: shm created: key: %v size: %v isNew: %v", key, Shm.Raw.Size, isNew)
+    log.Infof("cache.NewSHM: shm created: key: %v shmid: %v shmaddr: %v size: %v isNew: %v", key, Shm.Shmid, Shm.Shmaddr, Shm.Raw.Size, isNew)
 
     return nil
 }
@@ -159,27 +161,23 @@ func CloseSHM() error {
         return ErrInvalidOp
     }
 
+    if Shm == nil {
+        // Already Closed
+        log.Errorf("cache.CloseSHM: already closed")
+        return ErrShmNotInit
+    }
+
+    err := Shm.Close()
+    if err != nil {
+        log.Errorf("cache.CloseSHM: unable to close: e: %v", err)
+        return err
+    }
+
+    Shm = nil
+
+    log.Infof("cache.CloseSHM: done")
+
     return nil
-
-    /*
-       if Shm == nil {
-           // Already Closed
-           log.Errorf("cache.CloseSHM: already closed")
-           return ErrShmNotInit
-       }
-
-       err := Shm.Close()
-       if err != nil {
-           log.Errorf("cache.CloseSHM: unable to close: e: %v", err)
-           return err
-       }
-
-       Shm = nil
-
-       log.Infof("cache.CloseSHM: done")
-
-       return nil
-    */
 }
 
 //Close
@@ -196,9 +194,8 @@ func (s *SHM) Close() error {
     if !IsTest {
         return ErrInvalidOp
     }
-    return nil
 
-    //return shm.CloseShm(s.Shmid, s.Shmaddr)
+    return shm.CloseShm(s.Shmid, s.Shmaddr)
 }
 
 func (s *SHM) Reset() {

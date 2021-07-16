@@ -1,6 +1,7 @@
 package cmsys
 
 import (
+	"fmt"
 	"os"
 	"sync"
 	"syscall"
@@ -38,8 +39,11 @@ func pttLock(file *os.File, offset int64, theSize uintptr, mode int) (err error)
 //Original PttLock has no effect with multi-thread process.
 //We use single lock for now.
 func GoPttLock(file *os.File, filename string, offset int64, theSize uintptr) (err error) {
-
-	lockFD(file.Fd())
+	filenameOffset := fmt.Sprintf("%s%x", filename, offset)
+	err = lockFD(filenameOffset)
+	if err != nil {
+		return err
+	}
 
 	return pttLock(file, offset, theSize, syscall.F_WRLCK)
 }
@@ -49,8 +53,8 @@ func GoPttLock(file *os.File, filename string, offset int64, theSize uintptr) (e
 //Original PttLock has no effect with multi-thread process.
 //We use single lock for now.
 func GoPttUnlock(file *os.File, filename string, offset int64, theSize uintptr) (err error) {
-
-	defer unlockFD(file.Fd())
+	filenameOffset := fmt.Sprintf("%s%x", filename, offset)
+	defer unlockFD(filenameOffset)
 
 	return pttLock(file, offset, theSize, syscall.F_UNLCK)
 }
@@ -60,7 +64,10 @@ func GoPttUnlock(file *os.File, filename string, offset int64, theSize uintptr) 
 //Original Flock has no effect with multi-thread process.
 //We use single lock for now.
 func GoFlock(fd uintptr, filename string) (err error) {
-	lockFD(fd)
+	err = lockFD(filename)
+	if err != nil {
+		return err
+	}
 
 	return syscall.Flock(int(fd), syscall.LOCK_EX)
 }
@@ -70,7 +77,10 @@ func GoFlock(fd uintptr, filename string) (err error) {
 //Original Flock has no effect with multi-thread process.
 //We use single lock for now.
 func GoFlockExNb(fd uintptr, filename string) (err error) {
-	lockFD(fd)
+	err = lockFD(filename)
+	if err != nil {
+		return err
+	}
 
 	return syscall.Flock(int(fd), syscall.LOCK_EX|syscall.LOCK_NB)
 }
@@ -80,16 +90,16 @@ func GoFlockExNb(fd uintptr, filename string) (err error) {
 //Original Flock has no effect with multi-thread process.
 //We use single lock for now.
 func GoFunlock(fd uintptr, filename string) (err error) {
-	defer unlockFD(fd)
+	defer unlockFD(filename)
 
 	return syscall.Flock(int(fd), syscall.LOCK_UN)
 }
 
-func lockFD(fd uintptr) (err error) {
+func lockFD(filenameOffset string) (err error) {
 	lock.Lock()
 	defer lock.Unlock()
 
-	_, ok := lockFDMap[fd]
+	_, ok := lockFDMap[filenameOffset]
 	if ok {
 		return ErrPttLock
 	}
@@ -97,22 +107,22 @@ func lockFD(fd uintptr) (err error) {
 	theLock := &sync.Mutex{}
 
 	theLock.Lock()
-	lockFDMap[fd] = theLock
+	lockFDMap[filenameOffset] = theLock
 
 	return nil
 }
 
-func unlockFD(fd uintptr) (err error) {
+func unlockFD(filenameOffset string) (err error) {
 	lock.Lock()
 	defer lock.Unlock()
 
-	theLock, ok := lockFDMap[fd]
+	theLock, ok := lockFDMap[filenameOffset]
 	if !ok {
-		return ErrPttLock
+		return nil
 	}
 
 	theLock.Unlock()
-	delete(lockFDMap, fd)
+	delete(lockFDMap, filenameOffset)
 
 	return nil
 }

@@ -9,8 +9,8 @@ import (
 )
 
 func TestLoadGeneralArticles(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	path := &LoadGeneralArticlesPath{
 		BBoardID: "10_WhoAmI",
@@ -96,6 +96,6 @@ func TestLoadGeneralArticles(t *testing.T) {
 			}
 			testutil.TDeepEqual(t, "got", gotResult, tt.expectedResult)
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }

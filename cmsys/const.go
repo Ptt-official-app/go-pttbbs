@@ -61,5 +61,5 @@ const (
 
 var (
 	lock      sync.Mutex
-	lockFDMap = map[uintptr]*sync.Mutex{}
+	lockFDMap = map[string]*sync.Mutex{}
 )

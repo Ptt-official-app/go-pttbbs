@@ -1,7 +1,10 @@
 package bbs
 
 import (
+	"runtime"
+
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
+	"github.com/sirupsen/logrus"
 )
 
 var (
@@ -41,6 +44,9 @@ var (
 
 func initTestVars() {
 	if testUserecRaw != nil {
+		if testBoardSummary6.BoardClass == nil || testBoardSummary6.BoardClass[0] == 0 {
+			logrus.Errorf("initVars: invalid testBoardSummary6: %v", testBoardSummary6)
+		}
 		return
 	}
 
@@ -457,4 +463,37 @@ func initTestVars() {
 }
 
 func freeTestVars() {
+	testUserecRaw = nil
+	testUserecRaw3 = nil
+	testUserec1 = nil
+	testUserec2 = nil
+	testUserec3 = nil
+	testUserec4 = nil
+	testUserec5 = nil
+	testUserecEmpty = nil
+	testUserec6 = nil
+
+	testNewPostUserRaw1 = nil
+
+	testOpenUserecFile1 = nil
+
+	testBoardSummaryRaw6 = nil
+
+	testBoardSummary1 = nil
+	testBoardSummary6 = nil
+	testBoardSummary7 = nil
+	testBoardSummary8 = nil
+	testBoardSummary9 = nil
+	testBoardSummary10 = nil
+	testBoardSummary11 = nil
+	testBoardSummary13 = nil
+
+	testArticleSummary0 = nil
+	testArticleSummary1 = nil
+
+	testBottomSummary1 = nil
+
+	testContent1 = nil
+
+	runtime.GC()
 }

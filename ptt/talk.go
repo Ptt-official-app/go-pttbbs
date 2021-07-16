@@ -99,30 +99,24 @@ func myWriteInit(myUtmpID ptttype.UtmpID, myInfo *ptttype.UserInfoRaw) (mode ptt
 	c0_p := &c0
 	c0_ptr := unsafe.Pointer(c0_p)
 
+	const offsetUInfo = unsafe.Offsetof(cache.Shm.Raw.UInfo)
+	const offsetMode = unsafe.Offsetof(ptttype.EMPTY_USER_INFO_RAW.Mode)
 	cache.Shm.ReadAt(
-		unsafe.Offsetof(cache.Shm.Raw.UInfo)+
-			uintptr(myUtmpID)*ptttype.USER_INFO_RAW_SZ+
-			unsafe.Offsetof(cache.Shm.Raw.UInfo[0].Mode),
-
+		offsetUInfo+uintptr(myUtmpID)*ptttype.USER_INFO_RAW_SZ+offsetMode,
 		ptttype.USER_OP_MODE_SZ,
 		mode_ptr,
 	)
 
+	const offsetChatid = unsafe.Offsetof(ptttype.EMPTY_USER_INFO_RAW.Chatid)
 	cache.Shm.ReadAt(
-		unsafe.Offsetof(cache.Shm.Raw.UInfo)+
-			uintptr(myUtmpID)*ptttype.USER_INFO_RAW_SZ+
-			unsafe.Offsetof(cache.Shm.Raw.UInfo[0].Chatid),
-
+		offsetUInfo+uintptr(myUtmpID)*ptttype.USER_INFO_RAW_SZ+offsetChatid,
 		types.UINT8_SZ,
 		c0_ptr,
 	)
 
 	newMode := ptttype.UserOpMode(0)
 	cache.Shm.WriteAt(
-		unsafe.Offsetof(cache.Shm.Raw.UInfo)+
-			uintptr(myUtmpID)*ptttype.USER_INFO_RAW_SZ+
-			unsafe.Offsetof(cache.Shm.Raw.UInfo[0].Mode),
-
+		offsetUInfo+uintptr(myUtmpID)*ptttype.USER_INFO_RAW_SZ+offsetMode,
 		ptttype.USER_OP_MODE_SZ,
 		unsafe.Pointer(&newMode),
 	)
@@ -130,10 +124,7 @@ func myWriteInit(myUtmpID ptttype.UtmpID, myInfo *ptttype.UserInfoRaw) (mode ptt
 	newC0 := uint8(0)
 
 	cache.Shm.WriteAt(
-		unsafe.Offsetof(cache.Shm.Raw.UInfo)+
-			uintptr(myUtmpID)*ptttype.USER_INFO_RAW_SZ+
-			unsafe.Offsetof(cache.Shm.Raw.UInfo[0].Chatid),
-
+		offsetUInfo+uintptr(myUtmpID)*ptttype.USER_INFO_RAW_SZ+offsetChatid,
 		types.UINT8_SZ,
 		unsafe.Pointer(&newC0),
 	)
@@ -148,20 +139,17 @@ func myWriteDefer(mode ptttype.UserOpMode, c0 uint8, myUtmpID ptttype.UtmpID, my
 	c0_p := &c0
 	c0_ptr := unsafe.Pointer(c0_p)
 
+	const offsetUInfo = unsafe.Offsetof(cache.Shm.Raw.UInfo)
+	const offsetMode = unsafe.Offsetof(ptttype.EMPTY_USER_INFO_RAW.Mode)
 	cache.Shm.WriteAt(
-		unsafe.Offsetof(cache.Shm.Raw.UInfo)+
-			uintptr(myUtmpID)*ptttype.USER_INFO_RAW_SZ+
-			unsafe.Offsetof(cache.Shm.Raw.UInfo[0].Mode),
-
+		offsetUInfo+uintptr(myUtmpID)*ptttype.USER_INFO_RAW_SZ+offsetMode,
 		ptttype.USER_OP_MODE_SZ,
 		mode_ptr,
 	)
 
+	const offsetChatid = unsafe.Offsetof(ptttype.EMPTY_USER_INFO_RAW.Chatid)
 	cache.Shm.WriteAt(
-		unsafe.Offsetof(cache.Shm.Raw.UInfo)+
-			uintptr(myUtmpID)*ptttype.USER_INFO_RAW_SZ+
-			unsafe.Offsetof(cache.Shm.Raw.UInfo[0].Chatid),
-
+		offsetUInfo+uintptr(myUtmpID)*ptttype.USER_INFO_RAW_SZ+offsetChatid,
 		types.UINT8_SZ,
 		unsafe.Pointer(c0_ptr),
 	)
@@ -192,13 +180,13 @@ func myWriteMsg(myUtmpID ptttype.UtmpID, myInfo *ptttype.UserInfoRaw, flag pttty
 	copy(msgQueue.UserID[:], myInfo.UserID[:])
 	copy(msgQueue.LastCallIn[:], msg)
 
+	const offsetUInfo = unsafe.Offsetof(cache.Shm.Raw.UInfo)
+	const offsetMsgCount = unsafe.Offsetof(ptttype.EMPTY_USER_INFO_RAW.MsgCount)
+
 	msgCount_p := &msgCount
 	msgCount_ptr := unsafe.Pointer(msgCount_p)
 	cache.Shm.ReadAt(
-		unsafe.Offsetof(cache.Shm.Raw.UInfo)+
-			uintptr(utmpID)*ptttype.USER_INFO_RAW_SZ+
-			unsafe.Offsetof(cache.Shm.Raw.UInfo[0].MsgCount),
-
+		offsetUInfo+uintptr(utmpID)*ptttype.USER_INFO_RAW_SZ+offsetMsgCount,
 		types.UINT8_SZ,
 		msgCount_ptr,
 	)
@@ -210,30 +198,25 @@ func myWriteMsg(myUtmpID ptttype.UtmpID, myInfo *ptttype.UserInfoRaw, flag pttty
 	idxMsg := msgCount
 	(*msgCount_p)++
 	cache.Shm.WriteAt(
-		unsafe.Offsetof(cache.Shm.Raw.UInfo)+
-			uintptr(utmpID)*ptttype.USER_INFO_RAW_SZ+
-			unsafe.Offsetof(cache.Shm.Raw.UInfo[0].MsgCount),
-
+		offsetUInfo+uintptr(utmpID)*ptttype.USER_INFO_RAW_SZ+offsetMsgCount,
 		types.UINT8_SZ,
 		msgCount_ptr,
 	)
 
+	const offsetMsgs = unsafe.Offsetof(ptttype.EMPTY_USER_INFO_RAW.Msgs)
 	cache.Shm.WriteAt(
-		unsafe.Offsetof(cache.Shm.Raw.UInfo)+
-			uintptr(utmpID)*ptttype.USER_INFO_RAW_SZ+
-			unsafe.Offsetof(cache.Shm.Raw.UInfo[0].Msgs)+
-			uintptr(idxMsg)*ptttype.MSG_QUEUE_RAW_SZ,
+		offsetUInfo+uintptr(utmpID)*ptttype.USER_INFO_RAW_SZ+
+			offsetMsgs+uintptr(idxMsg)*ptttype.MSG_QUEUE_RAW_SZ,
 
 		ptttype.MSG_QUEUE_RAW_SZ,
 		unsafe.Pointer(msgQueue),
 	)
 
+	const offsetWBTime = unsafe.Offsetof(ptttype.EMPTY_USER_INFO_RAW.WBTime)
 	if ptttype.NOKILLWATERBALL {
 		nowTS := types.NowTS()
 		cache.Shm.WriteAt(
-			unsafe.Offsetof(cache.Shm.Raw.UInfo)+
-				uintptr(utmpID)*ptttype.USER_INFO_RAW_SZ+
-				unsafe.Offsetof(cache.Shm.Raw.UInfo[0].WBTime),
+			offsetUInfo+uintptr(utmpID)*ptttype.USER_INFO_RAW_SZ+offsetWBTime,
 			types.TIME4_SZ,
 			unsafe.Pointer(&nowTS),
 		)

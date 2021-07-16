@@ -9,8 +9,8 @@ import (
 )
 
 func Test_pwcuRegCompleteJustify(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	userID2 := &ptttype.UserID_t{}
 	copy(userID2[:], []byte("CodingMan"))
@@ -48,8 +48,8 @@ func Test_pwcuRegCompleteJustify(t *testing.T) {
 }
 
 func Test_pwcuBitDisableLevel(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	userID2 := &ptttype.UserID_t{}
 	copy(userID2[:], "CodingMan")
@@ -78,15 +78,14 @@ func Test_pwcuBitDisableLevel(t *testing.T) {
 			if err := pwcuBitDisableLevel(tt.args.uid, tt.args.userID, tt.args.perm); (err != nil) != tt.wantErr {
 				t.Errorf("pwcuBitDisableLevel() error = %v, wantErr %v", err, tt.wantErr)
 			}
-
 		})
 		wg.Wait()
 	}
 }
 
 func Test_pwcuSetByBit(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	type args struct {
 		perm  ptttype.PERM

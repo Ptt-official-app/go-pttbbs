@@ -9,8 +9,8 @@ import (
 )
 
 func TestLoadBoardSummary(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	params := &LoadBoardSummaryParams{}
 
@@ -51,6 +51,6 @@ func TestLoadBoardSummary(t *testing.T) {
 
 			testutil.TDeepEqual(t, "got", gotResults, tt.expectedResults)
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }

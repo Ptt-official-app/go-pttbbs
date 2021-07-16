@@ -17,9 +17,7 @@ import (
 	"github.com/google/uuid"
 )
 
-var (
-	MILLI_TS_TO_NANO_TS int64 = 1000000
-)
+var MILLI_TS_TO_NANO_TS int64 = 1000000
 
 func GetRandom() string {
 	theUUID, _ := uuid.NewRandom()
@@ -65,7 +63,7 @@ func BinRead(file io.ReadSeeker, v interface{}, theSize uintptr) error {
 		return ErrBytesTooLarge
 	}
 
-	err := binary.Read(file, binary.LittleEndian, v)
+	err := BinaryRead(file, binary.LittleEndian, v)
 	if err != nil {
 		return err
 	}
@@ -93,7 +91,7 @@ func BinWrite(file io.Writer, v interface{}, theSize uintptr) error {
 	if vSize > int(theSize) {
 		return ErrBytesTooLarge
 	}
-	err := binary.Write(file, binary.LittleEndian, v)
+	err := BinaryWrite(file, binary.LittleEndian, v)
 	if err != nil {
 		return err
 	}

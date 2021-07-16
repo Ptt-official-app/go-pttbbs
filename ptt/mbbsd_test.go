@@ -14,8 +14,8 @@ import (
 )
 
 func TestLoginQuery(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	userid1 := ptttype.UserID_t{}
 	copy(userid1[:], []byte("SYSOP"))
@@ -63,13 +63,13 @@ func TestLoginQuery(t *testing.T) {
 				t.Errorf("LoginQuery() = %v, expected %v", got, tt.expected)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func Test_newUserInfoRaw(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	type args struct {
 		uid  ptttype.Uid
@@ -110,8 +110,8 @@ func Test_newUserInfoRaw(t *testing.T) {
 }
 
 func TestLogin(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	SetupNewUser(testSetupNewUser1)
 

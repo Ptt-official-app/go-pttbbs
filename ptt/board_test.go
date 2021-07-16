@@ -7,11 +7,12 @@ import (
 
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 )
 
 func Test_boardPermStatNormally(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	cache.ReloadBCache()
 
@@ -52,8 +53,8 @@ func Test_boardPermStatNormally(t *testing.T) {
 }
 
 func TestIsBoardValidUser(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	cache.ReloadBCache()
 
@@ -99,8 +100,8 @@ func TestIsBoardValidUser(t *testing.T) {
 }
 
 func TestNewBoard(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	cache.ReloadBCache()
 
@@ -158,15 +159,14 @@ func TestNewBoard(t *testing.T) {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
+
 			gotNewBoard, err := NewBoard(tt.args.user, tt.args.uid, tt.args.clsBid, tt.args.brdname, tt.args.brdClass, tt.args.brdTitle, tt.args.BMs, tt.args.brdAttr, tt.args.level, tt.args.chessCountry, tt.args.isGroup)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("NewBoard() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(gotNewBoard, tt.expectedNewBoard) {
-				t.Errorf("NewBoard() gotNewBoard = %v, want %v", gotNewBoard, tt.expectedNewBoard)
-			}
+			testutil.TDeepEqual(t, "got", gotNewBoard, tt.expectedNewBoard)
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }

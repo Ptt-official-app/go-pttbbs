@@ -40,7 +40,7 @@ func GetRecords(boardID *ptttype.BoardID_t, filename string, startIdx ptttype.So
 	fileSize := info.Size()
 	maxIdx := ptttype.SortIdx(fileSize / int64(ptttype.FILE_HEADER_RAW_SZ))
 
-	//construct headers
+	// construct headers
 	summaries = make([]*ptttype.ArticleSummaryRaw, 0, n)
 	for i, idx, idxInFile := 0, startIdx, startIdx.ToSortIdxInStore(); i < n; i++ {
 		if idx == 0 || idx > maxIdx {
@@ -53,7 +53,7 @@ func GetRecords(boardID *ptttype.BoardID_t, filename string, startIdx ptttype.So
 		}
 
 		header := &ptttype.FileHeaderRaw{}
-		err = binary.Read(file, binary.LittleEndian, header)
+		err = types.BinaryRead(file, binary.LittleEndian, header)
 		if err != nil {
 			return summaries, nil
 		}
@@ -99,20 +99,18 @@ func GetRecord(dirFilename string, filename *ptttype.Filename_t, total int) (idx
 	}
 
 	fhdr = &ptttype.FileHeaderRaw{}
-	err = binary.Read(file, binary.LittleEndian, fhdr)
+	err = types.BinaryRead(file, binary.LittleEndian, fhdr)
 	if err != nil {
 		return 0, nil, err
 	}
 
 	return idx, fhdr, nil
-
 }
 
 //FindRecordStartIdx
 //
 //startIdx should be 1-total.
 func FindRecordStartIdx(dirFilename string, total int, createTime types.Time4, filename *ptttype.Filename_t, isDesc bool) (startIdx ptttype.SortIdx, err error) {
-
 	file, err := os.Open(dirFilename)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -125,7 +123,7 @@ func FindRecordStartIdx(dirFilename string, total int, createTime types.Time4, f
 	start := 0
 	end := int(total) - 1
 
-	//binary-search based on create-time.
+	// binary-search based on create-time.
 	idxInStore := 0
 	header := &ptttype.FileHeaderRaw{}
 	for idxInStore = (start + end) / 2; ; idxInStore = (start + end) / 2 {
@@ -134,7 +132,7 @@ func FindRecordStartIdx(dirFilename string, total int, createTime types.Time4, f
 			return -1, err
 		}
 
-		err = binary.Read(file, binary.LittleEndian, header)
+		err = types.BinaryRead(file, binary.LittleEndian, header)
 		if err != nil {
 			return -1, err
 		}
@@ -166,7 +164,7 @@ func FindRecordStartIdx(dirFilename string, total int, createTime types.Time4, f
 		return ptttype.SortIdx(idxInStore + 1), nil
 	}
 
-	//find the start
+	// find the start
 	if isDesc {
 		for ; idxInStore < total; idxInStore++ {
 			_, err = file.Seek(int64(ptttype.FILE_HEADER_RAW_SZ)*int64(idxInStore), io.SeekStart)
@@ -174,7 +172,7 @@ func FindRecordStartIdx(dirFilename string, total int, createTime types.Time4, f
 				return -1, err
 			}
 
-			err = binary.Read(file, binary.LittleEndian, header)
+			err = types.BinaryRead(file, binary.LittleEndian, header)
 			if err != nil {
 				return -1, err
 			}
@@ -195,7 +193,7 @@ func FindRecordStartIdx(dirFilename string, total int, createTime types.Time4, f
 				return -1, err
 			}
 
-			err = binary.Read(file, binary.LittleEndian, header)
+			err = types.BinaryRead(file, binary.LittleEndian, header)
 			if err != nil {
 				return -1, err
 			}
@@ -211,7 +209,7 @@ func FindRecordStartIdx(dirFilename string, total int, createTime types.Time4, f
 		}
 	}
 
-	//linear search
+	// linear search
 	if isDesc {
 		// it's supposed that createTime <= fileCreateTime for now.
 		for ; idxInStore >= 0; idxInStore-- {
@@ -220,7 +218,7 @@ func FindRecordStartIdx(dirFilename string, total int, createTime types.Time4, f
 				return -1, err
 			}
 
-			err = binary.Read(file, binary.LittleEndian, header)
+			err = types.BinaryRead(file, binary.LittleEndian, header)
 			if err != nil {
 				return -1, err
 			}
@@ -240,7 +238,7 @@ func FindRecordStartIdx(dirFilename string, total int, createTime types.Time4, f
 				return -1, err
 			}
 
-			err = binary.Read(file, binary.LittleEndian, header)
+			err = types.BinaryRead(file, binary.LittleEndian, header)
 			if err != nil {
 				return -1, err
 			}
@@ -282,7 +280,7 @@ func SubstituteRecord(filename string, data interface{}, theSize uintptr, idxInS
 	}
 	defer GoPttUnlock(file, filename, offset, theSize)
 
-	err = binary.Write(file, binary.LittleEndian, data)
+	err = types.BinaryWrite(file, binary.LittleEndian, data)
 	if err != nil {
 		return err
 	}
@@ -316,7 +314,7 @@ func AppendRecord(filename string, data interface{}, theSize uintptr) (idx pttty
 		return 0, err
 	}
 
-	err = binary.Write(file, binary.LittleEndian, data)
+	err = types.BinaryWrite(file, binary.LittleEndian, data)
 	if err != nil {
 		return 0, err
 	}

@@ -178,7 +178,6 @@ func TestBinRead(t *testing.T) {
 }
 
 func TestBinWrite(t *testing.T) {
-
 	toWrite := [3]byte{}
 	copy(toWrite[:], []byte("123"))
 	toWrite2 := [5]byte{}
@@ -221,7 +220,6 @@ func TestBinWrite(t *testing.T) {
 			nBytes := info.Size()
 			if nBytes != int64(tt.args.theSize) {
 				t.Errorf("BinWrite() nBytes: %v expected: %v", nBytes, tt.args.theSize)
-
 			}
 		})
 	}

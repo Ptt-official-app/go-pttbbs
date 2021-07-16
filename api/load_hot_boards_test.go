@@ -12,8 +12,8 @@ import (
 )
 
 func TestLoadHotBoards(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	hbcache := []ptttype.BidInStore{10, 5, 7}
 	cache.Shm.WriteAt(
@@ -63,6 +63,6 @@ func TestLoadHotBoards(t *testing.T) {
 				t.Errorf("LoadHotBoards() = %v, want %v", gotResult, tt.expectedResult)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }

@@ -10,8 +10,8 @@ import (
 )
 
 func TestSetIDEmail(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	jwt, _ := CreateEmailToken("SYSOP", "", "test@ptt.test", CONTEXT_SET_ID_EMAIL)
 

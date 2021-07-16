@@ -7,14 +7,15 @@ import (
 	"unsafe"
 
 	"github.com/Ptt-official-app/go-pttbbs/cache"
+	"github.com/Ptt-official-app/go-pttbbs/cmbbs"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/testutil"
 	"github.com/sirupsen/logrus"
 )
 
 func TestLoadGeneralBoards(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	cache.ReloadBCache()
 
@@ -36,7 +37,7 @@ func TestLoadGeneralBoards(t *testing.T) {
 
 	logrus.Infof("bsorted (by-class): %v", bsorted)
 
-	//move setupTest in for-loop
+	// move setupTest in for-loop
 	type args struct {
 		user     *ptttype.UserecRaw
 		uid      ptttype.Uid
@@ -146,15 +147,14 @@ func TestLoadGeneralBoards(t *testing.T) {
 			testutil.TDeepEqual(t, "summaries", gotSummaries, tt.expectedSummaries)
 
 			testutil.TDeepEqual(t, "nextSummary", gotNextSummary, tt.expectedNextSummary)
-
 		})
 	}
 	wg.Wait()
 }
 
 func TestLoadBoardSummary(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	cache.ReloadBCache()
 
@@ -201,8 +201,8 @@ func TestLoadBoardSummary(t *testing.T) {
 }
 
 func TestLoadHotBoards(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	cache.ReloadBCache()
 
@@ -254,8 +254,8 @@ func TestLoadHotBoards(t *testing.T) {
 }
 
 func TestLoadBoardsByBids(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	cache.ReloadBCache()
 
@@ -298,8 +298,8 @@ func TestLoadBoardsByBids(t *testing.T) {
 }
 
 func TestFindBoardStartIdxByName(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	cache.ReloadBCache()
 
@@ -339,8 +339,8 @@ func TestFindBoardStartIdxByName(t *testing.T) {
 }
 
 func TestFindBoardStartIdxByClass(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	cache.ReloadBCache()
 
@@ -381,10 +381,18 @@ func TestFindBoardStartIdxByClass(t *testing.T) {
 }
 
 func TestLoadAutoCompleteBoards(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
+
+	if cmbbs.Sem.SemID == 0 {
+		logrus.Errorf("TestLoadAutoCompleteBoards: before ReloadBCache: semid is invalid")
+	}
 
 	cache.ReloadBCache()
+
+	if cmbbs.Sem.SemID == 0 {
+		logrus.Errorf("TestLoadAutoCompleteBoards: semid is invalid")
+	}
 
 	type args struct {
 		user     *ptttype.UserecRaw
@@ -431,13 +439,13 @@ func TestLoadAutoCompleteBoards(t *testing.T) {
 				t.Errorf("LoadAutoCompleteBoards() gotNextSummary = %v, want %v", gotNextSummary, tt.expectedNextSummary)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestFindBoardAutoCompleteStartIdx(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	cache.ReloadBCache()
 
@@ -483,6 +491,6 @@ func TestFindBoardAutoCompleteStartIdx(t *testing.T) {
 				t.Errorf("FindBoardAutoCompleteStartIdx() = %v, want %v", gotStartIdx, tt.expectedStartIdx)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }

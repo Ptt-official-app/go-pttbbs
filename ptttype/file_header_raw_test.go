@@ -81,9 +81,9 @@ func TestFileHeaderRaw_Money(t *testing.T) {
 	defer file.Close()
 
 	bin, _ := ioutil.ReadAll(file)
-	buf := bytes.NewBuffer(bin)
+	buf := bytes.NewReader(bin)
 	records := [1]FileHeaderRaw{}
-	_ = binary.Read(buf, binary.LittleEndian, &records)
+	_ = types.BinaryRead(buf, binary.LittleEndian, &records)
 
 	type fields struct {
 		Filename  Filename_t
@@ -133,9 +133,9 @@ func TestFileHeaderRaw_AnonUID(t *testing.T) {
 	defer file.Close()
 
 	bin, _ := ioutil.ReadAll(file)
-	buf := bytes.NewBuffer(bin)
+	buf := bytes.NewReader(bin)
 	records := [1]FileHeaderRaw{}
-	_ = binary.Read(buf, binary.LittleEndian, &records)
+	_ = types.BinaryRead(buf, binary.LittleEndian, &records)
 
 	type fields struct {
 		Filename  Filename_t
@@ -184,9 +184,9 @@ func TestFileHeaderRaw_VoteLimits(t *testing.T) {
 	defer file.Close()
 
 	bin, _ := ioutil.ReadAll(file)
-	buf := bytes.NewBuffer(bin)
+	buf := bytes.NewReader(bin)
 	records := [1]FileHeaderRaw{}
-	_ = binary.Read(buf, binary.LittleEndian, &records)
+	_ = types.BinaryRead(buf, binary.LittleEndian, &records)
 
 	type fields struct {
 		Filename  Filename_t
@@ -235,9 +235,9 @@ func TestFileHeaderRaw_VoteLimitPosts(t *testing.T) {
 	defer file.Close()
 
 	bin, _ := ioutil.ReadAll(file)
-	buf := bytes.NewBuffer(bin)
+	buf := bytes.NewReader(bin)
 	records := [1]FileHeaderRaw{}
-	_ = binary.Read(buf, binary.LittleEndian, &records)
+	_ = types.BinaryRead(buf, binary.LittleEndian, &records)
 
 	type fields struct {
 		Filename  Filename_t
@@ -287,9 +287,9 @@ func TestFileHeaderRaw_VoteLimitLogins(t *testing.T) {
 	defer file.Close()
 
 	bin, _ := ioutil.ReadAll(file)
-	buf := bytes.NewBuffer(bin)
+	buf := bytes.NewReader(bin)
 	records := [1]FileHeaderRaw{}
-	_ = binary.Read(buf, binary.LittleEndian, &records)
+	_ = types.BinaryRead(buf, binary.LittleEndian, &records)
 
 	type fields struct {
 		Filename  Filename_t
@@ -339,9 +339,9 @@ func TestFileHeaderRaw_VoteLimitRegTime(t *testing.T) {
 	defer file.Close()
 
 	bin, _ := ioutil.ReadAll(file)
-	buf := bytes.NewBuffer(bin)
+	buf := bytes.NewReader(bin)
 	records := [1]FileHeaderRaw{}
-	_ = binary.Read(buf, binary.LittleEndian, &records)
+	_ = types.BinaryRead(buf, binary.LittleEndian, &records)
 
 	type fields struct {
 		Filename  Filename_t
@@ -403,9 +403,9 @@ func TestFileHeaderRaw_VoteLimitBadpost(t *testing.T) {
 	defer file.Close()
 
 	bin, _ := ioutil.ReadAll(file)
-	buf := bytes.NewBuffer(bin)
+	buf := bytes.NewReader(bin)
 	records := [1]FileHeaderRaw{}
-	_ = binary.Read(buf, binary.LittleEndian, &records)
+	_ = types.BinaryRead(buf, binary.LittleEndian, &records)
 
 	type fields struct {
 		Filename  Filename_t

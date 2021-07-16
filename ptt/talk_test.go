@@ -12,8 +12,8 @@ import (
 )
 
 func Test_isVisibleStat(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	userID := ptttype.UserID_t{}
 	copy(userID[:], []byte("SYSOP"))
@@ -99,13 +99,13 @@ func Test_isVisibleStat(t *testing.T) {
 				t.Errorf("isVisibleStat() = %v, want %v", got, tt.expected)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func Test_friendStat(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	me0 := &ptttype.UserInfoRaw{
 		BrcID: 1,
@@ -154,8 +154,8 @@ func Test_friendStat(t *testing.T) {
 }
 
 func Test_myWrite(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	currSorted := 0
 	cache.Shm.WriteAt(

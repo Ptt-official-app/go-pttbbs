@@ -6,13 +6,18 @@ import (
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
+	"github.com/sirupsen/logrus"
 )
 
 func TestGetTokenInfo(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
-	jwt, _ := CreateToken("SYSOP", "")
+	jwt, err := CreateToken("SYSOP", "")
+	if err != nil {
+		logrus.Errorf("GetTokenInfo: unable to create token: jwt: %v e: %v", jwt, err)
+	}
+	logrus.Infof("TestGetTokenInfo: after CreateToken: jwt: %v e: %v", jwt, err)
 	params0 := &GetTokenInfoParams{Jwt: jwt}
 	result0 := &GetTokenInfoResult{UserID: "SYSOP"}
 
@@ -48,6 +53,6 @@ func TestGetTokenInfo(t *testing.T) {
 				t.Errorf("GetTokenInfo() = %v, want %v", gotResult, tt.expectedResult)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }

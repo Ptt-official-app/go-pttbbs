@@ -10,8 +10,8 @@ import (
 )
 
 func TestSetUserPerm(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	origPerm := testUserec.Userlevel
 	newPerm := ptttype.PERM_DEFAULT | ptttype.PERM_ADMIN | ptttype.PERM_LOGINOK

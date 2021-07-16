@@ -9,8 +9,8 @@ import (
 )
 
 func TestChangePasswd(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	params0 := &ChangePasswdParams{
 		ClientInfo: "test_clientinfo",
@@ -81,7 +81,6 @@ func TestChangePasswd(t *testing.T) {
 			result := gotResult.(*ChangePasswdResult)
 			tt.expectedResult.Jwt = result.Jwt
 			testutil.TDeepEqual(t, "result", result, tt.expectedResult)
-
 		})
 		wg.Wait()
 	}

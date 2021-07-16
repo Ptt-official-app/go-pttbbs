@@ -10,8 +10,8 @@ import (
 )
 
 func TestLoadGeneralBoards(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	params := &LoadGeneralBoardsParams{
 		StartIdx: strconv.Itoa(int(0)),

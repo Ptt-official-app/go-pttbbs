@@ -9,8 +9,8 @@ import (
 )
 
 func TestAttemptSetIDEmail(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	params0 := &AttemptSetIDEmailParams{
 		ClientInfo: "test_clientinfo",

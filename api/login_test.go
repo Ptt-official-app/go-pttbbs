@@ -4,14 +4,11 @@ import (
 	"reflect"
 	"sync"
 	"testing"
-
-	"github.com/Ptt-official-app/go-pttbbs/bbs"
-	"gopkg.in/square/go-jose.v2/jwt"
 )
 
 func TestLogin(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	type args struct {
 		params interface{}
@@ -19,7 +16,7 @@ func TestLogin(t *testing.T) {
 	tests := []struct {
 		name     string
 		args     args
-		expected interface{}
+		expected *JwtClaim
 		wantErr  bool
 	}{
 		// TODO: Add test cases.
@@ -28,7 +25,7 @@ func TestLogin(t *testing.T) {
 				Username: "SYSOP",
 				Passwd:   "123123",
 			}},
-			expected: &JwtClaim{UUserID: bbs.UUserID("SYSOP")},
+			expected: &JwtClaim{UUserID: "SYSOP"},
 		},
 	}
 	var wg sync.WaitGroup
@@ -48,11 +45,8 @@ func TestLogin(t *testing.T) {
 				return
 			}
 
-			claims := &JwtClaim{}
-			token, _ := jwt.ParseSigned(gotResult.Jwt)
-			_ = token.UnsafeClaimsWithoutVerification(claims)
-			wantJwt, _ := tt.expected.(*JwtClaim)
-			if !reflect.DeepEqual(claims.UUserID, wantJwt.UUserID) {
+			claims, _ := parseJwtClaim(gotResult.Jwt)
+			if !reflect.DeepEqual(claims.UUserID, tt.expected.UUserID) {
 				t.Errorf("Login() = %v claims: %v expected: %v", got, claims, tt.expected)
 				return
 			}

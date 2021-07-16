@@ -11,8 +11,8 @@ import (
 )
 
 func TestFormatCommentString(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	cache.ReloadBCache()
 

@@ -9,8 +9,8 @@ import (
 )
 
 func TestLoadGeneralBoardsByClass(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	params := &LoadGeneralBoardsParams{
 		StartIdx: "vFSt-Q@ALLPOST",
@@ -54,6 +54,6 @@ func TestLoadGeneralBoardsByClass(t *testing.T) {
 				t.Errorf("LoadGeneralBoardsByClass() = %v, want %v", got, tt.expected)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }

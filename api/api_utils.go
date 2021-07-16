@@ -35,7 +35,7 @@ func processResult(c *gin.Context, result interface{}, err error) {
 	case ErrInvalidIDEmail:
 		c.JSON(400, &errResult{err.Error()})
 
-	//401
+	// 401
 	case ErrInvalidToken:
 		c.JSON(401, &errResult{err.Error()})
 
@@ -44,7 +44,7 @@ func processResult(c *gin.Context, result interface{}, err error) {
 	case ErrLoginFailed:
 		c.JSON(401, &errResult{err.Error()})
 
-	//403
+	// 403
 	case cache.ErrInvalidUID:
 		c.JSON(403, &errResult{err.Error()})
 	case ErrInvalidUser:

@@ -14,8 +14,8 @@ import (
 )
 
 func Test_killUser(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	userID1 := &ptttype.UserID_t{}
 	copy(userID1[:], []byte("CodingMan"))
@@ -56,15 +56,14 @@ func Test_killUser(t *testing.T) {
 			if !bytes.Equal(user.UserID[:], ptttype.EMPTY_USER_ID[:]) {
 				t.Errorf("killUser: unable to kill: userID: %v", string(user.UserID[:]))
 			}
-
 		})
 		wg.Wait()
 	}
 }
 
 func Test_tryDeleteHomePath(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	defer os.RemoveAll("./testcase/tmp")
 
@@ -110,8 +109,8 @@ func Test_tryDeleteHomePath(t *testing.T) {
 }
 
 func TestChangePasswd(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	userID0 := &ptttype.UserID_t{}
 	copy(userID0[:], []byte("SYSOP"))
@@ -166,15 +165,14 @@ func TestChangePasswd(t *testing.T) {
 			if err != nil {
 				t.Errorf("ChangePasswd: unable to login: e: %v", err)
 			}
-
 		})
 		wg.Wait()
 	}
 }
 
 func TestChangeEmail(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	userID0 := &ptttype.UserID_t{}
 	copy(userID0[:], []byte("SYSOP"))
@@ -216,8 +214,8 @@ func TestChangeEmail(t *testing.T) {
 }
 
 func TestCheckPasswd(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	userID0 := &ptttype.UserID_t{}
 	copy(userID0[:], []byte("SYSOP"))
@@ -262,8 +260,8 @@ func TestCheckPasswd(t *testing.T) {
 }
 
 func TestChangeUserLevel2(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	type args struct {
 		userID *ptttype.UserID_t
@@ -314,8 +312,8 @@ func TestChangeUserLevel2(t *testing.T) {
 }
 
 func TestGetUid(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	userID0 := &ptttype.UserID_t{}
 	copy(userID0[:], []byte("SYSOP"))
@@ -355,8 +353,8 @@ func TestGetUid(t *testing.T) {
 }
 
 func TestSetUserPerm(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	origPerm := testUserecRaw2.UserLevel
 	newPerm := ptttype.PERM_DEFAULT | ptttype.PERM_ADMIN | ptttype.PERM_LOGINOK

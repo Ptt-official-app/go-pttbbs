@@ -1,11 +1,15 @@
 package types
 
 import (
+	"encoding/binary"
 	"io"
 	"io/ioutil"
 	"os"
 	"path"
+	"runtime/debug"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
 )
 
 //IsDir
@@ -197,4 +201,59 @@ func DashF(filename string) (isExists bool, err error) {
 
 func OpenCreate(filename string, flags int) (file *os.File, err error) {
 	return os.OpenFile(filename, flags|os.O_CREATE, DEFAULT_FILE_CREATE_PERM)
+}
+
+func BinaryRead(reader io.ReadSeeker, order binary.ByteOrder, data interface{}) (err error) {
+	origPos, err := reader.Seek(0, io.SeekCurrent)
+	if err != nil {
+		return err
+	}
+
+	defer func() {
+		err2 := recover()
+		if err2 == nil {
+			return
+		}
+
+		err = ErrRecover(err2)
+
+		newPos, err3 := reader.Seek(0, io.SeekCurrent)
+		if err3 != nil {
+			log.Errorf("BinaryRead (recover): unable to seek cur")
+			return
+		}
+		if newPos < origPos {
+			log.Errorf("BinaryRead (recover): newPos < currentPos: newPos: %v currentPos: %v", newPos, origPos)
+			return
+		}
+		_, err3 = reader.Seek(origPos, io.SeekStart)
+		if err3 != nil {
+			log.Errorf("BinaryRead (recover): unable to seek orig-pos")
+			return
+		}
+		theBytes := make([]byte, newPos-origPos)
+		n, err3 := reader.Read(theBytes)
+		log.Warnf("BinaryRead (recover): err: %v origPos: %v newPos: %v sz: %v bytes: %v, n: %v err3: %v", err, origPos, newPos, newPos-origPos, theBytes, n, err3)
+		debug.PrintStack()
+
+		return
+	}()
+
+	return binary.Read(reader, order, data)
+}
+
+func BinaryWrite(writer io.Writer, order binary.ByteOrder, data interface{}) (err error) {
+	defer func() {
+		err2 := recover()
+		if err2 == nil {
+			return
+		}
+
+		err = ErrRecover(err2)
+
+		log.Warnf("BinaryWrite (recover): err: %v data: %v", err, data)
+		debug.PrintStack()
+	}()
+
+	return binary.Write(writer, order, data)
 }

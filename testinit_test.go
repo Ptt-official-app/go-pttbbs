@@ -16,10 +16,9 @@ import (
 var ()
 
 func setupTest() {
-
 	jww.SetLogOutput(os.Stderr)
-	//jww.SetLogThreshold(jww.LevelDebug)
-	//jww.SetStdoutThreshold(jww.LevelDebug)
+	// jww.SetLogThreshold(jww.LevelDebug)
+	// jww.SetStdoutThreshold(jww.LevelDebug)
 	log.SetLevel(log.DebugLevel)
 
 	cache.SetIsTest()
@@ -47,20 +46,21 @@ func setupTest() {
 	cache.ReloadBCache()
 
 	_ = cmbbs.PasswdInit()
-
 }
 
 func teardownTest() {
-	_ = cmbbs.PasswdDestroy()
+	defer cache.UnsetIsTest()
 
-	_ = cache.CloseSHM()
+	defer cmbbs.UnsetIsTest()
 
-	os.Remove("./testcase/.fresh")
-	os.RemoveAll("./testcase/home")
-	os.Remove("./testcase/.PASSWDS")
+	defer ptttype.UnsetIsTest()
 
-	ptttype.UnsetIsTest()
+	defer os.Remove("./testcase/.PASSWDS")
+	defer os.RemoveAll("./testcase/home")
 
-	cmbbs.UnsetIsTest()
-	cache.UnsetIsTest()
+	defer os.Remove("./testcase/.fresh")
+
+	defer cache.CloseSHM()
+
+	defer cmbbs.PasswdDestroy()
 }

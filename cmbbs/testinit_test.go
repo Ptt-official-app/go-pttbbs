@@ -10,12 +10,13 @@ import (
 )
 
 func setupTest() {
-	SetIsTest()
-	cache.SetIsTest()
-
 	types.SetIsTest()
 
 	ptttype.SetIsTest()
+
+	cache.SetIsTest()
+
+	SetIsTest()
 
 	_ = types.CopyFileToFile("./testcase/.PASSWDS1", "./testcase/.PASSWDS")
 
@@ -37,20 +38,23 @@ func setupTest() {
 }
 
 func teardownTest() {
-	_ = cache.CloseSHM()
+	defer types.UnsetIsTest()
 
-	os.Remove("./testcase/.fresh")
+	defer ptttype.UnsetIsTest()
 
-	os.RemoveAll("./testcase/home")
-	os.RemoveAll("./testcase/boards")
-	os.Remove("./testcase/.BRD")
-	os.Remove("./testcase/.PASSWDS")
+	defer cache.UnsetIsTest()
 
-	ptttype.UnsetIsTest()
+	defer UnsetIsTest()
 
-	types.UnsetIsTest()
+	defer os.Remove("./testcase/.PASSWDS")
 
-	cache.UnsetIsTest()
-	UnsetIsTest()
+	defer os.Remove("./testcase/.BRD")
 
+	defer os.RemoveAll("./testcase/boards")
+
+	defer os.RemoveAll("./testcase/home")
+
+	defer os.Remove("./testcase/.fresh")
+
+	defer cache.CloseSHM()
 }

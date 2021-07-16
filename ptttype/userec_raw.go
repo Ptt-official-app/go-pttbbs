@@ -11,7 +11,7 @@ import (
 type UserecRaw struct {
 	Version uint32
 
-	//Require const-bytes to have correct Unsafe.Sizeof
+	// Require const-bytes to have correct Unsafe.Sizeof
 	UserID     UserID_t   /* 使用者ID (alpha-number only) */
 	RealName   RealName_t /* 真實姓名 */
 	Nickname   Nickname_t /* 暱稱 */
@@ -97,7 +97,7 @@ const USEREC_RAW_SZ = unsafe.Sizeof(USEREC_RAW)
 func NewUserecRawWithFile(file *os.File) (*UserecRaw, error) {
 	userecRaw := &UserecRaw{}
 
-	err := binary.Read(file, binary.LittleEndian, userecRaw)
+	err := types.BinaryRead(file, binary.LittleEndian, userecRaw)
 	if err != nil {
 		return nil, err
 	}

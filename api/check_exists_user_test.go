@@ -7,8 +7,8 @@ import (
 )
 
 func TestCheckExistsUser(t *testing.T) {
-	setupTest()
-	defer teardownTest()
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 
 	params0 := &CheckExistsUserParams{Username: "SYSOP"}
 	result0 := &CheckExistsUserResult{UserID: "SYSOP", IsExists: true}
