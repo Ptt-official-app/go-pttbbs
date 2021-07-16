@@ -93,7 +93,7 @@ func GetRecord(dirFilename string, filename *ptttype.Filename_t, total int) (idx
 	defer file.Close()
 
 	idxInFile := idx.ToSortIdxInStore()
-	_, err = file.Seek(int64(ptttype.FILE_HEADER_RAW_SZ)*int64(idxInFile), os.SEEK_SET)
+	_, err = file.Seek(int64(ptttype.FILE_HEADER_RAW_SZ)*int64(idxInFile), io.SeekStart)
 	if err != nil {
 		return 0, nil, err
 	}
@@ -150,7 +150,7 @@ func FindRecordStartIdx(dirFilename string, total int, createTime types.Time4, f
 		if end == start {
 			break
 		} else if idxInStore == start {
-			idxInStore = end
+			idxInStore = end // nolint
 			start = end
 		} else if j > 0 {
 			start = idxInStore
@@ -278,7 +278,7 @@ func SubstituteRecord(filename string, data interface{}, theSize uintptr, idxInS
 	if err != nil {
 		return err
 	}
-	defer GoPttUnlock(file, filename, offset, theSize)
+	defer func() { _ = GoPttUnlock(file, filename, offset, theSize) }()
 
 	err = types.BinaryWrite(file, binary.LittleEndian, data)
 	if err != nil {
@@ -300,7 +300,7 @@ func AppendRecord(filename string, data interface{}, theSize uintptr) (idx pttty
 	if err != nil {
 		return 0, err
 	}
-	defer GoFunlock(fd, filename)
+	defer func() { _ = GoFunlock(fd, filename) }()
 
 	fsize, err := file.Seek(0, io.SeekEnd)
 	if err != nil {

@@ -6,7 +6,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
-func IsBoardValidUser(user *ptttype.UserecRaw, uid ptttype.Uid, boardID *ptttype.BoardID_t, bid ptttype.Bid) (isValid bool, err error) {
+func IsBoardValidUser(user *ptttype.UserecRaw, uid ptttype.UID, boardID *ptttype.BoardID_t, bid ptttype.Bid) (isValid bool, err error) {
 	board, err := cache.GetBCache(bid)
 	if err != nil {
 		return false, err
@@ -25,7 +25,7 @@ func IsBoardValidUser(user *ptttype.UserecRaw, uid ptttype.Uid, boardID *ptttype
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L197
 //
 //The original hasBoardPerm
-func boardPermStat(user *ptttype.UserecRaw, uid ptttype.Uid, board *ptttype.BoardHeaderRaw, bid ptttype.Bid) ptttype.BoardStatAttr {
+func boardPermStat(user *ptttype.UserecRaw, uid ptttype.UID, board *ptttype.BoardHeaderRaw, bid ptttype.Bid) ptttype.BoardStatAttr {
 	// SYSOP
 	if user.UserLevel.HasUserPerm(ptttype.PERM_SYSOP) {
 		return ptttype.NBRD_FAV
@@ -44,7 +44,7 @@ func boardPermStat(user *ptttype.UserecRaw, uid ptttype.Uid, board *ptttype.Boar
 //BM / Police / SYSOP treat the board as NBRD_FAV, while others treat the board as NBRD_BOARD.
 //It's because that newBoardStat is hacked to forcely add BRD_POSTMASK if not set properly and the type is NBRD_BOARD.
 //Need to figure out a better method to solve this issue.
-func boardPermStatNormally(user *ptttype.UserecRaw, uid ptttype.Uid, board *ptttype.BoardHeaderRaw, bid ptttype.Bid) ptttype.BoardStatAttr {
+func boardPermStatNormally(user *ptttype.UserecRaw, uid ptttype.UID, board *ptttype.BoardHeaderRaw, bid ptttype.Bid) ptttype.BoardStatAttr {
 	level := board.Level
 	brdAttr := board.BrdAttr
 
@@ -61,7 +61,7 @@ func boardPermStatNormally(user *ptttype.UserecRaw, uid ptttype.Uid, board *pttt
 	/* 祕密看板：核對首席板主的好友名單 */
 	if brdAttr&ptttype.BRD_HIDE != 0 {
 		bidInCache := bid.ToBidInStore()
-		uidInCache := uid.ToUidInStore()
+		uidInCache := uid.ToUIDInStore()
 		if !cache.IsHiddenBoardFriend(bidInCache, uidInCache) {
 			if brdAttr&ptttype.BRD_POSTMASK != 0 {
 				return ptttype.NBRD_INVALID
@@ -94,7 +94,7 @@ func boardPermStatNormally(user *ptttype.UserecRaw, uid ptttype.Uid, board *pttt
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L2283
 func NewBoard(
 	user *ptttype.UserecRaw,
-	uid ptttype.Uid,
+	uid ptttype.UID,
 	clsBid ptttype.Bid,
 	brdname *ptttype.BoardID_t,
 	brdClass []byte,
@@ -134,7 +134,7 @@ func NewBoard(
 //groupOp
 //
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1579
-func groupOp(user *ptttype.UserecRaw, uid ptttype.Uid, board *ptttype.BoardHeaderRaw) (isValid bool) {
+func groupOp(user *ptttype.UserecRaw, uid ptttype.UID, board *ptttype.BoardHeaderRaw) (isValid bool) {
 	if user.UserLevel.HasUserPerm(ptttype.PERM_NOCITIZEN) {
 		isValid = false
 	}
@@ -152,7 +152,7 @@ func groupOp(user *ptttype.UserecRaw, uid ptttype.Uid, board *ptttype.BoardHeade
 
 	// XXX 不是很確定是否該在這邊 save level?
 	if !user.UserLevel.HasUserPerm(ptttype.PERM_SYSSUBOP) || !user.UserLevel.HasUserPerm(ptttype.PERM_BM) {
-		pwcuBitEnableLevel(uid, &user.UserID, ptttype.PERM_SYSSUBOP|ptttype.PERM_BM)
+		_ = pwcuBitEnableLevel(uid, &user.UserID, ptttype.PERM_SYSSUBOP|ptttype.PERM_BM)
 	}
 
 	return isValid

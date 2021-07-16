@@ -11,7 +11,7 @@ import (
 )
 
 // AddToUHash
-func AddToUHash(uidInCache ptttype.UidInStore, userID *ptttype.UserID_t) error {
+func AddToUHash(uidInCache ptttype.UIDInStore, userID *ptttype.UserID_t) error {
 	h := cmsys.StringHashWithHashBits(userID[:])
 
 	// line: 166
@@ -23,7 +23,7 @@ func AddToUHash(uidInCache ptttype.UidInStore, userID *ptttype.UserID_t) error {
 
 	// init vars
 	p := h
-	val := ptttype.UidInStore(0)
+	val := ptttype.UIDInStore(0)
 	pval := &val
 	valptr := unsafe.Pointer(pval)
 	offset := unsafe.Offsetof(Shm.Raw.HashHead)
@@ -71,7 +71,7 @@ func AddToUHash(uidInCache ptttype.UidInStore, userID *ptttype.UserID_t) error {
 }
 
 // RemoveFromUHash
-func RemoveFromUHash(uidInCache ptttype.UidInStore) error {
+func RemoveFromUHash(uidInCache ptttype.UIDInStore) error {
 	userID := &ptttype.UserID_t{}
 
 	Shm.ReadAt(
@@ -84,7 +84,7 @@ func RemoveFromUHash(uidInCache ptttype.UidInStore) error {
 
 	// line: 191
 	p := h
-	val := ptttype.UidInStore(0)
+	val := ptttype.UIDInStore(0)
 	pval := &val
 	valptr := unsafe.Pointer(pval)
 	offset := unsafe.Offsetof(Shm.Raw.HashHead)
@@ -111,7 +111,7 @@ func RemoveFromUHash(uidInCache ptttype.UidInStore) error {
 	}
 
 	if val == uidInCache {
-		nextNum := ptttype.UidInStore(0)
+		nextNum := ptttype.UIDInStore(0)
 		Shm.ReadAt(
 			unsafe.Offsetof(Shm.Raw.NextInHash)+ptttype.UID_IN_STORE_SZ*uintptr(uidInCache),
 			ptttype.UID_IN_STORE_SZ,
@@ -137,14 +137,14 @@ func RemoveFromUHash(uidInCache ptttype.UidInStore) error {
 //	int: uid.
 //	string: the userID in shm.
 //	error: err.
-func SearchUserRaw(userID *ptttype.UserID_t, rightID *ptttype.UserID_t) (uid ptttype.Uid, err error) {
+func SearchUserRaw(userID *ptttype.UserID_t, rightID *ptttype.UserID_t) (uid ptttype.UID, err error) {
 	if userID[0] == 0 {
 		return 0, nil
 	}
 	return DoSearchUserRaw(userID, rightID)
 }
 
-func DoSearchUserRaw(userID *ptttype.UserID_t, rightID *ptttype.UserID_t) (ptttype.Uid, error) {
+func DoSearchUserRaw(userID *ptttype.UserID_t, rightID *ptttype.UserID_t) (ptttype.UID, error) {
 	// XXX we should have 0 as non-exists.
 	//     currently the reason why it's ok is because the probability of collision on 0 is low.
 
@@ -152,7 +152,7 @@ func DoSearchUserRaw(userID *ptttype.UserID_t, rightID *ptttype.UserID_t) (pttty
 	h := cmsys.StringHashWithHashBits(userID[:])
 
 	// p = SHM->hash_head[h]  //line: 219
-	p := ptttype.UidInStore(0)
+	p := ptttype.UIDInStore(0)
 	Shm.ReadAt(
 		unsafe.Offsetof(Shm.Raw.HashHead)+types.INT32_SZ*uintptr(h),
 		types.INT32_SZ,
@@ -171,7 +171,7 @@ func DoSearchUserRaw(userID *ptttype.UserID_t, rightID *ptttype.UserID_t) (pttty
 			if userID[0] != 0 && rightID != nil {
 				copy(rightID[:], shmUserID[:])
 			}
-			return p.ToUid(), nil
+			return p.ToUID(), nil
 		}
 		Shm.ReadAt(
 			unsafe.Offsetof(Shm.Raw.NextInHash)+types.INT32_SZ*uintptr(p),
@@ -186,8 +186,8 @@ func DoSearchUserRaw(userID *ptttype.UserID_t, rightID *ptttype.UserID_t) (pttty
 //GetUserID
 //
 //XXX uid = uid-in-cache + 1
-func GetUserID(uid ptttype.Uid) (*ptttype.UserID_t, error) {
-	uidInCache := uid.ToUidInStore()
+func GetUserID(uid ptttype.UID) (*ptttype.UserID_t, error) {
+	uidInCache := uid.ToUIDInStore()
 	if uidInCache < 0 || uidInCache >= ptttype.MAX_USERS {
 		return nil, ErrInvalidUID
 	}
@@ -205,12 +205,12 @@ func GetUserID(uid ptttype.Uid) (*ptttype.UserID_t, error) {
 //SetUserID
 //
 //XXX uid = uid-in-cache + 1
-func SetUserID(uid ptttype.Uid, userID *ptttype.UserID_t) (err error) {
+func SetUserID(uid ptttype.UID, userID *ptttype.UserID_t) (err error) {
 	if uid <= 0 || uid > ptttype.MAX_USERS {
 		return ErrInvalidUID
 	}
 
-	uidInCache := uid.ToUidInStore()
+	uidInCache := uid.ToUIDInStore()
 	errRemove := RemoveFromUHash(uidInCache)
 	errAdd := AddToUHash(uidInCache, userID)
 	if errRemove != nil {
@@ -225,8 +225,8 @@ func SetUserID(uid ptttype.Uid, userID *ptttype.UserID_t) (err error) {
 
 // CooldownTimeOf
 // https://github.com/ptt/pttbbs/blob/master/include/cmbbs.h#L97
-func CooldownTimeOf(uid ptttype.Uid) (cooldowntime types.Time4) {
-	uidInCache := uid.ToUidInStore()
+func CooldownTimeOf(uid ptttype.UID) (cooldowntime types.Time4) {
+	uidInCache := uid.ToUIDInStore()
 
 	Shm.ReadAt(
 		unsafe.Offsetof(Shm.Raw.CooldownTime)+types.TIME4_SZ*uintptr(uidInCache),
@@ -239,8 +239,8 @@ func CooldownTimeOf(uid ptttype.Uid) (cooldowntime types.Time4) {
 	return cooldowntime & 0x7FFFFFF0
 }
 
-func SetCooldownTime(uid ptttype.Uid, cooldowntime types.Time4) (err error) {
-	uidInCache := uid.ToUidInStore()
+func SetCooldownTime(uid ptttype.UID, cooldowntime types.Time4) (err error) {
+	uidInCache := uid.ToUIDInStore()
 	posttimes := PosttimesOf(uid)
 
 	newCooldowntime := cooldowntime | posttimes
@@ -254,7 +254,7 @@ func SetCooldownTime(uid ptttype.Uid, cooldowntime types.Time4) (err error) {
 	return nil
 }
 
-func AddCooldownTime(uid ptttype.Uid, minutes int) (err error) {
+func AddCooldownTime(uid ptttype.UID, minutes int) (err error) {
 	cooldowntime := CooldownTimeOf(uid)
 	base := types.NowTS()
 	if base < cooldowntime {
@@ -269,8 +269,8 @@ func AddCooldownTime(uid ptttype.Uid, minutes int) (err error) {
 
 // PosttimesOf
 // https://github.com/ptt/pttbbs/blob/master/include/cmbbs.h#L98
-func PosttimesOf(uid ptttype.Uid) (posttimes types.Time4) {
-	uidInCache := uid.ToUidInStore()
+func PosttimesOf(uid ptttype.UID) (posttimes types.Time4) {
+	uidInCache := uid.ToUIDInStore()
 
 	Shm.ReadAt(
 		unsafe.Offsetof(Shm.Raw.CooldownTime)+types.TIME4_SZ*uintptr(uidInCache),
@@ -281,8 +281,8 @@ func PosttimesOf(uid ptttype.Uid) (posttimes types.Time4) {
 	return posttimes & 0xF
 }
 
-func SetPosttimes(uid ptttype.Uid, posttimes types.Time4) (err error) {
-	uidInCache := uid.ToUidInStore()
+func SetPosttimes(uid ptttype.UID, posttimes types.Time4) (err error) {
+	uidInCache := uid.ToUIDInStore()
 	cooldowntime := CooldownTimeOf(uid)
 	newPosttimes := cooldowntime | posttimes
 
@@ -295,7 +295,7 @@ func SetPosttimes(uid ptttype.Uid, posttimes types.Time4) (err error) {
 	return nil
 }
 
-func AddPosttimes(uid ptttype.Uid, times int) (err error) {
+func AddPosttimes(uid ptttype.UID, times int) (err error) {
 	posttimes := PosttimesOf(uid)
 	newPosttimes := posttimes + types.Time4(times)
 	if newPosttimes >= 0xf {

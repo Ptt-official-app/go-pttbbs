@@ -28,7 +28,7 @@ func TestRecommend(t *testing.T) {
 
 	type args struct {
 		user        *ptttype.UserecRaw
-		uid         ptttype.Uid
+		uid         ptttype.UID
 		boardID     *ptttype.BoardID_t
 		bid         ptttype.Bid
 		filename    *ptttype.Filename_t

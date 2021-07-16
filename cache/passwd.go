@@ -13,7 +13,7 @@ import (
 //
 //XXX should not call this directly.
 //    call this from DeUMoney (SetUMoney).
-func passwdUpdateMoney(uid ptttype.Uid, money int32) (err error) {
+func passwdUpdateMoney(uid ptttype.UID, money int32) (err error) {
 	if uid < 1 || uid >= ptttype.MAX_USERS {
 		return ErrInvalidUID
 	}
@@ -22,8 +22,9 @@ func passwdUpdateMoney(uid ptttype.Uid, money int32) (err error) {
 	if err != nil {
 		return err
 	}
+	defer file.Close()
 
-	uidInCache := uid.ToUidInStore()
+	uidInCache := uid.ToUIDInStore()
 	const offsetMoney = unsafe.Offsetof(ptttype.USEREC_RAW.Money)
 	_, err = file.Seek(int64(ptttype.USEREC_RAW_SZ*uintptr(uidInCache)+offsetMoney), 0)
 	if err != nil {

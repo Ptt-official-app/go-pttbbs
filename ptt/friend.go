@@ -87,7 +87,7 @@ func deleteFriendFromFile(filename string, friend *ptttype.UserID_t, isCaseSensi
 		line, err = types.ReadLine(reader)
 		if err != nil {
 			if err == io.EOF {
-				err = nil // make it clear about err here
+				err = nil // nolint // make it clear about err here
 				break
 			}
 			log.Errorf("friend.deleteFriendFromFile: unable to read file: filename: %v new_filename: %v e: %v", filename, new_filename, err)

@@ -14,7 +14,7 @@ func emailDBCheckEmail(userID *ptttype.UserID_t, email *ptttype.Email_t) (count 
 
 //emailDBUpdateEmail
 //
-//XXX to implemenet
+//XXX to implement
 func emailDBUpdateEmail(userID *ptttype.UserID_t, email *ptttype.Email_t) (err error) {
 	return types.ErrNotImplemented
 }

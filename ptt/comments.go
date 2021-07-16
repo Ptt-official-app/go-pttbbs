@@ -2,6 +2,7 @@ package ptt
 
 import (
 	"encoding/binary"
+	"io"
 	"os"
 	"time"
 
@@ -163,7 +164,7 @@ func doAddRecommendSmartMerge(filename string, comment []byte) (err error) {
 	if err != nil {
 		return err
 	}
-	defer cmsys.GoFunlock(file.Fd(), filename)
+	defer func() { _ = cmsys.GoFunlock(file.Fd(), filename) }()
 
 	_, err = file.Write(comment)
 
@@ -183,7 +184,7 @@ func ModifyDirLite(dirFilename string, idx ptttype.SortIdx, filename *ptttype.Fi
 	defer file.Close()
 
 	idxInFile := idx.ToSortIdxInStore()
-	_, err = file.Seek(int64(idxInFile)*int64(ptttype.FILE_HEADER_RAW_SZ), os.SEEK_SET)
+	_, err = file.Seek(int64(idxInFile)*int64(ptttype.FILE_HEADER_RAW_SZ), io.SeekStart)
 	if err != nil {
 		return err
 	}
@@ -229,7 +230,7 @@ func ModifyDirLite(dirFilename string, idx ptttype.SortIdx, filename *ptttype.Fi
 		fhdr.Recommend = recommend
 	}
 
-	_, err = file.Seek(int64(idxInFile)*int64(ptttype.FILE_HEADER_RAW_SZ), os.SEEK_SET)
+	_, err = file.Seek(int64(idxInFile)*int64(ptttype.FILE_HEADER_RAW_SZ), io.SeekStart)
 	if err != nil {
 		return err
 	}

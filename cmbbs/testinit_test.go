@@ -10,7 +10,7 @@ import (
 )
 
 func setupTest() {
-	types.SetIsTest()
+	types.SetIsTest("cmbbs")
 
 	ptttype.SetIsTest()
 
@@ -38,7 +38,7 @@ func setupTest() {
 }
 
 func teardownTest() {
-	defer types.UnsetIsTest()
+	defer types.UnsetIsTest("cmbbs")
 
 	defer ptttype.UnsetIsTest()
 

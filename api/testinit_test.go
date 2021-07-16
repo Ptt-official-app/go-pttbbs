@@ -14,7 +14,7 @@ import (
 var testIP = "127.0.0.1"
 
 func setupTest(name string) {
-	types.SetIsTest()
+	types.SetIsTest("api")
 	ptttype.SetIsTest()
 
 	cache.SetIsTest()
@@ -51,9 +51,7 @@ func setupTest(name string) {
 func teardownTest(name string) {
 	defer time.Sleep(1 * time.Millisecond)
 
-	defer func() {
-		types.UnsetIsTest()
-	}()
+	defer types.UnsetIsTest("api")
 
 	defer ptttype.UnsetIsTest()
 

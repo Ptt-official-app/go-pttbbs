@@ -82,7 +82,7 @@ func fillUHash(isOnfly bool) error {
 	}
 	defer file.Close()
 
-	uidInCache := ptttype.UidInStore(0)
+	uidInCache := ptttype.UIDInStore(0)
 
 	uHashLoaderInvalidUserID = 0
 	log.Infof("fillUHash: to for-loop: MAX_USERS: %v", ptttype.MAX_USERS)
@@ -117,7 +117,7 @@ func fillUHash(isOnfly bool) error {
 	return nil
 }
 
-func userecRawAddToUHash(uidInCache ptttype.UidInStore, userecRaw *ptttype.UserecRaw, isOnfly bool) {
+func userecRawAddToUHash(uidInCache ptttype.UIDInStore, userecRaw *ptttype.UserecRaw, isOnfly bool) {
 	// uhash use userid="" to denote free slot for new register
 	// However, such entries will have the same hash key.
 	// So we skip most of invalid userid to prevent lots of hash collision.
@@ -164,7 +164,7 @@ func userecRawAddToUHash(uidInCache ptttype.UidInStore, userecRaw *ptttype.Usere
 	}
 
 	p := h
-	val := ptttype.UidInStore(0)
+	val := ptttype.UIDInStore(0)
 	offsetHashHead := unsafe.Offsetof(Shm.Raw.HashHead)
 	// offsetNextInHash := unsafe.Offsetof(Shm.Raw.NextInHash)
 	isFirst := true
@@ -219,7 +219,7 @@ func userecRawAddToUHash(uidInCache ptttype.UidInStore, userecRaw *ptttype.Usere
 
 func InitFillUHash(isOnfly bool) {
 	if !isOnfly {
-		toFillHashHead := [1 << ptttype.HASH_BITS]ptttype.UidInStore{}
+		toFillHashHead := [1 << ptttype.HASH_BITS]ptttype.UIDInStore{}
 		for idx := range toFillHashHead {
 			toFillHashHead[idx] = -1
 		}
@@ -243,7 +243,7 @@ func checkHash(h uint32) {
 
 	// line: 71
 	p := h
-	val := ptttype.UidInStore(0)
+	val := ptttype.UIDInStore(0)
 	pval := &val
 	valptr := unsafe.Pointer(pval)
 	Shm.ReadAt(
@@ -293,7 +293,7 @@ func checkHash(h uint32) {
 			// XXX
 			// the result of the userID does not fit the h (broken?).
 			// XXX uhash_loader is used only 1-time when starting the service.
-			next := ptttype.UidInStore(0)
+			next := ptttype.UIDInStore(0)
 
 			// get next from *p (val)
 			Shm.ReadAt(

@@ -11,12 +11,12 @@ import (
 
 // We have 3 different ids for user:
 //	UserID_t: (username)
-//	Uid: (int32) (uid starting from 1)
-//  UidInStore: (int32) (Uid - 1)
+//	UID: (int32) (uid starting from 1)
+//  UIDInStore: (int32) (UID - 1)
 type (
 	UserID_t   [IDLEN + 1]byte
-	Uid        int32
-	UidInStore int32
+	UID        int32
+	UIDInStore int32
 	RealName_t [REALNAMESZ]byte
 	Nickname_t [NICKNAMESZ]byte
 	Passwd_t   [PASSLEN]byte
@@ -81,32 +81,32 @@ const (
 	USER_ID_SZ      = unsafe.Sizeof(EMPTY_USER_ID)
 	BOARD_ID_SZ     = unsafe.Sizeof(EMPTY_BOARD_ID)
 	BOARD_TITLE_SZ  = unsafe.Sizeof(EMPTY_BOARD_TITLE)
-	UID_IN_STORE_SZ = unsafe.Sizeof(UidInStore(0))
+	UID_IN_STORE_SZ = unsafe.Sizeof(UIDInStore(0))
 	UTMP_ID_SZ      = unsafe.Sizeof(UtmpID(0))
-	UID_SZ          = unsafe.Sizeof(Uid(0))
+	UID_SZ          = unsafe.Sizeof(UID(0))
 	BID_IN_STORE_SZ = unsafe.Sizeof(BidInStore(0))
 	BID_SZ          = unsafe.Sizeof(Bid(0))
 	EMAIL_SZ        = unsafe.Sizeof(EMPTY_EMAIL)
 	BM_SZ           = unsafe.Sizeof(EMPTY_BM)
 )
 
-func (u UidInStore) ToUid() Uid {
-	return Uid(u + 1)
+func (u UIDInStore) ToUID() UID {
+	return UID(u + 1)
 }
 
-func (u Uid) ToUidInStore() UidInStore {
-	return UidInStore(u - 1)
+func (u UID) ToUIDInStore() UIDInStore {
+	return UIDInStore(u - 1)
 }
 
-func (u Uid) String() string {
+func (u UID) String() string {
 	return strconv.Itoa(int(u))
 }
 
-func (u Uid) IsValid() bool {
+func (u UID) IsValid() bool {
 	return u >= 1 && u <= MAX_USERS
 }
 
-func (u Uid) ToPid() (p types.Pid_t) {
+func (u UID) ToPid() (p types.Pid_t) {
 	return types.Pid_t(u) + types.DEFAULT_PID_MAX
 }
 

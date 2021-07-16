@@ -21,7 +21,7 @@ func TestInitCurrentUser(t *testing.T) {
 	tests := []struct {
 		name      string
 		args      args
-		expected  ptttype.Uid
+		expected  ptttype.UID
 		expected1 *ptttype.UserecRaw
 		wantErr   bool
 	}{
@@ -58,7 +58,7 @@ func Test_passwdSyncUpdate(t *testing.T) {
 	defer teardownTest(t.Name())
 
 	type args struct {
-		uid  ptttype.Uid
+		uid  ptttype.UID
 		user *ptttype.UserecRaw
 	}
 	tests := []struct {
@@ -68,7 +68,7 @@ func Test_passwdSyncUpdate(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{
-			args: args{uid: ptttype.Uid(1), user: testUserecRaw1},
+			args: args{uid: ptttype.UID(1), user: testUserecRaw1},
 		},
 	}
 	var wg sync.WaitGroup
@@ -89,7 +89,7 @@ func Test_passwdSyncQuery(t *testing.T) {
 	defer teardownTest(t.Name())
 
 	type args struct {
-		uid ptttype.Uid
+		uid ptttype.UID
 	}
 	tests := []struct {
 		name     string
@@ -127,7 +127,7 @@ func TestInitCurrentUserByUid(t *testing.T) {
 	defer teardownTest(t.Name())
 
 	type args struct {
-		uid ptttype.Uid
+		uid ptttype.UID
 	}
 	tests := []struct {
 		name         string
@@ -147,7 +147,7 @@ func TestInitCurrentUserByUid(t *testing.T) {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
-			gotUser, err := InitCurrentUserByUid(tt.args.uid)
+			gotUser, err := InitCurrentUserByUID(tt.args.uid)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("InitCurrentUserByUid() error = %v, wantErr %v", err, tt.wantErr)
 				return

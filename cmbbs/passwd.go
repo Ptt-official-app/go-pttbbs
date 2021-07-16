@@ -64,7 +64,7 @@ func LogAttempt(userID *ptttype.UserID_t, ip *ptttype.IPv4_t, isWithUserHome boo
 //	Uid: uid
 //	*ptttype.UserecRaw: user.
 //	error: err.
-func PasswdLoadUser(userID *ptttype.UserID_t) (ptttype.Uid, *ptttype.UserecRaw, error) {
+func PasswdLoadUser(userID *ptttype.UserID_t) (ptttype.UID, *ptttype.UserecRaw, error) {
 	if userID == nil || userID[0] == 0 {
 		return 0, nil, ptttype.ErrInvalidUserID
 	}
@@ -93,7 +93,7 @@ func PasswdLoadUser(userID *ptttype.UserID_t) (ptttype.Uid, *ptttype.UserecRaw, 
 //Return
 //	*ptttype.UserecRaw: user.
 //	error: err.
-func PasswdQuery(uid ptttype.Uid) (*ptttype.UserecRaw, error) {
+func PasswdQuery(uid ptttype.UID) (*ptttype.UserecRaw, error) {
 	if !uid.IsValid() {
 		return nil, ptttype.ErrInvalidUserID
 	}
@@ -102,9 +102,10 @@ func PasswdQuery(uid ptttype.Uid) (*ptttype.UserecRaw, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer file.Close()
 
 	user := &ptttype.UserecRaw{}
-	uidInFile := uid.ToUidInStore()
+	uidInFile := uid.ToUIDInStore()
 	offset := int64(ptttype.USEREC_RAW_SZ) * int64(uidInFile)
 	_, err = file.Seek(offset, 0)
 	if err != nil {
@@ -125,7 +126,7 @@ func PasswdQuery(uid ptttype.Uid) (*ptttype.UserecRaw, error) {
 //Return
 //	*ptttype.UserecRaw: user.
 //	error: err.
-func PasswdQueryPasswd(uid ptttype.Uid) (passwdHash *ptttype.Passwd_t, err error) {
+func PasswdQueryPasswd(uid ptttype.UID) (passwdHash *ptttype.Passwd_t, err error) {
 	if !uid.IsValid() {
 		return nil, ptttype.ErrInvalidUserID
 	}
@@ -134,9 +135,10 @@ func PasswdQueryPasswd(uid ptttype.Uid) (passwdHash *ptttype.Passwd_t, err error
 	if err != nil {
 		return nil, err
 	}
+	defer file.Close()
 
 	passwdHash = &ptttype.Passwd_t{}
-	uidInFile := uid.ToUidInStore()
+	uidInFile := uid.ToUIDInStore()
 	offset := int64(ptttype.USEREC_RAW_SZ)*int64(uidInFile) + int64(unsafe.Offsetof(ptttype.USEREC_RAW.PasswdHash))
 	_, err = file.Seek(offset, 0)
 	if err != nil {
@@ -157,7 +159,7 @@ func PasswdQueryPasswd(uid ptttype.Uid) (passwdHash *ptttype.Passwd_t, err error
 //Return
 //	userLevel: userLevel.
 //	error: err.
-func PasswdQueryUserLevel(uid ptttype.Uid) (userLevel ptttype.PERM, err error) {
+func PasswdQueryUserLevel(uid ptttype.UID) (userLevel ptttype.PERM, err error) {
 	if !uid.IsValid() {
 		return ptttype.PERM_INVALID, ptttype.ErrInvalidUserID
 	}
@@ -166,8 +168,9 @@ func PasswdQueryUserLevel(uid ptttype.Uid) (userLevel ptttype.PERM, err error) {
 	if err != nil {
 		return ptttype.PERM_INVALID, err
 	}
+	defer file.Close()
 
-	uidInFile := uid.ToUidInStore()
+	uidInFile := uid.ToUIDInStore()
 	offset := int64(ptttype.USEREC_RAW_SZ)*int64(uidInFile) + int64(unsafe.Offsetof(ptttype.USEREC_RAW.UserLevel))
 	_, err = file.Seek(offset, 0)
 	if err != nil {
@@ -181,7 +184,7 @@ func PasswdQueryUserLevel(uid ptttype.Uid) (userLevel ptttype.PERM, err error) {
 	return userLevel, nil
 }
 
-func PasswdUpdate(uid ptttype.Uid, user *ptttype.UserecRaw) error {
+func PasswdUpdate(uid ptttype.UID, user *ptttype.UserecRaw) error {
 	if !uid.IsValid() {
 		return cache.ErrInvalidUID
 	}
@@ -192,7 +195,7 @@ func PasswdUpdate(uid ptttype.Uid, user *ptttype.UserecRaw) error {
 	}
 	defer file.Close()
 
-	uidInFile := uid.ToUidInStore()
+	uidInFile := uid.ToUIDInStore()
 	_, err = file.Seek(int64(ptttype.USEREC_RAW_SZ)*int64(uidInFile), 0)
 	if err != nil {
 		return err
@@ -206,7 +209,7 @@ func PasswdUpdate(uid ptttype.Uid, user *ptttype.UserecRaw) error {
 	return nil
 }
 
-func PasswdUpdatePasswd(uid ptttype.Uid, passwdHash *ptttype.Passwd_t) error {
+func PasswdUpdatePasswd(uid ptttype.UID, passwdHash *ptttype.Passwd_t) error {
 	if !uid.IsValid() {
 		return cache.ErrInvalidUID
 	}
@@ -217,7 +220,7 @@ func PasswdUpdatePasswd(uid ptttype.Uid, passwdHash *ptttype.Passwd_t) error {
 	}
 	defer file.Close()
 
-	uidInFile := uid.ToUidInStore()
+	uidInFile := uid.ToUIDInStore()
 	offset := int64(ptttype.USEREC_RAW_SZ)*int64(uidInFile) + int64(unsafe.Offsetof(ptttype.USEREC_RAW.PasswdHash))
 	_, err = file.Seek(offset, 0)
 	if err != nil {
@@ -232,7 +235,7 @@ func PasswdUpdatePasswd(uid ptttype.Uid, passwdHash *ptttype.Passwd_t) error {
 	return nil
 }
 
-func PasswdUpdateEmail(uid ptttype.Uid, email *ptttype.Email_t) error {
+func PasswdUpdateEmail(uid ptttype.UID, email *ptttype.Email_t) error {
 	if !uid.IsValid() {
 		return cache.ErrInvalidUID
 	}
@@ -243,7 +246,7 @@ func PasswdUpdateEmail(uid ptttype.Uid, email *ptttype.Email_t) error {
 	}
 	defer file.Close()
 
-	uidInFile := uid.ToUidInStore()
+	uidInFile := uid.ToUIDInStore()
 	offset := int64(ptttype.USEREC_RAW_SZ)*int64(uidInFile) + int64(unsafe.Offsetof(ptttype.USEREC_RAW.Email))
 	_, err = file.Seek(offset, 0)
 	if err != nil {

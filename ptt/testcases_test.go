@@ -163,67 +163,67 @@ var (
 
 	testNewUserInfoRawUserInfoRaw = &ptttype.UserInfoRaw{
 		Pid:  types.Pid_t(types.DEFAULT_PID_MAX + 10),
-		Uid:  10,
+		UID:  10,
 		Mode: ptttype.USER_OP_LOGIN,
 
 		UserID:   ptttype.UserID_t{66, 49},
 		Nickname: ptttype.Nickname_t{0x30, 0x40, 0x80, 0x40, 0x00, 0x40},
 
 		UserLevel: 7,
-		FromIp:    0xc0a80001, // 192.168.0.1
+		FromIP:    0xc0a80001, // 192.168.0.1
 		From:      ptttype.From_t{'1', '9', '2', '.', '1', '6', '8', '.', '0', '.', '1'},
 		Pager:     ptttype.PAGER_ON,
 	}
 
 	testGetNewUtmpEnt0 = &ptttype.UserInfoRaw{
 		Pid:  types.Pid_t(types.DEFAULT_PID_MAX + 10),
-		Uid:  10,
+		UID:  10,
 		Mode: ptttype.USER_OP_LOGIN,
 
 		Nickname: ptttype.Nickname_t{0x30, 0x40, 0x80, 0x40, 0x00, 0x40},
 
 		UserLevel: 7,
-		FromIp:    0xc0a80001, // 192.168.0.1
+		FromIP:    0xc0a80001, // 192.168.0.1
 		From:      ptttype.From_t{'1', '9', '2', '.', '1', '6', '8', '.', '0', '.', '1'},
 		Pager:     ptttype.PAGER_ON,
 	}
 
 	testUserInfo1 = ptttype.UserInfoRaw{
 		UserID: ptttype.UserID_t{'S', 'Y', 'S', 'O', 'P'},
-		Uid:    1,
+		UID:    1,
 		From:   ptttype.From_t{'D'},
 		Pid:    3,
 	}
 
 	testUserInfo2 = ptttype.UserInfoRaw{
 		UserID: ptttype.UserID_t{'A', '1'},
-		Uid:    2,
+		UID:    2,
 		From:   ptttype.From_t{'B'},
 		Pid:    2,
 	}
 
 	testUserInfo3 = ptttype.UserInfoRaw{
 		UserID: ptttype.UserID_t{'A', '0'},
-		Uid:    3,
+		UID:    3,
 		From:   ptttype.From_t{'S'},
 		Pid:    1,
 	}
 	testUserInfo4 = ptttype.UserInfoRaw{
 		UserID: ptttype.UserID_t{'Z', '2'},
-		Uid:    5,
+		UID:    5,
 		From:   ptttype.From_t{'K'},
 		Pid:    5,
 	}
 	testUserInfo5 = ptttype.UserInfoRaw{
 		UserID: ptttype.UserID_t{'Z', '1'},
-		Uid:    4,
+		UID:    4,
 		From:   ptttype.From_t{'H'},
 		Pid:    4,
 	}
 
 	testUserInfo6 = ptttype.UserInfoRaw{
 		UserID: ptttype.UserID_t{'Z', '3'},
-		Uid:    6,
+		UID:    6,
 		From:   ptttype.From_t{'K'},
 		Pid:    6,
 	}

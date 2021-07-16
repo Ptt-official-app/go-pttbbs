@@ -21,7 +21,7 @@ func Test_killUser(t *testing.T) {
 	copy(userID1[:], []byte("CodingMan"))
 
 	type args struct {
-		uid    ptttype.Uid
+		uid    ptttype.UID
 		userID *ptttype.UserID_t
 	}
 	tests := []struct {
@@ -324,7 +324,7 @@ func TestGetUid(t *testing.T) {
 	tests := []struct {
 		name        string
 		args        args
-		expectedUid ptttype.Uid
+		expectedUid ptttype.UID
 		wantErr     bool
 	}{
 		// TODO: Add test cases.
@@ -339,7 +339,7 @@ func TestGetUid(t *testing.T) {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
-			gotUid, err := GetUid(tt.args.userID)
+			gotUid, err := GetUID(tt.args.userID)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetUid() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -363,7 +363,7 @@ func TestSetUserPerm(t *testing.T) {
 
 	type args struct {
 		userec    *ptttype.UserecRaw
-		setUid    ptttype.Uid
+		setUid    ptttype.UID
 		setUserec *ptttype.UserecRaw
 		perm      ptttype.PERM
 	}
@@ -401,7 +401,7 @@ func TestSetUserPerm(t *testing.T) {
 				t.Errorf("SetUserPerm() = %v, want %v", gotNewPerm, tt.expectedNewPerm)
 			}
 
-			newUser, _ := InitCurrentUserByUid(tt.args.setUid)
+			newUser, _ := InitCurrentUserByUID(tt.args.setUid)
 			if !reflect.DeepEqual(newUser.UserLevel, tt.expectedNewPerm) {
 				t.Errorf("SetUserPerm() newUser: %v want: %v", newUser.UserLevel, tt.expectedNewPerm)
 			}

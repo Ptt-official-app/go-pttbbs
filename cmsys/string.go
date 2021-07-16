@@ -81,19 +81,20 @@ func StripAnsi(src []byte, flag StripAnsiFlag) (dst []byte) {
 		idxP := idxSrc + 1
 		p := src[idxP]
 		if p != '[' { // exception
-			// XXX we would like to skip the char following \x1e
-			idxSrc += 1
+			// we would like to skip the char following \x1e
+			idxSrc++
 			if src[idxSrc] == 0 {
 				break
 			}
 			continue
 		}
 
+		// line: 163 (while(isEscapeParam(*++p));)
 		for idxP = idxP + 1; idxP < len(src) && isEscapeParam(src[idxP]); idxP = idxP + 1 {
 		}
-
 		p = src[idxP]
-		if (flag == STRIP_ANSI_NO_RELOAD && isEscapeCommand(src[idxP])) || (flag == STRIP_ANSI_ONLY_COLOR && src[idxP] == 'm') {
+
+		if (flag == STRIP_ANSI_NO_RELOAD && isEscapeCommand(p)) || (flag == STRIP_ANSI_ONLY_COLOR && p == 'm') {
 			theLen := idxP - idxSrc + 1 // len dst is same as src and idxDst is < idxSrc. we don't need to worry buffer overflow in dst for now.
 			copy(dst[idxDst:(idxDst+theLen)], src[idxSrc:(idxSrc+theLen)])
 			idxDst += theLen

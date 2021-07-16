@@ -21,10 +21,10 @@ func SetUserPerm(userID UUserID, setUserID UUserID, perm ptttype.PERM) (newPerm 
 		return ptttype.PERM_INVALID, ErrInvalidParams
 	}
 
-	setUid, setUserecRaw, err := ptt.InitCurrentUser(setUserIDRaw)
+	setUID, setUserecRaw, err := ptt.InitCurrentUser(setUserIDRaw)
 	if err != nil {
 		return ptttype.PERM_INVALID, err
 	}
 
-	return ptt.SetUserPerm(userecRaw, setUid, setUserecRaw, perm)
+	return ptt.SetUserPerm(userecRaw, setUID, setUserecRaw, perm)
 }

@@ -76,7 +76,7 @@ func TestIsHiddenBoardFriend(t *testing.T) {
 
 	type args struct {
 		bidInCache ptttype.BidInStore
-		uidInCache ptttype.UidInStore
+		uidInCache ptttype.UIDInStore
 	}
 	tests := []struct {
 		name     string
@@ -991,12 +991,12 @@ func TestParseBMList(t *testing.T) {
 	bms0 := &ptttype.BM_t{}
 	copy(bms0[:], []byte("SYSOP/SYSOP2/SYSOP3"))
 
-	expected0 := &[ptttype.MAX_BMs]ptttype.Uid{1, -1, -1, -1}
+	expected0 := &[ptttype.MAX_BMs]ptttype.UID{1, -1, -1, -1}
 
 	bms1 := &ptttype.BM_t{}
 	copy(bms1[:], []byte("SYSOP/SYSOP2/CodingMan"))
 
-	expected1 := &[ptttype.MAX_BMs]ptttype.Uid{1, 2, -1, -1}
+	expected1 := &[ptttype.MAX_BMs]ptttype.UID{1, 2, -1, -1}
 
 	type args struct {
 		bms *ptttype.BM_t
@@ -1004,7 +1004,7 @@ func TestParseBMList(t *testing.T) {
 	tests := []struct {
 		name         string
 		args         args
-		expectedUids *[ptttype.MAX_BMs]ptttype.Uid
+		expectedUids *[ptttype.MAX_BMs]ptttype.UID
 	}{
 		// TODO: Add test cases.
 		{
@@ -1081,7 +1081,7 @@ func Test_buildBMCache(t *testing.T) {
 		unsafe.Pointer(&testBoardHeader4),
 	)
 
-	expected0 := []ptttype.Uid{1, 2, -1, -1}
+	expected0 := []ptttype.UID{1, 2, -1, -1}
 
 	type args struct {
 		bid ptttype.Bid
@@ -1089,7 +1089,7 @@ func Test_buildBMCache(t *testing.T) {
 	tests := []struct {
 		name     string
 		args     args
-		expected []ptttype.Uid
+		expected []ptttype.UID
 	}{
 		// TODO: Add test cases.
 		{
@@ -1105,7 +1105,7 @@ func Test_buildBMCache(t *testing.T) {
 			defer wg.Done()
 			buildBMCache(tt.args.bid)
 
-			got := [4]ptttype.Uid{0, 0, 0, 0}
+			got := [4]ptttype.UID{0, 0, 0, 0}
 
 			const BMCACHE_SZ = unsafe.Sizeof(Shm.Raw.BMCache[0])
 			bidInStore := tt.args.bid.ToBidInStore()

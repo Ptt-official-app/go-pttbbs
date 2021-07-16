@@ -11,7 +11,7 @@ import (
 //SetUMoney
 //
 //XXX uid-in-cache = uid - 1
-func SetUMoney(uid ptttype.Uid, money int32) (int32, error) {
+func SetUMoney(uid ptttype.UID, money int32) (int32, error) {
 	Shm.WriteAt(
 		unsafe.Offsetof(Shm.Raw.Money)+types.INT32_SZ*uintptr(uid-1),
 		types.INT32_SZ,
@@ -29,7 +29,7 @@ func SetUMoney(uid ptttype.Uid, money int32) (int32, error) {
 //
 //Add money to uid. (money can be >= 0 or < 0)
 //Get current money and set the money by adding to current-money.
-func DeUMoney(uid ptttype.Uid, money int32) (int32, error) {
+func DeUMoney(uid ptttype.UID, money int32) (int32, error) {
 	if uid <= 0 || uid > ptttype.MAX_USERS {
 		log.Errorf("DeUMoney: uid is invalid: uid: %v money: %v", uid, money)
 		return -1, ErrInvalidUID
@@ -43,8 +43,8 @@ func DeUMoney(uid ptttype.Uid, money int32) (int32, error) {
 	return SetUMoney(uid, currentMoney+money)
 }
 
-func MoneyOf(uid ptttype.Uid) (money int32) {
-	uidInCache := uid.ToUidInStore()
+func MoneyOf(uid ptttype.UID) (money int32) {
+	uidInCache := uid.ToUIDInStore()
 	Shm.ReadAt(
 		unsafe.Offsetof(Shm.Raw.Money)+types.INT32_SZ*uintptr(uidInCache),
 		types.INT32_SZ,

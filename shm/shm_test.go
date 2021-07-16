@@ -265,8 +265,8 @@ func TestReadAt(t *testing.T) {
 				t.Errorf("ReadAt() read: %v expected: %v", tt.read, tt.expected)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestWriteAt(t *testing.T) {

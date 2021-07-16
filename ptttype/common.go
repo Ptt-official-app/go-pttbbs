@@ -36,12 +36,13 @@ const (
 	FN_BANNED_HISTORY  = "banned.history"  // 新水桶之歷史記錄
 	FN_BADPOST_HISTORY = "badpost.history" // 劣文歷史記錄
 	FN_CANVOTE         = "can_vote"
-	FN_VISIBLE         = "visable" // 不知道是誰拼錯的，將錯就錯吧... // variable corrected in go.
-	FN_ALOHAED         = "alohaed" // 上站要通知我的名單 (編輯用)
-	FN_ALOHA           = "aloha"   // 我上站要通知的名單 (自動產生)
-	FN_USIES           = "usies"   /* BBS log */
-	FN_DIR             = ".DIR"
-	FN_DIR_BOTTOM      = ".DIR.bottom"
+
+	FN_VISIBLE    = "visable" // nolint // 不知道是誰拼錯的，將錯就錯吧... // variable corrected in go.
+	FN_ALOHAED    = "alohaed" // 上站要通知我的名單 (編輯用)
+	FN_ALOHA      = "aloha"   // 我上站要通知的名單 (自動產生)
+	FN_USIES      = "usies"   /* BBS log */
+	FN_DIR        = ".DIR"
+	FN_DIR_BOTTOM = ".DIR.bottom"
 	// FN_BOARD                   = ".BRD"    /* board list */ (var)
 	FN_USEBOARD                = "usboard" /* 看板統計 */
 	FN_TOPSONG                 = "etc/topsong"
@@ -90,7 +91,7 @@ const (
 
 	MSG_BID    = "請輸入看板名稱: "
 	MSG_UID    = "請輸入使用者代號: "
-	MSG_PASSWD = "請輸入您的密碼: "
+	MSG_PASSWD = "請輸入您的密碼: " // nolint
 
 	MSG_BIG_BOY     = "我是大帥哥! ^o^Y"
 	MSG_BIG_GIRL    = "世紀大美女 *^-^*"
@@ -103,11 +104,11 @@ const (
 
 	ERR_BOARD_OPEN   = ".BOARD 開啟錯誤"
 	ERR_BOARD_UPDATE = ".BOARD 更新有誤"
-	ERR_PASSWD_OPEN  = ".PASSWDS 開啟錯誤"
+	ERR_PASSWD_OPEN  = ".PASSWDS 開啟錯誤" // nolint
 
 	ERR_BID      = "你搞錯了啦！沒有這個板喔！"
 	ERR_UID      = "這裡沒有這個人啦！"
-	ERR_PASSWD   = "密碼不對喔！請檢查帳號及密碼大小寫有無輸入錯誤。"
+	ERR_PASSWD   = "密碼不對喔！請檢查帳號及密碼大小寫有無輸入錯誤。" // nolint
 	ERR_FILENAME = "檔名不正確！"
 
 	TN_ANNOUNCE = "[公告]"

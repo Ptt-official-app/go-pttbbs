@@ -26,7 +26,7 @@ func TestDoSearchUserRaw(t *testing.T) {
 	tests := []struct {
 		name     string
 		args     args
-		expected ptttype.Uid
+		expected ptttype.UID
 		wantErr  bool
 	}{
 		// TODO: Add test cases.
@@ -69,7 +69,7 @@ func TestAddToUHash(t *testing.T) {
 	copy(user3[:], []byte("test3"))
 
 	type args struct {
-		uidInCache ptttype.UidInStore
+		uidInCache ptttype.UIDInStore
 		userID     *ptttype.UserID_t
 	}
 	tests := []struct {
@@ -97,7 +97,7 @@ func TestAddToUHash(t *testing.T) {
 			if err := AddToUHash(tt.args.uidInCache, tt.args.userID); (err != nil) != tt.wantErr {
 				t.Errorf("AddToUHash() error = %v, wantErr %v", err, tt.wantErr)
 			}
-			userID, err := GetUserID(tt.args.uidInCache.ToUid())
+			userID, err := GetUserID(tt.args.uidInCache.ToUID())
 			if err != nil {
 				t.Errorf("AddToUHash: unable get user id: e: %v", err)
 			}
@@ -124,15 +124,15 @@ func TestRemoveFromUHash(t *testing.T) {
 	AddToUHash(3, user)
 	AddToUHash(4, user)
 
-	hashHead := &[1 << ptttype.HASH_BITS]ptttype.UidInStore{}
-	nextInHash := &[ptttype.MAX_USERS]ptttype.UidInStore{}
+	hashHead := &[1 << ptttype.HASH_BITS]ptttype.UIDInStore{}
+	nextInHash := &[ptttype.MAX_USERS]ptttype.UIDInStore{}
 
 	Shm.ReadAt(
 		unsafe.Offsetof(Shm.Raw.HashHead),
 		unsafe.Sizeof(Shm.Raw.HashHead),
 		unsafe.Pointer(hashHead),
 	)
-	assert.Equal(t, ptttype.UidInStore(0), hashHead[35])
+	assert.Equal(t, ptttype.UIDInStore(0), hashHead[35])
 
 	Shm.ReadAt(
 		unsafe.Offsetof(Shm.Raw.NextInHash),
@@ -140,30 +140,30 @@ func TestRemoveFromUHash(t *testing.T) {
 		unsafe.Pointer(nextInHash),
 	)
 	for i := 0; i < 4; i++ {
-		assert.Equal(t, ptttype.UidInStore(i+1), nextInHash[i])
+		assert.Equal(t, ptttype.UIDInStore(i+1), nextInHash[i])
 	}
-	assert.Equal(t, ptttype.UidInStore(-1), nextInHash[4])
+	assert.Equal(t, ptttype.UIDInStore(-1), nextInHash[4])
 	for i := 5; i < len(nextInHash); i++ {
-		assert.Equal(t, ptttype.UidInStore(0), nextInHash[i])
+		assert.Equal(t, ptttype.UIDInStore(0), nextInHash[i])
 	}
 
-	nextInHash1 := &[ptttype.MAX_USERS]ptttype.UidInStore{}
-	copy(nextInHash1[:], []ptttype.UidInStore{1, 2, 3, 4, -1})
+	nextInHash1 := &[ptttype.MAX_USERS]ptttype.UIDInStore{}
+	copy(nextInHash1[:], []ptttype.UIDInStore{1, 2, 3, 4, -1})
 
-	nextInHash2 := &[ptttype.MAX_USERS]ptttype.UidInStore{}
-	copy(nextInHash2[:], []ptttype.UidInStore{1, 3, 3, 4, -1})
+	nextInHash2 := &[ptttype.MAX_USERS]ptttype.UIDInStore{}
+	copy(nextInHash2[:], []ptttype.UIDInStore{1, 3, 3, 4, -1})
 
-	nextInHash3 := &[ptttype.MAX_USERS]ptttype.UidInStore{}
-	copy(nextInHash3[:], []ptttype.UidInStore{1, 3, 3, -1, -1})
+	nextInHash3 := &[ptttype.MAX_USERS]ptttype.UIDInStore{}
+	copy(nextInHash3[:], []ptttype.UIDInStore{1, 3, 3, -1, -1})
 
 	type args struct {
-		uidInHash ptttype.UidInStore
+		uidInHash ptttype.UIDInStore
 	}
 	tests := []struct {
 		name           string
 		args           args
-		wantHashHead   ptttype.UidInStore
-		wantNextInHash *[ptttype.MAX_USERS]ptttype.UidInStore
+		wantHashHead   ptttype.UIDInStore
+		wantNextInHash *[ptttype.MAX_USERS]ptttype.UIDInStore
 		wantErr        bool
 	}{
 		// TODO: Add test cases.
@@ -242,7 +242,7 @@ func TestGetUserID(t *testing.T) {
 	userIDEmpty := &ptttype.UserID_t{}
 
 	type args struct {
-		uid ptttype.Uid
+		uid ptttype.UID
 	}
 	tests := []struct {
 		name    string
@@ -309,7 +309,7 @@ func TestSetUserID(t *testing.T) {
 	copy(nextInHash2[:], []int32{-1, -1})
 
 	type args struct {
-		uid    ptttype.Uid
+		uid    ptttype.UID
 		userID *ptttype.UserID_t
 	}
 	tests := []struct {
@@ -376,7 +376,7 @@ func TestAddCooldownTime(t *testing.T) {
 	InitFillUHash(false)
 
 	type args struct {
-		uid     ptttype.Uid
+		uid     ptttype.UID
 		minutes int
 	}
 	tests := []struct {
@@ -421,7 +421,7 @@ func TestAddPosttimes(t *testing.T) {
 	InitFillUHash(false)
 
 	type args struct {
-		uid   ptttype.Uid
+		uid   ptttype.UID
 		times int
 	}
 	tests := []struct {

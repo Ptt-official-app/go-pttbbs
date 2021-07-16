@@ -9,7 +9,7 @@ func CheckExistsUser(username string) (uuserID UUserID, err error) {
 		return "", ErrInvalidParams
 	}
 
-	uid, err := ptt.GetUid(uuserIDRaw)
+	uid, err := ptt.GetUID(uuserIDRaw)
 	if err != nil {
 		return "", err
 	}

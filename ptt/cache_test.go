@@ -188,7 +188,7 @@ func Test_postpermMsg(t *testing.T) {
 	defer teardownTest(t.Name())
 
 	type args struct {
-		uid   ptttype.Uid
+		uid   ptttype.UID
 		user  *ptttype.UserecRaw
 		bid   ptttype.Bid
 		board *ptttype.BoardHeaderRaw

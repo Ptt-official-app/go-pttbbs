@@ -22,7 +22,7 @@ import (
 //require middlewares to handle user-read-article.
 func ReadPost(
 	user *ptttype.UserecRaw,
-	uid ptttype.Uid,
+	uid ptttype.UID,
 	boardID *ptttype.BoardID_t,
 	bid ptttype.Bid,
 	filename *ptttype.Filename_t,
@@ -37,7 +37,7 @@ func ReadPost(
 		return nil, 0, ErrInvalidParams
 	}
 
-	cache.StatInc(ptttype.STAT_READPOST)
+	_ = cache.StatInc(ptttype.STAT_READPOST)
 
 	// 2. check perm.
 	board, err := cache.GetBCache(bid)
@@ -85,7 +85,7 @@ func ReadPost(
 
 func getBoardRestrictionReason(
 	user *ptttype.UserecRaw,
-	uid ptttype.Uid,
+	uid ptttype.UID,
 	board *ptttype.BoardHeaderRaw,
 	bid ptttype.Bid) (
 
@@ -107,7 +107,7 @@ func getBoardRestrictionReason(
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L1624
 func NewPost(
 	user *ptttype.UserecRaw,
-	uid ptttype.Uid,
+	uid ptttype.UID,
 	boardID *ptttype.BoardID_t,
 	bid ptttype.Bid,
 	posttype []byte,
@@ -126,7 +126,7 @@ func NewPost(
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L1258
 func DoPostArticle(
 	user *ptttype.UserecRaw,
-	uid ptttype.Uid,
+	uid ptttype.UID,
 	boardID *ptttype.BoardID_t,
 	bid ptttype.Bid,
 	flags ptttype.EditFlag,
@@ -201,12 +201,12 @@ func DoPostArticle(
 		return nil, err
 	}
 
-	if isUseAnony {
+	if isUseAnony { // skip errcheck because what we focus is publishing the articles
 		postfile.Filemode |= ptttype.FILE_ANONYMOUS
-		postfile.SetAnonUID(uid)
+		_ = postfile.SetAnonUID(uid)
 	} else {
 		postfile.Modified = types.DashT(fpath)
-		postfile.SetMoney(0)
+		_ = postfile.SetMoney(0)
 	}
 	copy(postfile.Owner[:], ownerID[:])
 	copy(postfile.Title[:], fullTitle)
@@ -222,7 +222,7 @@ func DoPostArticle(
 	if ptttype.QUERY_ARTICLE_URL {
 		url := GetWebURL(board, postfile)
 		msg := fmt.Sprintf("%s %v\n", ptttype.STR_URL_DISPLAYNAME_BIG5, url)
-		cmsys.LogFilef(fpath, cmsys.LOG_CREAT, msg)
+		_ = cmsys.LogFilef(fpath, cmsys.LOG_CREAT, msg)
 	}
 
 	bdir, err := setBDir(boardID)
@@ -302,7 +302,7 @@ func doPostArticleFullTitle(posttype []byte, title []byte) (fullTitle []byte) {
 	return bytes.Join([][]byte{{'['}, posttype, {']', ' '}, title}, []byte{})
 }
 
-func checkCooldown(user *ptttype.UserecRaw, uid ptttype.Uid, board *ptttype.BoardHeaderRaw, bid ptttype.Bid) (isCooldown bool, err error) {
+func checkCooldown(user *ptttype.UserecRaw, uid ptttype.UID, board *ptttype.BoardHeaderRaw, bid ptttype.Bid) (isCooldown bool, err error) {
 	limit := [8]int{4000, 1, 2000, 2, 1000, 3, -1, 10}
 
 	nowTS := types.NowTS()
@@ -344,7 +344,7 @@ func checkCooldown(user *ptttype.UserecRaw, uid ptttype.Uid, board *ptttype.Boar
 func tnSafeStrip(
 	title []byte,
 	user *ptttype.UserecRaw,
-	uid ptttype.Uid,
+	uid ptttype.UID,
 	board *ptttype.BoardHeaderRaw,
 	bid ptttype.Bid) (
 
@@ -362,7 +362,7 @@ func tnSafeStrip(
 func isTnAllowed(
 	title []byte,
 	user *ptttype.UserecRaw,
-	uid ptttype.Uid,
+	uid ptttype.UID,
 	board *ptttype.BoardHeaderRaw,
 	bid ptttype.Bid) (
 
@@ -394,7 +394,7 @@ func isTnAnnounce(title []byte) (isValid bool) {
 // https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L376
 func isModeBoard(
 	user *ptttype.UserecRaw,
-	uid ptttype.Uid,
+	uid ptttype.UID,
 	board *ptttype.BoardHeaderRaw,
 	bid ptttype.Bid) bool {
 	if user.UserLevel.HasUserPerm(ptttype.PERM_NOCITIZEN) {
@@ -418,7 +418,7 @@ func doPostArticleWriteFile(
 	title []byte,
 	content [][]byte,
 	user *ptttype.UserecRaw,
-	uid ptttype.Uid,
+	uid ptttype.UID,
 	board *ptttype.BoardHeaderRaw,
 	bid ptttype.Bid,
 	ip *ptttype.IPv4_t,
@@ -431,7 +431,7 @@ func doPostArticleWriteFile(
 
 func doCrosspost(
 	user *ptttype.UserecRaw,
-	uid ptttype.Uid,
+	uid ptttype.UID,
 	origBoard *ptttype.BoardHeaderRaw,
 	origBid ptttype.Bid,
 	boardID *ptttype.BoardID_t,
@@ -551,10 +551,10 @@ func GetWebURL(board *ptttype.BoardHeaderRaw, fhdr *ptttype.FileHeaderRaw) (url 
 	return ptttype.URL_PREFIX + "/" + folder + "/" + fn + ext
 }
 
-func CheckPostPerm2(uid ptttype.Uid, user *ptttype.UserecRaw, bid ptttype.Bid, board *ptttype.BoardHeaderRaw) (err error) {
+func CheckPostPerm2(uid ptttype.UID, user *ptttype.UserecRaw, bid ptttype.Bid, board *ptttype.BoardHeaderRaw) (err error) {
 	return CheckModifyPerm(uid, user, bid, board)
 }
 
-func CheckModifyPerm(uid ptttype.Uid, user *ptttype.UserecRaw, bid ptttype.Bid, board *ptttype.BoardHeaderRaw) (err error) {
+func CheckModifyPerm(uid ptttype.UID, user *ptttype.UserecRaw, bid ptttype.Bid, board *ptttype.BoardHeaderRaw) (err error) {
 	return postpermMsg(uid, user, bid, board)
 }

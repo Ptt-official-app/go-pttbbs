@@ -17,7 +17,7 @@ const (
 	UF_DBCS_DROP_REPEAT UFlag = 0x00000800 // detect and drop repeated input from evil clients
 	// #define UF_DBCS_???	    0x00000800	// reserved
 	UF_NO_MODMARK      UFlag = 0x00001000 // true if modified files are NOT marked
-	UF_COLORED_MODMARK UFlag = 0x00002000 // true if mod-mark is coloured.
+	UF_COLORED_MODMARK UFlag = 0x00002000 // true if mod-mark is colored.
 	// #define UF_MODMARK_???   0x00004000	// reserved
 	// #define UF_MODMARK_???   0x00008000	// reserved
 	UF_DEFBACKUP       UFlag = 0x00010000 // true if user defaults to backup

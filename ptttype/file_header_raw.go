@@ -82,7 +82,7 @@ func (f *FileHeaderRaw) AnonUID() (anonUID int32) {
 	return anonUID
 }
 
-func (f *FileHeaderRaw) SetAnonUID(uid Uid) (err error) {
+func (f *FileHeaderRaw) SetAnonUID(uid UID) (err error) {
 	buf := bytes.NewBuffer(f.Multi[:4])
 	return types.BinaryWrite(buf, binary.LittleEndian, &uid)
 }

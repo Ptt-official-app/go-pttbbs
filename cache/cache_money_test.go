@@ -22,7 +22,7 @@ func TestSetUMoney(t *testing.T) {
 	log.Infof("TestSetUMoney: MoneyOf(1): money: %v", money)
 
 	type args struct {
-		uid   ptttype.Uid
+		uid   ptttype.UID
 		money int32
 	}
 	tests := []struct {
@@ -79,7 +79,7 @@ func TestDeUMoney(t *testing.T) {
 	defer SetUMoney(1, 0)
 
 	type args struct {
-		uid   ptttype.Uid
+		uid   ptttype.UID
 		money int32
 	}
 	tests := []struct {

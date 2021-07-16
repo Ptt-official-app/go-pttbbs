@@ -19,16 +19,20 @@ func setupTest() {
 	// jww.SetStdoutThreshold(jww.LevelDebug)
 	log.SetLevel(log.DebugLevel)
 
+	types.SetIsTest("main")
+
+	ptttype.SetIsTest()
+
 	cache.SetIsTest()
 	cmbbs.SetIsTest()
 
-	log.Infof("setupTest: to initAllConfig: sem_key: %v", ptttype.PASSWDSEM_KEY)
+	log.Infof("setupTest: to initAllConfig: sem_key: %v shm_key: %v", ptttype.PASSWDSEM_KEY, ptttype.SHM_KEY)
 
 	_ = initAllConfig("./testcase/test.ini")
 
-	gin.SetMode(gin.TestMode)
+	log.Infof("setupTest: after initAllConfig: sem_key: %v shm_key: %v", ptttype.PASSWDSEM_KEY, ptttype.SHM_KEY)
 
-	ptttype.SetIsTest()
+	gin.SetMode(gin.TestMode)
 
 	_ = types.CopyFileToFile("./testcase/.PASSWDS1", "./testcase/.PASSWDS")
 
@@ -47,11 +51,13 @@ func setupTest() {
 }
 
 func teardownTest() {
+	defer types.UnsetIsTest("main")
+
+	defer ptttype.UnsetIsTest()
+
 	defer cache.UnsetIsTest()
 
 	defer cmbbs.UnsetIsTest()
-
-	defer ptttype.UnsetIsTest()
 
 	defer os.Remove("./testcase/.PASSWDS")
 	defer os.RemoveAll("./testcase/home")

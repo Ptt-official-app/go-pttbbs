@@ -5,7 +5,7 @@ import (
 	"os"
 	"regexp"
 
-	"github.com/Ptt-official-app/go-pttbbs/config_util"
+	configutil "github.com/Ptt-official-app/go-pttbbs/configutil"
 	"github.com/Ptt-official-app/go-pttbbs/types"
 	log "github.com/sirupsen/logrus"
 )
@@ -29,23 +29,23 @@ func InitConfig() (err error) {
 }
 
 func setStringConfig(idx string, orig string) string {
-	return config_util.SetStringConfig(configPrefix, idx, orig)
+	return configutil.SetStringConfig(configPrefix, idx, orig)
 }
 
 func setBoolConfig(idx string, orig bool) bool {
-	return config_util.SetBoolConfig(configPrefix, idx, orig)
+	return configutil.SetBoolConfig(configPrefix, idx, orig)
 }
 
 func setColorConfig(idx string, orig string) string {
-	return config_util.SetColorConfig(configPrefix, idx, orig)
+	return configutil.SetColorConfig(configPrefix, idx, orig)
 }
 
 func setIntConfig(idx string, orig int) int {
-	return config_util.SetIntConfig(configPrefix, idx, orig)
+	return configutil.SetIntConfig(configPrefix, idx, orig)
 }
 
 func setDoubleConfig(idx string, orig float64) float64 {
-	return config_util.SetDoubleConfig(configPrefix, idx, orig)
+	return configutil.SetDoubleConfig(configPrefix, idx, orig)
 }
 
 func setServiceMode(serviceMode ServiceMode) ServiceMode {

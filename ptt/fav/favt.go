@@ -21,8 +21,8 @@ func (t FavT) String() string {
 	}
 }
 
-func (theType FavT) IsValidFavType() bool {
-	switch theType {
+func (t FavT) IsValidFavType() bool {
+	switch t {
 	case FAVT_BOARD:
 		return true
 	case FAVT_FOLDER:
@@ -33,8 +33,8 @@ func (theType FavT) IsValidFavType() bool {
 	return false
 }
 
-func (theType FavT) GetTypeSize() uintptr {
-	switch theType {
+func (t FavT) GetTypeSize() uintptr {
+	switch t {
 	case FAVT_BOARD:
 		return SIZE_OF_FAV_BOARD
 	case FAVT_FOLDER:
@@ -45,8 +45,8 @@ func (theType FavT) GetTypeSize() uintptr {
 	return 0
 }
 
-func (theType FavT) GetFav4TypeSize() uintptr {
-	switch theType {
+func (t FavT) GetFav4TypeSize() uintptr {
+	switch t {
 	case FAVT_BOARD:
 		return SIZE_OF_FAV4_BOARD
 	case FAVT_FOLDER:

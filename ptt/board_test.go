@@ -18,7 +18,7 @@ func Test_boardPermStatNormally(t *testing.T) {
 
 	type args struct {
 		user  *ptttype.UserecRaw
-		uid   ptttype.Uid
+		uid   ptttype.UID
 		board *ptttype.BoardHeaderRaw
 		bid   ptttype.Bid
 	}
@@ -60,7 +60,7 @@ func TestIsBoardValidUser(t *testing.T) {
 
 	type args struct {
 		user    *ptttype.UserecRaw
-		uid     ptttype.Uid
+		uid     ptttype.UID
 		boardID *ptttype.BoardID_t
 		bid     ptttype.Bid
 	}
@@ -112,7 +112,7 @@ func TestNewBoard(t *testing.T) {
 
 	type args struct {
 		user         *ptttype.UserecRaw
-		uid          ptttype.Uid
+		uid          ptttype.UID
 		clsBid       ptttype.Bid
 		brdname      *ptttype.BoardID_t
 		brdClass     []byte

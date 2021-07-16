@@ -215,7 +215,7 @@ func Test_checkAndExpireAccount(t *testing.T) {
 	defer teardownTest(t.Name())
 
 	type args struct {
-		uid         ptttype.Uid
+		uid         ptttype.UID
 		user        *ptttype.UserecRaw
 		expireRange int
 	}
@@ -326,7 +326,7 @@ func TestNewRegister(t *testing.T) {
 		name        string
 		args        args
 		expected    *ptttype.UserecRaw
-		expectedUID ptttype.Uid
+		expectedUID ptttype.UID
 		wantErr     bool
 	}{
 		// TODO: Add test cases.
@@ -385,7 +385,7 @@ func Test_ensureErasingOldUser(t *testing.T) {
 	copy(userID2[:], []byte("CodingMan"))
 
 	type args struct {
-		uid    ptttype.Uid
+		uid    ptttype.UID
 		userID *ptttype.UserID_t
 	}
 	tests := []struct {
@@ -502,7 +502,7 @@ func TestRegister(t *testing.T) {
 	tests := []struct {
 		name         string
 		args         args
-		expectedUid  ptttype.Uid
+		expectedUid  ptttype.UID
 		expectedUser *ptttype.UserecRaw
 		wantErr      bool
 	}{

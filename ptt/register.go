@@ -33,7 +33,7 @@ func Register(
 	career *ptttype.Career_t,
 	address *ptttype.Address_t,
 	over18 bool,
-) (uid ptttype.Uid, user *ptttype.UserecRaw, err error) {
+) (uid ptttype.UID, user *ptttype.UserecRaw, err error) {
 	uid, user, err = NewRegister(
 		userID,
 		passwd,
@@ -86,7 +86,7 @@ func NewRegister(
 	career *ptttype.Career_t,
 	address *ptttype.Address_t,
 	over18 bool,
-) (uid ptttype.Uid, user *ptttype.UserecRaw, err error) {
+) (uid ptttype.UID, user *ptttype.UserecRaw, err error) {
 
 	// https://github.com/ptt/pttbbs/blob/master/mbbsd/register.c#L723
 	if isBadUserID(userID) {
@@ -186,7 +186,7 @@ func NewRegister(
 	return uid, user, nil
 }
 
-func ensureErasingOldUser(uid ptttype.Uid, userID *ptttype.UserID_t) (err error) {
+func ensureErasingOldUser(uid ptttype.UID, userID *ptttype.UserID_t) (err error) {
 	filename := path.SetHomePath(userID)
 	tmpFilename := filename + fmt.Sprintf(".%v", types.NowTS())
 	if !types.IsDir(filename) {
@@ -198,7 +198,7 @@ func ensureErasingOldUser(uid ptttype.Uid, userID *ptttype.UserID_t) (err error)
 		return nil
 	}
 
-	pwcuBitDisableLevel(uid, userID, ptttype.PERM_BASIC)
+	_ = pwcuBitDisableLevel(uid, userID, ptttype.PERM_BASIC)
 
 	return FatalLockedUser(userID)
 }
@@ -309,7 +309,7 @@ func SetupNewUser(user *ptttype.UserecRaw) error {
 		log.Errorf("SetupNewUser: unable to PasswdLock: e: %v", err)
 		return err
 	}
-	defer cmbbs.PasswdUnlock()
+	defer func() { _ = cmbbs.PasswdUnlock() }()
 
 	uid, err = cache.DoSearchUserRaw(&ptttype.EMPTY_USER_ID, nil)
 	if err != nil {
@@ -349,7 +349,7 @@ func tryCleanUser() error {
 	}
 
 	/* 不曉得為什麼要從 2 開始... Ptt:因為SYSOP在1 */
-	for uid := ptttype.Uid(2); uid <= ptttype.MAX_USERS; uid++ {
+	for uid := ptttype.UID(2); uid <= ptttype.MAX_USERS; uid++ {
 		// XXX ignoring err, do the log
 		user, err := passwdSyncQuery(uid)
 		if err != nil {
@@ -380,26 +380,26 @@ func isToCleanUser() (bool, error) {
 }
 
 // touchFresh
-func touchFresh() error {
+func touchFresh() (err error) {
 	file, err := os.OpenFile(ptttype.FN_FRESH, os.O_CREATE|os.O_RDWR, 0o600)
 	if err != nil {
 		return err
 	}
 	defer file.Close()
 
-	file.WriteString(time.Now().String())
+	_, err = file.WriteString(time.Now().String())
 
-	return nil
+	return err
 }
 
-func checkAndExpireAccount(uid ptttype.Uid, user *ptttype.UserecRaw, expireRange int) (int, error) {
+func checkAndExpireAccount(uid ptttype.UID, user *ptttype.UserecRaw, expireRange int) (int, error) {
 	expireValue := computeUserExpireValue(user)
 	if expireValue >= 0 { // not expired yet.
 		return expireValue, nil
 	}
 
 	if -expireValue > expireRange {
-		killUser(uid, &user.UserID)
+		_ = killUser(uid, &user.UserID)
 	} else {
 		expireValue = 0
 	}
@@ -449,6 +449,7 @@ func CheckEmailAllowRejectLists(email string) (err error) {
 		return ErrInvalidEmail
 	}
 
+	// reject
 	for _, each := range ptttype.REJECT_EMAIL_LIST {
 		isValid, err := each.IsValid(email)
 		if err != nil {
@@ -464,15 +465,19 @@ func CheckEmailAllowRejectLists(email string) (err error) {
 }
 
 func ensureNewestAllowRejectLists() (err error) {
-	ptttype.ALLOW_EMAIL_LIST, ptttype.ALLOW_EMAIL_LIST_UPDATE_TS, err = ensureNewestAllowRejectListCore(ptttype.FN_ALLOW_EMAIL_LIST, ptttype.ALLOW_EMAIL_LIST, ptttype.ALLOW_EMAIL_LIST_UPDATE_TS)
+	emailList, updateTS, err := ensureNewestAllowRejectListCore(ptttype.FN_ALLOW_EMAIL_LIST, ptttype.ALLOW_EMAIL_LIST, ptttype.ALLOW_EMAIL_LIST_UPDATE_TS)
 	if err != nil {
 		return err
 	}
+	ptttype.ALLOW_EMAIL_LIST = emailList
+	ptttype.ALLOW_EMAIL_LIST_UPDATE_TS = updateTS
 
-	ptttype.REJECT_EMAIL_LIST, ptttype.REJECT_EMAIL_LIST_UPDATE_TS, err = ensureNewestAllowRejectListCore(ptttype.FN_REJECT_EMAIL_LIST, ptttype.REJECT_EMAIL_LIST, ptttype.REJECT_EMAIL_LIST_UPDATE_TS)
+	emailList, updateTS, err = ensureNewestAllowRejectListCore(ptttype.FN_REJECT_EMAIL_LIST, ptttype.REJECT_EMAIL_LIST, ptttype.REJECT_EMAIL_LIST_UPDATE_TS)
 	if err != nil {
 		return err
 	}
+	ptttype.REJECT_EMAIL_LIST = emailList
+	ptttype.REJECT_EMAIL_LIST_UPDATE_TS = updateTS
 
 	return nil
 }

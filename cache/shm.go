@@ -112,13 +112,13 @@ func NewSHM(key types.Key_t, isUseHugeTlb bool, isCreate bool) error {
 	if Shm.Raw.Version != SHM_VERSION {
 		log.Errorf("cache.NewSHM: version not match: key: %v Shm.Raw.Version: %v SHM_VERSION: %v isCreate: %v isNew: %v", key, Shm.Raw.Version, SHM_VERSION, isCreate, isNew)
 		debug.PrintStack()
-		CloseSHM()
+		_ = CloseSHM()
 		return ErrShmVersion
 	}
 	if Shm.Raw.Size != int32(SHM_RAW_SZ) {
 		log.Warnf("cache.NewSHM: size not match (version matched): key: %v Shm.Raw.Size: %v SHM_RAW_SZ: %v size: %v isCreate: %v isNew: %v", key, Shm.Raw.Size, SHM_RAW_SZ, size, isCreate, isNew)
 
-		CloseSHM()
+		_ = CloseSHM()
 		return ErrShmSize
 	}
 
@@ -287,7 +287,7 @@ func (s *SHM) QsortCmpBoardClass() {
 	shm.QsortCmpBoardClass(s.Shmaddr, int(offsetBsorted), uint32(bnumber))
 }
 
-func (r *SHM) CheckMaxUser() {
+func (s *SHM) CheckMaxUser() {
 	utmpnumber := int32(0)
 	utmpnumber_p := &utmpnumber
 	utmpnumber_ptr := unsafe.Pointer(utmpnumber_p)
@@ -295,30 +295,30 @@ func (r *SHM) CheckMaxUser() {
 	maxuser_p := &maxuser
 	maxuser_ptr := unsafe.Pointer(maxuser_p)
 
-	r.ReadAt(
-		unsafe.Offsetof(r.Raw.UTMPNumber),
+	s.ReadAt(
+		unsafe.Offsetof(s.Raw.UTMPNumber),
 		types.INT32_SZ,
 		utmpnumber_ptr,
 	)
 
-	r.ReadAt(
-		unsafe.Offsetof(r.Raw.MaxUser),
+	s.ReadAt(
+		unsafe.Offsetof(s.Raw.MaxUser),
 		types.INT32_SZ,
 		maxuser_ptr,
 	)
 
 	if maxuser < utmpnumber {
 		*maxuser_p = utmpnumber
-		r.WriteAt(
-			unsafe.Offsetof(r.Raw.MaxUser),
+		s.WriteAt(
+			unsafe.Offsetof(s.Raw.MaxUser),
 			types.INT32_SZ,
 			maxuser_ptr,
 		)
 
 		nowTS := types.NowTS()
 
-		r.WriteAt(
-			unsafe.Offsetof(r.Raw.MaxTime),
+		s.WriteAt(
+			unsafe.Offsetof(s.Raw.MaxTime),
 			types.TIME4_SZ,
 			unsafe.Pointer(&nowTS),
 		)

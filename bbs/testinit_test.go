@@ -11,7 +11,7 @@ import (
 )
 
 func setupTest() {
-	types.SetIsTest()
+	types.SetIsTest("bbs")
 	ptttype.SetIsTest()
 
 	cache.SetIsTest()
@@ -43,7 +43,7 @@ func setupTest() {
 func teardownTest() {
 	defer time.Sleep(1 * time.Millisecond)
 
-	defer types.UnsetIsTest()
+	defer types.UnsetIsTest("bbs")
 
 	defer ptttype.UnsetIsTest()
 

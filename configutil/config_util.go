@@ -1,4 +1,4 @@
-package config_util
+package configutil
 
 import (
 	"strings"

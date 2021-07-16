@@ -29,7 +29,7 @@ func TestLoginQuery(t *testing.T) {
 		name        string
 		args        args
 		expected    *ptttype.UserecRaw
-		expectedUid ptttype.Uid
+		expectedUid ptttype.UID
 		wantErr     bool
 	}{
 		// TODO: Add test cases.
@@ -72,7 +72,7 @@ func Test_newUserInfoRaw(t *testing.T) {
 	defer teardownTest(t.Name())
 
 	type args struct {
-		uid  ptttype.Uid
+		uid  ptttype.UID
 		user *ptttype.UserecRaw
 		ip   *ptttype.IPv4_t
 		op   ptttype.UserOpMode
@@ -158,7 +158,7 @@ func TestLogin(t *testing.T) {
 	tests := []struct {
 		name         string
 		args         args
-		expectedUid  ptttype.Uid
+		expectedUid  ptttype.UID
 		expectedUser *ptttype.UserecRaw
 		wantErr      bool
 	}{
