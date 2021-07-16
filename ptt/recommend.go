@@ -7,7 +7,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L2768
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L2768
 
 func Recommend(
 	user *ptttype.UserecRaw,
@@ -30,7 +30,7 @@ func Recommend(
 		return nil, 0, ErrNotPermitted
 	}
 
-	//check-post-perm2
+	// check-post-perm2
 	err = CheckPostPerm2(uid, user, bid, board)
 	if err != nil {
 		return nil, 0, err
@@ -57,7 +57,7 @@ func Recommend(
 		return nil, 0, err
 	}
 
-	//check record permission
+	// check record permission
 	total, err := cache.GetBTotalWithRetry(bid)
 	if err != nil {
 		return nil, 0, err
@@ -74,7 +74,7 @@ func Recommend(
 		return nil, 0, ErrNotPermitted
 	}
 
-	//put recommand
+	// put recommand
 	comment, err = FormatCommentString(user, board, commentType, content, ip, from)
 	if err != nil {
 		return nil, 0, err
@@ -86,5 +86,4 @@ func Recommend(
 	}
 
 	return comment, mtime, nil
-
 }
