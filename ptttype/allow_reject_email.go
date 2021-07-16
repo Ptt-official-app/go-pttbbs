@@ -37,9 +37,9 @@ func NewAllowRejectEmail(line string) *AllowRejectEmail {
 func (a *AllowRejectEmail) IsValid(email string) (isValid bool, err error) {
 	lowerEmail := strings.ToLower(email)
 	switch a.Op {
-	case ALLOW_REJECT_EMAIL_OP_A: //equal
+	case ALLOW_REJECT_EMAIL_OP_A: // equal
 		return strings.EqualFold(email, a.Pattern), nil
-	case ALLOW_REJECT_EMAIL_OP_P: //pattern
+	case ALLOW_REJECT_EMAIL_OP_P: // pattern
 		return strings.Contains(lowerEmail, a.LowerPattern), nil
 	case ALLOW_REJECT_EMAIL_OP_S: //@domain
 		theIdx := strings.Index(email, "@")
@@ -47,7 +47,7 @@ func (a *AllowRejectEmail) IsValid(email string) (isValid bool, err error) {
 			return false, nil
 		}
 		return strings.EqualFold(email[(theIdx+1):], a.Pattern), nil
-	case ALLOW_REJECT_EMAIL_OP_D: //domain
+	case ALLOW_REJECT_EMAIL_OP_D: // domain
 		if len(email) <= len(a.Pattern) {
 			return false, nil
 		}
@@ -59,7 +59,7 @@ func (a *AllowRejectEmail) IsValid(email string) (isValid bool, err error) {
 		atIdx := domainIdx - 1
 		atChar := email[atIdx]
 		return atChar == '.' || atChar == '@', nil
-	case ALLOW_REJECT_EMAIL_OP_PERCENT: //all
+	case ALLOW_REJECT_EMAIL_OP_PERCENT: // all
 		return true, nil
 	default:
 		return false, ErrInvalidAllowRejectEmailOp

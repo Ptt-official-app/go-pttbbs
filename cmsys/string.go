@@ -74,14 +74,14 @@ func StripAnsi(src []byte, flag StripAnsiFlag) (dst []byte) {
 			continue
 		}
 
-		if idxSrc == len(src)-1 { //the last char
+		if idxSrc == len(src)-1 { // the last char
 			break
 		}
 
 		idxP := idxSrc + 1
 		p := src[idxP]
-		if p != '[' { //exception
-			//XXX we would like to skip the char following \x1e
+		if p != '[' { // exception
+			// XXX we would like to skip the char following \x1e
 			idxSrc += 1
 			if src[idxSrc] == 0 {
 				break
@@ -94,7 +94,7 @@ func StripAnsi(src []byte, flag StripAnsiFlag) (dst []byte) {
 
 		p = src[idxP]
 		if (flag == STRIP_ANSI_NO_RELOAD && isEscapeCommand(src[idxP])) || (flag == STRIP_ANSI_ONLY_COLOR && src[idxP] == 'm') {
-			theLen := idxP - idxSrc + 1 //len dst is same as src and idxDst is < idxSrc. we don't need to worry buffer overflow in dst for now.
+			theLen := idxP - idxSrc + 1 // len dst is same as src and idxDst is < idxSrc. we don't need to worry buffer overflow in dst for now.
 			copy(dst[idxDst:(idxDst+theLen)], src[idxSrc:(idxSrc+theLen)])
 			idxDst += theLen
 		}
@@ -140,7 +140,6 @@ func DBCSSafeTrim(str []byte) (newStr []byte) {
 }
 
 func DBCSStatus(str []byte, pos int) (status DBCSStatus_t) {
-
 	status = DBCS_ASCII
 
 	for ; pos >= 0; pos-- {

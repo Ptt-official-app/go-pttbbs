@@ -58,7 +58,7 @@ func AttachCheckSHM() (err error) {
 		)
 	}
 
-	//XXX line: 137 skip setting bcache because there is no direct-ptr for bcache for now.
+	// XXX line: 137 skip setting bcache because there is no direct-ptr for bcache for now.
 
 	// line: 139
 	ptouchTime := types.Time4(0)

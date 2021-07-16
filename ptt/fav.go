@@ -14,7 +14,7 @@ import (
 )
 
 func reginitFav(uid ptttype.Uid, user *ptttype.UserecRaw) (err error) {
-	//XXX TODO
+	// XXX TODO
 
 	file, err := os.Open(ptttype.FN_DEFAULT_FAVS)
 	if err != nil {
@@ -30,7 +30,7 @@ func reginitFav(uid ptttype.Uid, user *ptttype.UserecRaw) (err error) {
 	favrec := fav.NewFavRaw(nil)
 
 	for line, err := types.ReadLine(reader); err == nil; line, err = types.ReadLine(reader) {
-		//already chomped in readline
+		// already chomped in readline
 		lineStripped := cmsys.StripBlank(line)
 		if len(lineStripped) == 0 || lineStripped[0] == '#' {
 			continue
@@ -54,14 +54,13 @@ func reginitFav(uid ptttype.Uid, user *ptttype.UserecRaw) (err error) {
 }
 
 func GetFavorites(userID *ptttype.UserID_t, retrieveTS types.Time4) (content []byte, mtime types.Time4, err error) {
-
-	//1. get filename
+	// 1. get filename
 	filename, err := path.SetHomeFile(userID, fav.FAV)
 	if err != nil {
 		return nil, 0, err
 	}
 
-	//2. check mtime
+	// 2. check mtime
 	mtime, err = getFavoritesGetMTime(userID, filename)
 	if err != nil {
 		return nil, 0, err

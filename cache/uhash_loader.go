@@ -12,8 +12,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-//LoadUHash
-//Load user-hash into SHM.
+// LoadUHash
+// Load user-hash into SHM.
 func LoadUHash() (err error) {
 	if Shm == nil {
 		return ErrShmNotInit
@@ -34,7 +34,7 @@ func LoadUHash() (err error) {
 		unsafe.Pointer(&loaded),
 	)
 
-	//XXX in case it's not assumed zero, this becomes a race...
+	// XXX in case it's not assumed zero, this becomes a race...
 	if number == 0 && loaded == 0 {
 		// line: 60
 		err = fillUHash(false)
@@ -69,9 +69,7 @@ func LoadUHash() (err error) {
 	return nil
 }
 
-var (
-	uHashLoaderInvalidUserID = 0
-)
+var uHashLoaderInvalidUserID = 0
 
 func fillUHash(isOnfly bool) error {
 	log.Infof("fillUHash: start: isOnfly: %v", isOnfly)
@@ -168,7 +166,7 @@ func userecRawAddToUHash(uidInCache ptttype.UidInStore, userecRaw *ptttype.Usere
 	p := h
 	val := ptttype.UidInStore(0)
 	offsetHashHead := unsafe.Offsetof(Shm.Raw.HashHead)
-	//offsetNextInHash := unsafe.Offsetof(Shm.Raw.NextInHash)
+	// offsetNextInHash := unsafe.Offsetof(Shm.Raw.NextInHash)
 	isFirst := true
 
 	Shm.ReadAt(
@@ -326,8 +324,8 @@ func checkHash(h uint32) {
 
 		// line: 87
 		deep++
-		if deep == PRE_ALLOCATED_USERS+10 { //need to be larger than the pre-allocated users.
-			//warn if it's too deep, we may need to consider enlarge the hash-table.
+		if deep == PRE_ALLOCATED_USERS+10 { // need to be larger than the pre-allocated users.
+			// warn if it's too deep, we may need to consider enlarge the hash-table.
 			log.Warnf("checkHash deep: %v h: %v p: %v val: %v isFirst: %v", deep, h, p, val, isFirst)
 		}
 	}

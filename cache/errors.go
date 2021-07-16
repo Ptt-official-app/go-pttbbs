@@ -17,5 +17,5 @@ var (
 	ErrStats = errors.New("invalid stats")
 
 	ErrNotFound = errors.New("not found")
-	ErrBusy = errors.New("busy")
+	ErrBusy     = errors.New("busy")
 )

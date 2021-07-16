@@ -35,7 +35,7 @@ func initMain() error {
 		return err
 	}
 
-	//init shm
+	// init shm
 	err = cache.NewSHM(types.Key_t(ptttype.SHM_KEY), ptttype.USE_HUGETLB, ptttype.IS_NEW_SHM)
 	if err != nil {
 		log.Errorf("unable to init SHM: e: %v", err)
@@ -57,7 +57,7 @@ func initMain() error {
 		return err
 	}
 
-	//init sem
+	// init sem
 	err = cmbbs.PasswdInit()
 	if err != nil {
 		return err

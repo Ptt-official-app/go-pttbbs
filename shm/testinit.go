@@ -7,9 +7,7 @@ const (
 )
 
 func setupTest() {
-
 }
 
 func teardownTest() {
-
 }

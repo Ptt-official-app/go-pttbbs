@@ -15,7 +15,7 @@ type BoardSummary struct {
 	BrdAttr      ptttype.BrdAttr        `json:"attr"`
 	StatAttr     ptttype.BoardStatAttr  `json:"user_attr"`
 	Brdname      string                 `json:"brdname"`
-	RealTitle    []byte                 `json:"title"` //Require to separate RealTitle, BoardClass, BoardType, because it's hard to parse in utf8
+	RealTitle    []byte                 `json:"title"` // Require to separate RealTitle, BoardClass, BoardType, because it's hard to parse in utf8
 	BoardClass   []byte                 `json:"class"`
 	BoardType    []byte                 `json:"type"` //□, ◎, Σ
 	BM           []UUserID              `json:"moderators"`
@@ -30,7 +30,6 @@ type BoardSummary struct {
 }
 
 func NewBoardSummaryFromRaw(boardSummaryRaw *ptttype.BoardSummaryRaw) *BoardSummary {
-
 	bms := make([]UUserID, len(boardSummaryRaw.BM))
 	for idx, each := range boardSummaryRaw.BM {
 		bms[idx] = UUserID(types.CstrToString(each[:]))

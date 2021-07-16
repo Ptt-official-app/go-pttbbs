@@ -1,7 +1,7 @@
 package crypt
 
 const (
-	PASSLEN = 14 //This is considered as an independent package.
+	PASSLEN = 14 // This is considered as an independent package.
 )
 
 const (

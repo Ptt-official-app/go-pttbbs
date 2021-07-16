@@ -6,7 +6,6 @@ import (
 )
 
 func SetUserPerm(userID UUserID, setUserID UUserID, perm ptttype.PERM) (newPerm ptttype.PERM, err error) {
-
 	userIDRaw, err := userID.ToRaw()
 	if err != nil {
 		return ptttype.PERM_INVALID, ErrInvalidParams

@@ -1,8 +1,6 @@
 package ptttype
 
-var (
-	origBBSHOME = ""
-)
+var origBBSHOME = ""
 
 func SetIsTest() {
 	origBBSHOME = SetBBSHOME("./testcase")

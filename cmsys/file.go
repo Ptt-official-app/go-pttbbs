@@ -12,7 +12,7 @@ func FileExistsRecord(filename string, key []byte) bool {
 	return FileFindRecord(filename, key) > 0
 }
 
-//FileFindRecord (starting from 1)
+// FileFindRecord (starting from 1)
 func FileFindRecord(filename string, key []byte) (idx int) {
 	file, err := os.Open(filename)
 	if err != nil {

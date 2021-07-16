@@ -13,7 +13,7 @@ var (
 
 type Time4 int32
 
-//XXX check whether INT32_SZ should be TIME4_SZ
+// XXX check whether INT32_SZ should be TIME4_SZ
 const TIME4_SZ = unsafe.Sizeof(Time4(0))
 
 func NowTS() Time4 {
@@ -97,8 +97,8 @@ func (t Time4) CdateMdHMS() string {
 	return t.ToLocal().Format("01/02 15:04:05")
 }
 
-//Ctime
-//Sun Feb 14 13:33:27 2021
+// Ctime
+// Sun Feb 14 13:33:27 2021
 func (t Time4) Ctime() string {
 	return t.ToLocal().Format("Mon Jan _2 15:04:05 2006")
 }

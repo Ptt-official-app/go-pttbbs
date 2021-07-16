@@ -9,7 +9,7 @@ import (
 )
 
 func TestLoadGeneralArticles(t *testing.T) {
-	//setupTest in for-loop
+	// setupTest in for-loop
 	setupTest()
 	defer teardownTest()
 
@@ -142,7 +142,6 @@ func TestLoadGeneralArticles(t *testing.T) {
 			if gotIsNewest != tt.expectedIsNewest {
 				t.Errorf("LoadGeneralArticles() isNewest = %v, want %v", gotIsNewest, tt.expectedIsNewest)
 			}
-
 		})
 		wg.Wait()
 	}

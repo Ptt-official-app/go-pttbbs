@@ -141,7 +141,7 @@ func doAddRecommend(dirFilename string, idx ptttype.SortIdx, fhdr *ptttype.FileH
 }
 
 func doAddRecommendNoSmartMerge(filename string, comment []byte) (err error) {
-	file, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0644)
+	file, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0o644)
 	if err != nil {
 		return err
 	}
@@ -153,7 +153,7 @@ func doAddRecommendNoSmartMerge(filename string, comment []byte) (err error) {
 }
 
 func doAddRecommendSmartMerge(filename string, comment []byte) (err error) {
-	file, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0644)
+	file, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0o644)
 	if err != nil {
 		return err
 	}
@@ -176,7 +176,7 @@ func ModifyDirLite(dirFilename string, idx ptttype.SortIdx, filename *ptttype.Fi
 		return ptttype.ErrInvalidIdx
 	}
 
-	file, err := os.OpenFile(dirFilename, os.O_RDWR, 0644)
+	file, err := os.OpenFile(dirFilename, os.O_RDWR, 0o644)
 	if err != nil {
 		return err
 	}

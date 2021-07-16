@@ -6,7 +6,6 @@ import (
 )
 
 func GetFavorites(uuserID UUserID, retrieveTS types.Time4) (content []byte, mtime types.Time4, err error) {
-
 	userIDRaw, err := uuserID.ToRaw()
 	if err != nil {
 		return nil, 0, ErrInvalidParams

@@ -18,23 +18,22 @@ import (
 //adopted from the original start_client.
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/mbbsd.c#L1399
 func Login(userID *ptttype.UserID_t, passwd []byte, ip *ptttype.IPv4_t) (uid ptttype.Uid, user *ptttype.UserecRaw, err error) {
-
 	uid, user, err = LoginQuery(userID, passwd, ip)
 	if err != nil {
 		return 0, nil, err
 	}
 
-	//we don't do loadCurrentUser
-	//because logattempt, ensure_user_agreement_version
-	//should be in middleware.
+	// we don't do loadCurrentUser
+	// because logattempt, ensure_user_agreement_version
+	// should be in middleware.
 
 	err = userLogin(uid, user, ip)
 	if err != nil {
 		return 0, nil, err
 	}
 
-	//XXX we don't do auto-close-polls here.
-	//we should have another goroutine to do auto-close-polls.
+	// XXX we don't do auto-close-polls here.
+	// we should have another goroutine to do auto-close-polls.
 
 	return uid, user, nil
 }
@@ -60,7 +59,7 @@ func LoginQuery(userID *ptttype.UserID_t, passwd []byte, ip *ptttype.IPv4_t) (ui
 		return 0, nil, err
 	}
 
-	//no need to check password for guest.
+	// no need to check password for guest.
 	if types.Cstrcmp(user.UserID[:], []byte(ptttype.STR_GUEST)) == 0 {
 		return uid, user, nil
 	}
@@ -80,7 +79,6 @@ func LoginQuery(userID *ptttype.UserID_t, passwd []byte, ip *ptttype.IPv4_t) (ui
 }
 
 func userLogin(uid ptttype.Uid, user *ptttype.UserecRaw, ip *ptttype.IPv4_t) (err error) {
-
 	utmpID, uinfo, err := setupUtmp(uid, user, ip, ptttype.USER_OP_LOGIN)
 	if err != nil {
 		return err
@@ -89,10 +87,10 @@ func userLogin(uid ptttype.Uid, user *ptttype.UserecRaw, ip *ptttype.IPv4_t) (er
 	//XXX We should have new stats for go-pttbbs
 	//_ = cache.StatInc(ptttype.STAT_MBBSD_ENTER)
 
-	//XXX skip mail-related for now.
-	//currutmp->alerts |= load_mailalert(cuser.userid)
+	// XXX skip mail-related for now.
+	// currutmp->alerts |= load_mailalert(cuser.userid)
 
-	//https://github.com/ptt/pttbbs/blob/master/mbbsd/mbbsd.c#L1219
+	// https://github.com/ptt/pttbbs/blob/master/mbbsd/mbbsd.c#L1219
 	cache.Shm.CheckMaxUser()
 
 	if !(user.UserLevel.HasUserPerm(ptttype.PERM_SYSOP) && user.UserLevel.HasUserPerm(ptttype.PERM_SYSOPHIDE)) {
@@ -125,15 +123,14 @@ func setupUtmp(uid ptttype.Uid, user *ptttype.UserecRaw, ip *ptttype.IPv4_t, op 
 //XXX we need cmsys.StripNoneBig5,
 //with which newUserInfoRaw cannot be in ptttype.
 func newUserInfoRaw(uid ptttype.Uid, user *ptttype.UserecRaw, ip *ptttype.IPv4_t, op ptttype.UserOpMode) *ptttype.UserInfoRaw {
-
 	fromIP := types.InetAddr(types.CstrToString(ip[:]))
 	nowTS := types.NowTS()
 
-	//XXX we can do stringNoneBig5 here.
-	//because now:
-	//1. it's http-session based connection.
-	//2. the pid is fixed by user.
-	//3. user.nickname should not be affected.
+	// XXX we can do stringNoneBig5 here.
+	// because now:
+	// 1. it's http-session based connection.
+	// 2. the pid is fixed by user.
+	// 3. user.nickname should not be affected.
 	uinfo := &ptttype.UserInfoRaw{
 		Pid:      uid.ToPid(),
 		Uid:      uid,
@@ -192,7 +189,7 @@ func doAloha(utmpID ptttype.UtmpID, uinfo *ptttype.UserInfoRaw, hello []byte) {
 	var line []byte
 	friendID := &ptttype.UserID_t{}
 	for line, err = types.ReadLine(reader); err == nil; line, err = types.ReadLine(reader) {
-		//no need to do chomp because it's already taken care in ReadLine
+		// no need to do chomp because it's already taken care in ReadLine
 		friendID.CopyFrom(line)
 		friendUtmpID, friendInfo := cache.SearchUListUserID(friendID)
 		if friendInfo == nil {
@@ -212,7 +209,6 @@ func doAloha(utmpID ptttype.UtmpID, uinfo *ptttype.UserInfoRaw, hello []byte) {
 }
 
 func mkUserDir(userID *ptttype.UserID_t) (err error) {
-
 	dirname := path.SetHomePath(userID)
 
 	_, err = os.Stat(dirname)

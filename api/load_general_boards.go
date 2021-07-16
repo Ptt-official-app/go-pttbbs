@@ -11,8 +11,8 @@ const LOAD_GENERAL_BOARDS_R = "/boards"
 type LoadGeneralBoardsParams struct {
 	StartIdx string `json:"start_idx,omitempty" form:"start_idx,omitempty" url:"start_idx,omitempty"`
 	NBoards  int    `json:"max" form:"max" url:"max"`
-	Title    []byte `json:"title,omitempty" form:"title,omitempty" url:"title,omitempty"`       //sending utf8-bytes from middleware
-	Keyword  []byte `json:"keyword,omitempty" form:"keyword,omitempty" url:"keyword,omitempty"` //sending utf8-bytes from middleware
+	Title    []byte `json:"title,omitempty" form:"title,omitempty" url:"title,omitempty"`       // sending utf8-bytes from middleware
+	Keyword  []byte `json:"keyword,omitempty" form:"keyword,omitempty" url:"keyword,omitempty"` // sending utf8-bytes from middleware
 	Asc      bool   `json:"asc,omitempty" form:"asc,omitempty" url:"asc"`
 }
 

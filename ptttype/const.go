@@ -63,39 +63,35 @@ const (
 
 const (
 
-	//mbbsd/register.c line: 415
+	// mbbsd/register.c line: 415
 	CLEAN_USER_EXPIRE_RANGE_MIN = 365 * 12 * 60 // 180 days.
 
-	//mbbsd/user.c line: 42
+	// mbbsd/user.c line: 42
 	DIR_TMP   = "tmp"
 	DIR_HOME  = "home"
 	DIR_BOARD = "boards"
 )
 
 const (
-	//mbbsd/board.c line: 1477
+	// mbbsd/board.c line: 1477
 	USE_REAL_DESC_FOR_HIDDEN_BOARD_IN_MYFAV = false
 )
 
 var (
-	//mbbsd/register.c line: 381
+	// mbbsd/register.c line: 381
 	FN_FRESH_POSTFIX = ".fresh"
 	FN_FRESH         = BBSHOME + string(os.PathSeparator) + FN_FRESH_POSTFIX
 )
 
-var (
-	//ptt/article_list.go
-	N_SCREEN_BUFFER = 100 //to determine whether we should provide bottom.
-)
+// ptt/article_list.go
+var N_SCREEN_BUFFER = 100 // to determine whether we should provide bottom.
 
-var (
-	ALOHA_MSG = []byte{ //<<上站通知>> -- 我從山中來～
-		0x3c, 0x3c, 0xa4, 0x57, 0xaf, 0xb8, 0xb3, 0x71,
-		0xaa, 0xbe, 0x3e, 0x3e, 0x20, 0x2d, 0x2d, 0x20,
-		0xa7, 0xda, 0xb1, 0x71, 0xa4, 0x73, 0xa4, 0xa4,
-		0xa8, 0xd3, 0xa1, 0xe3,
-	}
-)
+var ALOHA_MSG = []byte{ //<<上站通知>> -- 我從山中來～
+	0x3c, 0x3c, 0xa4, 0x57, 0xaf, 0xb8, 0xb3, 0x71,
+	0xaa, 0xbe, 0x3e, 0x3e, 0x20, 0x2d, 0x2d, 0x20,
+	0xa7, 0xda, 0xb1, 0x71, 0xa4, 0x73, 0xa4, 0xa4,
+	0xa8, 0xd3, 0xa1, 0xe3,
+}
 
 const (
 	PASSWD2_VERSION = 1
@@ -108,7 +104,7 @@ var (
 	ALLOW_EMAIL_LIST_UPDATE_TS  types.Time4
 	REJECT_EMAIL_LIST_UPDATE_TS types.Time4
 
-	//https://github.com/ptt/pttbbs/blob/master/mbbsd/register.c#L958
+	// https://github.com/ptt/pttbbs/blob/master/mbbsd/register.c#L958
 	FN_ALLOW_EMAIL_LIST_POSTFIX  = "etc/whitemail"
 	FN_REJECT_EMAIL_LIST_POSTFIX = "etc/banemail"
 
@@ -117,7 +113,7 @@ var (
 )
 
 var (
-	//https://github.com/ptt/pttbbs/blob/master/mbbsd/fav.c#L1202
+	// https://github.com/ptt/pttbbs/blob/master/mbbsd/fav.c#L1202
 	FN_DEFAULT_FAVS_POSTFIX = "etc/myfav_defaults"
 	FN_DEFAULT_FAVS         = BBSHOME + string(os.PathSeparator) + FN_DEFAULT_FAVS_POSTFIX
 )
@@ -130,12 +126,12 @@ var (
 var (
 	ANONYMOUS_ID       = &UserID_t{'A', 'n', 'o', 'n', 'y', 'm', 'o', 'u', 's', '.'}
 	ANONYMOUS_ID_BYTES = types.CstrToBytes(ANONYMOUS_ID[:])
-	ANONYMOUS_NICKNAME = []byte{0xb2, 0x71, 0xb2, 0x71, 0xa7, 0xda, 0xac, 0x4f, 0xbd, 0xd6, 0x20, 0x3f, 0x20, 0x5e, 0x6f, 0x5e} //猜猜我是誰 ? ^o^
-	ANONYMOUS_HOST     = []byte{0xb0, 0xce, 0xa6, 0x57, 0xa4, 0xd1, 0xa8, 0xcf, 0xaa, 0xba, 0xae, 0x61}                         //匿名天使的家
+	ANONYMOUS_NICKNAME = []byte{0xb2, 0x71, 0xb2, 0x71, 0xa7, 0xda, 0xac, 0x4f, 0xbd, 0xd6, 0x20, 0x3f, 0x20, 0x5e, 0x6f, 0x5e} // 猜猜我是誰 ? ^o^
+	ANONYMOUS_HOST     = []byte{0xb0, 0xce, 0xa6, 0x57, 0xa4, 0xd1, 0xa8, 0xcf, 0xaa, 0xba, 0xae, 0x61}                         // 匿名天使的家
 )
 
 const (
-	//https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L15
+	// https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L15
 	NEWIDPOST_LIMIT_DAYS = 14
 )
 

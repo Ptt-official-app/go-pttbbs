@@ -62,7 +62,6 @@ func TestCreateShm(t *testing.T) {
 	for idx, tt := range tests {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
-
 			defer wg.Done()
 			gotShmid, gotShmaddr, gotIsNew, err := CreateShm(tt.args.key, tt.args.size, tt.args.is_usehugetlb)
 			log.Infof("(%v/%v): after CreateShm: gotShmid: %v gotShmaddr: %v gotIsNew: %v e: %v", idx, tt.name, gotShmid, gotShmaddr, gotIsNew, err)
@@ -118,7 +117,6 @@ func TestCloseShm(t *testing.T) {
 	for idx, tt := range tests {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
-
 			defer wg.Done()
 			err := CloseShm(tt.args.shmid, tt.args.shmaddr)
 			if (err != nil) != tt.wantErr {
@@ -188,7 +186,6 @@ func TestOpenShm(t *testing.T) {
 		})
 		wg.Wait()
 	}
-
 }
 
 func TestReadAt(t *testing.T) {
@@ -270,7 +267,6 @@ func TestReadAt(t *testing.T) {
 		})
 	}
 	wg.Wait()
-
 }
 
 func TestWriteAt(t *testing.T) {
@@ -349,11 +345,9 @@ func TestWriteAt(t *testing.T) {
 			if !reflect.DeepEqual(read, tt.expected) {
 				t.Errorf("WriteAt() = %v expected: %v", read, tt.expected)
 			}
-
 		})
 		wg.Wait()
 	}
-
 }
 
 func TestIncUint32(t *testing.T) {

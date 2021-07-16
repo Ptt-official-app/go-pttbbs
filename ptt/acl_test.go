@@ -51,7 +51,7 @@ func Test_isBannedByBoard(t *testing.T) {
 			defer wg.Done()
 			if tt.args.isToBan {
 				filename, _ := bakumanMakeTagFilename(&tt.args.user.UserID, types.Cstr(tt.args.board.Brdname[:]), BAKUMAN_OBJECT_TYPE_BOARD, true)
-				file, _ := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY, 0600)
+				file, _ := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY, 0o600)
 				write := bufio.NewWriter(file)
 				fmt.Fprintf(write, "%v\ntest", banTS)
 				write.Flush()

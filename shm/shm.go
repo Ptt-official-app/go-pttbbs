@@ -2,6 +2,7 @@ package shm
 
 //#include "shm.h"
 import "C"
+
 import (
 	"os"
 	"reflect"
@@ -12,7 +13,7 @@ import (
 )
 
 func CreateShm(key types.Key_t, size types.Size_t, isUseHugeTlb bool) (shmid int, shmaddr unsafe.Pointer, isNew bool, err error) {
-	flags := 0600 | IPC_CREAT | IPC_EXCL
+	flags := 0o600 | IPC_CREAT | IPC_EXCL
 	if isUseHugeTlb {
 		flags |= SHM_HUGETLB
 	}
@@ -22,7 +23,7 @@ func CreateShm(key types.Key_t, size types.Size_t, isUseHugeTlb bool) (shmid int
 	isEExist := false
 	if os.IsExist(err) {
 		isEExist = true
-		flags = 0600 | IPC_CREAT
+		flags = 0o600 | IPC_CREAT
 		if isUseHugeTlb {
 			flags |= SHM_HUGETLB
 		}

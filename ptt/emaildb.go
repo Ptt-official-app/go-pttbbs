@@ -9,7 +9,6 @@ import (
 //
 //XXX to implement
 func emailDBCheckEmail(userID *ptttype.UserID_t, email *ptttype.Email_t) (count int, err error) {
-
 	return -1, types.ErrNotImplemented
 }
 

@@ -15,7 +15,6 @@ import (
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/edit.c#L3733
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/edit.c#L1924
 func WriteFile(fpath string, flags ptttype.EditFlag, isSaveHeader bool, isUseAnony bool, title []byte, content [][]byte, user *ptttype.UserecRaw, uid ptttype.Uid, board *ptttype.BoardHeaderRaw, bid ptttype.Bid, ip *ptttype.IPv4_t, from []byte) (entropy int, err error) {
-
 	file, err := os.OpenFile(fpath, os.O_WRONLY|os.O_CREATE, ptttype.DEFAULT_FILE_CREATE_PERM)
 	if err != nil {
 		return 0, err
@@ -27,7 +26,7 @@ func WriteFile(fpath string, flags ptttype.EditFlag, isSaveHeader bool, isUseAno
 	}
 
 	for idx, line := range content {
-		if idx == len(content)-1 && len(line) == 0 { //ignore last empty line
+		if idx == len(content)-1 && len(line) == 0 { // ignore last empty line
 			break
 		}
 
@@ -46,7 +45,6 @@ func WriteFile(fpath string, flags ptttype.EditFlag, isSaveHeader bool, isUseAno
 }
 
 func writeHeader(file *os.File, flags ptttype.EditFlag, title []byte, user *ptttype.UserecRaw, board *ptttype.BoardHeaderRaw) (err error) {
-
 	err = writeHeaderAuthorBoard(file, flags, title, user, board)
 	if err != nil {
 		return err
@@ -55,7 +53,6 @@ func writeHeader(file *os.File, flags ptttype.EditFlag, title []byte, user *pttt
 	nowTS := types.NowTS()
 	fmt.Fprintf(file, "%s %s\n%s %s\n", ptttype.STR_TITLE_BIG5, title, ptttype.STR_TIME_BIG5, nowTS.Ctime())
 	return nil
-
 }
 
 func writeHeaderAuthorBoard(file *os.File, flags ptttype.EditFlag, title []byte, user *ptttype.UserecRaw, board *ptttype.BoardHeaderRaw) (err error) {

@@ -7,9 +7,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
-var (
-	TestShmKey = types.Key_t(65534)
-)
+var TestShmKey = types.Key_t(65534)
 
 var (
 	IsTest = false

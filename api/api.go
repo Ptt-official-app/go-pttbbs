@@ -33,7 +33,7 @@ func process(theFunc ApiFunc, params interface{}, c *gin.Context) {
 		return
 	}
 
-	//https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For
+	// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For
 	remoteAddr := strings.TrimSpace(c.GetHeader("X-Forwarded-For"))
 	if !isValidRemoteAddr(remoteAddr) {
 		processResult(c, nil, ErrInvalidRemoteAddr)

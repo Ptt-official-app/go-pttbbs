@@ -10,7 +10,6 @@ type ArticleSummaryRaw struct {
 }
 
 func NewArticleSummaryRaw(idx SortIdx, boardID *BoardID_t, header *FileHeaderRaw) *ArticleSummaryRaw {
-
 	class := header.Title.ToClass()
 
 	return &ArticleSummaryRaw{

@@ -10,7 +10,7 @@ var (
 	ErrInvalidFilename      = errors.New("invalid filename")
 	ErrInvalidBid           = errors.New("invalid bid")
 	ErrInvalidAid           = errors.New("invalid aid")
-        ErrInvalidIdx           = errors.New("invalid idx")
+	ErrInvalidIdx           = errors.New("invalid idx")
 	ErrInvalidType          = errors.New("invalid type")
 
 	ErrInvalidAllowRejectEmailOp = errors.New("invalid allow-reject-email op")

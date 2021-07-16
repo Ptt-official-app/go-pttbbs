@@ -31,7 +31,6 @@ func CreateCommentWrapper(c *gin.Context) {
 }
 
 func CreateComment(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (result interface{}, err error) {
-
 	theParams, ok := params.(*CreateCommentParams)
 	if !ok {
 		return nil, ErrInvalidParams

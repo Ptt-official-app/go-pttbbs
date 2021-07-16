@@ -63,8 +63,8 @@ func tryDeleteHomePath(userID *ptttype.UserID_t) error {
 	return nil
 }
 
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/user.c#L961
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/user.c#L1194
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/user.c#L961
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/user.c#L1194
 func ChangePasswd(userID *ptttype.UserID_t, origPasswd []byte, passwd []byte, ip *ptttype.IPv4_t) (err error) {
 	if userID == nil || userID[0] == 0 {
 		return ptttype.ErrInvalidUserID
@@ -164,10 +164,9 @@ func ChangeUserLevel2(userID *ptttype.UserID_t, perm ptttype.PERM2, isSet bool) 
 	return cmbbs.PasswdGetUserLevel2(userID)
 }
 
-//SetUserPerm
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/user.c#L1166
+// SetUserPerm
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/user.c#L1166
 func SetUserPerm(userec *ptttype.UserecRaw, setUid ptttype.Uid, setUserec *ptttype.UserecRaw, perm ptttype.PERM) (newPerm ptttype.PERM, err error) {
-
 	setUserec.UserLevel = perm
 
 	err = passwdSyncUpdate(setUid, setUserec)

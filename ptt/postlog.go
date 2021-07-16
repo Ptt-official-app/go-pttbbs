@@ -15,9 +15,7 @@ type PostLog struct {
 	Number  int32
 }
 
-var (
-	EMPTY_POSTLOG = PostLog{}
-)
+var EMPTY_POSTLOG = PostLog{}
 
 const (
 	POSTLOG_SZ = unsafe.Sizeof(EMPTY_POSTLOG)

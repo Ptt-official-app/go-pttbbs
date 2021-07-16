@@ -6,13 +6,10 @@ const (
 	testSemKey = 30000
 )
 
-var (
-	testMutex sync.Mutex
-)
+var testMutex sync.Mutex
 
 func setupTest() {
 	testMutex.Lock()
-
 }
 
 func teardownTest() {

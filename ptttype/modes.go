@@ -30,9 +30,9 @@ const (
 type UserOpMode uint8
 
 const (
-	//it's better that we explicitly specify
-	//the number in the code,
-	//to compare with c-pttbbs.
+	// it's better that we explicitly specify
+	// the number in the code,
+	// to compare with c-pttbbs.
 	USER_OP_IDLE     UserOpMode = 0
 	USER_OP_MMENU    UserOpMode = 1 /* menu mode */
 	USER_OP_ADMIN    UserOpMode = 2

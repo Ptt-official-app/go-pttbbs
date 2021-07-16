@@ -7,9 +7,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types/ansi"
 )
 
-var (
-	DEFAULT_BOARD = STR_SYSOP
-)
+var DEFAULT_BOARD = STR_SYSOP
 
 const (
 	//////////
@@ -44,7 +42,7 @@ const (
 	FN_USIES           = "usies"   /* BBS log */
 	FN_DIR             = ".DIR"
 	FN_DIR_BOTTOM      = ".DIR.bottom"
-	//FN_BOARD                   = ".BRD"    /* board list */ (var)
+	// FN_BOARD                   = ".BRD"    /* board list */ (var)
 	FN_USEBOARD                = "usboard" /* 看板統計 */
 	FN_TOPSONG                 = "etc/topsong"
 	FN_TICKET                  = "ticket"
@@ -147,8 +145,8 @@ const (
 
 	EQUSTR = 0 /* for strcmp */
 
-	//XXX not sure what it is. #define QCAST           int (*)(const void *, const void *)
-	//XXX replaced by ToUpper #define chartoupper(c)  ((c >= 'a' && c <= 'z') ? c+'A'-'a' : c)
+	// XXX not sure what it is. #define QCAST           int (*)(const void *, const void *)
+	// XXX replaced by ToUpper #define chartoupper(c)  ((c >= 'a' && c <= 'z') ? c+'A'-'a' : c)
 
 	LEN_AUTHOR1 = 5
 	LEN_AUTHOR2 = 7
@@ -281,12 +279,10 @@ var (
 )
 
 const (
-	FN_PASSWD2 = ".PASSWD2" //passwd2 in per-user directories.
+	FN_PASSWD2 = ".PASSWD2" // passwd2 in per-user directories.
 )
 
-var (
-	ReservedUserIDs []types.Cstr
-)
+var ReservedUserIDs []types.Cstr
 
 type FriendStat uint8
 
@@ -307,17 +303,17 @@ func (f FriendStat) HasPerm(f1 FriendStat) bool {
 
 var (
 	TN_ANNOUNCE_BIG5 = []byte{'[', 0xa4, 0xbd, 0xa7, 0x69, ']'}         //[公告]
-	STR_AUTHOR1_BIG5 = []byte{0xa7, 0x40, 0xaa, 0xcc, 0x3a}             //作者:
-	STR_AUTHOR2_BIG5 = []byte{0xb5, 0x6f, 0xab, 0x48, 0xa4, 0x48, 0x3a} //發信人:
-	STR_POST1_BIG5   = []byte{0xac, 0xdd, 0xaa, 0x4f, 0x3a}             //看板:
-	STR_POST2_BIG5   = []byte{0xaf, 0xb8, 0xa4, 0xba, 0x3a}             //站內:
+	STR_AUTHOR1_BIG5 = []byte{0xa7, 0x40, 0xaa, 0xcc, 0x3a}             // 作者:
+	STR_AUTHOR2_BIG5 = []byte{0xb5, 0x6f, 0xab, 0x48, 0xa4, 0x48, 0x3a} // 發信人:
+	STR_POST1_BIG5   = []byte{0xac, 0xdd, 0xaa, 0x4f, 0x3a}             // 看板:
+	STR_POST2_BIG5   = []byte{0xaf, 0xb8, 0xa4, 0xba, 0x3a}             // 站內:
 
-	STR_TITLE_BIG5 = []byte{0xbc, 0xd0, 0xc3, 0x44, 0x3a} //標題:
-	STR_TIME_BIG5  = []byte{0xae, 0xc9, 0xb6, 0xa1, 0x3a} //時間:
+	STR_TITLE_BIG5 = []byte{0xbc, 0xd0, 0xc3, 0x44, 0x3a} // 標題:
+	STR_TIME_BIG5  = []byte{0xae, 0xc9, 0xb6, 0xa1, 0x3a} // 時間:
 
 	STR_BBS_BIG5 = []byte{0xa1, 0xb0, 0x20, 0xb5, 0x6f, 0xab, 0x48, 0xaf, 0xb8, 0x3a} //※ 發信站:
 
-	STR_FROM_BIG5 = []byte{0xa8, 0xd3, 0xa6, 0xdb, 0x3a} //來自:
+	STR_FROM_BIG5 = []byte{0xa8, 0xd3, 0xa6, 0xdb, 0x3a} // 來自:
 
 	STR_URL_DISPLAYNAME_BIG5 = []byte{0xa1, 0xb0, 0x20, 0xa4, 0xe5, 0xb3, 0xb9, 0xba, 0xf4, 0xa7, 0x7d, 0x3a} //※ 文章網址:
 )

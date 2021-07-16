@@ -204,7 +204,7 @@ func TestBinWrite(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			f, _ := os.OpenFile("testcase/bin_write_file.txt", os.O_TRUNC|os.O_WRONLY|os.O_CREATE, 0600)
+			f, _ := os.OpenFile("testcase/bin_write_file.txt", os.O_TRUNC|os.O_WRONLY|os.O_CREATE, 0o600)
 			defer f.Close()
 
 			err := BinWrite(f, tt.args.v, tt.args.theSize)

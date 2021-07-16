@@ -23,7 +23,6 @@ func SetUMoney(uid ptttype.Uid, money int32) (int32, error) {
 	}
 
 	return MoneyOf(uid), nil
-
 }
 
 //DeUMoney

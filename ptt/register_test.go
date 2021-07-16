@@ -124,7 +124,7 @@ func Test_isToCleanUser(t *testing.T) {
 	setupTest(t.Name())
 	defer teardownTest(t.Name())
 
-	file, err := os.OpenFile(ptttype.FN_FRESH, os.O_CREATE|os.O_WRONLY, 0600)
+	file, err := os.OpenFile(ptttype.FN_FRESH, os.O_CREATE|os.O_WRONLY, 0o600)
 	if err != nil {
 		log.Warnf("unable to open-file: e: %v", err)
 	}

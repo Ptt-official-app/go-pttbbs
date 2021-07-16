@@ -1,5 +1,3 @@
 package main
 
-var (
-	HTTP_HOST = "localhost:3456"
-)
+var HTTP_HOST = "localhost:3456"

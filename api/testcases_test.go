@@ -50,24 +50,24 @@ func initTestVars() {
 		NumPosts:     0,
 		FirstLogin:   1600681288,
 		LastLogin:    1600756094,
-		LastHost: ptttype.IPv4_t{ //59.124.167.226
+		LastHost: ptttype.IPv4_t{ // 59.124.167.226
 			0x35, 0x39, 0x2e, 0x31, 0x32, 0x34, 0x2e, 0x31, 0x36, 0x37,
 			0x2e, 0x32, 0x32, 0x36,
 		},
-		Address: ptttype.Address_t{ //新竹縣子虛鄉烏有村543號
+		Address: ptttype.Address_t{ // 新竹縣子虛鄉烏有村543號
 			0xb7, 0x73, 0xa6, 0xcb, 0xbf, 0xa4, 0xa4, 0x6c, 0xb5, 0xea,
 			0xb6, 0x6d, 0xaf, 0x51, 0xa6, 0xb3, 0xa7, 0xf8, 0x35, 0x34,
 			0x33, 0xb8, 0xb9,
 		},
 		Over18:   true,
 		Pager:    ptttype.PAGER_ON,
-		Career:   ptttype.Career_t{0xa5, 0xfe, 0xb4, 0xba, 0xb3, 0x6e, 0xc5, 0xe9}, //全景軟體
+		Career:   ptttype.Career_t{0xa5, 0xfe, 0xb4, 0xba, 0xb3, 0x6e, 0xc5, 0xe9}, // 全景軟體
 		LastSeen: 1600681288,
 	}
 
 	testNewPostUserRaw1 = &ptttype.UserecRaw{
 		Version:    4194,
-		UserID:     ptttype.UserID_t{65, 49}, //A1
+		UserID:     ptttype.UserID_t{65, 49}, // A1
 		RealName:   ptttype.RealName_t{67, 111, 100, 105, 110, 103, 77, 97, 110},
 		Nickname:   ptttype.Nickname_t{175, 171},
 		PasswdHash: ptttype.Passwd_t{98, 104, 119, 118, 79, 74, 116, 102, 84, 49, 84, 65, 73, 0},
@@ -111,7 +111,7 @@ func initTestVars() {
 		*/
 		Over18:   true,
 		Pager:    ptttype.PAGER_ON,
-		Career:   []byte{0xa5, 0xfe, 0xb4, 0xba, 0xb3, 0x6e, 0xc5, 0xe9}, //全景軟體
+		Career:   []byte{0xa5, 0xfe, 0xb4, 0xba, 0xb3, 0x6e, 0xc5, 0xe9}, // 全景軟體
 		LastSeen: 1600681288,
 	}
 

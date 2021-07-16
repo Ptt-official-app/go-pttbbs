@@ -14,8 +14,8 @@ type ReloadUHashResult struct {
 func ReloadUHashWrapper(c *gin.Context) {
 	LoginRequiredQuery(ReloadUHash, nil, c)
 }
-func ReloadUHash(remoteAddr string, uuserID bbs.UUserID, params interface{}) (result interface{}, err error) {
 
+func ReloadUHash(remoteAddr string, uuserID bbs.UUserID, params interface{}) (result interface{}, err error) {
 	err = bbs.ReloadUHash()
 	if err != nil {
 		return nil, err

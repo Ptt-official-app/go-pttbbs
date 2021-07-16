@@ -1,10 +1,8 @@
 package cache
 
-var (
-	//////////
-	// !!! We should have only 1 Shm.
-	Shm *SHM = nil
-)
+//////////
+// !!! We should have only 1 Shm.
+var Shm *SHM = nil
 
 const (
 	// from https://github.com/ptt/pttbbs/blob/master/include/pttstruct.h

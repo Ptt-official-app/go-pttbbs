@@ -7,8 +7,8 @@ import (
 )
 
 const N_USEREC2_PAD_TAIL = DEFAULT_USEREC2_RAW_SZ -
-	types.INT32_SZ - //Version
-	PERM2_SZ - //UserLevel2
+	types.INT32_SZ - // Version
+	PERM2_SZ - // UserLevel2
 	types.TIME4_SZ
 
 type Userec2Raw struct {
@@ -22,8 +22,6 @@ type Userec2Raw struct {
 
 const DEFAULT_USEREC2_RAW_SZ = 128
 
-var (
-	USEREC2_RAW = Userec2Raw{}
-)
+var USEREC2_RAW = Userec2Raw{}
 
 const USEREC2_RAW_SZ = unsafe.Sizeof(USEREC2_RAW)

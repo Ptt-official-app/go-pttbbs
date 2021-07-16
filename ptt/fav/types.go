@@ -6,8 +6,10 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 )
 
-type Fid int8
-type Lid int8
+type (
+	Fid int8
+	Lid int8
+)
 
 type Favh int8
 

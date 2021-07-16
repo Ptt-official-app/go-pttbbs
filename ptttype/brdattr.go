@@ -23,7 +23,7 @@ const (
 	BRD_BMCOUNT          BrdAttr = 0x00004000 /* 板主設定列入記錄 */
 	BRD_SYMBOLIC         BrdAttr = 0x00008000 /* symbolic link to board */
 	BRD_NOBOO            BrdAttr = 0x00010000 /* 不可噓 */
-	//BRD_LOCALSAVE		0x00020000	/* 預設 Local Save */
+	// BRD_LOCALSAVE		0x00020000	/* 預設 Local Save */
 	BRD_RESTRICTEDPOST  BrdAttr = 0x00040000 /* 板友才能發文 */
 	BRD_GUESTPOST       BrdAttr = 0x00080000 /* guest能 post */
 	BRD_COOLDOWN        BrdAttr = 0x00100000 /* 冷靜 */

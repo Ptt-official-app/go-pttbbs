@@ -82,6 +82,14 @@ def _load_general_articles(bid):
     return ''
 
 
+@app.route(_with_app_prefix('/board/<bid>/articles/bottom'), methods=['GET'])
+def _load_bottom_articles(bid):
+    """
+    swagger_from_file: apidoc/load_bottom_articles.yaml
+    """
+    return ''
+
+
 @app.route(_with_app_prefix('/board/<bid>/summary'), methods=['GET'])
 def _load_board_summary(bid):
     """

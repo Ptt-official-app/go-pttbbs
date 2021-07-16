@@ -11,8 +11,8 @@ import (
 func TestLoadGeneralBoards(t *testing.T) {
 	setupTest()
 	defer teardownTest()
-	//setupTest moves in for-loop
-	//teardownTest moves in for-loop
+	// setupTest moves in for-loop
+	// teardownTest moves in for-loop
 	type args struct {
 		uuserID     UUserID
 		startIdxStr string

@@ -2,8 +2,8 @@ package cmsys
 
 import "github.com/Ptt-official-app/go-pttbbs/types"
 
-//https://github.com/ptt/pttbbs/blob/master/include/fnv_hash.h
-//commit: 6bdd36898bde207683a441cdffe2981e95de5b20
+// https://github.com/ptt/pttbbs/blob/master/include/fnv_hash.h
+// commit: 6bdd36898bde207683a441cdffe2981e95de5b20
 
 func fnv32Bytes(theBytes []byte, hval uint32) uint32 {
 	for _, each := range theBytes {
@@ -53,7 +53,6 @@ func fnv1a32DBCSCase(theBytes []byte, hval uint32) uint32 {
 			} else {
 				isDBCS = true
 			}
-
 		}
 		hval ^= uint32(each)
 		hval *= FNV_32_PRIME
@@ -114,7 +113,6 @@ func fnv1a64DBCSCase(theBytes []byte, hval uint64) uint64 {
 			} else {
 				isDBCS = true
 			}
-
 		}
 		hval ^= uint64(each)
 		hval *= FNV_64_PRIME

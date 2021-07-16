@@ -21,7 +21,6 @@ import (
 //	summary
 //	err
 func LoadBoardSummary(user *ptttype.UserecRaw, uid ptttype.Uid, bid ptttype.Bid) (summary *ptttype.BoardSummaryRaw, err error) {
-
 	bidInCache := bid.ToBidInStore()
 
 	if bidInCache < 0 {
@@ -74,8 +73,7 @@ func LoadHotBoards(user *ptttype.UserecRaw, uid ptttype.Uid) (summary []*ptttype
 //
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1147
 func loadHotBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idx uint8) *ptttype.BoardStat {
-
-	//read bid-in-cache
+	// read bid-in-cache
 	var bidInCache ptttype.BidInStore
 
 	cache.Shm.ReadAt(
@@ -87,7 +85,7 @@ func loadHotBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idx uint8) *pttt
 		return nil
 	}
 
-	//get board
+	// get board
 	board := &ptttype.BoardHeaderRaw{}
 	cache.Shm.ReadAt(
 		unsafe.Offsetof(cache.Shm.Raw.BCache)+ptttype.BOARD_HEADER_RAW_SZ*uintptr(bidInCache),
@@ -95,8 +93,8 @@ func loadHotBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idx uint8) *pttt
 		unsafe.Pointer(board),
 	)
 
-	//board-stat
-	//assuming that the hot-boards can be accessed by the public.
+	// board-stat
+	// assuming that the hot-boards can be accessed by the public.
 	bid := bidInCache.ToBid()
 	isGroupOp := groupOp(user, uid, board)
 	state := boardPermStat(user, uid, board, bid)
@@ -112,7 +110,6 @@ func loadHotBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idx uint8) *pttt
 }
 
 func LoadBoardsByBids(user *ptttype.UserecRaw, uid ptttype.Uid, bids []ptttype.Bid) (summaries []*ptttype.BoardSummaryRaw, err error) {
-
 	boardStats := make([]*ptttype.BoardStat, 0, len(bids))
 
 	for _, bid := range bids {
@@ -157,7 +154,6 @@ func loadBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, bid ptttype.Bid) (b
 //
 //Load auto-complete boards by name.
 func LoadAutoCompleteBoards(user *ptttype.UserecRaw, uid ptttype.Uid, startIdx ptttype.SortIdx, nBoards int, keyword []byte, isAsc bool) (summaries []*ptttype.BoardSummaryRaw, nextSummary *ptttype.BoardSummaryRaw, err error) {
-
 	nBoardsInCache := cache.NumBoards()
 	if startIdx == 0 && !isAsc {
 		startIdx = ptttype.SortIdx(nBoardsInCache)
@@ -167,11 +163,11 @@ func LoadAutoCompleteBoards(user *ptttype.UserecRaw, uid ptttype.Uid, startIdx p
 
 	nBoardsWithNext := nBoards + 1
 
-	//get board-stats
+	// get board-stats
 	boardStats := make([]*ptttype.BoardStat, 0, nBoardsWithNext)
 	if isAsc {
 		for idxInStore := startIdxInStore; ; idxInStore++ {
-			if int32(idxInStore) >= nBoardsInCache || len(boardStats) >= nBoardsWithNext { //add 1 more board for nextSummary
+			if int32(idxInStore) >= nBoardsInCache || len(boardStats) >= nBoardsWithNext { // add 1 more board for nextSummary
 				break
 			}
 			eachBoardStat, isEnd := loadAutoCompleteBoardStat(user, uid, idxInStore, keyword)
@@ -186,7 +182,7 @@ func LoadAutoCompleteBoards(user *ptttype.UserecRaw, uid ptttype.Uid, startIdx p
 		}
 	} else {
 		for idxInStore := startIdxInStore; ; idxInStore-- {
-			if int32(idxInStore) < 0 || len(boardStats) >= nBoardsWithNext { //add 1 more board for nextSummary
+			if int32(idxInStore) < 0 || len(boardStats) >= nBoardsWithNext { // add 1 more board for nextSummary
 				break
 			}
 			eachBoardStat, isEnd := loadAutoCompleteBoardStat(user, uid, idxInStore, keyword)
@@ -201,7 +197,7 @@ func LoadAutoCompleteBoards(user *ptttype.UserecRaw, uid ptttype.Uid, startIdx p
 		}
 	}
 
-	//boardStats to summaries
+	// boardStats to summaries
 	summaries, err = showBoardList(user, uid, boardStats)
 	if err != nil {
 		return nil, nil, err
@@ -232,7 +228,6 @@ func LoadAutoCompleteBoards(user *ptttype.UserecRaw, uid ptttype.Uid, startIdx p
 //	nextIdx: next idx in bsorted.
 //	err
 func LoadGeneralBoards(user *ptttype.UserecRaw, uid ptttype.Uid, startIdx ptttype.SortIdx, nBoards int, title []byte, keyword []byte, isAsc bool, bsortBy ptttype.BSortBy) (summaries []*ptttype.BoardSummaryRaw, nextSummary *ptttype.BoardSummaryRaw, err error) {
-
 	nBoardsInCache := cache.NumBoards()
 	if startIdx == 0 && !isAsc {
 		startIdx = ptttype.SortIdx(nBoardsInCache)
@@ -242,11 +237,11 @@ func LoadGeneralBoards(user *ptttype.UserecRaw, uid ptttype.Uid, startIdx ptttyp
 
 	nBoardsWithNext := nBoards + 1
 
-	//get board-stats
+	// get board-stats
 	boardStats := make([]*ptttype.BoardStat, 0, nBoardsWithNext)
 	if isAsc {
 		for idxInStore := startIdxInStore; ; idxInStore++ {
-			if int32(idxInStore) >= nBoardsInCache || len(boardStats) >= nBoardsWithNext { //add 1 more board for nextSummary
+			if int32(idxInStore) >= nBoardsInCache || len(boardStats) >= nBoardsWithNext { // add 1 more board for nextSummary
 				break
 			}
 			eachBoardStat := loadGeneralBoardStat(user, uid, idxInStore, title, keyword, bsortBy)
@@ -258,7 +253,7 @@ func LoadGeneralBoards(user *ptttype.UserecRaw, uid ptttype.Uid, startIdx ptttyp
 		}
 	} else {
 		for idxInStore := startIdxInStore; ; idxInStore-- {
-			if int32(idxInStore) < 0 || len(boardStats) >= nBoardsWithNext { //add 1 more board for nextSummary
+			if int32(idxInStore) < 0 || len(boardStats) >= nBoardsWithNext { // add 1 more board for nextSummary
 				break
 			}
 			eachBoardStat := loadGeneralBoardStat(user, uid, idxInStore, title, keyword, bsortBy)
@@ -270,7 +265,7 @@ func LoadGeneralBoards(user *ptttype.UserecRaw, uid ptttype.Uid, startIdx ptttyp
 		}
 	}
 
-	//boardStats to summaries
+	// boardStats to summaries
 	summaries, err = showBoardList(user, uid, boardStats)
 	if err != nil {
 		return nil, nil, err
@@ -361,7 +356,7 @@ func loadGeneralBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idxInStore p
 	return boardStat
 }
 
-//newBoardStat
+// newBoardStat
 func newBoardStat(bidInCache ptttype.BidInStore, state ptttype.BoardStatAttr, board *ptttype.BoardHeaderRaw, isGroupOp bool) (boardStat *ptttype.BoardStat) {
 	boardStat = &ptttype.BoardStat{}
 
@@ -371,9 +366,9 @@ func newBoardStat(bidInCache ptttype.BidInStore, state ptttype.BoardStatAttr, bo
 	boardStat.Board = board
 	boardStat.IsGroupOp = isGroupOp
 
-	//XXX need to modify this by having state with NBRD_SET_POSTMASK
-	//XXX this is a hack to ensure the brd-postmask
-	var brd_postmask = ptttype.BRD_POSTMASK
+	// XXX need to modify this by having state with NBRD_SET_POSTMASK
+	// XXX this is a hack to ensure the brd-postmask
+	brd_postmask := ptttype.BRD_POSTMASK
 	if (board.BrdAttr&ptttype.BRD_HIDE != 0) && (board.BrdAttr&ptttype.BRD_POSTMASK == 0) && state == ptttype.NBRD_BOARD {
 		cache.Shm.SetOrUint32(
 			unsafe.Offsetof(cache.Shm.Raw.BCache)+ptttype.BOARD_HEADER_RAW_SZ*uintptr(bidInCache)+ptttype.BOARD_HEADER_BRD_ATTR_OFFSET,
@@ -424,18 +419,17 @@ func showBoardList(user *ptttype.UserecRaw, uid ptttype.Uid, boardStats []*pttty
 //
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1460
 func parseBoardSummary(user *ptttype.UserecRaw, uid ptttype.Uid, boardStat *ptttype.BoardStat) (summary *ptttype.BoardSummaryRaw) {
-
-	//XXX we do not deal with fav in go-bbs.
+	// XXX we do not deal with fav in go-bbs.
 	if boardStat.Attr&ptttype.NBRD_LINE != 0 {
 		return &ptttype.BoardSummaryRaw{Bid: boardStat.Bid, StatAttr: boardStat.Attr}
 	}
 
-	//XXX we do not deal with fav in go-bbs.
+	// XXX we do not deal with fav in go-bbs.
 	if boardStat.Attr&ptttype.NBRD_FOLDER != 0 {
 		return &ptttype.BoardSummaryRaw{Bid: boardStat.Bid, StatAttr: boardStat.Attr}
 	}
 
-	//hidden board
+	// hidden board
 	if !boardStat.IsGroupOp && boardStat.Attr == ptttype.NBRD_INVALID {
 		summary = ptttype.NewBoardSummaryRawWithReason(boardStat)
 		return summary
@@ -462,12 +456,10 @@ func parseBoardSummary(user *ptttype.UserecRaw, uid ptttype.Uid, boardStat *pttt
 }
 
 func FindBoardStartIdxByName(boardID *ptttype.BoardID_t, isAsc bool) (startIdx ptttype.SortIdx, err error) {
-
 	return cache.FindBoardIdxByName(boardID, isAsc)
 }
 
 func FindBoardStartIdxByClass(cls []byte, boardID *ptttype.BoardID_t, isAsc bool) (startIdx ptttype.SortIdx, err error) {
-
 	return cache.FindBoardIdxByClass(cls, boardID, isAsc)
 }
 

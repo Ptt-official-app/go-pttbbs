@@ -14,6 +14,5 @@ func LoadGeneralBoardsByClassWrapper(c *gin.Context) {
 }
 
 func LoadGeneralBoardsByClass(remoteAddr string, uuserID bbs.UUserID, params interface{}) (interface{}, error) {
-
 	return loadGeneralBoardsCore(remoteAddr, uuserID, params, ptttype.BSORT_BY_CLASS)
 }

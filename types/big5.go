@@ -16,7 +16,6 @@ var (
 )
 
 func initBig5() (err error) {
-
 	err = initB2U()
 	if err != nil {
 		return err
@@ -31,7 +30,7 @@ func initBig5() (err error) {
 }
 
 func initB2U() error {
-	if len(big5ToUTF8) > 0 { //already loaded
+	if len(big5ToUTF8) > 0 { // already loaded
 		return nil
 	}
 
@@ -72,7 +71,7 @@ func initB2U() error {
 }
 
 func initU2B() error {
-	if len(utf8ToBig5) > 0 { //already loaded
+	if len(utf8ToBig5) > 0 { // already loaded
 		return nil
 	}
 
@@ -148,7 +147,6 @@ func initToUtf8(ucsCode string) []byte {
 		theBytes[2] = byte(0x80 | ((ucs2) & 0x3F))
 		return theBytes
 	}
-
 }
 
 func Big5ToUtf8(big5 []byte) (utf8 string) {
@@ -160,7 +158,7 @@ func Big5ToUtf8(big5 []byte) (utf8 string) {
 			p_big5 = p_big5[1:]
 		} else {
 			if len(p_big5) < 2 {
-				//log.Warningf("Big5ToUtf8: unable to parse big5: p_big5: %v", p_big5)
+				// log.Warningf("Big5ToUtf8: unable to parse big5: p_big5: %v", p_big5)
 				break
 			}
 			eachUtf8 := big5ToUTF8[string(p_big5[:2])]

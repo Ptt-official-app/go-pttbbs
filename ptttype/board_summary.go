@@ -18,7 +18,6 @@ type BoardSummaryRaw struct {
 }
 
 func NewBoardSummaryRawWithReason(boardStat *BoardStat) (summary *BoardSummaryRaw) {
-
 	board := boardStat.Board
 
 	reason := RESTRICT_REASON_FORBIDDEN

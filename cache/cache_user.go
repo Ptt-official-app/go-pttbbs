@@ -10,7 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-//AddToUHash
+// AddToUHash
 func AddToUHash(uidInCache ptttype.UidInStore, userID *ptttype.UserID_t) error {
 	h := cmsys.StringHashWithHashBits(userID[:])
 
@@ -70,7 +70,7 @@ func AddToUHash(uidInCache ptttype.UidInStore, userID *ptttype.UserID_t) error {
 	return nil
 }
 
-//RemoveFromUHash
+// RemoveFromUHash
 func RemoveFromUHash(uidInCache ptttype.UidInStore) error {
 	userID := &ptttype.UserID_t{}
 
@@ -151,7 +151,7 @@ func DoSearchUserRaw(userID *ptttype.UserID_t, rightID *ptttype.UserID_t) (pttty
 	_ = StatInc(ptttype.STAT_SEARCHUSER)
 	h := cmsys.StringHashWithHashBits(userID[:])
 
-	//p = SHM->hash_head[h]  //line: 219
+	// p = SHM->hash_head[h]  //line: 219
 	p := ptttype.UidInStore(0)
 	Shm.ReadAt(
 		unsafe.Offsetof(Shm.Raw.HashHead)+types.INT32_SZ*uintptr(h),
@@ -161,7 +161,7 @@ func DoSearchUserRaw(userID *ptttype.UserID_t, rightID *ptttype.UserID_t) (pttty
 
 	shmUserID := ptttype.UserID_t{}
 	for times := 0; times < ptttype.MAX_USERS && p != -1 && p < ptttype.MAX_USERS; times++ {
-		//if (strcasecmp(SHM->userid[p], userid) == 0)  //line: 222
+		// if (strcasecmp(SHM->userid[p], userid) == 0)  //line: 222
 		Shm.ReadAt(
 			unsafe.Offsetof(Shm.Raw.Userid)+ptttype.USER_ID_SZ*uintptr(p),
 			ptttype.USER_ID_SZ,
@@ -223,8 +223,8 @@ func SetUserID(uid ptttype.Uid, userID *ptttype.UserID_t) (err error) {
 	return nil
 }
 
-//CooldownTimeOf
-//https://github.com/ptt/pttbbs/blob/master/include/cmbbs.h#L97
+// CooldownTimeOf
+// https://github.com/ptt/pttbbs/blob/master/include/cmbbs.h#L97
 func CooldownTimeOf(uid ptttype.Uid) (cooldowntime types.Time4) {
 	uidInCache := uid.ToUidInStore()
 
@@ -234,13 +234,12 @@ func CooldownTimeOf(uid ptttype.Uid) (cooldowntime types.Time4) {
 		unsafe.Pointer(&cooldowntime),
 	)
 
-	//types.Time4 is int32, not uint32
-	//we use 0x7FFFFFF0 instead of 0xFFFFFFF0
+	// types.Time4 is int32, not uint32
+	// we use 0x7FFFFFF0 instead of 0xFFFFFFF0
 	return cooldowntime & 0x7FFFFFF0
 }
 
 func SetCooldownTime(uid ptttype.Uid, cooldowntime types.Time4) (err error) {
-
 	uidInCache := uid.ToUidInStore()
 	posttimes := PosttimesOf(uid)
 
@@ -268,8 +267,8 @@ func AddCooldownTime(uid ptttype.Uid, minutes int) (err error) {
 	return SetCooldownTime(uid, base)
 }
 
-//PosttimesOf
-//https://github.com/ptt/pttbbs/blob/master/include/cmbbs.h#L98
+// PosttimesOf
+// https://github.com/ptt/pttbbs/blob/master/include/cmbbs.h#L98
 func PosttimesOf(uid ptttype.Uid) (posttimes types.Time4) {
 	uidInCache := uid.ToUidInStore()
 
@@ -283,7 +282,6 @@ func PosttimesOf(uid ptttype.Uid) (posttimes types.Time4) {
 }
 
 func SetPosttimes(uid ptttype.Uid, posttimes types.Time4) (err error) {
-
 	uidInCache := uid.ToUidInStore()
 	cooldowntime := CooldownTimeOf(uid)
 	newPosttimes := cooldowntime | posttimes

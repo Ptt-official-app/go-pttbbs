@@ -5,9 +5,8 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 )
 
-//valid users to see/change the user-info.
+// valid users to see/change the user-info.
 func userInfoIsValidUser(uuserID bbs.UUserID, queryUUserID bbs.UUserID) (isValid bool) {
-
 	if queryUUserID == bbs.UUserID(ptttype.STR_GUEST) {
 		return false
 	}
@@ -20,9 +19,8 @@ func userInfoIsValidUser(uuserID bbs.UUserID, queryUUserID bbs.UUserID) (isValid
 	return uuserID == queryUUserID
 }
 
-//valid users to see/change email / user-level2
+// valid users to see/change email / user-level2
 func userInfoIsValidEmailUser(uuserID bbs.UUserID, queryUUserID bbs.UUserID, jwt string, context EmailTokenContext, isAllowSysop bool) (isValid bool, email string) {
-
 	if queryUUserID == bbs.UUserID(ptttype.STR_GUEST) {
 		return false, ""
 	}

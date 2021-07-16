@@ -13,7 +13,7 @@ type RegisterParams struct {
 	Passwd     string `json:"password"`
 	Email      string `json:"email,omitempty"`
 
-	Nickname []byte `json:"nickname,omitempty"` //sending utf8-bytes from middleware.
+	Nickname []byte `json:"nickname,omitempty"` // sending utf8-bytes from middleware.
 	Realname []byte `json:"realname,omitempty"`
 	Career   []byte `json:"career,omitempty"`
 	Address  []byte `json:"address,omitempty"`

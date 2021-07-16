@@ -6,7 +6,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
-//LoadGeneralArticles in descending mode.
+// LoadGeneralArticles in descending mode.
 func LoadGeneralArticles(
 	uuserID UUserID,
 	bboardID BBoardID,
@@ -40,13 +40,13 @@ func LoadGeneralArticles(
 		return nil, "", 0, false, -1, ErrInvalidParams
 	}
 
-	//1. find start idx. start-idx as nextCreateTime if unable to find startIdxStr
+	// 1. find start idx. start-idx as nextCreateTime if unable to find startIdxStr
 	startIdx, err := loadGeneralArticlesToStartIdx(userecRaw, uid, boardIDRaw, bid, startIdxStr, isDesc)
 	if err != nil {
 		return nil, "", 0, false, -1, ErrInvalidParams
 	}
 
-	//2. load articles.
+	// 2. load articles.
 	var summariesRaw []*ptttype.ArticleSummaryRaw
 	var nextSummaryRaw *ptttype.ArticleSummaryRaw
 	if startIdx >= 0 {
@@ -56,7 +56,7 @@ func LoadGeneralArticles(
 		}
 	}
 
-	//3. nextIdxStr
+	// 3. nextIdxStr
 	nextIdxStr = ""
 	nextCreateTime = 0
 	if nextSummaryRaw != nil {
@@ -71,7 +71,7 @@ func LoadGeneralArticles(
 		summaries[idx] = eachSummary
 	}
 
-	if startIdxStr == "" { //no need to check startIdxStr
+	if startIdxStr == "" { // no need to check startIdxStr
 		return summaries, nextIdxStr, nextCreateTime, isNewest, startNumIdx, nil
 	}
 

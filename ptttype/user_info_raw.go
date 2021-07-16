@@ -7,7 +7,7 @@ import (
 )
 
 type UserInfoRaw struct {
-	//Require updating SHM_VERSION if USER_INFO_RAW_SZ is changed.
+	// Require updating SHM_VERSION if USER_INFO_RAW_SZ is changed.
 	Uid      Uid         /* Used to find user name in passwd file XXX need to check whether it is Uid or UidInStore */
 	Pid      types.Pid_t /* kill() to notify user of talk request */
 	SockAddr int32       /* ... */
@@ -94,14 +94,16 @@ type UserInfoRaw struct {
 	WBTime types.Time4
 }
 
-//Require updating SHM_VERSION if USER_INFO_RAW_SZ is changed.
+// Require updating SHM_VERSION if USER_INFO_RAW_SZ is changed.
 var EMPTY_USER_INFO_RAW = UserInfoRaw{}
 
-const USER_INFO_RAW_SZ = unsafe.Sizeof(EMPTY_USER_INFO_RAW)
-const USER_INFO_USER_ID_OFFSET = unsafe.Offsetof(EMPTY_USER_INFO_RAW.UserID)
-const USER_INFO_PID_OFFSET = unsafe.Offsetof(EMPTY_USER_INFO_RAW.Pid)
-const USER_INFO_MODE_OFFSET = unsafe.Offsetof(EMPTY_USER_INFO_RAW.Mode)
-const USER_INFO_MODE_SZ = unsafe.Sizeof(EMPTY_USER_INFO_RAW.Mode)
+const (
+	USER_INFO_RAW_SZ         = unsafe.Sizeof(EMPTY_USER_INFO_RAW)
+	USER_INFO_USER_ID_OFFSET = unsafe.Offsetof(EMPTY_USER_INFO_RAW.UserID)
+	USER_INFO_PID_OFFSET     = unsafe.Offsetof(EMPTY_USER_INFO_RAW.Pid)
+	USER_INFO_MODE_OFFSET    = unsafe.Offsetof(EMPTY_USER_INFO_RAW.Mode)
+	USER_INFO_MODE_SZ        = unsafe.Sizeof(EMPTY_USER_INFO_RAW.Mode)
+)
 
 type FriendOnline uint32
 

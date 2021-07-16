@@ -29,7 +29,6 @@ func AttemptSetIDEmailWrapper(c *gin.Context) {
 }
 
 func AttemptSetIDEmail(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (result interface{}, err error) {
-
 	theParams, ok := params.(*AttemptSetIDEmailParams)
 	if !ok {
 		return nil, ErrInvalidParams
