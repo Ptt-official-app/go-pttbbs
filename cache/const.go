@@ -2,7 +2,7 @@ package cache
 
 //////////
 // !!! We should have only 1 Shm.
-var Shm *SHM = nil
+var Shm *SHM
 
 const (
 	// from https://github.com/ptt/pttbbs/blob/master/include/pttstruct.h

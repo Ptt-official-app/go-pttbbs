@@ -13,14 +13,14 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func GetUid(userID *ptttype.UserID_t) (uid ptttype.Uid, err error) {
+func GetUID(userID *ptttype.UserID_t) (uid ptttype.UID, err error) {
 	return cache.SearchUserRaw(userID, nil)
 }
 
 //killUser
 //
 //Assume correct uid / userID correspondance.
-func killUser(uid ptttype.Uid, userID *ptttype.UserID_t) error {
+func killUser(uid ptttype.UID, userID *ptttype.UserID_t) error {
 	if uid <= 0 || userID == nil {
 		return ptttype.ErrInvalidUserID
 	}
@@ -56,7 +56,7 @@ func tryDeleteHomePath(userID *ptttype.UserID_t) error {
 		return err
 	}
 
-	if err := os.RemoveAll(homePath); err != nil {
+	if err := os.RemoveAll(homePath); err != nil { // nolint
 		return err
 	}
 
@@ -166,10 +166,10 @@ func ChangeUserLevel2(userID *ptttype.UserID_t, perm ptttype.PERM2, isSet bool) 
 
 // SetUserPerm
 // https://github.com/ptt/pttbbs/blob/master/mbbsd/user.c#L1166
-func SetUserPerm(userec *ptttype.UserecRaw, setUid ptttype.Uid, setUserec *ptttype.UserecRaw, perm ptttype.PERM) (newPerm ptttype.PERM, err error) {
+func SetUserPerm(userec *ptttype.UserecRaw, setUID ptttype.UID, setUserec *ptttype.UserecRaw, perm ptttype.PERM) (newPerm ptttype.PERM, err error) {
 	setUserec.UserLevel = perm
 
-	err = passwdSyncUpdate(setUid, setUserec)
+	err = passwdSyncUpdate(setUID, setUserec)
 	if err != nil {
 		return ptttype.PERM_INVALID, err
 	}

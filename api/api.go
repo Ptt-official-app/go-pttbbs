@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func JSON(theFunc ApiFunc, params interface{}, c *gin.Context) {
+func JSON(theFunc APIFunc, params interface{}, c *gin.Context) {
 	err := c.ShouldBindJSON(params)
 	if err != nil {
 		processResult(c, nil, err)
@@ -16,7 +16,7 @@ func JSON(theFunc ApiFunc, params interface{}, c *gin.Context) {
 	process(theFunc, params, c)
 }
 
-func Query(theFunc ApiFunc, params interface{}, c *gin.Context) {
+func Query(theFunc APIFunc, params interface{}, c *gin.Context) {
 	err := c.ShouldBindQuery(params)
 	if err != nil {
 		processResult(c, nil, err)
@@ -26,7 +26,7 @@ func Query(theFunc ApiFunc, params interface{}, c *gin.Context) {
 	process(theFunc, params, c)
 }
 
-func process(theFunc ApiFunc, params interface{}, c *gin.Context) {
+func process(theFunc APIFunc, params interface{}, c *gin.Context) {
 	host := strings.TrimSpace(c.GetHeader("Host"))
 	if !isValidHost(host) {
 		processResult(c, nil, ErrInvalidHost)

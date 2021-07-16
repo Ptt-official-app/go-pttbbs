@@ -23,7 +23,8 @@ func addBoardRecord(board *ptttype.BoardHeaderRaw) (bid ptttype.Bid, err error) 
 		if err != nil {
 			return 0, err
 		}
-		cache.ResetBoard(bid)
+		_ = cache.ResetBoard(bid)
+
 		cache.SortBCache()
 
 		return bid, nil

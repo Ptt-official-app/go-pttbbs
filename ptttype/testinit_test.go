@@ -12,13 +12,13 @@ func setupTest() {
 	jww.SetLogThreshold(jww.LevelDebug)
 	jww.SetStdoutThreshold(jww.LevelDebug)
 
-	types.SetIsTest()
+	types.SetIsTest("ptttype")
 
 	SetIsTest()
 }
 
 func teardownTest() {
-	defer types.UnsetIsTest()
+	defer types.UnsetIsTest("ptttype")
 
 	defer UnsetIsTest()
 }

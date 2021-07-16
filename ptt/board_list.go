@@ -20,7 +20,7 @@ import (
 //Return:
 //	summary
 //	err
-func LoadBoardSummary(user *ptttype.UserecRaw, uid ptttype.Uid, bid ptttype.Bid) (summary *ptttype.BoardSummaryRaw, err error) {
+func LoadBoardSummary(user *ptttype.UserecRaw, uid ptttype.UID, bid ptttype.Bid) (summary *ptttype.BoardSummaryRaw, err error) {
 	bidInCache := bid.ToBidInStore()
 
 	if bidInCache < 0 {
@@ -46,7 +46,7 @@ func LoadBoardSummary(user *ptttype.UserecRaw, uid ptttype.Uid, bid ptttype.Bid)
 //LoadHotBoards
 //
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1125
-func LoadHotBoards(user *ptttype.UserecRaw, uid ptttype.Uid) (summary []*ptttype.BoardSummaryRaw, err error) {
+func LoadHotBoards(user *ptttype.UserecRaw, uid ptttype.UID) (summary []*ptttype.BoardSummaryRaw, err error) {
 	nBoards := cache.NHots()
 
 	boardStats := make([]*ptttype.BoardStat, 0, nBoards)
@@ -72,7 +72,7 @@ func LoadHotBoards(user *ptttype.UserecRaw, uid ptttype.Uid) (summary []*ptttype
 //loadHotBoardStat
 //
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1147
-func loadHotBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idx uint8) *ptttype.BoardStat {
+func loadHotBoardStat(user *ptttype.UserecRaw, uid ptttype.UID, idx uint8) *ptttype.BoardStat {
 	// read bid-in-cache
 	var bidInCache ptttype.BidInStore
 
@@ -109,7 +109,7 @@ func loadHotBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idx uint8) *pttt
 	return boardStat
 }
 
-func LoadBoardsByBids(user *ptttype.UserecRaw, uid ptttype.Uid, bids []ptttype.Bid) (summaries []*ptttype.BoardSummaryRaw, err error) {
+func LoadBoardsByBids(user *ptttype.UserecRaw, uid ptttype.UID, bids []ptttype.Bid) (summaries []*ptttype.BoardSummaryRaw, err error) {
 	boardStats := make([]*ptttype.BoardStat, 0, len(bids))
 
 	for _, bid := range bids {
@@ -129,7 +129,7 @@ func LoadBoardsByBids(user *ptttype.UserecRaw, uid ptttype.Uid, bids []ptttype.B
 	return summaries, err
 }
 
-func loadBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, bid ptttype.Bid) (boardStat *ptttype.BoardStat) {
+func loadBoardStat(user *ptttype.UserecRaw, uid ptttype.UID, bid ptttype.Bid) (boardStat *ptttype.BoardStat) {
 	bidInCache := bid.ToBidInStore()
 	board := &ptttype.BoardHeaderRaw{}
 	cache.Shm.ReadAt(
@@ -153,7 +153,7 @@ func loadBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, bid ptttype.Bid) (b
 //LoadAutoCompleteBoards
 //
 //Load auto-complete boards by name.
-func LoadAutoCompleteBoards(user *ptttype.UserecRaw, uid ptttype.Uid, startIdx ptttype.SortIdx, nBoards int, keyword []byte, isAsc bool) (summaries []*ptttype.BoardSummaryRaw, nextSummary *ptttype.BoardSummaryRaw, err error) {
+func LoadAutoCompleteBoards(user *ptttype.UserecRaw, uid ptttype.UID, startIdx ptttype.SortIdx, nBoards int, keyword []byte, isAsc bool) (summaries []*ptttype.BoardSummaryRaw, nextSummary *ptttype.BoardSummaryRaw, err error) {
 	nBoardsInCache := cache.NumBoards()
 	if startIdx == 0 && !isAsc {
 		startIdx = ptttype.SortIdx(nBoardsInCache)
@@ -227,7 +227,7 @@ func LoadAutoCompleteBoards(user *ptttype.UserecRaw, uid ptttype.Uid, startIdx p
 //  summary
 //	nextIdx: next idx in bsorted.
 //	err
-func LoadGeneralBoards(user *ptttype.UserecRaw, uid ptttype.Uid, startIdx ptttype.SortIdx, nBoards int, title []byte, keyword []byte, isAsc bool, bsortBy ptttype.BSortBy) (summaries []*ptttype.BoardSummaryRaw, nextSummary *ptttype.BoardSummaryRaw, err error) {
+func LoadGeneralBoards(user *ptttype.UserecRaw, uid ptttype.UID, startIdx ptttype.SortIdx, nBoards int, title []byte, keyword []byte, isAsc bool, bsortBy ptttype.BSortBy) (summaries []*ptttype.BoardSummaryRaw, nextSummary *ptttype.BoardSummaryRaw, err error) {
 	nBoardsInCache := cache.NumBoards()
 	if startIdx == 0 && !isAsc {
 		startIdx = ptttype.SortIdx(nBoardsInCache)
@@ -282,7 +282,7 @@ func LoadGeneralBoards(user *ptttype.UserecRaw, uid ptttype.Uid, startIdx ptttyp
 //loadAutoCompleteBoardStat
 //
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1147
-func loadAutoCompleteBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idxInStore ptttype.SortIdxInStore, keyword []byte) (boardStat *ptttype.BoardStat, isEnd bool) {
+func loadAutoCompleteBoardStat(user *ptttype.UserecRaw, uid ptttype.UID, idxInStore ptttype.SortIdxInStore, keyword []byte) (boardStat *ptttype.BoardStat, isEnd bool) {
 	var bidInCache ptttype.BidInStore
 
 	const bsort0sz = unsafe.Sizeof(cache.Shm.Raw.BSorted[0])
@@ -322,7 +322,7 @@ func loadAutoCompleteBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idxInSt
 //loadGeneralBoardStat
 //
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1147
-func loadGeneralBoardStat(user *ptttype.UserecRaw, uid ptttype.Uid, idxInStore ptttype.SortIdxInStore, title []byte, keyword []byte, bsortBy ptttype.BSortBy) (boardStat *ptttype.BoardStat) {
+func loadGeneralBoardStat(user *ptttype.UserecRaw, uid ptttype.UID, idxInStore ptttype.SortIdxInStore, title []byte, keyword []byte, bsortBy ptttype.BSortBy) (boardStat *ptttype.BoardStat) {
 	var bidInCache ptttype.BidInStore
 
 	const bsort0sz = unsafe.Sizeof(cache.Shm.Raw.BSorted[0])
@@ -406,7 +406,7 @@ func keywordsNotInBoard(boardID *ptttype.BoardID_t, boardTitle *ptttype.BoardTit
 //showBoardList
 //
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1409
-func showBoardList(user *ptttype.UserecRaw, uid ptttype.Uid, boardStats []*ptttype.BoardStat) (summary []*ptttype.BoardSummaryRaw, err error) {
+func showBoardList(user *ptttype.UserecRaw, uid ptttype.UID, boardStats []*ptttype.BoardStat) (summary []*ptttype.BoardSummaryRaw, err error) {
 	summary = make([]*ptttype.BoardSummaryRaw, len(boardStats))
 	for idx, eachStat := range boardStats {
 		summary[idx] = parseBoardSummary(user, uid, eachStat)
@@ -418,7 +418,7 @@ func showBoardList(user *ptttype.UserecRaw, uid ptttype.Uid, boardStats []*pttty
 //parseBoardSummary
 //
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1460
-func parseBoardSummary(user *ptttype.UserecRaw, uid ptttype.Uid, boardStat *ptttype.BoardStat) (summary *ptttype.BoardSummaryRaw) {
+func parseBoardSummary(user *ptttype.UserecRaw, uid ptttype.UID, boardStat *ptttype.BoardStat) (summary *ptttype.BoardSummaryRaw) {
 	// XXX we do not deal with fav in go-bbs.
 	if boardStat.Attr&ptttype.NBRD_LINE != 0 {
 		return &ptttype.BoardSummaryRaw{Bid: boardStat.Bid, StatAttr: boardStat.Attr}

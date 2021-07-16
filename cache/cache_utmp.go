@@ -78,7 +78,7 @@ func SearchUListUserID(userID *ptttype.UserID_t) (ptttype.UtmpID, *ptttype.UserI
 		if end == start {
 			break
 		} else if i == start {
-			i = end
+			i = end // nolint
 			start = end
 		} else if j > 0 {
 			start = i
@@ -165,7 +165,7 @@ func SearchUListPID(pid types.Pid_t) (ptttype.UtmpID, *ptttype.UserInfoRaw) {
 		if end == start {
 			break
 		} else if i == start {
-			i = end
+			i = end // nolint
 			start = end
 		} else if isDiff > 0 {
 			start = i
@@ -180,7 +180,7 @@ func SearchUListPID(pid types.Pid_t) (ptttype.UtmpID, *ptttype.UserInfoRaw) {
 //SetUtmpMode
 //
 //XXX skip utmp for now.
-func SetUtmpMode(uid ptttype.Uid, mode ptttype.UserOpMode) (err error) {
+func SetUtmpMode(uid ptttype.UID, mode ptttype.UserOpMode) (err error) {
 	/*
 		pid := uid.ToPid()
 		utmpID, _ := SearchUListPID(pid)

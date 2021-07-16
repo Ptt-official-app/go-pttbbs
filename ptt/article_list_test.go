@@ -27,7 +27,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 
 	type args struct {
 		user       *ptttype.UserecRaw
-		uid        ptttype.Uid
+		uid        ptttype.UID
 		boardIDRaw *ptttype.BoardID_t
 		bid        ptttype.Bid
 		startAid   ptttype.SortIdx
@@ -268,7 +268,7 @@ func TestFindArticleStartAid(t *testing.T) {
 
 	type args struct {
 		user       *ptttype.UserecRaw
-		uid        ptttype.Uid
+		uid        ptttype.UID
 		boardID    *ptttype.BoardID_t
 		bid        ptttype.Bid
 		createTime types.Time4
@@ -485,7 +485,7 @@ func TestLoadBottomArticles(t *testing.T) {
 
 	type args struct {
 		user       *ptttype.UserecRaw
-		uid        ptttype.Uid
+		uid        ptttype.UID
 		boardIDRaw *ptttype.BoardID_t
 		bid        ptttype.Bid
 	}

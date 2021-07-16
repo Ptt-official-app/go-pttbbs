@@ -9,10 +9,6 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
-const (
-	_OFFSET_SAVE_MILLI_TS = 10000 // should not save the fav-board again within 10 sec.
-)
-
 //FavRaw
 //
 //It's with it's own serialize method and does not directly copy by struct.
@@ -258,7 +254,7 @@ func (f *FavRaw) rebuildFav() {
 	}
 
 	nFavh := f.getDataNumber()
-	// to be consistant with the data-tail.
+	// to be consistent with the data-tail.
 	f.Favh = f.Favh[:nFavh]
 }
 

@@ -19,7 +19,7 @@ func Test_pwcuRegCompleteJustify(t *testing.T) {
 	copy(reg2[:], "temp@temp.com")
 
 	type args struct {
-		uid     ptttype.Uid
+		uid     ptttype.UID
 		userID  *ptttype.UserID_t
 		justify *ptttype.Reg_t
 	}
@@ -30,7 +30,7 @@ func Test_pwcuRegCompleteJustify(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{
-			args: args{ptttype.Uid(2), userID2, reg2},
+			args: args{ptttype.UID(2), userID2, reg2},
 		},
 	}
 
@@ -55,7 +55,7 @@ func Test_pwcuBitDisableLevel(t *testing.T) {
 	copy(userID2[:], "CodingMan")
 
 	type args struct {
-		uid    ptttype.Uid
+		uid    ptttype.UID
 		userID *ptttype.UserID_t
 		perm   ptttype.PERM
 	}

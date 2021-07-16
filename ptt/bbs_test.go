@@ -34,7 +34,7 @@ func TestReadPost(t *testing.T) {
 	copy(filename2[:], []byte("M.1607202239.A.31D"))
 	type args struct {
 		user       *ptttype.UserecRaw
-		uid        ptttype.Uid
+		uid        ptttype.UID
 		boardID    *ptttype.BoardID_t
 		bid        ptttype.Bid
 		filename   *ptttype.Filename_t
@@ -191,7 +191,7 @@ func TestNewPost(t *testing.T) {
 
 	type args struct {
 		user     *ptttype.UserecRaw
-		uid      ptttype.Uid
+		uid      ptttype.UID
 		boardID  *ptttype.BoardID_t
 		bid      ptttype.Bid
 		posttype []byte

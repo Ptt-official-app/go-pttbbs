@@ -27,7 +27,7 @@ func Test_reginitFav(t *testing.T) {
 	}
 
 	type args struct {
-		uid  ptttype.Uid
+		uid  ptttype.UID
 		user *ptttype.UserecRaw
 	}
 	tests := []struct {

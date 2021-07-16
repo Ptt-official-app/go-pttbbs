@@ -51,8 +51,8 @@ func Test_initAllConfig(t *testing.T) {
 				t.Errorf("initConfig() HTTP_HOST: %v want :%v", HTTP_HOST, tt.wantHTTP_POST)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func Test_initMain(t *testing.T) {
@@ -75,6 +75,6 @@ func Test_initMain(t *testing.T) {
 				t.Errorf("initMain() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }

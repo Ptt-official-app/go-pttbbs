@@ -20,15 +20,17 @@ func setupTest() {
 	// jww.SetStdoutThreshold(jww.LevelDebug)
 	log.SetLevel(log.DebugLevel)
 
-	types.SetIsTest()
+	types.SetIsTest("initgin")
 	ptttype.SetIsTest()
 
 	cache.SetIsTest()
 	cmbbs.SetIsTest()
 
-	log.Infof("setupTest: to initAllConfig: sem_key: %v", ptttype.PASSWDSEM_KEY)
+	log.Infof("setupTest: to initAllConfig: sem_key: %v shm_key: %v", ptttype.PASSWDSEM_KEY, ptttype.SHM_KEY)
 
 	_ = InitAllConfig("./testcase/test.ini")
+
+	log.Infof("setupTest: after initAllConfig: sem_key: %v shm_key: %v", ptttype.PASSWDSEM_KEY, ptttype.SHM_KEY)
 
 	gin.SetMode(gin.TestMode)
 
@@ -57,7 +59,7 @@ func setupTest() {
 func teardownTest() {
 	defer time.Sleep(1 * time.Millisecond)
 
-	defer types.UnsetIsTest()
+	defer types.UnsetIsTest("initgin")
 
 	defer ptttype.UnsetIsTest()
 

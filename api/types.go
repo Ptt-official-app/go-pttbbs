@@ -4,11 +4,11 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
 )
 
-type ApiFunc func(remoteAddr string, params interface{}) (interface{}, error)
+type APIFunc func(remoteAddr string, params interface{}) (interface{}, error)
 
-type LoginRequiredApiFunc func(remoteAddr string, uuserID bbs.UUserID, params interface{}) (interface{}, error)
+type LoginRequiredAPIFunc func(remoteAddr string, uuserID bbs.UUserID, params interface{}) (interface{}, error)
 
-type LoginRequiredPathApiFunc func(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (interface{}, error)
+type LoginRequiredPathAPIFunc func(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (interface{}, error)
 
 type JwtClaim struct {
 	ClientInfo string `json:"cli"`

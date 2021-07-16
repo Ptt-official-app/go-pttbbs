@@ -40,7 +40,7 @@ func TestLoadGeneralBoards(t *testing.T) {
 	// move setupTest in for-loop
 	type args struct {
 		user     *ptttype.UserecRaw
-		uid      ptttype.Uid
+		uid      ptttype.UID
 		startIdx ptttype.SortIdx
 		nBoards  int
 		title    []byte
@@ -167,7 +167,7 @@ func TestLoadBoardSummary(t *testing.T) {
 
 	type args struct {
 		user *ptttype.UserecRaw
-		uid  ptttype.Uid
+		uid  ptttype.UID
 		bid  ptttype.Bid
 	}
 	tests := []struct {
@@ -220,7 +220,7 @@ func TestLoadHotBoards(t *testing.T) {
 	)
 	type args struct {
 		user *ptttype.UserecRaw
-		uid  ptttype.Uid
+		uid  ptttype.UID
 	}
 	tests := []struct {
 		name            string
@@ -263,7 +263,7 @@ func TestLoadBoardsByBids(t *testing.T) {
 
 	type args struct {
 		user *ptttype.UserecRaw
-		uid  ptttype.Uid
+		uid  ptttype.UID
 		bids []ptttype.Bid
 	}
 	tests := []struct {
@@ -396,7 +396,7 @@ func TestLoadAutoCompleteBoards(t *testing.T) {
 
 	type args struct {
 		user     *ptttype.UserecRaw
-		uid      ptttype.Uid
+		uid      ptttype.UID
 		startIdx ptttype.SortIdx
 		nBoards  int
 		keyword  []byte

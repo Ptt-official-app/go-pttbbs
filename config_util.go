@@ -1,6 +1,6 @@
 package main
 
-import "github.com/Ptt-official-app/go-pttbbs/config_util"
+import "github.com/Ptt-official-app/go-pttbbs/configutil"
 
 const configPrefix = "go-pttbbs"
 
@@ -10,5 +10,5 @@ func InitConfig() error {
 }
 
 func setStringConfig(idx string, orig string) string {
-	return config_util.SetStringConfig(configPrefix, idx, orig)
+	return configutil.SetStringConfig(configPrefix, idx, orig)
 }

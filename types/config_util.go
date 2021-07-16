@@ -3,7 +3,7 @@ package types
 import (
 	"time"
 
-	"github.com/Ptt-official-app/go-pttbbs/config_util"
+	configutil "github.com/Ptt-official-app/go-pttbbs/configutil"
 )
 
 const configPrefix = "go-pttbbs:types"
@@ -14,15 +14,15 @@ func InitConfig() error {
 }
 
 func setStringConfig(idx string, orig string) string {
-	return config_util.SetStringConfig(configPrefix, idx, orig)
+	return configutil.SetStringConfig(configPrefix, idx, orig)
 }
 
 func setIntConfig(idx string, orig int) int {
-	return config_util.SetIntConfig(configPrefix, idx, orig)
+	return configutil.SetIntConfig(configPrefix, idx, orig)
 }
 
 func setBoolConfig(idx string, orig bool) bool {
-	return config_util.SetBoolConfig(configPrefix, idx, orig)
+	return configutil.SetBoolConfig(configPrefix, idx, orig)
 }
 
 func postConfig() (err error) {

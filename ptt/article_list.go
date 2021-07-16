@@ -19,7 +19,7 @@ import (
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/read.c#L1106
 //
 //get bottom can be a separated api.
-func LoadGeneralArticles(user *ptttype.UserecRaw, uid ptttype.Uid, boardIDRaw *ptttype.BoardID_t, bid ptttype.Bid, startIdx ptttype.SortIdx, nArticles int, isDesc bool) (summaries []*ptttype.ArticleSummaryRaw, isNewest bool, nextSummary *ptttype.ArticleSummaryRaw, startNumIdx ptttype.SortIdx, err error) {
+func LoadGeneralArticles(user *ptttype.UserecRaw, uid ptttype.UID, boardIDRaw *ptttype.BoardID_t, bid ptttype.Bid, startIdx ptttype.SortIdx, nArticles int, isDesc bool) (summaries []*ptttype.ArticleSummaryRaw, isNewest bool, nextSummary *ptttype.ArticleSummaryRaw, startNumIdx ptttype.SortIdx, err error) {
 	// 1. check perm.
 	board, err := cache.GetBCache(bid)
 	if err != nil {
@@ -71,7 +71,7 @@ func LoadGeneralArticles(user *ptttype.UserecRaw, uid ptttype.Uid, boardIDRaw *p
 	return summaries, isNewest, nextSummary, startIdx, nil
 }
 
-func LoadBottomArticles(user *ptttype.UserecRaw, uid ptttype.Uid, boardIDRaw *ptttype.BoardID_t, bid ptttype.Bid) (summaries []*ptttype.ArticleSummaryRaw, err error) {
+func LoadBottomArticles(user *ptttype.UserecRaw, uid ptttype.UID, boardIDRaw *ptttype.BoardID_t, bid ptttype.Bid) (summaries []*ptttype.ArticleSummaryRaw, err error) {
 	// 1. check perm.
 	board, err := cache.GetBCache(bid)
 	if err != nil {
@@ -103,7 +103,7 @@ func LoadBottomArticles(user *ptttype.UserecRaw, uid ptttype.Uid, boardIDRaw *pt
 	return summaries, nil
 }
 
-func FindArticleStartIdx(user *ptttype.UserecRaw, uid ptttype.Uid, boardID *ptttype.BoardID_t, bid ptttype.Bid, createTime types.Time4, filename *ptttype.Filename_t, isDesc bool) (startIdx ptttype.SortIdx, err error) {
+func FindArticleStartIdx(user *ptttype.UserecRaw, uid ptttype.UID, boardID *ptttype.BoardID_t, bid ptttype.Bid, createTime types.Time4, filename *ptttype.Filename_t, isDesc bool) (startIdx ptttype.SortIdx, err error) {
 	// 1. check perm.
 	board, err := cache.GetBCache(bid)
 	if err != nil {

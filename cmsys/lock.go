@@ -54,7 +54,7 @@ func GoPttLock(file *os.File, filename string, offset int64, theSize uintptr) (e
 //We use single lock for now.
 func GoPttUnlock(file *os.File, filename string, offset int64, theSize uintptr) (err error) {
 	filenameOffset := fmt.Sprintf("%s%x", filename, offset)
-	defer unlockFD(filenameOffset)
+	defer func() { _ = unlockFD(filenameOffset) }()
 
 	return pttLock(file, offset, theSize, syscall.F_UNLCK)
 }
@@ -90,7 +90,7 @@ func GoFlockExNb(fd uintptr, filename string) (err error) {
 //Original Flock has no effect with multi-thread process.
 //We use single lock for now.
 func GoFunlock(fd uintptr, filename string) (err error) {
-	defer unlockFD(filename)
+	defer func() { _ = unlockFD(filename) }()
 
 	return syscall.Flock(int(fd), syscall.LOCK_UN)
 }

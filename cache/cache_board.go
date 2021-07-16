@@ -219,8 +219,8 @@ func SetBottomTotal(bid ptttype.Bid) error {
 	return nil
 }
 
-func IsHiddenBoardFriend(bidInCache ptttype.BidInStore, uidInCache ptttype.UidInStore) bool {
-	if !bidInCache.ToBid().IsValid() || !uidInCache.ToUid().IsValid() {
+func IsHiddenBoardFriend(bidInCache ptttype.BidInStore, uidInCache ptttype.UIDInStore) bool {
+	if !bidInCache.ToBid().IsValid() || !uidInCache.ToUID().IsValid() {
 		return false
 	}
 
@@ -242,9 +242,9 @@ func IsHiddenBoardFriend(bidInCache ptttype.BidInStore, uidInCache ptttype.UidIn
 		HbflReload(bidInCache)
 	}
 
-	uid := uidInCache.ToUid()
+	uid := uidInCache.ToUID()
 
-	var friendID ptttype.Uid
+	var friendID ptttype.UID
 	pFriendID := &friendID
 	friendIDptr := unsafe.Pointer(pFriendID)
 	for i := uintptr(1); i <= ptttype.MAX_FRIEND; i++ {
@@ -288,14 +288,14 @@ func HbflReload(bidInCache ptttype.BidInStore) {
 	}
 	defer file.Close()
 
-	hbfl := [ptttype.MAX_FRIEND + 1]ptttype.Uid{}
+	hbfl := [ptttype.MAX_FRIEND + 1]ptttype.UID{}
 	const hbflsz = unsafe.Sizeof(hbfl)
 
 	reader := bufio.NewReader(file)
 	var line []byte
-	var uid ptttype.Uid
+	var uid ptttype.UID
 	// num++ is in the end of the for.
-	for num := ptttype.Uid(1); num <= ptttype.MAX_FRIEND; {
+	for num := ptttype.UID(1); num <= ptttype.MAX_FRIEND; {
 		line, _ = types.ReadLine(reader)
 		if len(line) == 0 {
 			break
@@ -322,7 +322,7 @@ func HbflReload(bidInCache ptttype.BidInStore) {
 		num++ // num++ is in the end of the for. (no num++ for the continue conditions)
 	}
 
-	hbfl[0] = ptttype.Uid(types.NowTS())
+	hbfl[0] = ptttype.UID(types.NowTS())
 
 	Shm.WriteAt(
 		unsafe.Offsetof(Shm.Raw.Hbfl)+hbflsz*uintptr(bidInCache),
@@ -591,7 +591,7 @@ func getBidByNameCore(boardID *ptttype.BoardID_t) (idx ptttype.SortIdxInStore, b
 		if end == start {
 			break
 		} else if idx_i32 == start {
-			idx_i32 = end
+			idx_i32 = end // nolint
 			start = end
 		} else if j > 0 {
 			start = idx_i32
@@ -664,7 +664,7 @@ func getBidByClassCore(cls []byte, boardID *ptttype.BoardID_t) (idx ptttype.Sort
 		if end == start {
 			break
 		} else if idx_i32 == start {
-			idx_i32 = end
+			idx_i32 = end // nolint
 			start = end
 		} else if j > 0 {
 			start = idx_i32
@@ -999,9 +999,9 @@ func SanitizeBMs(bms *ptttype.BM_t) (parsedBMs *ptttype.BM_t) {
 	return parsedBMs
 }
 
-func ParseBMList(bms *ptttype.BM_t) (uids *[ptttype.MAX_BMs]ptttype.Uid) {
+func ParseBMList(bms *ptttype.BM_t) (uids *[ptttype.MAX_BMs]ptttype.UID) {
 	// init uids
-	uids = &[ptttype.MAX_BMs]ptttype.Uid{}
+	uids = &[ptttype.MAX_BMs]ptttype.UID{}
 	for idx := 0; idx < ptttype.MAX_BMs; idx++ {
 		uids[idx] = -1
 	}
@@ -1019,14 +1019,14 @@ func ParseBMList(bms *ptttype.BM_t) (uids *[ptttype.MAX_BMs]ptttype.Uid) {
 	}
 
 	// parse user-ids
-	idxUid := 0
+	idxUID := 0
 	for _, each := range userIDs {
 		uid, err := SearchUserRaw(each, nil)
 		if err != nil || !uid.IsValid() {
 			continue
 		}
-		uids[idxUid] = uid
-		idxUid++
+		uids[idxUID] = uid
+		idxUID++
 	}
 
 	return uids
@@ -1115,7 +1115,7 @@ func buildBMCache(bid ptttype.Bid) {
 	)
 
 	// reset uids
-	resetUids := [ptttype.MAX_BMs]ptttype.Uid{}
+	resetUids := [ptttype.MAX_BMs]ptttype.UID{}
 	for idx := 0; idx < ptttype.MAX_BMs; idx++ {
 		resetUids[idx] = -1
 	}

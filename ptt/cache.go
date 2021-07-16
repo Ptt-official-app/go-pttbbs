@@ -11,7 +11,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
-func IsBMCache(user *ptttype.UserecRaw, uid ptttype.Uid, bid ptttype.Bid) bool {
+func IsBMCache(user *ptttype.UserecRaw, uid ptttype.UID, bid ptttype.Bid) bool {
 	bidInCache := bid.ToBidInStore()
 
 	// XXX potential issue: (thanks for mtdas@ptt)
@@ -30,7 +30,7 @@ func IsBMCache(user *ptttype.UserecRaw, uid ptttype.Uid, bid ptttype.Bid) bool {
 		return false
 	}
 
-	pbm := [ptttype.MAX_BMs]ptttype.Uid{}
+	pbm := [ptttype.MAX_BMs]ptttype.UID{}
 	const bmcache0sz = unsafe.Sizeof(cache.Shm.Raw.BMCache[0])
 	cache.Shm.ReadAt(
 		unsafe.Offsetof(cache.Shm.Raw.BMCache)+uintptr(bidInCache)*bmcache0sz,
@@ -39,7 +39,7 @@ func IsBMCache(user *ptttype.UserecRaw, uid ptttype.Uid, bid ptttype.Bid) bool {
 	)
 	if uid == pbm[0] || uid == pbm[1] || uid == pbm[2] || uid == pbm[3] {
 		if user.UserLevel.HasUserPerm(ptttype.PERM_BM) {
-			pwcuBitEnableLevel(uid, &user.UserID, ptttype.PERM_BM)
+			_ = pwcuBitEnableLevel(uid, &user.UserID, ptttype.PERM_BM)
 		}
 		return true
 	}
@@ -155,7 +155,7 @@ func getNewUtmpEnt(uinfo *ptttype.UserInfoRaw) (utmpID ptttype.UtmpID, err error
 //postpermMsg
 //
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/cache.c#L209
-func postpermMsg(uid ptttype.Uid, user *ptttype.UserecRaw, bid ptttype.Bid, board *ptttype.BoardHeaderRaw) (err error) {
+func postpermMsg(uid ptttype.UID, user *ptttype.UserecRaw, bid ptttype.Bid, board *ptttype.BoardHeaderRaw) (err error) {
 	if isReadonlyBoard(&board.Brdname) {
 		return ErrReadOnly
 	}
@@ -186,7 +186,7 @@ func postpermMsg(uid ptttype.Uid, user *ptttype.UserecRaw, bid ptttype.Bid, boar
 		return nil
 	}
 
-	if board.BrdAttr.HasPerm(ptttype.BRD_RESTRICTEDPOST) && !cache.IsHiddenBoardFriend(bid.ToBidInStore(), uid.ToUidInStore()) {
+	if board.BrdAttr.HasPerm(ptttype.BRD_RESTRICTEDPOST) && !cache.IsHiddenBoardFriend(bid.ToBidInStore(), uid.ToUIDInStore()) {
 		return ErrRestricted
 	}
 

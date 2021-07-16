@@ -17,7 +17,7 @@ import (
 //
 //adopted from the original start_client.
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/mbbsd.c#L1399
-func Login(userID *ptttype.UserID_t, passwd []byte, ip *ptttype.IPv4_t) (uid ptttype.Uid, user *ptttype.UserecRaw, err error) {
+func Login(userID *ptttype.UserID_t, passwd []byte, ip *ptttype.IPv4_t) (uid ptttype.UID, user *ptttype.UserecRaw, err error) {
 	uid, user, err = LoginQuery(userID, passwd, ip)
 	if err != nil {
 		return 0, nil, err
@@ -48,7 +48,7 @@ func Login(userID *ptttype.UserID_t, passwd []byte, ip *ptttype.IPv4_t) (uid ptt
 //Return
 //	*UserecRaw: user
 //  error: err
-func LoginQuery(userID *ptttype.UserID_t, passwd []byte, ip *ptttype.IPv4_t) (uid ptttype.Uid, user *ptttype.UserecRaw, err error) {
+func LoginQuery(userID *ptttype.UserID_t, passwd []byte, ip *ptttype.IPv4_t) (uid ptttype.UID, user *ptttype.UserecRaw, err error) {
 	if !userID.IsValid() {
 		log.Errorf("LoginQuery: invalid user id: userID: %v", userID)
 		return 0, nil, ptttype.ErrInvalidUserID
@@ -78,7 +78,7 @@ func LoginQuery(userID *ptttype.UserID_t, passwd []byte, ip *ptttype.IPv4_t) (ui
 	return uid, user, nil
 }
 
-func userLogin(uid ptttype.Uid, user *ptttype.UserecRaw, ip *ptttype.IPv4_t) (err error) {
+func userLogin(uid ptttype.UID, user *ptttype.UserecRaw, ip *ptttype.IPv4_t) (err error) {
 	utmpID, uinfo, err := setupUtmp(uid, user, ip, ptttype.USER_OP_LOGIN)
 	if err != nil {
 		return err
@@ -103,7 +103,7 @@ func userLogin(uid ptttype.Uid, user *ptttype.UserecRaw, ip *ptttype.IPv4_t) (er
 //setupUtmp
 //
 //There will be only 1-login per user in this process.
-func setupUtmp(uid ptttype.Uid, user *ptttype.UserecRaw, ip *ptttype.IPv4_t, op ptttype.UserOpMode) (utmpID ptttype.UtmpID, uinfo *ptttype.UserInfoRaw, err error) {
+func setupUtmp(uid ptttype.UID, user *ptttype.UserecRaw, ip *ptttype.IPv4_t, op ptttype.UserOpMode) (utmpID ptttype.UtmpID, uinfo *ptttype.UserInfoRaw, err error) {
 	if !ptttype.IS_UTMP {
 		return 0, nil, nil
 	}
@@ -122,7 +122,7 @@ func setupUtmp(uid ptttype.Uid, user *ptttype.UserecRaw, ip *ptttype.IPv4_t, op 
 //
 //XXX we need cmsys.StripNoneBig5,
 //with which newUserInfoRaw cannot be in ptttype.
-func newUserInfoRaw(uid ptttype.Uid, user *ptttype.UserecRaw, ip *ptttype.IPv4_t, op ptttype.UserOpMode) *ptttype.UserInfoRaw {
+func newUserInfoRaw(uid ptttype.UID, user *ptttype.UserecRaw, ip *ptttype.IPv4_t, op ptttype.UserOpMode) *ptttype.UserInfoRaw {
 	fromIP := types.InetAddr(types.CstrToString(ip[:]))
 	nowTS := types.NowTS()
 
@@ -133,14 +133,14 @@ func newUserInfoRaw(uid ptttype.Uid, user *ptttype.UserecRaw, ip *ptttype.IPv4_t
 	// 3. user.nickname should not be affected.
 	uinfo := &ptttype.UserInfoRaw{
 		Pid:      uid.ToPid(),
-		Uid:      uid,
+		UID:      uid,
 		Mode:     op,
 		UserID:   user.UserID,
 		Nickname: user.Nickname,
 
 		UserLevel: user.UserLevel,
 		LastAct:   nowTS,
-		FromIp:    fromIP,
+		FromIP:    fromIP,
 	}
 	copy(uinfo.From[:], ip[:])
 	_ = cmsys.StripNoneBig5(uinfo.Nickname[:])
@@ -204,7 +204,7 @@ func doAloha(utmpID ptttype.UtmpID, uinfo *ptttype.UserInfoRaw, hello []byte) {
 			continue
 		}
 
-		myWrite(utmpID, uinfo, friendInfo.Pid, hello, ptttype.WATERBALL_ALOHA, friendUtmpID, friendInfo)
+		_, _ = myWrite(utmpID, uinfo, friendInfo.Pid, hello, ptttype.WATERBALL_ALOHA, friendUtmpID, friendInfo)
 	}
 }
 

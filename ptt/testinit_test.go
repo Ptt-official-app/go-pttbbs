@@ -13,7 +13,7 @@ import (
 
 func setupTest(name string) {
 	logrus.Infof("%v: to types.set-is-test", name)
-	types.SetIsTest()
+	types.SetIsTest("ptt")
 
 	ptttype.SetIsTest()
 
@@ -63,7 +63,7 @@ func teardownTest(name string) {
 	defer time.Sleep(1 * time.Millisecond)
 
 	defer func() {
-		types.UnsetIsTest()
+		types.UnsetIsTest("ptt")
 		logrus.Infof("%v: after types.unset-is-test", name)
 	}()
 

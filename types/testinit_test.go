@@ -1,9 +1,9 @@
 package types
 
 func setupTest() {
-	SetIsTest()
+	SetIsTest("types")
 }
 
 func teardownTest() {
-	UnsetIsTest()
+	UnsetIsTest("types")
 }

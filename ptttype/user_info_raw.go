@@ -8,7 +8,7 @@ import (
 
 type UserInfoRaw struct {
 	// Require updating SHM_VERSION if USER_INFO_RAW_SZ is changed.
-	Uid      Uid         /* Used to find user name in passwd file XXX need to check whether it is Uid or UidInStore */
+	UID      UID         /* Used to find user name in passwd file XXX need to check whether it is Uid or UidInStore */
 	Pid      types.Pid_t /* kill() to notify user of talk request */
 	SockAddr int32       /* ... */
 
@@ -17,7 +17,7 @@ type UserInfoRaw struct {
 	UserID     UserID_t
 	Nickname   Nickname_t
 	From       From_t         /* machine name the user called in from */
-	FromIp     types.InAddr_t // was: int     from_alias;
+	FromIP     types.InAddr_t // was: int     from_alias;
 	DarkWin    uint16
 	DarkLose   uint16
 	Gap0       byte
@@ -60,7 +60,7 @@ type UserInfoRaw struct {
 	/* chatroom/talk/games calling */
 	Sig        byte /* signal type */
 	Conn6Tie   uint16
-	DestUid    int32 /* talk uses this to identify who called */
+	DestUID    int32 /* talk uses this to identify who called */
 	DestUip    int32 /* dest index in utmpshm->uinfo[] */
 	SockActive uint8 /* Used to coordinate talk requests */
 

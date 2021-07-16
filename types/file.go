@@ -235,8 +235,6 @@ func BinaryRead(reader io.ReadSeeker, order binary.ByteOrder, data interface{}) 
 		n, err3 := reader.Read(theBytes)
 		log.Warnf("BinaryRead (recover): err: %v origPos: %v newPos: %v sz: %v bytes: %v, n: %v err3: %v", err, origPos, newPos, newPos-origPos, theBytes, n, err3)
 		debug.PrintStack()
-
-		return
 	}()
 
 	return binary.Read(reader, order, data)

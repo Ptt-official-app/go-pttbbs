@@ -14,7 +14,7 @@ import (
 //
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/edit.c#L3733
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/edit.c#L1924
-func WriteFile(fpath string, flags ptttype.EditFlag, isSaveHeader bool, isUseAnony bool, title []byte, content [][]byte, user *ptttype.UserecRaw, uid ptttype.Uid, board *ptttype.BoardHeaderRaw, bid ptttype.Bid, ip *ptttype.IPv4_t, from []byte) (entropy int, err error) {
+func WriteFile(fpath string, flags ptttype.EditFlag, isSaveHeader bool, isUseAnony bool, title []byte, content [][]byte, user *ptttype.UserecRaw, uid ptttype.UID, board *ptttype.BoardHeaderRaw, bid ptttype.Bid, ip *ptttype.IPv4_t, from []byte) (entropy int, err error) {
 	file, err := os.OpenFile(fpath, os.O_WRONLY|os.O_CREATE, ptttype.DEFAULT_FILE_CREATE_PERM)
 	if err != nil {
 		return 0, err

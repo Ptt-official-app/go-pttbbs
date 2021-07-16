@@ -15,7 +15,7 @@ type SHMRaw struct {
 	/* uhash is a userid->uid hash table -- jochang */
 	Userid     [ptttype.MAX_USERS]ptttype.UserID_t
 	Gap1       ptttype.UserID_t
-	NextInHash [ptttype.MAX_USERS]ptttype.UidInStore
+	NextInHash [ptttype.MAX_USERS]ptttype.UIDInStore
 	Gap2       [types.INT32_SZ]byte
 	Money      [ptttype.MAX_USERS]int32
 	Gap3       [types.INT32_SZ]byte
@@ -23,7 +23,7 @@ type SHMRaw struct {
 	//     Require to discuss with admins about current settings.
 	CooldownTime [ptttype.MAX_USERS]types.Time4
 	Gap4         [types.INT32_SZ]byte
-	HashHead     [1 << ptttype.HASH_BITS]ptttype.UidInStore
+	HashHead     [1 << ptttype.HASH_BITS]ptttype.UIDInStore
 	Gap5         [types.INT32_SZ]byte
 	Number       int32 /* # of users total */
 	Loaded       int32 /* .PASSWD has been loaded? */
@@ -45,7 +45,7 @@ type SHMRaw struct {
 
 	/* brdshm */
 	Gap8    [types.INT32_SZ]byte
-	BMCache [ptttype.MAX_BOARD][ptttype.MAX_BMs]ptttype.Uid
+	BMCache [ptttype.MAX_BOARD][ptttype.MAX_BMs]ptttype.UID
 	Gap9    [types.INT32_SZ]byte
 	BCache  [ptttype.MAX_BOARD]ptttype.BoardHeaderRaw
 	Gap10   [types.INT32_SZ]byte
@@ -62,7 +62,7 @@ type SHMRaw struct {
 	Gap14         [types.INT32_SZ]byte
 	NBottom       [ptttype.MAX_BOARD]uint8 /* number of bottom */
 	Gap15         [types.INT32_SZ]byte
-	Hbfl          [ptttype.MAX_BOARD][ptttype.MAX_FRIEND + 1]ptttype.Uid /* hidden board friend list, 0: load time, 1-MAX_FRIEND: uid (板友們) (0th: load 的時間. 其他欄位: 用來記錄板友的 uid) (XXX 在之後 Time8 時需要改變 structure) */
+	Hbfl          [ptttype.MAX_BOARD][ptttype.MAX_FRIEND + 1]ptttype.UID /* hidden board friend list, 0: load time, 1-MAX_FRIEND: uid (板友們) (0th: load 的時間. 其他欄位: 用來記錄板友的 uid) (XXX 在之後 Time8 時需要改變 structure) */
 	Gap16         [types.INT32_SZ]byte
 	LastPostTime  [ptttype.MAX_BOARD]types.Time4
 	Gap17         [types.INT32_SZ]byte

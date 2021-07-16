@@ -24,7 +24,7 @@ func TestPasswdLoadUser(t *testing.T) {
 	tests := []struct {
 		name      string
 		args      args
-		expected  ptttype.Uid
+		expected  ptttype.UID
 		expected1 *ptttype.UserecRaw
 		wantErr   bool
 	}{
@@ -60,7 +60,7 @@ func TestPasswdQuery(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 	type args struct {
-		uid ptttype.Uid
+		uid ptttype.UID
 	}
 	tests := []struct {
 		name     string
@@ -281,7 +281,7 @@ func TestPasswdUpdate(t *testing.T) {
 	defer PasswdUpdate(1, testUserecRaw1)
 
 	type args struct {
-		uid  ptttype.Uid
+		uid  ptttype.UID
 		user *ptttype.UserecRaw
 	}
 	tests := []struct {
@@ -328,7 +328,7 @@ func TestPasswdUpdatePasswd(t *testing.T) {
 	passwdHash1, _ := GenPasswd(passwd1)
 
 	type args struct {
-		uid        ptttype.Uid
+		uid        ptttype.UID
 		passwdHash *ptttype.Passwd_t
 	}
 	tests := []struct {
@@ -369,7 +369,7 @@ func TestPasswdUpdateEmail(t *testing.T) {
 	copy(email0[:], []byte("test@ptt.test"))
 
 	type args struct {
-		uid   ptttype.Uid
+		uid   ptttype.UID
 		email *ptttype.Email_t
 	}
 	tests := []struct {
@@ -405,7 +405,7 @@ func TestPasswdQueryUserLevel(t *testing.T) {
 	defer teardownTest()
 
 	type args struct {
-		uid ptttype.Uid
+		uid ptttype.UID
 	}
 	tests := []struct {
 		name              string

@@ -13,7 +13,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
-func reginitFav(uid ptttype.Uid, user *ptttype.UserecRaw) (err error) {
+func reginitFav(uid ptttype.UID, user *ptttype.UserecRaw) (err error) {
 	// XXX TODO
 
 	file, err := os.Open(ptttype.FN_DEFAULT_FAVS)
@@ -45,7 +45,7 @@ func reginitFav(uid ptttype.Uid, user *ptttype.UserecRaw) (err error) {
 			continue
 		}
 
-		favrec.AddBoard(bid)
+		_, _ = favrec.AddBoard(bid)
 	}
 
 	_, err = favrec.Save(&user.UserID)

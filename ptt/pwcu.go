@@ -25,7 +25,7 @@ func pwcuSetByBit(perm ptttype.PERM, mask ptttype.PERM, isSet bool) ptttype.PERM
 	}
 }
 
-func pwcuStart(uid ptttype.Uid, userID *ptttype.UserID_t) (user *ptttype.UserecRaw, err error) {
+func pwcuStart(uid ptttype.UID, userID *ptttype.UserID_t) (user *ptttype.UserecRaw, err error) {
 	user, err = passwdSyncQuery(uid)
 	if err != nil {
 		return nil, err
@@ -38,7 +38,7 @@ func pwcuStart(uid ptttype.Uid, userID *ptttype.UserID_t) (user *ptttype.UserecR
 	return user, nil
 }
 
-func pwcuIncNumPost(user *ptttype.UserecRaw, uid ptttype.Uid) (err error) {
+func pwcuIncNumPost(user *ptttype.UserecRaw, uid ptttype.UID) (err error) {
 	u, err := pwcuStart(uid, &user.UserID)
 	if err != nil {
 		return err
@@ -50,11 +50,11 @@ func pwcuIncNumPost(user *ptttype.UserecRaw, uid ptttype.Uid) (err error) {
 	return pwcuEnd(uid, u)
 }
 
-func pwcuEnd(uid ptttype.Uid, user *ptttype.UserecRaw) (err error) {
+func pwcuEnd(uid ptttype.UID, user *ptttype.UserecRaw) (err error) {
 	return passwdSyncUpdate(uid, user)
 }
 
-func pwcuRegCompleteJustify(uid ptttype.Uid, userID *ptttype.UserID_t, justify *ptttype.Reg_t) (err error) {
+func pwcuRegCompleteJustify(uid ptttype.UID, userID *ptttype.UserID_t, justify *ptttype.Reg_t) (err error) {
 	var user *ptttype.UserecRaw
 
 	user, err = pwcuStart(uid, userID)
@@ -71,7 +71,7 @@ func pwcuRegCompleteJustify(uid ptttype.Uid, userID *ptttype.UserID_t, justify *
 	return nil
 }
 
-func pwcuBitEnableLevel(uid ptttype.Uid, userID *ptttype.UserID_t, perm ptttype.PERM) (err error) {
+func pwcuBitEnableLevel(uid ptttype.UID, userID *ptttype.UserID_t, perm ptttype.PERM) (err error) {
 	var user *ptttype.UserecRaw
 	user, err = pwcuStart(uid, userID)
 	if err != nil {
@@ -89,7 +89,7 @@ func pwcuBitEnableLevel(uid ptttype.Uid, userID *ptttype.UserID_t, perm ptttype.
 	return nil
 }
 
-func pwcuBitDisableLevel(uid ptttype.Uid, userID *ptttype.UserID_t, perm ptttype.PERM) (err error) {
+func pwcuBitDisableLevel(uid ptttype.UID, userID *ptttype.UserID_t, perm ptttype.PERM) (err error) {
 	var user *ptttype.UserecRaw
 
 	user, err = pwcuStart(uid, userID)

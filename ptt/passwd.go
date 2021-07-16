@@ -7,7 +7,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
-func InitCurrentUser(userID *ptttype.UserID_t) (uid ptttype.Uid, user *ptttype.UserecRaw, err error) {
+func InitCurrentUser(userID *ptttype.UserID_t) (uid ptttype.UID, user *ptttype.UserecRaw, err error) {
 	uid, user, err = cmbbs.PasswdLoadUser(userID)
 	if err != nil {
 		return uid, user, err
@@ -20,7 +20,7 @@ func InitCurrentUser(userID *ptttype.UserID_t) (uid ptttype.Uid, user *ptttype.U
 	return uid, user, nil
 }
 
-func InitCurrentUserByUid(uid ptttype.Uid) (user *ptttype.UserecRaw, err error) {
+func InitCurrentUserByUID(uid ptttype.UID) (user *ptttype.UserecRaw, err error) {
 	user, err = cmbbs.PasswdQuery(uid)
 	if err != nil {
 		return nil, err
@@ -32,7 +32,7 @@ func InitCurrentUserByUid(uid ptttype.Uid) (user *ptttype.UserecRaw, err error) 
 	return user, nil
 }
 
-func passwdSyncUpdate(uid ptttype.Uid, user *ptttype.UserecRaw) error {
+func passwdSyncUpdate(uid ptttype.UID, user *ptttype.UserecRaw) error {
 	if !uid.IsValid() {
 		return cache.ErrInvalidUID
 	}
@@ -47,7 +47,7 @@ func passwdSyncUpdate(uid ptttype.Uid, user *ptttype.UserecRaw) error {
 	return nil
 }
 
-func passwdSyncQuery(uid ptttype.Uid) (*ptttype.UserecRaw, error) {
+func passwdSyncQuery(uid ptttype.UID) (*ptttype.UserecRaw, error) {
 	user, err := cmbbs.PasswdQuery(uid)
 	if err != nil {
 		return nil, err

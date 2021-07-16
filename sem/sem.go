@@ -25,12 +25,6 @@ type Semaphore struct {
 	nsems int
 }
 
-type semop struct {
-	semNum  uint16
-	semOp   int16
-	semFlag int16
-}
-
 func SemGet(key int, nsems int, flags int) (*Semaphore, error) {
 	cret, err := C.semget(C.int(key), C.int(nsems), C.int(flags))
 	log.Infof("sem.SemGet: key: %v nsems: %v cret: %v e: %v", key, nsems, cret, err)

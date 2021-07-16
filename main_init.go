@@ -22,8 +22,8 @@ func initAllConfig(filename string) (err error) {
 }
 
 func initMain() error {
-	jww.SetLogThreshold(jww.LevelDebug)
-	jww.SetStdoutThreshold(jww.LevelDebug)
+	jww.SetLogThreshold(jww.LevelInfo)
+	jww.SetStdoutThreshold(jww.LevelInfo)
 	log.SetLevel(log.InfoLevel)
 
 	filename := ""

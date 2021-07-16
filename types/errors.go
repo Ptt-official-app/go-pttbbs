@@ -6,6 +6,10 @@ import (
 )
 
 var (
+	ErrInvalidIni    = errors.New("invalid ini")
+	ErrBytesTooLarge = errors.New("bytes too large")
+	ErrNilReader     = errors.New("nil reader")
+
 	ErrNotImplemented = errors.New("not implemented")
 
 	ErrInvalidTimeLocale = errors.New("invalid time locale")
