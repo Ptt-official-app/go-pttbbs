@@ -25,11 +25,11 @@ func TestLoadUHash(t *testing.T) {
 	for idx := range wantHashHead {
 		wantHashHead[idx] = -1
 	}
-	wantHashHead[29935] = 0 //SYSOP
-	wantHashHead[56375] = 1 //CodingMan
-	wantHashHead[36994] = 2 //pichu
-	wantHashHead[15845] = 3 //Kahou
-	wantHashHead[22901] = 4 //Kahou2
+	wantHashHead[29935] = 0 // SYSOP
+	wantHashHead[56375] = 1 // CodingMan
+	wantHashHead[36994] = 2 // pichu
+	wantHashHead[15845] = 3 // Kahou
+	wantHashHead[22901] = 4 // Kahou2
 	wantHashHead[35] = 5    //""
 
 	wantNextInHash[0] = -1
@@ -84,9 +84,7 @@ func TestLoadUHash(t *testing.T) {
 
 			if !reflect.DeepEqual(nextInHash, wantNextInHash) {
 				t.Errorf("loadUHash() nextInHash: %v expected: %v", nextInHash, wantNextInHash)
-
 			}
-
 		})
 		wg.Wait()
 	}
@@ -104,17 +102,17 @@ func Test_fillUHash(t *testing.T) {
 
 	_ = LoadUHash()
 
-	//move setupTest in for-loop
+	// move setupTest in for-loop
 	wantHashHead := [1 << ptttype.HASH_BITS]int32{}
 	wantNextInHash := [ptttype.MAX_USERS]int32{}
 	for idx := range wantHashHead {
 		wantHashHead[idx] = -1
 	}
-	wantHashHead[29935] = 0 //SYSOP
-	wantHashHead[56375] = 1 //CodingMan
-	wantHashHead[36994] = 2 //pichu
-	wantHashHead[15845] = 3 //Kahou
-	wantHashHead[22901] = 4 //Kahou2
+	wantHashHead[29935] = 0 // SYSOP
+	wantHashHead[56375] = 1 // CodingMan
+	wantHashHead[36994] = 2 // pichu
+	wantHashHead[15845] = 3 // Kahou
+	wantHashHead[22901] = 4 // Kahou2
 	wantHashHead[35] = 5    //""
 
 	wantNextInHash[0] = -1
@@ -179,7 +177,6 @@ func Test_fillUHash(t *testing.T) {
 
 			if !reflect.DeepEqual(nextInHash, wantNextInHash) {
 				t.Errorf("loadUHash() nextInHash: %v expected: %v", nextInHash, wantNextInHash)
-
 			}
 		})
 		wg.Wait()
@@ -205,11 +202,11 @@ func TestInitFillUHash(t *testing.T) {
 	for idx := range wantHashHead {
 		wantHashHead[idx] = -1
 	}
-	wantHashHead[29935] = 0 //SYSOP
-	wantHashHead[56375] = 1 //CodingMan
-	wantHashHead[36994] = 2 //pichu
-	wantHashHead[15845] = 3 //Kahou
-	wantHashHead[22901] = 4 //Kahou2
+	wantHashHead[29935] = 0 // SYSOP
+	wantHashHead[56375] = 1 // CodingMan
+	wantHashHead[36994] = 2 // pichu
+	wantHashHead[15845] = 3 // Kahou
+	wantHashHead[22901] = 4 // Kahou2
 	wantHashHead[35] = 5    //""
 
 	wantNextInHash[0] = -1
@@ -268,9 +265,7 @@ func TestInitFillUHash(t *testing.T) {
 
 			if !reflect.DeepEqual(nextInHash, wantNextInHash) {
 				t.Errorf("loadUHash() nextInHash: %v expected: %v", nextInHash, wantNextInHash)
-
 			}
-
 		})
 		wg.Wait()
 	}

@@ -10,8 +10,6 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
-var ()
-
 func setupTest() {
 	types.SetIsTest()
 	ptttype.SetIsTest()

@@ -8,7 +8,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
-type BBoardID string //The integrated bid-boardID, concat with _, safe because bid is number >= 1.
+type BBoardID string // The integrated bid-boardID, concat with _, safe because bid is number >= 1.
 
 //ToBBoardID
 //
@@ -43,7 +43,7 @@ func (b BBoardID) ToRaw() (bid ptttype.Bid, boardIDRaw *ptttype.BoardID_t, err e
 		return 0, nil, ErrInvalidBBoardID
 	}
 
-	//boardIDRaw
+	// boardIDRaw
 	boardIDRaw = &ptttype.BoardID_t{}
 	boardID := strings.Join(bList[1:], "_")
 	copy(boardIDRaw[:], []byte(boardID))

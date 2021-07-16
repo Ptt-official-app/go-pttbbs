@@ -15,9 +15,8 @@ func LoadHotBoardsWrapper(c *gin.Context) {
 	LoginRequiredQuery(LoadHotBoards, nil, c)
 }
 
-//We have only 128 hot-boards.
+// We have only 128 hot-boards.
 func LoadHotBoards(remoteAddr string, uuserID bbs.UUserID, params interface{}) (result interface{}, err error) {
-
 	summary, err := bbs.LoadHotBoards(uuserID)
 	if err != nil {
 		return nil, err

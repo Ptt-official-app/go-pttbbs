@@ -21,7 +21,7 @@ func ToArticleID(filename *ptttype.Filename_t) ArticleID {
 //1st 8 bytes are aidc.
 //bytes starting 8th are ownerID
 func (a ArticleID) ToRaw() (filename *ptttype.Filename_t) {
-	//1st 8 bytes are aidc
+	// 1st 8 bytes are aidc
 	aidc := &ptttype.Aidc{}
 	copy(aidc[:], []byte(a[:8]))
 	filename = aidc.ToAidu().ToFN()

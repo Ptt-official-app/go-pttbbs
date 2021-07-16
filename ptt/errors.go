@@ -13,7 +13,7 @@ var (
 	ErrInvalidParams = errors.New("invalid params")
 	ErrNewUtmp       = errors.New("unable to get new utmp")
 
-	//talk.go
+	// talk.go
 	ErrNoUser        = errors.New("no user")
 	ErrTooManyMsgs   = errors.New("too many msgs")
 	ErrInvalidPID    = errors.New("invalid pid")

@@ -5,7 +5,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
-type UUserID string //The integrated bid-userid, concat with _, safe because bid is number >= 1.
+type UUserID string // The integrated bid-userid, concat with _, safe because bid is number >= 1.
 
 func ToUUserID(userIDRaw *ptttype.UserID_t) UUserID {
 	if !userIDRaw.IsValid() {

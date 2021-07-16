@@ -5,9 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var (
-	apiPrefix = "/v1"
-)
+var apiPrefix = "/v1"
 
 func withPrefix(path string) string {
 	return apiPrefix + path
@@ -16,17 +14,17 @@ func withPrefix(path string) string {
 func InitGin() (*gin.Engine, error) {
 	router := gin.Default()
 
-	//options
+	// options
 	router.OPTIONS("/*path", api.OptionsWrapper)
 
 	router.POST(withPrefix(api.INDEX_R), api.IndexWrapper)
 	router.GET(withPrefix(api.GET_VERSION_R), api.GetVersionWrapper)
 
-	//login/register
+	// login/register
 	router.POST(withPrefix(api.LOGIN_R), api.LoginWrapper)
 	router.POST(withPrefix(api.REGISTER_R), api.RegisterWrapper)
 
-	//board
+	// board
 	router.GET(withPrefix(api.LOAD_GENERAL_BOARDS_R), api.LoadGeneralBoardsWrapper)
 	router.GET(withPrefix(api.LOAD_GENERAL_ARTICLES_R), api.LoadGeneralArticlesWrapper)
 	router.GET(withPrefix(api.LOAD_BOTTOM_ARTICLES_R), api.LoadBottomArticlesWrapper)
@@ -39,14 +37,14 @@ func InitGin() (*gin.Engine, error) {
 
 	router.POST(withPrefix(api.CREATE_BOARD_R), api.CreateBoardWrapper)
 
-	//article
+	// article
 	router.GET(withPrefix(api.GET_ARTICLE_R), api.GetArticleWrapper)
 	router.POST(withPrefix(api.CREATE_ARTICLE_R), api.CreateArticleWrapper)
 
-	//comment
+	// comment
 	router.POST(withPrefix(api.CREATE_COMMENT_R), api.CreateCommentWrapper)
 
-	//user
+	// user
 	router.GET(withPrefix(api.GET_USER_R), api.GetUserWrapper)
 	router.POST(withPrefix(api.CHANGE_PASSWD_R), api.ChangePasswdWrapper)
 	router.POST(withPrefix(api.CHANGE_EMAIL_R), api.ChangeEmailWrapper)
@@ -58,7 +56,7 @@ func InitGin() (*gin.Engine, error) {
 	router.GET(withPrefix(api.GET_FAV_R), api.GetFavoritesWrapper)
 	router.POST(withPrefix(api.CHECK_EXISTS_USER_R), api.CheckExistsUserWrapper)
 
-	//admin
+	// admin
 	router.GET(withPrefix(api.RELOAD_UHASH_R), api.ReloadUHashWrapper)
 	router.POST(withPrefix(api.SET_USER_PERM_R), api.SetUserPermWrapper)
 

@@ -56,7 +56,7 @@ func GetUser(userID *ptttype.UserID_t) (user *ptttype.UserecRaw, err error) {
 		return nil, ptttype.ErrInvalidUserID
 	}
 
-	//passwdSyncQuery includes cache.MoneyOf
+	// passwdSyncQuery includes cache.MoneyOf
 	user, err = passwdSyncQuery(uid)
 	if err != nil {
 		return nil, err
@@ -106,11 +106,11 @@ func getNewUtmpEnt(uinfo *ptttype.UserInfoRaw) (utmpID ptttype.UtmpID, err error
 			types.PID_SZ,
 			unsafe.Pointer(ppid),
 		)
-		//found same pid.
-		//update the newest status.
-		//XXX race condition with auto-logout.
-		//XXX c-pttbbs does not care the race-condition here.
-		//XXX we may not do anything with utmpID though.
+		// found same pid.
+		// update the newest status.
+		// XXX race condition with auto-logout.
+		// XXX c-pttbbs does not care the race-condition here.
+		// XXX we may not do anything with utmpID though.
 		if pid == uinfo.Pid {
 			cache.Shm.WriteAt(
 				unsafe.Offsetof(cache.Shm.Raw.UInfo)+uintptr(p)*ptttype.USER_INFO_RAW_SZ,
@@ -118,7 +118,7 @@ func getNewUtmpEnt(uinfo *ptttype.UserInfoRaw) (utmpID ptttype.UtmpID, err error
 				unsafe.Pointer(uinfo),
 			)
 
-			//https://github.com/ptt/pttbbs/blob/master/mbbsd/mbbsd.c#L998
+			// https://github.com/ptt/pttbbs/blob/master/mbbsd/mbbsd.c#L998
 			one := uint8(1)
 			cache.Shm.WriteAt(
 				unsafe.Offsetof(cache.Shm.Raw.UTMPNeedSort),
@@ -129,7 +129,7 @@ func getNewUtmpEnt(uinfo *ptttype.UserInfoRaw) (utmpID ptttype.UtmpID, err error
 			return ptttype.UtmpID(p), nil
 		}
 
-		//new pid
+		// new pid
 		if pid == 0 {
 			cache.Shm.WriteAt(
 				unsafe.Offsetof(cache.Shm.Raw.UInfo)+uintptr(p)*ptttype.USER_INFO_RAW_SZ,
@@ -137,7 +137,7 @@ func getNewUtmpEnt(uinfo *ptttype.UserInfoRaw) (utmpID ptttype.UtmpID, err error
 				unsafe.Pointer(uinfo),
 			)
 
-			//https://github.com/ptt/pttbbs/blob/master/mbbsd/mbbsd.c#L998
+			// https://github.com/ptt/pttbbs/blob/master/mbbsd/mbbsd.c#L998
 			one := uint8(1)
 			cache.Shm.WriteAt(
 				unsafe.Offsetof(cache.Shm.Raw.UTMPNeedSort),
@@ -181,7 +181,7 @@ func postpermMsg(uid ptttype.Uid, user *ptttype.UserecRaw, bid ptttype.Bid, boar
 		return ErrPermitNoPost
 	}
 
-	//秘密看板特別處理.
+	// 秘密看板特別處理.
 	if board.BrdAttr.HasPerm(ptttype.BRD_HIDE) {
 		return nil
 	}
@@ -198,7 +198,7 @@ func postpermMsg(uid ptttype.Uid, user *ptttype.UserecRaw, bid ptttype.Bid, boar
 		}
 	}
 
-	//除了"post"以外的其他權限要求
+	// 除了"post"以外的其他權限要求
 	requiredLevel := board.Level & ^ptttype.PERM_POST
 	if requiredLevel == 0 {
 		return nil

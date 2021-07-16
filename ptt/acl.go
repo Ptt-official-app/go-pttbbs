@@ -27,7 +27,6 @@ func bakumanMakeTagFilename(userID *ptttype.UserID_t, obj types.Cstr, objectType
 	filename += string(os.PathSeparator) + objectType + "_" + types.CstrToString(obj)
 
 	return filename, nil
-
 }
 
 func bakumanGetInfo(filename string) (expireTS types.Time4, reason string, err error) {
@@ -39,7 +38,7 @@ func bakumanGetInfo(filename string) (expireTS types.Time4, reason string, err e
 
 	buf := bufio.NewReader(file)
 
-	//expireTS
+	// expireTS
 	line, err := types.ReadLine(buf)
 	if err != nil {
 		return 0, "", err
@@ -48,7 +47,7 @@ func bakumanGetInfo(filename string) (expireTS types.Time4, reason string, err e
 	theTS, _ := strconv.Atoi(string(line))
 	expireTS = types.Time4(theTS)
 
-	//reason
+	// reason
 	line, err = types.ReadLine(buf)
 	if err == nil {
 		line = bytes.TrimSpace(line)
@@ -66,7 +65,6 @@ func isBannedByBoard(user *ptttype.UserecRaw, board *ptttype.BoardHeaderRaw) (ex
 }
 
 func isBannedBy(userID *ptttype.UserID_t, obj types.Cstr, objectType string) (expireTS types.Time4, reason string) {
-
 	tagFn, err := bakumanMakeTagFilename(userID, obj, objectType, false)
 	if err != nil {
 		return 0, ""

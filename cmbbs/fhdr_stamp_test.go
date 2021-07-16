@@ -126,7 +126,6 @@ func TestStampfileU(t *testing.T) {
 			tt.args.header.Filename = expected0.Filename
 			tt.args.header.Date = expected0.Date
 			testutil.TDeepEqual(t, "got", tt.args.header, expected0)
-
 		})
 		wg.Wait()
 	}

@@ -14,8 +14,6 @@ import (
 	jww "github.com/spf13/jwalterweatherman"
 )
 
-var ()
-
 func setupTest() {
 	jww.SetLogOutput(os.Stderr)
 	// jww.SetLogThreshold(jww.LevelDebug)

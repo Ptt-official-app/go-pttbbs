@@ -21,7 +21,6 @@ func setupTest() {
 
 	_ = types.CopyFileToFile("./testcase/.PASSWDS1", "./testcase/.PASSWDS")
 	_ = types.CopyFileToFile("./testcase/.BRD1", "./testcase/.BRD")
-
 }
 
 func teardownTest() {

@@ -47,6 +47,6 @@ type BoardStat struct {
 
 	Board *BoardHeaderRaw
 
-	//obtain first in load-board-stat to be processed for showBrdList
+	// obtain first in load-board-stat to be processed for showBrdList
 	IsGroupOp bool
 }

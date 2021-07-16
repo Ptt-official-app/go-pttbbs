@@ -7,7 +7,6 @@ import (
 )
 
 func IsBoardValidUser(user *ptttype.UserecRaw, uid ptttype.Uid, boardID *ptttype.BoardID_t, bid ptttype.Bid) (isValid bool, err error) {
-
 	board, err := cache.GetBCache(bid)
 	if err != nil {
 		return false, err
@@ -27,8 +26,7 @@ func IsBoardValidUser(user *ptttype.UserecRaw, uid ptttype.Uid, boardID *ptttype
 //
 //The original hasBoardPerm
 func boardPermStat(user *ptttype.UserecRaw, uid ptttype.Uid, board *ptttype.BoardHeaderRaw, bid ptttype.Bid) ptttype.BoardStatAttr {
-
-	//SYSOP
+	// SYSOP
 	if user.UserLevel.HasUserPerm(ptttype.PERM_SYSOP) {
 		return ptttype.NBRD_FAV
 	}
@@ -68,7 +66,7 @@ func boardPermStatNormally(user *ptttype.UserecRaw, uid ptttype.Uid, board *pttt
 			if brdAttr&ptttype.BRD_POSTMASK != 0 {
 				return ptttype.NBRD_INVALID
 			} else {
-				//XXX return 2;
+				// XXX return 2;
 				//    what's this? (in addnewbrdstat, to set brd_postmask)
 				//    need to simplify this function.
 				return ptttype.NBRD_BOARD

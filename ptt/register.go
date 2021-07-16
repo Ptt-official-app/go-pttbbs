@@ -381,7 +381,7 @@ func isToCleanUser() (bool, error) {
 
 // touchFresh
 func touchFresh() error {
-	file, err := os.OpenFile(ptttype.FN_FRESH, os.O_CREATE|os.O_RDWR, 0600)
+	file, err := os.OpenFile(ptttype.FN_FRESH, os.O_CREATE|os.O_RDWR, 0o600)
 	if err != nil {
 		return err
 	}

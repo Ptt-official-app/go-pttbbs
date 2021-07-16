@@ -27,14 +27,13 @@ func LoginRequiredQuery(theFunc LoginRequiredApiFunc, params interface{}, c *gin
 }
 
 func loginRequiredProcess(theFunc LoginRequiredApiFunc, params interface{}, c *gin.Context) {
-
 	host := strings.TrimSpace(c.GetHeader("Host"))
 	if !isValidHost(host) {
 		processResult(c, nil, ErrInvalidHost)
 		return
 	}
 
-	//https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For
+	// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For
 	remoteAddr := strings.TrimSpace(c.GetHeader("X-Forwarded-For"))
 	if !isValidRemoteAddr(remoteAddr) {
 		processResult(c, nil, ErrInvalidRemoteAddr)

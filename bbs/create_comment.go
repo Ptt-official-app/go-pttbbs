@@ -8,7 +8,6 @@ import (
 )
 
 func CreateComment(userID UUserID, boardID BBoardID, articleID ArticleID, commentType ptttype.CommentType, content []byte, ip string) (comment []byte, mtime types.Time4, err error) {
-
 	ipRaw := &ptttype.IPv4_t{}
 	copy(ipRaw[:], []byte(ip))
 

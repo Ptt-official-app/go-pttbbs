@@ -10,7 +10,6 @@ import (
 )
 
 func fhdrStamp(boardFilename string, header *ptttype.FileHeaderRaw, theType ptttype.StampType) (fullFilename string, err error) {
-
 	nowTS := types.NowTS()
 
 	filename := ""
@@ -32,7 +31,7 @@ func fhdrStamp(boardFilename string, header *ptttype.FileHeaderRaw, theType pttt
 	case ptttype.STAMP_DIR:
 		for {
 			nowTS++
-			filename = fmt.Sprintf("D%X", nowTS&07777)
+			filename = fmt.Sprintf("D%X", nowTS&0o7777)
 			fullFilename = boardFilename + string(os.PathSeparator) + filename
 			isValid, err := fhdrStampIsValidDir(fullFilename)
 			if err != nil {
@@ -110,6 +109,5 @@ func Stampfile(boardFilename string, header *ptttype.FileHeaderRaw) (filename st
 }
 
 func StampfileU(boardFilename string, header *ptttype.FileHeaderRaw) (filename string, err error) {
-
 	return fhdrStamp(boardFilename, header, ptttype.STAMP_FILE)
 }

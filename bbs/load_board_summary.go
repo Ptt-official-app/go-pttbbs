@@ -6,7 +6,6 @@ import (
 
 func LoadBoardSummary(uuserID UUserID, bboardID BBoardID) (summary *BoardSummary, err error) {
 	bid, _, err := bboardID.ToRaw()
-
 	if err != nil {
 		return nil, ErrInvalidParams
 	}

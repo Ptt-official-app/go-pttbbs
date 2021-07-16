@@ -21,7 +21,6 @@ func LoadBottomArticlesWrapper(c *gin.Context) {
 }
 
 func LoadBottomArticles(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (result interface{}, err error) {
-
 	thePath, ok := path.(*LoadGeneralArticlesPath)
 	if !ok {
 		return nil, ErrInvalidPath

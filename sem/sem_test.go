@@ -70,11 +70,9 @@ func TestSemGet(t *testing.T) {
 			if firstGot == nil {
 				firstGot = got
 			}
-
 		})
 		wg.Wait()
 	}
-
 }
 
 func TestSemaphore_SetVal(t *testing.T) {

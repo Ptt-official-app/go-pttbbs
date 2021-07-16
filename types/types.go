@@ -12,8 +12,10 @@ type Key_t int
 
 type Size_t uint32
 
-var VERSION string
-var GIT_VERSION string
+var (
+	VERSION     string
+	GIT_VERSION string
+)
 
 const INT32_SZ = unsafe.Sizeof(int32(0))
 

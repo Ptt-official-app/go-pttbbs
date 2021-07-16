@@ -66,7 +66,7 @@ func TestFavLoad(t *testing.T) {
 				tt.expected.MTime = got.MTime
 			}
 
-			//XXX remove Root to avoid infinite recursive
+			// XXX remove Root to avoid infinite recursive
 			if got != nil {
 				got.CleanRoot()
 			}
@@ -167,7 +167,7 @@ func TestFavSave(t *testing.T) {
 				return
 			}
 
-			//XXX remove Root to avoid infinite recursive
+			// XXX remove Root to avoid infinite recursive
 			if got != nil {
 				got.CleanRoot()
 			}
@@ -235,7 +235,6 @@ func TestFavRaw_AddBoard(t *testing.T) {
 			f.CleanRoot()
 
 			testutil.TDeepEqual(t, "expected", f, tt.expected)
-
 		})
 		wg.Wait()
 	}

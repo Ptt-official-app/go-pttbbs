@@ -6,7 +6,6 @@ import (
 )
 
 func LoadAutoCompleteBoards(uuserID UUserID, startIdxStr string, nBoards int, keyword string, isAsc bool) (summaries []*BoardSummary, nextIdxStr string, err error) {
-
 	keywordBytes := []byte(keyword)
 
 	startIdx, err := loadAutoCompleteBoardsToStartIdx(startIdxStr, keywordBytes, isAsc)

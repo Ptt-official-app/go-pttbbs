@@ -7,7 +7,7 @@ import (
 )
 
 type BoardHeaderRaw struct {
-	//Require updating SHM_VERSION if BOARD_HEADER_RAW_SZ is changed.
+	// Require updating SHM_VERSION if BOARD_HEADER_RAW_SZ is changed.
 	Brdname            BoardID_t /* bid */
 	Title              BoardTitle_t
 	BM                 BM_t /* BMs' userid, token '/' */
@@ -43,17 +43,19 @@ type BoardHeaderRaw struct {
 	Pad4               [40]byte
 }
 
-//Require updating SHM_VERSION if BOARD_HEADER_RAW_SZ is changed.
+// Require updating SHM_VERSION if BOARD_HEADER_RAW_SZ is changed.
 
 var EMPTY_BOARD_HEADER_RAW = BoardHeaderRaw{}
 
-const BOARD_HEADER_RAW_SZ = unsafe.Sizeof(EMPTY_BOARD_HEADER_RAW)
-const BOARD_HEADER_BRDNAME_OFFSET = unsafe.Offsetof(EMPTY_BOARD_HEADER_RAW.Brdname)
-const BOARD_HEADER_TITLE_OFFSET = unsafe.Offsetof(EMPTY_BOARD_HEADER_RAW.Title)
-const BOARD_HEADER_BRD_ATTR_OFFSET = unsafe.Offsetof(EMPTY_BOARD_HEADER_RAW.BrdAttr)
-const BOARD_HEADER_FIRST_CHILD_OFFSET = unsafe.Offsetof(EMPTY_BOARD_HEADER_RAW.FirstChild)
-const BOARD_HEADER_BM_OFFSET = unsafe.Offsetof(EMPTY_BOARD_HEADER_RAW.BM)
-const BOARD_HEADER_NUSER_OFFSET = unsafe.Offsetof(EMPTY_BOARD_HEADER_RAW.NUser)
+const (
+	BOARD_HEADER_RAW_SZ             = unsafe.Sizeof(EMPTY_BOARD_HEADER_RAW)
+	BOARD_HEADER_BRDNAME_OFFSET     = unsafe.Offsetof(EMPTY_BOARD_HEADER_RAW.Brdname)
+	BOARD_HEADER_TITLE_OFFSET       = unsafe.Offsetof(EMPTY_BOARD_HEADER_RAW.Title)
+	BOARD_HEADER_BRD_ATTR_OFFSET    = unsafe.Offsetof(EMPTY_BOARD_HEADER_RAW.BrdAttr)
+	BOARD_HEADER_FIRST_CHILD_OFFSET = unsafe.Offsetof(EMPTY_BOARD_HEADER_RAW.FirstChild)
+	BOARD_HEADER_BM_OFFSET          = unsafe.Offsetof(EMPTY_BOARD_HEADER_RAW.BM)
+	BOARD_HEADER_NUSER_OFFSET       = unsafe.Offsetof(EMPTY_BOARD_HEADER_RAW.NUser)
+)
 
 //IsOpenBRD
 //

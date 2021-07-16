@@ -247,7 +247,6 @@ func TestPasswdLock(t *testing.T) {
 		})
 	}
 	wg.Wait()
-
 }
 
 func TestPasswdInit(t *testing.T) {
@@ -273,7 +272,6 @@ func TestPasswdInit(t *testing.T) {
 		})
 		wg.Wait()
 	}
-
 }
 
 func TestPasswdUpdate(t *testing.T) {
@@ -314,7 +312,6 @@ func TestPasswdUpdate(t *testing.T) {
 
 			_, userecRaw, _ := PasswdLoadUser(&testUserecRaw1Updated.UserID)
 			testutil.TDeepEqual(t, "userec", userecRaw, tt.expected)
-
 		})
 		wg.Wait()
 	}

@@ -16,6 +16,11 @@ and try the api.
 You can copy the curl command from the link if you encounter
 CORS issue.
 
+## Coding Convention
+
+* [gotests](https://github.com/cweill/gotests) for test-generation
+* [gofumpt](https://github.com/mvdan/gofumpt) for formatting
+
 ## Docker-Compose
 
 You can do the following to start with docker-compose:

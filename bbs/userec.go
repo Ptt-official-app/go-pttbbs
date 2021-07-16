@@ -12,36 +12,36 @@ type Userec struct {
 	Username string  `json:"username"`
 	Realname []byte  `json:"realname"`
 	Nickname []byte  `json:"nickname"`
-	//Pad1       byte
+	// Pad1       byte
 
 	Uflag ptttype.UFlag `json:"flag"`
-	//Unused1      uint32      /* 從前放習慣2, 使用前請先清0 */
+	// Unused1      uint32      /* 從前放習慣2, 使用前請先清0 */
 	Userlevel    ptttype.PERM `json:"perm"`
 	Numlogindays uint32       `json:"login_days"`
 	Numposts     uint32       `json:"posts"`
 	Firstlogin   types.Time4  `json:"first_login"`
 	Lastlogin    types.Time4  `json:"last_login"`
-	Lasthost     string       `json:"last_ip"` //last IPv4.
+	Lasthost     string       `json:"last_ip"` // last IPv4.
 	Money        int32        `json:"money"`
-	//Unused2      [4]byte
+	// Unused2      [4]byte
 
 	Email string `json:"email"`
-	//Address []byte
+	// Address []byte
 	Justify []byte `json:"justify"`
-	//UnusedBirth [3]uint8  /* 生日 月日年 */
+	// UnusedBirth [3]uint8  /* 生日 月日年 */
 	Over18      bool              `json:"over18"`
 	PagerUIType uint8             `json:"pager_ui"` /* 呼叫器界面類別 (was: WATER_*) */
 	Pager       ptttype.PagerMode `json:"pager"`    /* 呼叫器狀態 */
 	Invisible   bool              `json:"invisible"`
-	//Unused4     [2]byte
+	// Unused4     [2]byte
 	Exmailbox uint32 `json:"exmail"`
 
 	// r3968 移出 sizeof(chicken_t)=128 bytes
-	//Unused5       [4]byte
+	// Unused5       [4]byte
 	Career []byte `json:"career"`
-	//UnusedPhone   Phone_t  /* 電話 */
-	//Unused6       uint32   /* 從前放轉換前的 numlogins, 使用前請先清0 */
-	//Chkpad1       [44]byte
+	// UnusedPhone   Phone_t  /* 電話 */
+	// Unused6       uint32   /* 從前放轉換前的 numlogins, 使用前請先清0 */
+	// Chkpad1       [44]byte
 	Role          uint32      `json:"role"`
 	LastSeen      types.Time4 `json:"last_seen"`
 	TimeSetAngel  types.Time4 `json:"time_set_angel"`
@@ -49,8 +49,8 @@ type Userec struct {
 
 	LastSong  types.Time4 `json:"last_song"`
 	LoginView uint32      `json:"login_view"`
-	//Unused8   uint8       // was: channel
-	//Pad2 uint8
+	// Unused8   uint8       // was: channel
+	// Pad2 uint8
 
 	Vlcount   uint16 `json:"violation"`
 	FiveWin   uint16 `json:"five_win"`
@@ -62,7 +62,7 @@ type Userec struct {
 	Conn6Win  uint16 `json:"conn6_win"`
 	Conn6Lose uint16 `json:"conn6_lose"`
 	Conn6Tie  uint16 `json:"conn6_tie"`
-	//UnusedMind [2]byte /* 舊心情 */
+	// UnusedMind [2]byte /* 舊心情 */
 	GoWin     uint16 `json:"go_win"`
 	GoLose    uint16 `json:"go_lose"`
 	GoTie     uint16 `json:"go_tie"`
@@ -72,10 +72,10 @@ type Userec struct {
 	UaVersion uint8  `json:"ua_version"`
 
 	Signature uint8 `json:"signature"` /* 慣用簽名檔 */
-	//Unused10  uint8    /* 從前放好文章數, 使用前請先清0 */
+	// Unused10  uint8    /* 從前放好文章數, 使用前請先清0 */
 	BadPost uint8   `json:"bad_post"` /* 評價為壞文章數 */
 	MyAngel UUserID `json:"angel"`    /* 我的小天使 */
-	//Pad3    byte
+	// Pad3    byte
 
 	ChessEloRating    uint16           `json:"check_rank"`
 	WithMe            ptttype.WithMe_t `json:"withme"`

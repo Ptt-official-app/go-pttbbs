@@ -59,7 +59,7 @@ func SearchUListUserID(userID *ptttype.UserID_t) (ptttype.UtmpID, *ptttype.UserI
 			userIDInCache_ptr,
 		)
 
-		//cmp
+		// cmp
 		j := types.Cstrcasecmp(userID[:], userIDInCache[:])
 
 		if j == 0 {
@@ -137,7 +137,7 @@ func SearchUListPID(pid types.Pid_t) (ptttype.UtmpID, *ptttype.UserInfoRaw) {
 			utmpID_ptr,
 		)
 
-		//get uPid
+		// get uPid
 		Shm.ReadAt(
 			offsetUInfo+
 				ptttype.USER_INFO_RAW_SZ*uintptr(utmpID)+
@@ -181,7 +181,6 @@ func SearchUListPID(pid types.Pid_t) (ptttype.UtmpID, *ptttype.UserInfoRaw) {
 //
 //XXX skip utmp for now.
 func SetUtmpMode(uid ptttype.Uid, mode ptttype.UserOpMode) (err error) {
-
 	/*
 		pid := uid.ToPid()
 		utmpID, _ := SearchUListPID(pid)

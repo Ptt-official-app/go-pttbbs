@@ -293,9 +293,9 @@ var (
 
 	MUTT_PATH = "mutt"
 
-	DEFAULT_FOLDER_CREATE_PERM = os.FileMode(0755)
+	DEFAULT_FOLDER_CREATE_PERM = os.FileMode(0o755)
 
-	DEFAULT_FILE_CREATE_PERM = os.FileMode(0644)
+	DEFAULT_FILE_CREATE_PERM = os.FileMode(0o644)
 
 	SHM_KEY = types.Key_t(1228)
 
@@ -536,7 +536,7 @@ var (
 var (
 	IS_NEW_SHM = true // whether to create new shm (use only with ShmInit)
 
-	IS_UTMP = true //whether to do with utmp
+	IS_UTMP = true // whether to do with utmp
 
 	HAVE_USERAGREEMENT_POSTFIX = "etc/UserAgreement"
 	HAVE_USERAGREEMENT         = BBSHOME +
@@ -553,21 +553,21 @@ var (
 )
 
 var (
-	//https://github.com/ptt/pttbbs/blob/master/mbbsd/cal.c#L23
+	// https://github.com/ptt/pttbbs/blob/master/mbbsd/cal.c#L23
 	ASSESS = true
 
-	//https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L608
+	// https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L608
 	ALLOW_FREE_TN_ANNOUNCE = false
 
-	//https://github.com/ptt/pttbbs/blob/master/common/bbs/string.c#L67
+	// https://github.com/ptt/pttbbs/blob/master/common/bbs/string.c#L67
 	USE_LEGACY_FORWARD = false
 
-	//https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L1202
+	// https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L1202
 	USE_LIVE_ALLPOST = false
 
-	//https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L402
+	// https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L402
 	USE_AID_URL = false
 
-	//https://github.com/ptt/pttbbs/blob/master/mbbsd/cache.c#L189
+	// https://github.com/ptt/pttbbs/blob/master/mbbsd/cache.c#L189
 	USE_NEW_BAN_SYSTEM = true
 )

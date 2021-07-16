@@ -120,6 +120,6 @@ type shmGV2 struct {
 
 var EMPTY_SHM_RAW = SHMRaw{}
 
-const DUMMY_SHMGV2 = 512 - 6 //6 defined int32 variables in shmGV2a
+const DUMMY_SHMGV2 = 512 - 6 // 6 defined int32 variables in shmGV2a
 
 const SHM_RAW_SZ = unsafe.Sizeof(EMPTY_SHM_RAW)

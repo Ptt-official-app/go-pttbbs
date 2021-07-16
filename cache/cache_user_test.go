@@ -105,7 +105,6 @@ func TestAddToUHash(t *testing.T) {
 			if !reflect.DeepEqual(userID, tt.args.userID) {
 				t.Errorf("AddToUHash: userID: %v want: %v", userID, tt.args.userID)
 			}
-
 		})
 		wg.Wait()
 	}

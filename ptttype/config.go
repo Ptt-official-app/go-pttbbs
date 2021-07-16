@@ -130,7 +130,7 @@ func config() {
 
 	INSCREEN = setStringConfig("INSCREEN", INSCREEN)
 
-	//config.h
+	// config.h
 	BBSPROGPOSTFIX = setStringConfig("BBSPROGPOSTFIX", BBSPROGPOSTFIX)
 	BAN_FILE = setStringConfig("BAN_FILE", BAN_FILE)
 	LOAD_FILE = setStringConfig("LOAD_FILE", LOAD_FILE)
@@ -328,12 +328,12 @@ func config() {
 	USE_REGCHECKD = setBoolConfig("USE_REGCHECKD", USE_REGCHECKD)
 	USE_VERIFYDB = setBoolConfig("USE_VERIFYDB", USE_VERIFYDB)
 
-	//go-pttbbs config
+	// go-pttbbs config
 	IS_NEW_SHM = setBoolConfig("IS_NEW_SHM", IS_NEW_SHM)
 
 	IS_UTMP = setBoolConfig("IS_UTMP", IS_UTMP)
 
-	//misc
+	// misc
 	ASSESS = setBoolConfig("ASSESS", ASSESS)
 
 	ALLOW_FREE_TN_ANNOUNCE = setBoolConfig("ALLOW_FREE_TN_ANNOUNCE", ALLOW_FREE_TN_ANNOUNCE)

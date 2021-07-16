@@ -11,11 +11,11 @@ import (
 )
 
 func TestPttLock(t *testing.T) {
-	file, err := os.OpenFile("./testcase/.exist", syscall.O_WRONLY, 0644)
+	file, err := os.OpenFile("./testcase/.exist", syscall.O_WRONLY, 0o644)
 	logrus.Infof("TestPttLock: after open: e: %v", err)
 	defer file.Close()
 
-	file2, err := os.OpenFile("./testcase/.exist2", syscall.O_RDWR, 0644)
+	file2, err := os.OpenFile("./testcase/.exist2", syscall.O_RDWR, 0o644)
 	logrus.Infof("TestPttLock: after open: e: %v", err)
 	defer file.Close()
 
@@ -65,7 +65,7 @@ func TestPttLock(t *testing.T) {
 }
 
 func TestPttLock2(t *testing.T) {
-	file, err := os.OpenFile("./testcase/.exist3", syscall.O_WRONLY, 0644)
+	file, err := os.OpenFile("./testcase/.exist3", syscall.O_WRONLY, 0o644)
 	logrus.Infof("TestPttLock: after open: e: %v", err)
 	defer file.Close()
 
@@ -129,7 +129,6 @@ func TestPttLock2(t *testing.T) {
 			}()
 
 			logrus.Infof("PttLock2: done: name: %v", tt.name)
-
 		})
 	}
 	wg.Wait()
@@ -139,7 +138,7 @@ func TestPttLock2(t *testing.T) {
 
 func TestGoPttLock(t *testing.T) {
 	filename := "./testcase/.exist3"
-	file, err := os.OpenFile(filename, syscall.O_WRONLY, 0644)
+	file, err := os.OpenFile(filename, syscall.O_WRONLY, 0o644)
 	logrus.Infof("TestGoPttLock: after open: e: %v", err)
 	defer file.Close()
 
@@ -172,7 +171,7 @@ func TestGoPttLock(t *testing.T) {
 
 func TestGoFlock(t *testing.T) {
 	filename := "./testcase/.exist3"
-	file, err := os.OpenFile(filename, syscall.O_WRONLY, 0644)
+	file, err := os.OpenFile(filename, syscall.O_WRONLY, 0o644)
 	logrus.Infof("TestGoPttLock: after open: e: %v", err)
 	defer file.Close()
 

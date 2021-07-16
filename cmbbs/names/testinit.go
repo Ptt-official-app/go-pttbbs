@@ -1,7 +1,5 @@
 package names
 
-var ()
-
 func setupTest() {
 }
 

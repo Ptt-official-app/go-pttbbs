@@ -186,7 +186,7 @@ func PasswdUpdate(uid ptttype.Uid, user *ptttype.UserecRaw) error {
 		return cache.ErrInvalidUID
 	}
 
-	file, err := os.OpenFile(ptttype.FN_PASSWD, os.O_WRONLY, 0600)
+	file, err := os.OpenFile(ptttype.FN_PASSWD, os.O_WRONLY, 0o600)
 	if err != nil {
 		return err
 	}
@@ -211,7 +211,7 @@ func PasswdUpdatePasswd(uid ptttype.Uid, passwdHash *ptttype.Passwd_t) error {
 		return cache.ErrInvalidUID
 	}
 
-	file, err := os.OpenFile(ptttype.FN_PASSWD, os.O_WRONLY, 0600)
+	file, err := os.OpenFile(ptttype.FN_PASSWD, os.O_WRONLY, 0o600)
 	if err != nil {
 		return err
 	}
@@ -237,7 +237,7 @@ func PasswdUpdateEmail(uid ptttype.Uid, email *ptttype.Email_t) error {
 		return cache.ErrInvalidUID
 	}
 
-	file, err := os.OpenFile(ptttype.FN_PASSWD, os.O_WRONLY, 0600)
+	file, err := os.OpenFile(ptttype.FN_PASSWD, os.O_WRONLY, 0o600)
 	if err != nil {
 		return err
 	}
@@ -324,7 +324,7 @@ func PasswdUpdateUserLevel2(userID *ptttype.UserID_t, perm ptttype.PERM2, isSet 
 		return err
 	}
 
-	file, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE, 0600)
+	file, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE, 0o600)
 	if err != nil {
 		return err
 	}
@@ -376,7 +376,7 @@ func passwdCheckPasswd2(filename string) (err error) {
 			return err
 		}
 
-		file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, 0600)
+		file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, 0o600)
 		if err != nil {
 			return err
 		}
@@ -397,7 +397,7 @@ func passwdCheckPasswd2(filename string) (err error) {
 		return ErrInvalidPasswd2Size
 	}
 
-	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_APPEND, 0600)
+	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_APPEND, 0o600)
 	if err != nil {
 		return err
 	}

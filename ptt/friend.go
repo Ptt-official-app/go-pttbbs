@@ -17,12 +17,12 @@ import (
 
 func friendDeleteAll(userID *ptttype.UserID_t, friendType ptttype.FriendType) error {
 	filename, err := path.SetHomeFile(userID, ptttype.FriendFile[friendType])
-	if err != nil { //unable to get the file. assuming not-exists
+	if err != nil { // unable to get the file. assuming not-exists
 		return err
 	}
 
 	file, err := os.Open(filename)
-	if err != nil { //unable to open the file. assuming not-exists
+	if err != nil { // unable to open the file. assuming not-exists
 		return nil
 	}
 	defer file.Close()
@@ -66,13 +66,13 @@ func deleteFriendFromFile(filename string, friend *ptttype.UserID_t, isCaseSensi
 	randStr := fmt.Sprintf("%3.3X", randNum)
 	new_filename := filename + "." + randStr
 
-	file, err := os.OpenFile(filename, os.O_RDONLY, 0600)
+	file, err := os.OpenFile(filename, os.O_RDONLY, 0o600)
 	if err != nil { // no file
 		return false
 	}
 	defer file.Close()
 
-	new_file, err := os.OpenFile(new_filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
+	new_file, err := os.OpenFile(new_filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0o600)
 	if err != nil { // unable to create new file.
 		return false
 	}

@@ -234,7 +234,7 @@ func TestSHM_WriteAt(t *testing.T) {
 
 	copy(want2[:], []byte("SYSOP"))
 
-	//in3
+	// in3
 	in3 := &ptttype.MsgQueueRaw{}
 	copy(in3.UserID[:], []byte("test33"))
 
@@ -243,7 +243,7 @@ func TestSHM_WriteAt(t *testing.T) {
 	want3 := ptttype.UserID_t{}
 	copy(want3[:], []byte("test33"))
 
-	//in4
+	// in4
 	in4 := int32(100)
 
 	out4 := [ptttype.MAX_USERS]int32{}

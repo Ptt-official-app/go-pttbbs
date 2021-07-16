@@ -6,7 +6,6 @@ import (
 )
 
 func SetIDEmail(uuserID UUserID, isSet bool) (userLevel2 ptttype.PERM2, err error) {
-
 	userIDRaw, err := uuserID.ToRaw()
 	if err != nil {
 		return ptttype.PERM2_INVALID, err

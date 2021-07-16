@@ -11,7 +11,6 @@ import (
 )
 
 func isVisibleStat(me *ptttype.UserInfoRaw, uentp *ptttype.UserInfoRaw, friStat ptttype.FriendStat) bool {
-
 	if uentp == nil || uentp.UserID[0] == 0 {
 		return false
 	}
@@ -64,7 +63,6 @@ func friendStat(meID ptttype.UtmpID, me *ptttype.UserInfoRaw, uentID ptttype.Utm
 //XXX dealing with only WATERBALL_ALOHA for now.
 //id in c-pttbbs is the same as puin.UserID
 func myWrite(myUtmpID ptttype.UtmpID, myInfo *ptttype.UserInfoRaw, pid types.Pid_t, prompt []byte, flag ptttype.WaterBall, putmpID ptttype.UtmpID, puin *ptttype.UserInfoRaw) (msgCount uint8, err error) {
-
 	if pid >= types.DEFAULT_PID_MAX {
 		return 0, nil
 	}
@@ -78,7 +76,7 @@ func myWrite(myUtmpID ptttype.UtmpID, myInfo *ptttype.UserInfoRaw, pid types.Pid
 		}
 	}
 
-	//we don't have water in go-pttbbs.
+	// we don't have water in go-pttbbs.
 	if (uin == nil || uin.UserID[0] == 0) && !(flag == ptttype.WATERBALL_GENERAL || flag == ptttype.WATERBALL_ANGEL || flag == ptttype.WATERBALL_ANSWER) {
 		return 0, ErrNoUser
 	}
@@ -133,7 +131,6 @@ func myWriteInit(myUtmpID ptttype.UtmpID, myInfo *ptttype.UserInfoRaw) (mode ptt
 }
 
 func myWriteDefer(mode ptttype.UserOpMode, c0 uint8, myUtmpID ptttype.UtmpID, myInfo *ptttype.UserInfoRaw) {
-
 	mode_p := &mode
 	mode_ptr := unsafe.Pointer(mode_p)
 	c0_p := &c0
@@ -156,7 +153,6 @@ func myWriteDefer(mode ptttype.UserOpMode, c0 uint8, myUtmpID ptttype.UtmpID, my
 }
 
 func myWriteMsg(myUtmpID ptttype.UtmpID, myInfo *ptttype.UserInfoRaw, flag ptttype.WaterBall, utmpID ptttype.UtmpID, uin *ptttype.UserInfoRaw, msg []byte) (msgCount uint8, err error) {
-
 	if uin.MsgCount == ptttype.MAX_MSGS-1 {
 		return uin.MsgCount, ErrTooManyMsgs
 	}

@@ -9,24 +9,26 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
-//We have 3 different ids for user:
+// We have 3 different ids for user:
 //	UserID_t: (username)
 //	Uid: (int32) (uid starting from 1)
 //  UidInStore: (int32) (Uid - 1)
-type UserID_t [IDLEN + 1]byte
-type Uid int32
-type UidInStore int32
-type RealName_t [REALNAMESZ]byte
-type Nickname_t [NICKNAMESZ]byte
-type Passwd_t [PASSLEN]byte
-type IPv4_t [IPV4LEN + 1]byte
-type Email_t [EMAILSZ]byte
-type Address_t [ADDRESSSZ]byte
-type Reg_t [REGLEN + 1]byte
-type Career_t [CAREERSZ]byte
-type Phone_t [PHONESZ]byte
+type (
+	UserID_t   [IDLEN + 1]byte
+	Uid        int32
+	UidInStore int32
+	RealName_t [REALNAMESZ]byte
+	Nickname_t [NICKNAMESZ]byte
+	Passwd_t   [PASSLEN]byte
+	IPv4_t     [IPV4LEN + 1]byte
+	Email_t    [EMAILSZ]byte
+	Address_t  [ADDRESSSZ]byte
+	Reg_t      [REGLEN + 1]byte
+	Career_t   [CAREERSZ]byte
+	Phone_t    [PHONESZ]byte
+)
 
-type UtmpID int32 //starting from 0, idx in Shm.Raw.UInfo
+type UtmpID int32 // starting from 0, idx in Shm.Raw.UInfo
 
 type ChatID_t [11]byte
 
@@ -34,31 +36,38 @@ type From_t [27]byte
 
 type Date_t [6]byte
 
-//We have 3 different ids for board:
+// We have 3 different ids for board:
 //  BoardID_t: (brdname)
 //  Bid: (int32) (bid starting from 1)
 //  BidInStore (int32) (Bid - 1)
-type BoardID_t [IDLEN + 1]byte
-type Bid int32
-type BidInStore int32
-type BoardTitle_t [BTLEN + 1]byte
-type BM_t [IDLEN*3 + 3]byte /* BMs' userid, token '/' */
+type (
+	BoardID_t    [IDLEN + 1]byte
+	Bid          int32
+	BidInStore   int32
+	BoardTitle_t [BTLEN + 1]byte
+	BM_t         [IDLEN*3 + 3]byte /* BMs' userid, token '/' */)
 
-type Aid int32
-type AidInStore int32
-type Aidu uint64 /* ptt-aidu */
-type Aidc [8]byte
+type (
+	Aid        int32
+	AidInStore int32
+	Aidu       uint64 /* ptt-aidu */
+	Aidc       [8]byte
+)
 
-type Filename_t [FNLEN]byte
-type Subject_t [STRLEN]byte
-type RCPT_t [RCPTSZ]byte
+type (
+	Filename_t [FNLEN]byte
+	Subject_t  [STRLEN]byte
+	RCPT_t     [RCPTSZ]byte
+)
 
-type Owner_t [IDLEN + 2]byte //user-id[.]
+type Owner_t [IDLEN + 2]byte // user-id[.]
 
 type Title_t [TTLEN + 1]byte
 
-type SortIdx int
-type SortIdxInStore int
+type (
+	SortIdx        int
+	SortIdxInStore int
+)
 
 var (
 	EMPTY_USER_ID     = UserID_t{}
@@ -68,16 +77,18 @@ var (
 	EMPTY_BM          = BM_t{}
 )
 
-const USER_ID_SZ = unsafe.Sizeof(EMPTY_USER_ID)
-const BOARD_ID_SZ = unsafe.Sizeof(EMPTY_BOARD_ID)
-const BOARD_TITLE_SZ = unsafe.Sizeof(EMPTY_BOARD_TITLE)
-const UID_IN_STORE_SZ = unsafe.Sizeof(UidInStore(0))
-const UTMP_ID_SZ = unsafe.Sizeof(UtmpID(0))
-const UID_SZ = unsafe.Sizeof(Uid(0))
-const BID_IN_STORE_SZ = unsafe.Sizeof(BidInStore(0))
-const BID_SZ = unsafe.Sizeof(Bid(0))
-const EMAIL_SZ = unsafe.Sizeof(EMPTY_EMAIL)
-const BM_SZ = unsafe.Sizeof(EMPTY_BM)
+const (
+	USER_ID_SZ      = unsafe.Sizeof(EMPTY_USER_ID)
+	BOARD_ID_SZ     = unsafe.Sizeof(EMPTY_BOARD_ID)
+	BOARD_TITLE_SZ  = unsafe.Sizeof(EMPTY_BOARD_TITLE)
+	UID_IN_STORE_SZ = unsafe.Sizeof(UidInStore(0))
+	UTMP_ID_SZ      = unsafe.Sizeof(UtmpID(0))
+	UID_SZ          = unsafe.Sizeof(Uid(0))
+	BID_IN_STORE_SZ = unsafe.Sizeof(BidInStore(0))
+	BID_SZ          = unsafe.Sizeof(Bid(0))
+	EMAIL_SZ        = unsafe.Sizeof(EMPTY_EMAIL)
+	BM_SZ           = unsafe.Sizeof(EMPTY_BM)
+)
 
 func (u UidInStore) ToUid() Uid {
 	return Uid(u + 1)
@@ -175,8 +186,8 @@ func (u *UserID_t) CopyFrom(uBytes []byte) {
 	}
 }
 
-//IsGuest
-//guest as reserved user-account.
+// IsGuest
+// guest as reserved user-account.
 func (u *UserID_t) IsGuest() bool {
 	return u[0] == 'g' && u[1] == 'u' && u[2] == 'e' && u[3] == 's' && u[4] == 't' && u[5] == 0
 }
@@ -222,7 +233,7 @@ func (t *BoardTitle_t) RealTitle() []byte {
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1517
 func (t *BoardTitle_t) BoardClass() []byte {
 	result := t[:5]
-	if result[4] == ' ' { //no ' ' in big5-encoding, we can safely remove ' '.
+	if result[4] == ' ' { // no ' ' in big5-encoding, we can safely remove ' '.
 		result = result[:4]
 	}
 	return result
@@ -267,6 +278,7 @@ func (f *Filename_t) Type() RecordType {
 		return RECORD_TYPE_G
 	}
 }
+
 func (f *Filename_t) CreateTime() (types.Time4, error) {
 	createTime_i, err := strconv.Atoi(string(f[2:12]))
 	if err != nil {
@@ -347,8 +359,10 @@ func (a Aidu) ToFN() *Filename_t {
 	return fn
 }
 
-const encodeAidc = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_"
-const lenEncodeAidc = uint64(len(encodeAidc))
+const (
+	encodeAidc    = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_"
+	lenEncodeAidc = uint64(len(encodeAidc))
+)
 
 func (a Aidu) ToAidc() *Aidc {
 	aidc := &Aidc{}
@@ -369,16 +383,16 @@ var decodeAidcTable = [128]Aidu{
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // , !, ", #, $, %, &, '
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x3e, 0x00, 0x00, //(, ), *, +, ,, -, ., /
-	0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, //0, 1, 2, 3, 4, 5, 6, 7
-	0x08, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //8, 9, :, ;, <, =, >, ?
+	0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, // 0, 1, 2, 3, 4, 5, 6, 7
+	0x08, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // 8, 9, :, ;, <, =, >, ?
 	0x00, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, //@, A, B, C, D, E, F, G
-	0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, //H, I, J, K, L, M, N, O
-	0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f, 0x20, //P, Q, R, S, T, U, V, W
-	0x21, 0x22, 0x23, 0x00, 0x00, 0x00, 0x00, 0x3f, //X, Y, Z, [, \, ], ^, _
+	0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, // H, I, J, K, L, M, N, O
+	0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f, 0x20, // P, Q, R, S, T, U, V, W
+	0x21, 0x22, 0x23, 0x00, 0x00, 0x00, 0x00, 0x3f, // X, Y, Z, [, \, ], ^, _
 	0x00, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2a, //`, a, b, c, d, e, f, g
-	0x2b, 0x2c, 0x2d, 0x2e, 0x2f, 0x30, 0x31, 0x32, //h, i, j, k, l, m, n, o
-	0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3a, //p, q, r, s, t, u, v, w
-	0x3b, 0x3c, 0x3d, 0x00, 0x00, 0x00, 0x00, 0x00, //x, y, z, {, |, }, ~, [del]
+	0x2b, 0x2c, 0x2d, 0x2e, 0x2f, 0x30, 0x31, 0x32, // h, i, j, k, l, m, n, o
+	0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3a, // p, q, r, s, t, u, v, w
+	0x3b, 0x3c, 0x3d, 0x00, 0x00, 0x00, 0x00, 0x00, // x, y, z, {, |, }, ~, [del]
 }
 
 func (a *Aidc) ToAidu() (aidu Aidu) {
@@ -402,7 +416,7 @@ func (a *Aidc) ToAidu() (aidu Aidu) {
 //Owner
 //////////
 
-//ToUserID
+// ToUserID
 func (o *Owner_t) ToUserID() *UserID_t {
 	userID := &UserID_t{}
 	oBytes := types.CstrToBytes(o[:])
@@ -421,22 +435,22 @@ func (o *Owner_t) ToUserID() *UserID_t {
 //
 //https://github.com/ptt/pttbbs/blob/master/common/bbs/string.c#L58
 func (t *Title_t) ToClass() []byte {
-	//reply
+	// reply
 	if bytes.HasPrefix(t[:], STR_REPLY) {
 		return ARTICLE_CLASS_REPLY
 	}
 
-	//forward
+	// forward
 	if bytes.HasPrefix(t[:], STR_FORWARD) {
 		return ARTICLE_CLASS_FORWARD
 	}
 
-	//legacy-forward
+	// legacy-forward
 	if bytes.HasPrefix(t[:], STR_LEGACY_FORWARD) {
 		return ARTICLE_CLASS_FORWARD
 	}
 
-	//class
+	// class
 	if t[0] == '[' && t[5] == ']' {
 		return t[1:5]
 	}

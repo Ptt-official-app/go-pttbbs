@@ -1,0 +1,27 @@
+loadBottomArticles
+---
+tags:
+  - board
+  - article
+description: 拿到置底文章
+parameters:
+  - '$ref': '#/definitions/Host'
+  - '$ref': '#/definitions/XForwardedFor'
+  - '$ref': '#/definitions/Authorization'
+  - name: bid
+    in: path
+    type: string
+    required: true
+    description: bid is returned from board-list.
+responses:
+  200:
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      type: object
+      properties:
+        data:
+          type: array
+          description: article information (article-summary)
+          required: true
+          items:
+            '$ref': '#/definitions/ArticleSummary'

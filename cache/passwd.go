@@ -18,7 +18,7 @@ func passwdUpdateMoney(uid ptttype.Uid, money int32) (err error) {
 		return ErrInvalidUID
 	}
 
-	file, err := os.OpenFile(ptttype.FN_PASSWD, os.O_WRONLY, 0600)
+	file, err := os.OpenFile(ptttype.FN_PASSWD, os.O_WRONLY, 0o600)
 	if err != nil {
 		return err
 	}

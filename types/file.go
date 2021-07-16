@@ -30,7 +30,7 @@ func CopyFileToFile(src string, dst string) (err error) {
 	}
 	defer source.Close()
 
-	destination, err := os.OpenFile(dst, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0600)
+	destination, err := os.OpenFile(dst, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0o600)
 	if err != nil {
 		return err
 	}

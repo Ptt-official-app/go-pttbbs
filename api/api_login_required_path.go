@@ -27,7 +27,6 @@ func LoginRequiredPathQuery(theFunc LoginRequiredPathApiFunc, params interface{}
 }
 
 func loginRequiredPathProcess(theFunc LoginRequiredPathApiFunc, params interface{}, path interface{}, c *gin.Context) {
-
 	err := c.ShouldBindUri(path)
 	if err != nil {
 		processResult(c, nil, err)
@@ -40,7 +39,7 @@ func loginRequiredPathProcess(theFunc LoginRequiredPathApiFunc, params interface
 		return
 	}
 
-	//https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For
+	// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For
 	remoteAddr := strings.TrimSpace(c.GetHeader("X-Forwarded-For"))
 	if !isValidRemoteAddr(remoteAddr) {
 		processResult(c, nil, ErrInvalidRemoteAddr)
@@ -57,5 +56,4 @@ func loginRequiredPathProcess(theFunc LoginRequiredPathApiFunc, params interface
 
 	result, err := theFunc(remoteAddr, userID, params, path)
 	processResult(c, result, err)
-
 }

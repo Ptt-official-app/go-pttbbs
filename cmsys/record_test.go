@@ -74,7 +74,7 @@ func TestGetRecords(t *testing.T) {
 
 	filename4 := "./testcase/DIR_GET_RECORDS"
 	defer os.RemoveAll(filename4)
-	file, _ := os.OpenFile(filename4, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	file, _ := os.OpenFile(filename4, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0o644)
 	defer file.Close()
 	_ = types.BinaryWrite(file, binary.LittleEndian, fileHeaders)
 
@@ -164,7 +164,7 @@ func TestFindRecordStartAid(t *testing.T) {
 
 	filename := "./testcase/DIR_FIND_RECORD_START_IDX"
 	defer os.RemoveAll(filename)
-	file, _ := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	file, _ := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0o644)
 	defer file.Close()
 	_ = types.BinaryWrite(file, binary.LittleEndian, fileHeaders)
 
@@ -271,7 +271,7 @@ func TestSubstituteRecord(t *testing.T) {
 	filename := "./testcase/testSubstituteRecord.txt"
 	defer os.Remove(filename)
 
-	file, _ := os.OpenFile(filename, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
+	file, _ := os.OpenFile(filename, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o644)
 	defer file.Close()
 
 	types.BinaryWrite(file, binary.LittleEndian, testArticleSummary0.FileHeaderRaw)

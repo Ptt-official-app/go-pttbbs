@@ -2,6 +2,4 @@ package sem
 
 import "errors"
 
-var (
-	ErrInvalidSem = errors.New("invalid sem")
-)
+var ErrInvalidSem = errors.New("invalid sem")

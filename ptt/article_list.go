@@ -20,8 +20,7 @@ import (
 //
 //get bottom can be a separated api.
 func LoadGeneralArticles(user *ptttype.UserecRaw, uid ptttype.Uid, boardIDRaw *ptttype.BoardID_t, bid ptttype.Bid, startIdx ptttype.SortIdx, nArticles int, isDesc bool) (summaries []*ptttype.ArticleSummaryRaw, isNewest bool, nextSummary *ptttype.ArticleSummaryRaw, startNumIdx ptttype.SortIdx, err error) {
-
-	//1. check perm.
+	// 1. check perm.
 	board, err := cache.GetBCache(bid)
 	if err != nil {
 		return nil, false, nil, 0, err
@@ -32,7 +31,7 @@ func LoadGeneralArticles(user *ptttype.UserecRaw, uid ptttype.Uid, boardIDRaw *p
 		return nil, false, nil, 0, ErrNotPermitted
 	}
 
-	//2. bcache preparation.
+	// 2. bcache preparation.
 	total, err := cache.GetBTotalWithRetry(bid)
 	if err != nil {
 		return nil, false, nil, 0, err
@@ -41,12 +40,12 @@ func LoadGeneralArticles(user *ptttype.UserecRaw, uid ptttype.Uid, boardIDRaw *p
 		return nil, true, nil, 0, nil
 	}
 
-	//3. get records
+	// 3. get records
 	filename, err := setBDir(boardIDRaw)
 	if err != nil {
 		return nil, false, nil, 0, err
 	}
-	//3.1. ensure startAid
+	// 3.1. ensure startAid
 	if startIdx == 0 && isDesc {
 		startIdx = ptttype.SortIdx(total)
 	}
@@ -56,7 +55,7 @@ func LoadGeneralArticles(user *ptttype.UserecRaw, uid ptttype.Uid, boardIDRaw *p
 		return nil, false, nil, 0, err
 	}
 
-	//4. return
+	// 4. return
 	isNewest = false
 	if isDesc {
 		isNewest = startIdx == ptttype.SortIdx(total)
@@ -73,7 +72,7 @@ func LoadGeneralArticles(user *ptttype.UserecRaw, uid ptttype.Uid, boardIDRaw *p
 }
 
 func LoadBottomArticles(user *ptttype.UserecRaw, uid ptttype.Uid, boardIDRaw *ptttype.BoardID_t, bid ptttype.Bid) (summaries []*ptttype.ArticleSummaryRaw, err error) {
-	//1. check perm.
+	// 1. check perm.
 	board, err := cache.GetBCache(bid)
 	if err != nil {
 		return nil, err
@@ -84,13 +83,13 @@ func LoadBottomArticles(user *ptttype.UserecRaw, uid ptttype.Uid, boardIDRaw *pt
 		return nil, ErrNotPermitted
 	}
 
-	//2. bcache preparation.
+	// 2. bcache preparation.
 	total := cache.GetBottomTotal(bid)
 	if total == 0 {
 		return nil, nil
 	}
 
-	//3. get records
+	// 3. get records
 	filename, err := path.SetBFile(boardIDRaw, ptttype.FN_DIR_BOTTOM)
 	if err != nil {
 		return nil, err
@@ -105,8 +104,7 @@ func LoadBottomArticles(user *ptttype.UserecRaw, uid ptttype.Uid, boardIDRaw *pt
 }
 
 func FindArticleStartIdx(user *ptttype.UserecRaw, uid ptttype.Uid, boardID *ptttype.BoardID_t, bid ptttype.Bid, createTime types.Time4, filename *ptttype.Filename_t, isDesc bool) (startIdx ptttype.SortIdx, err error) {
-
-	//1. check perm.
+	// 1. check perm.
 	board, err := cache.GetBCache(bid)
 	if err != nil {
 		return -1, err
@@ -117,7 +115,7 @@ func FindArticleStartIdx(user *ptttype.UserecRaw, uid ptttype.Uid, boardID *pttt
 		return -1, ErrNotPermitted
 	}
 
-	//3. get records
+	// 3. get records
 	dirFilename, err := setBDir(boardID)
 	if err != nil {
 		return -1, err
@@ -135,7 +133,6 @@ func FindArticleStartIdx(user *ptttype.UserecRaw, uid ptttype.Uid, boardID *pttt
 }
 
 func LoadGeneralArticlesSameCreateTime(boardIDRaw *ptttype.BoardID_t, bid ptttype.Bid, startIdx ptttype.SortIdx, endIdx ptttype.SortIdx, createTime types.Time4) (summaries []*ptttype.ArticleSummaryRaw, startNumIdx ptttype.SortIdx, endNumIdx ptttype.SortIdx, err error) {
-
 	total, err := cache.GetBTotalWithRetry(bid)
 	if err != nil {
 		return nil, 0, 0, err
@@ -148,7 +145,7 @@ func LoadGeneralArticlesSameCreateTime(boardIDRaw *ptttype.BoardID_t, bid ptttyp
 		endIdx = ptttype.SortIdx(total)
 	}
 
-	//3. get records
+	// 3. get records
 	filename, err := setBDir(boardIDRaw)
 	if err != nil {
 		return nil, 0, 0, err
@@ -164,7 +161,7 @@ func LoadGeneralArticlesSameCreateTime(boardIDRaw *ptttype.BoardID_t, bid ptttyp
 		return nil, 0, 0, nil
 	}
 
-	//filter with same create-time.
+	// filter with same create-time.
 	newSummaries := make([]*ptttype.ArticleSummaryRaw, 0, len(summaries))
 	startNumIdx = ptttype.SortIdx(startIdx)
 	numIdx := ptttype.SortIdx(0)

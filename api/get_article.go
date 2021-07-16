@@ -19,7 +19,7 @@ type GetArticlePath struct {
 
 type GetArticleResult struct {
 	MTime   types.Time4 `json:"mtime"`
-	Content []byte      `json:"content"` //content contains all the necessary information.
+	Content []byte      `json:"content"` // content contains all the necessary information.
 }
 
 func GetArticleWrapper(c *gin.Context) {

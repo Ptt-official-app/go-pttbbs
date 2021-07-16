@@ -1128,7 +1128,7 @@ func TestAddbrdTouchCache(t *testing.T) {
 
 	ReloadBCache()
 
-	file, _ := os.OpenFile(ptttype.FN_BOARD, os.O_WRONLY, 0644)
+	file, _ := os.OpenFile(ptttype.FN_BOARD, os.O_WRONLY, 0o644)
 	defer file.Close()
 
 	_, _ = file.Seek(0, io.SeekEnd)

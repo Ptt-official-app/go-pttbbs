@@ -7,11 +7,12 @@
 package proto
 
 import (
+	reflect "reflect"
+	sync "sync"
+
 	proto "github.com/golang/protobuf/proto"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	reflect "reflect"
-	sync "sync"
 )
 
 const (
@@ -162,11 +163,14 @@ func file_proto_rune_proto_rawDescGZIP() []byte {
 	return file_proto_rune_proto_rawDescData
 }
 
-var file_proto_rune_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
-var file_proto_rune_proto_goTypes = []interface{}{
-	(*Rune)(nil),    // 0: Rune
-	(*Content)(nil), // 1: Content
-}
+var (
+	file_proto_rune_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+	file_proto_rune_proto_goTypes  = []interface{}{
+		(*Rune)(nil),    // 0: Rune
+		(*Content)(nil), // 1: Content
+	}
+)
+
 var file_proto_rune_proto_depIdxs = []int32{
 	0, // 0: Content.content:type_name -> Rune
 	1, // [1:1] is the sub-list for method output_type

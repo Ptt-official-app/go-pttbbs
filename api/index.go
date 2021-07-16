@@ -7,8 +7,7 @@ import (
 
 const INDEX_R = "/"
 
-type IndexParams struct {
-}
+type IndexParams struct{}
 
 type IndexResult struct {
 	Data string

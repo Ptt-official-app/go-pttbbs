@@ -3,7 +3,6 @@ package bbs
 import "github.com/Ptt-official-app/go-pttbbs/ptt"
 
 func LoadBottomArticles(uuserID UUserID, bboardID BBoardID) (summaries []*ArticleSummary, err error) {
-
 	userIDRaw, err := uuserID.ToRaw()
 	if err != nil {
 		return nil, ErrInvalidParams

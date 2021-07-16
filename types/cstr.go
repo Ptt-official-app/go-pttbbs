@@ -58,8 +58,8 @@ func CstrToBytes(cstr Cstr) []byte {
 	return cstr[:theLen]
 }
 
-//Cstrcmp
-//The reason that we don't directly do C.strcmp is because cstr1 or cstr2 may not have \x00 in the end.
+// Cstrcmp
+// The reason that we don't directly do C.strcmp is because cstr1 or cstr2 may not have \x00 in the end.
 func Cstrcmp(cstr1 Cstr, cstr2 Cstr) int {
 	// iterate through cstr1
 	len1 := len(cstr1)
@@ -79,7 +79,7 @@ func Cstrcmp(cstr1 Cstr, cstr2 Cstr) int {
 			return int(each)
 		}
 		each2 = cstr2[idx]
-		if each != each2 { //it's ok if each2 == 0, because because it means that each - each2 > 0
+		if each != each2 { // it's ok if each2 == 0, because because it means that each - each2 > 0
 			return int(each) - int(each2)
 		}
 	}

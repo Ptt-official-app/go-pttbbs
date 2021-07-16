@@ -26,7 +26,6 @@ type ArticleSummary struct {
 }
 
 func NewArticleSummaryFromRaw(bboardID BBoardID, articleSummaryRaw *ptttype.ArticleSummaryRaw) *ArticleSummary {
-
 	filename := types.CstrToString(articleSummaryRaw.Filename[:])
 	createTime, _ := articleSummaryRaw.Filename.CreateTime()
 

@@ -6,7 +6,6 @@ import (
 )
 
 func LoadBoardsByBids(uuserID UUserID, bids []ptttype.Bid) (summaries []*BoardSummary, err error) {
-
 	userID, err := uuserID.ToRaw()
 	if err != nil {
 		return nil, ErrInvalidParams

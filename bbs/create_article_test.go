@@ -9,7 +9,7 @@ import (
 )
 
 func TestCreateArticle(t *testing.T) {
-	//setupTest in for-loop
+	// setupTest in for-loop
 	setupTest()
 	defer teardownTest()
 
