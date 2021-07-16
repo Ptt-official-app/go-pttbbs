@@ -38,7 +38,7 @@ func VerifyJwt(raw string) (userID bbs.UUserID, clientInfo string, err error) {
 }
 
 func parseJwtClaim(raw string) (cl *JwtClaim, err error) {
-	tok, err := parseJwt(raw, JWT_SECRET)
+	tok, err := ParseJwt(raw, JWT_SECRET)
 	if err != nil {
 		return nil, err
 	}
@@ -48,15 +48,15 @@ func parseJwtClaim(raw string) (cl *JwtClaim, err error) {
 		return nil, ErrInvalidToken
 	}
 
-	cli, err := parseClaimString(claim, "cli")
+	cli, err := ParseClaimString(claim, "cli")
 	if err != nil {
 		return nil, err
 	}
-	sub, err := parseClaimString(claim, "sub")
+	sub, err := ParseClaimString(claim, "sub")
 	if err != nil {
 		return nil, err
 	}
-	exp, err := parseClaimInt(claim, "exp")
+	exp, err := ParseClaimInt(claim, "exp")
 	if err != nil {
 		return nil, err
 	}
@@ -117,7 +117,7 @@ func VerifyEmailJwt(raw string, context EmailTokenContext) (userID bbs.UUserID, 
 }
 
 func parseEmailJwtClaim(raw string) (cl *EmailJwtClaim, err error) {
-	tok, err := parseJwt(raw, EMAIL_JWT_SECRET)
+	tok, err := ParseJwt(raw, EMAIL_JWT_SECRET)
 	if err != nil {
 		return nil, err
 	}
@@ -127,23 +127,23 @@ func parseEmailJwtClaim(raw string) (cl *EmailJwtClaim, err error) {
 		return nil, ErrInvalidToken
 	}
 
-	cli, err := parseClaimString(claim, "cli")
+	cli, err := ParseClaimString(claim, "cli")
 	if err != nil {
 		return nil, err
 	}
-	sub, err := parseClaimString(claim, "sub")
+	sub, err := ParseClaimString(claim, "sub")
 	if err != nil {
 		return nil, err
 	}
-	eml, err := parseClaimString(claim, "eml")
+	eml, err := ParseClaimString(claim, "eml")
 	if err != nil {
 		return nil, err
 	}
-	exp, err := parseClaimInt(claim, "exp")
+	exp, err := ParseClaimInt(claim, "exp")
 	if err != nil {
 		return nil, err
 	}
-	ctx, err := parseClaimString(claim, "ctx")
+	ctx, err := ParseClaimString(claim, "ctx")
 	if err != nil {
 		return nil, err
 	}
@@ -185,7 +185,7 @@ func CreateEmailToken(userID bbs.UUserID, clientInfo string, email string, conte
 	return raw, nil
 }
 
-func parseJwt(raw string, secret []byte) (tok *jwt.Token, err error) {
+func ParseJwt(raw string, secret []byte) (tok *jwt.Token, err error) {
 	tok, err = jwt.Parse(raw, func(token *jwt.Token) (interface{}, error) {
 		return secret, nil
 	})
@@ -193,7 +193,7 @@ func parseJwt(raw string, secret []byte) (tok *jwt.Token, err error) {
 	return tok, err
 }
 
-func parseClaimString(claim jwt.MapClaims, idx string) (ret string, err error) {
+func ParseClaimString(claim jwt.MapClaims, idx string) (ret string, err error) {
 	ret_i, ok := claim[idx]
 	if !ok {
 		return "", nil
@@ -206,7 +206,7 @@ func parseClaimString(claim jwt.MapClaims, idx string) (ret string, err error) {
 	return ret, nil
 }
 
-func parseClaimInt(claim jwt.MapClaims, idx string) (ret int, err error) {
+func ParseClaimInt(claim jwt.MapClaims, idx string) (ret int, err error) {
 	ret_i, ok := claim[idx]
 	if !ok {
 		return 0, nil
