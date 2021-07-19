@@ -17,7 +17,7 @@ func TestPttLock(t *testing.T) {
 
 	file2, err := os.OpenFile("./testcase/.exist2", syscall.O_RDWR, 0o644)
 	logrus.Infof("TestPttLock: after open: e: %v", err)
-	defer file.Close()
+	defer file2.Close()
 
 	type args struct {
 		file    *os.File
