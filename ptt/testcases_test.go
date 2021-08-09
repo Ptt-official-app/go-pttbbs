@@ -17,7 +17,7 @@ var (
 		PasswdHash: ptttype.Passwd_t{98, 104, 119, 118, 79, 74, 116, 102, 84, 49, 84, 65, 73, 0},
 
 		UFlag:        33557088,
-		UserLevel:    536871943,
+		UserLevel:    65535,
 		NumLoginDays: 2,
 		NumPosts:     0,
 		FirstLogin:   1600681288,
@@ -52,6 +52,24 @@ var (
 		FirstLogin:   1600737659,
 		LastLogin:    1600737960,
 		LastHost:     ptttype.IPv4_t{'5', '9', '.', '1', '2', '4', '.', '1', '6', '7', '.', '2', '2', '6'},
+	}
+
+	testUserecRaw4 = &ptttype.UserecRaw{
+		Version:      ptttype.PASSWD_VERSION,
+		UserID:       ptttype.UserID_t{'S', 'Y', 'S', 'O', 'P', '3'},
+		Nickname:     ptttype.Nickname_t{'s', 't', 'r', 'i', 'n', 'g'},
+		PasswdHash:   ptttype.Passwd_t{0x2c, 0x52, 0x69, 0x36, 0x53, 0x6b, 0x55, 0x33, 0x34, 0x72, 0x65, 0x74, 0x41},
+		UFlag:        33557088,
+		UserLevel:    7,
+		NumLoginDays: 23,
+		NumPosts:     0,
+		FirstLogin:   1608226066,
+		LastLogin:    1628305138,
+		LastHost:     ptttype.IPv4_t{'1', '7', '2', '.', '1', '9', '.', '0', '.', '1'},
+		Email:        ptttype.Email_t{'t', 'e', 's', 't', '@', 't', 'e', 's', 't', '.', 'c', 'o', 'm', '.', 't', 'w'},
+		Over18:       true,
+		Pager:        ptttype.PAGER_ON,
+		LastSeen:     1628305138,
 	}
 
 	testNewPostUser1 = &ptttype.UserecRaw{

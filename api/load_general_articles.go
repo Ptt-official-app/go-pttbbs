@@ -13,6 +13,7 @@ type LoadGeneralArticlesParams struct {
 	StartIdx  string `json:"start_idx,omitempty" form:"start_idx,omitempty" url:"start_idx,omitempty"`
 	NArticles int    `json:"max" form:"max" url:"max"`
 	Desc      bool   `json:"desc,omitempty" form:"desc,omitempty" url:"desc"`
+	IsSystem  bool   `json:"system,omitempty" form:"system,omitempty" url:"system"`
 }
 
 type LoadGeneralArticlesPath struct {
@@ -48,6 +49,10 @@ func LoadGeneralArticles(remoteAddr string, uuserID bbs.UUserID, params interfac
 	thePath, ok := path.(*LoadGeneralArticlesPath)
 	if !ok {
 		return nil, ErrInvalidPath
+	}
+
+	if theParams.IsSystem {
+		uuserID = bbs.UUserID(string(ptttype.STR_SYSOP))
 	}
 
 	summary, nextIdx, nextCreateTime, isNewest, startNumIdx, err := bbs.LoadGeneralArticles(

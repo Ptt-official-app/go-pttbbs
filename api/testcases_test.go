@@ -14,7 +14,9 @@ var (
 	testBoardSummary6  *bbs.BoardSummary
 	testBoardSummary7  *bbs.BoardSummary
 	testBoardSummary8  *bbs.BoardSummary
+	testBoardSummary9  *bbs.BoardSummary
 	testBoardSummary11 *bbs.BoardSummary
+	testBoardSummary12 *bbs.BoardSummary
 	testBoardSummary13 *bbs.BoardSummary
 	testBoardSummary14 *bbs.BoardSummary
 	testBoardSummary15 *bbs.BoardSummary
@@ -172,6 +174,26 @@ func initTestVars() {
 		IdxByClass: "vFSt-Q@Note",
 	}
 
+	testBoardSummary9 = &bbs.BoardSummary{
+		Gid:      5,
+		Bid:      9,
+		BBoardID: bbs.BBoardID("9_Record"),
+		BrdAttr:  ptttype.BRD_POSTMASK,
+		StatAttr: ptttype.NBRD_FAV,
+		Brdname:  "Record",
+		BoardClass: []byte{
+			0xbc, 0x54, 0xad, 0xf9,
+		},
+		RealTitle: []byte{
+			0xa7, 0xda, 0xad,
+			0xcc, 0xaa, 0xba, 0xa6, 0xa8, 0xaa, 0x47,
+		},
+		BoardType:  []byte{0xa1, 0xb7},
+		BM:         []bbs.UUserID{},
+		IdxByName:  "Record",
+		IdxByClass: "vFSt-Q@Record",
+	}
+
 	testBoardSummary11 = &bbs.BoardSummary{
 		Gid:      5,
 		Bid:      11,
@@ -189,6 +211,27 @@ func initTestVars() {
 		BM:         []bbs.UUserID{},
 		IdxByName:  "EditExp",
 		IdxByClass: "vFSt-Q@EditExp",
+	}
+
+	testBoardSummary12 = &bbs.BoardSummary{
+		Gid:      5,
+		Bid:      12,
+		BBoardID: bbs.BBoardID("12_ALLHIDPOST"),
+		BrdAttr:  ptttype.BRD_POSTMASK | ptttype.BRD_HIDE,
+		StatAttr: ptttype.NBRD_FAV,
+		Brdname:  "ALLHIDPOST",
+		BoardClass: []byte{
+			0xbc, 0x54, 0xad, 0xf9,
+		},
+		RealTitle: []byte{
+			0xb8, 0xf3, 0xaa, 0x4f, 0xa6, 0xa1, 0x4c, 0x4f, 0x43, 0x41,
+			0x4c, 0xb7, 0x73, 0xa4, 0xe5, 0xb3, 0xb9, 0x28, 0xc1, 0xf4,
+			0xaa, 0x4f, 0x29,
+		},
+		BoardType:  []byte{0xa1, 0xb7},
+		BM:         []bbs.UUserID{},
+		IdxByName:  "ALLHIDPOST",
+		IdxByClass: "vFSt-Q@ALLHIDPOST",
 	}
 
 	testBoardSummary13 = &bbs.BoardSummary{

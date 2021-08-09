@@ -31,22 +31,22 @@ func TestLoadGeneralBoards(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{
-			args:               args{uuserID: "SYSOP", startIdxStr: "", nBoards: 4, isAsc: true, sortBy: ptttype.BSORT_BY_NAME},
-			expectedSummaries:  []*BoardSummary{testBoardSummary6, testBoardSummary7, testBoardSummary11, testBoardSummary8},
-			expectedNextIdxStr: "Record",
+			args:               args{uuserID: "SYSOP3", startIdxStr: "", nBoards: 4, isAsc: true, sortBy: ptttype.BSORT_BY_NAME},
+			expectedSummaries:  []*BoardSummary{testBoardSummary6, testBoardSummary11, testBoardSummary8, testBoardSummary9},
+			expectedNextIdxStr: "SYSOP",
 		},
 		{
-			args:               args{uuserID: "SYSOP", startIdxStr: "", nBoards: 4, isAsc: true, sortBy: ptttype.BSORT_BY_CLASS},
-			expectedSummaries:  []*BoardSummary{testBoardSummary6, testBoardSummary7, testBoardSummary11, testBoardSummary8},
-			expectedNextIdxStr: "vFSt-Q@Record",
+			args:               args{uuserID: "SYSOP3", startIdxStr: "", nBoards: 4, isAsc: true, sortBy: ptttype.BSORT_BY_CLASS},
+			expectedSummaries:  []*BoardSummary{testBoardSummary6, testBoardSummary11, testBoardSummary8, testBoardSummary9},
+			expectedNextIdxStr: "vFSt-Q@SYSOP",
 		},
 		{
-			args:               args{uuserID: "SYSOP", startIdxStr: "vFSt-Q@Record", nBoards: 4, isAsc: true, sortBy: ptttype.BSORT_BY_CLASS},
+			args:               args{uuserID: "SYSOP3", startIdxStr: "vFSt-Q@Record", nBoards: 4, isAsc: true, sortBy: ptttype.BSORT_BY_CLASS},
 			expectedSummaries:  []*BoardSummary{testBoardSummary9, testBoardSummary1, testBoardSummary10},
 			expectedNextIdxStr: "",
 		},
 		{
-			args:               args{uuserID: "SYSOP", startIdxStr: "Record", nBoards: 4, isAsc: true, sortBy: ptttype.BSORT_BY_NAME},
+			args:               args{uuserID: "SYSOP3", startIdxStr: "Record", nBoards: 4, isAsc: true, sortBy: ptttype.BSORT_BY_NAME},
 			expectedSummaries:  []*BoardSummary{testBoardSummary9, testBoardSummary1, testBoardSummary10},
 			expectedNextIdxStr: "",
 		},

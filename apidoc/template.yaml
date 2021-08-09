@@ -14,6 +14,7 @@ definitions:
   !include defs/params_keyword.yaml
   !include defs/params_desc.yaml
   !include defs/params_asc.yaml
+  !include defs/params_system.yaml
   !include defs/user.yaml
   !include defs/token.yaml
   !include defs/email_token.yaml

@@ -47,7 +47,7 @@ func GetRecords(boardID *ptttype.BoardID_t, filename string, startIdx ptttype.So
 			break
 		}
 
-		_, err = file.Seek(int64(ptttype.FILE_HEADER_RAW_SZ)*int64(idxInFile), 0)
+		_, err = file.Seek(int64(ptttype.FILE_HEADER_RAW_SZ)*int64(idxInFile), io.SeekStart)
 		if err != nil {
 			return summaries, nil
 		}

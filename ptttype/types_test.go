@@ -571,6 +571,20 @@ func TestAidu_ToAidc(t *testing.T) {
 	expected6 := &Aidc{}
 	copy(expected6[:], []byte("1VtWRel9"))
 
+	f7 := &Filename_t{}
+	copy(f7[:], []byte("M.1607937176.A.081"))
+	a7 := f7.ToAidu()
+	log.Infof("f7: %v a7: %x", f7, a7)
+	expected7 := &Aidc{}
+	copy(expected7[:], []byte("1VrooO21"))
+
+	f8 := &Filename_t{}
+	copy(f8[:], []byte("M.1234567892.A.123"))
+	a8 := f8.ToAidu()
+	log.Infof("f8: %v a8: %x", f8, a8)
+	expected8 := &Aidc{}
+	copy(expected8[:], []byte("19bWBK4Z"))
+
 	tests := []struct {
 		name     string
 		a        Aidu
@@ -604,6 +618,14 @@ func TestAidu_ToAidc(t *testing.T) {
 		{
 			a:        a6,
 			expected: expected6,
+		},
+		{
+			a:        a7,
+			expected: expected7,
+		},
+		{
+			a:        a8,
+			expected: expected8,
 		},
 	}
 	var wg sync.WaitGroup

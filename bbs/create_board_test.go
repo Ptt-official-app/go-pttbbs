@@ -36,7 +36,7 @@ func TestCreateBoard(t *testing.T) {
 		// TODO: Add test cases.
 		{
 			args: args{
-				userID:   "SYSOP",
+				userID:   "SYSOP3",
 				clsBid:   5,
 				brdname:  "mnewboard",
 				brdClass: []byte("CPBL"),

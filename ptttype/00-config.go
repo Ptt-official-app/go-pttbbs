@@ -571,3 +571,9 @@ var (
 	// https://github.com/ptt/pttbbs/blob/master/mbbsd/cache.c#L189
 	USE_NEW_BAN_SYSTEM = true
 )
+
+var (
+	USEREC_EMAIL_IS_CONTACT                  = true
+	ALLOW_REGISTER_WITH_ONLY_CONTACT_EMAIL   = true
+	REQUIRE_CONTACT_EMAIL_TO_CHANGE_PASSWORD = true
+)

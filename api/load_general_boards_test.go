@@ -13,14 +13,26 @@ func TestLoadGeneralBoards(t *testing.T) {
 	setupTest(t.Name())
 	defer teardownTest(t.Name())
 
-	params := &LoadGeneralBoardsParams{
+	params0 := &LoadGeneralBoardsParams{
 		StartIdx: strconv.Itoa(int(0)),
 		NBoards:  4,
 		Asc:      true,
 	}
 
-	expected := &LoadGeneralBoardsResult{
-		Boards:  []*bbs.BoardSummary{testBoardSummary6, testBoardSummary7, testBoardSummary11, testBoardSummary8},
+	expected0 := &LoadGeneralBoardsResult{
+		Boards:  []*bbs.BoardSummary{testBoardSummary6, testBoardSummary11, testBoardSummary8, testBoardSummary9},
+		NextIdx: "Record",
+	}
+
+	params1 := &LoadGeneralBoardsParams{
+		StartIdx: strconv.Itoa(int(0)),
+		NBoards:  4,
+		Asc:      true,
+		IsSystem: true,
+	}
+
+	expected1 := &LoadGeneralBoardsResult{
+		Boards:  []*bbs.BoardSummary{testBoardSummary12, testBoardSummary6, testBoardSummary7, testBoardSummary11},
 		NextIdx: "Record",
 	}
 
@@ -36,8 +48,12 @@ func TestLoadGeneralBoards(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{
-			args:     args{uuserID: "SYSOP", params: params},
-			expected: expected,
+			args:     args{uuserID: "SYSOP3", params: params0},
+			expected: expected0,
+		},
+		{
+			args:     args{uuserID: "CodingMan", params: params1},
+			expected: expected1,
 		},
 	}
 	var wg sync.WaitGroup
@@ -56,6 +72,6 @@ func TestLoadGeneralBoards(t *testing.T) {
 
 			testutil.TDeepEqual(t, "boards", theGot.Boards, theExpected.Boards)
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }

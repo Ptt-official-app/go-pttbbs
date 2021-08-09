@@ -69,8 +69,8 @@ func TestGetUser(t *testing.T) {
 	setupTest(t.Name())
 	defer teardownTest(t.Name())
 
-	userID1 := &ptttype.UserID_t{}
-	copy(userID1[:], []byte("SYSOP"))
+	userID4 := &ptttype.UserID_t{}
+	copy(userID4[:], []byte("SYSOP3"))
 
 	type args struct {
 		userID *ptttype.UserID_t
@@ -84,9 +84,9 @@ func TestGetUser(t *testing.T) {
 		// TODO: Add test cases.
 		{
 			args: args{
-				userID: userID1,
+				userID: userID4,
 			},
-			expectedUser: testUserecRaw1,
+			expectedUser: testUserecRaw4,
 		},
 	}
 	var wg sync.WaitGroup

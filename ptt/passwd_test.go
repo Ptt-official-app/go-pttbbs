@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 )
 
 func TestInitCurrentUser(t *testing.T) {
@@ -99,8 +100,8 @@ func Test_passwdSyncQuery(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{
-			args:     args{1},
-			expected: testUserecRaw1,
+			args:     args{11},
+			expected: testUserecRaw4,
 		},
 	}
 
@@ -114,9 +115,7 @@ func Test_passwdSyncQuery(t *testing.T) {
 				t.Errorf("passwdSyncQuery() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.expected) {
-				t.Errorf("passwdSyncQuery() = %v, want %v", got, tt.expected)
-			}
+			testutil.TDeepEqual(t, "got", got, tt.expected)
 		})
 		wg.Wait()
 	}

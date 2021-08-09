@@ -58,32 +58,32 @@ func TestLoadGeneralBoards(t *testing.T) {
 		// TODO: Add test cases.
 		{
 			args: args{
-				user:     testUserecRaw1,
-				uid:      1,
+				user:     testUserecRaw4,
+				uid:      11,
 				startIdx: 1,
 				nBoards:  4,
 				bsortBy:  ptttype.BSORT_BY_NAME,
 				isAsc:    true,
 			},
-			expectedSummaries:   []*ptttype.BoardSummaryRaw{testBoardSummary6, testBoardSummary7, testBoardSummary11, testBoardSummary8},
-			expectedNextSummary: testBoardSummary9,
+			expectedSummaries:   []*ptttype.BoardSummaryRaw{testBoardSummary6, testBoardSummary11, testBoardSummary8, testBoardSummary9},
+			expectedNextSummary: testBoardSummary1,
 		},
 		{
 			args: args{
-				user:     testUserecRaw1,
-				uid:      1,
+				user:     testUserecRaw4,
+				uid:      11,
 				startIdx: 5,
 				nBoards:  4,
 				bsortBy:  ptttype.BSORT_BY_NAME,
 				isAsc:    false,
 			},
-			expectedSummaries:   []*ptttype.BoardSummaryRaw{testBoardSummary7, testBoardSummary6},
+			expectedSummaries:   []*ptttype.BoardSummaryRaw{testBoardSummary6},
 			expectedNextSummary: nil,
 		},
 		{
 			args: args{
-				user:     testUserecRaw1,
-				uid:      1,
+				user:     testUserecRaw4,
+				uid:      11,
 				startIdx: 10,
 				nBoards:  4,
 				bsortBy:  ptttype.BSORT_BY_NAME,
@@ -94,8 +94,8 @@ func TestLoadGeneralBoards(t *testing.T) {
 		},
 		{
 			args: args{
-				user:     testUserecRaw1,
-				uid:      1,
+				user:     testUserecRaw4,
+				uid:      11,
 				startIdx: 1,
 				nBoards:  4,
 				bsortBy:  ptttype.BSORT_BY_NAME,
@@ -107,8 +107,8 @@ func TestLoadGeneralBoards(t *testing.T) {
 		},
 		{
 			args: args{
-				user:     testUserecRaw1,
-				uid:      1,
+				user:     testUserecRaw4,
+				uid:      11,
 				startIdx: 1,
 				nBoards:  4,
 				bsortBy:  ptttype.BSORT_BY_NAME,
@@ -121,15 +121,15 @@ func TestLoadGeneralBoards(t *testing.T) {
 		{
 			name: "sort-by-class",
 			args: args{
-				user:     testUserecRaw1,
-				uid:      1,
+				user:     testUserecRaw4,
+				uid:      11,
 				startIdx: 1,
 				nBoards:  4,
 				bsortBy:  ptttype.BSORT_BY_CLASS,
 				isAsc:    true,
 			},
-			expectedSummaries:   []*ptttype.BoardSummaryRaw{testBoardSummary6, testBoardSummary7, testBoardSummary11, testBoardSummary8},
-			expectedNextSummary: testBoardSummary9,
+			expectedSummaries:   []*ptttype.BoardSummaryRaw{testBoardSummary6, testBoardSummary11, testBoardSummary8, testBoardSummary9},
+			expectedNextSummary: testBoardSummary1,
 		},
 	}
 
@@ -411,12 +411,12 @@ func TestLoadAutoCompleteBoards(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{
-			args:                args{user: testUserecRaw1, uid: 1, startIdx: 3, nBoards: 200, keyword: []byte{'a'}, isAsc: true},
+			args:                args{user: testUserecRaw4, uid: 11, startIdx: 3, nBoards: 200, keyword: []byte{'a'}, isAsc: true},
 			expectedSummaries:   []*ptttype.BoardSummaryRaw{testBoardSummary6},
 			expectedNextSummary: nil,
 		},
 		{
-			args:                args{user: testUserecRaw1, uid: 1, startIdx: 4, nBoards: 200, keyword: []byte{'a'}, isAsc: false},
+			args:                args{user: testUserecRaw4, uid: 11, startIdx: 4, nBoards: 200, keyword: []byte{'a'}, isAsc: false},
 			expectedSummaries:   []*ptttype.BoardSummaryRaw{testBoardSummary6},
 			expectedNextSummary: nil,
 		},

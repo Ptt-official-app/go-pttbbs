@@ -116,3 +116,11 @@ func pwcuInitGuestPerm(user *ptttype.UserecRaw) {
 		}
 	}
 }
+
+func pwcuInitAdminPerm(user *ptttype.UserecRaw) {
+	user.UserLevel = ptttype.PERM_BASIC | ptttype.PERM_CHAT | ptttype.PERM_PAGE |
+		ptttype.PERM_POST | ptttype.PERM_LOGINOK | ptttype.PERM_MAILLIMIT |
+		ptttype.PERM_CLOAK | ptttype.PERM_SEECLOAK | ptttype.PERM_XEMPT |
+		ptttype.PERM_SYSOPHIDE | ptttype.PERM_BM | ptttype.PERM_ACCOUNTS |
+		ptttype.PERM_CHATROOM | ptttype.PERM_BOARD | ptttype.PERM_SYSOP | ptttype.PERM_BBSADM
+}

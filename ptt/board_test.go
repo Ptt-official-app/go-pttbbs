@@ -132,8 +132,8 @@ func TestNewBoard(t *testing.T) {
 		// TODO: Add test cases.
 		{
 			args: args{
-				user:     testUserecRaw1,
-				uid:      1,
+				user:     testUserecRaw4,
+				uid:      11,
 				clsBid:   2,
 				brdname:  testBrdname0,
 				brdClass: testBrdClass0,
@@ -144,7 +144,7 @@ func TestNewBoard(t *testing.T) {
 		{
 			args: args{
 				user:     testUserecRaw3,
-				uid:      3,
+				uid:      6,
 				clsBid:   2,
 				brdname:  testBrdname0,
 				brdClass: testBrdClass0,
