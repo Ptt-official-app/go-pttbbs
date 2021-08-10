@@ -12,6 +12,7 @@ parameters:
   - '$ref': '#/definitions/ParamsTitle'
   - '$ref': '#/definitions/ParamsKeyword'
   - '$ref': '#/definitions/ParamsAsc'
+  - '$ref': '#/definitions/ParamsSystem'
 responses:
   200:
     schema:

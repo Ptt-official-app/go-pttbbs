@@ -59,9 +59,7 @@ func TestLoginQuery(t *testing.T) {
 			if gotUid != tt.expectedUid {
 				t.Errorf("LoginQuery() uid: %v expected: %v", gotUid, tt.expectedUid)
 			}
-			if !reflect.DeepEqual(got, tt.expected) {
-				t.Errorf("LoginQuery() = %v, expected %v", got, tt.expected)
-			}
+			testutil.TDeepEqual(t, "got", got, tt.expected)
 		})
 		wg.Wait()
 	}
@@ -166,7 +164,7 @@ func TestLogin(t *testing.T) {
 		{
 			args:         args{userID: &userid1, passwd: []byte("123123"), ip: ip1},
 			expectedUser: testSetupNewUser1,
-			expectedUid:  6,
+			expectedUid:  41,
 		},
 		{
 			args:         args{userID: &userid1, passwd: []byte("124"), ip: ip1},

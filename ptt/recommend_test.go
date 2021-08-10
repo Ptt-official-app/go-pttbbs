@@ -91,7 +91,11 @@ func TestRecommend(t *testing.T) {
 			testutil.TDeepEqual(t, "got", gotComment[:theLen], tt.expectedComment[:theLen])
 
 			filename, _ := path.SetBFile(tt.args.boardID, tt.args.filename.String())
-			file, _ := os.Open(filename)
+			file, err := os.Open(filename)
+			if err != nil {
+				t.Errorf("unable to open file: filename: %v e: %v", filename, err)
+				return
+			}
 			defer file.Close()
 
 			theBytes := make([]byte, 500)

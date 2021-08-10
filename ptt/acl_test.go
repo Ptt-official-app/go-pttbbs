@@ -51,11 +51,16 @@ func Test_isBannedByBoard(t *testing.T) {
 			defer wg.Done()
 			if tt.args.isToBan {
 				filename, _ := bakumanMakeTagFilename(&tt.args.user.UserID, types.Cstr(tt.args.board.Brdname[:]), BAKUMAN_OBJECT_TYPE_BOARD, true)
-				file, _ := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY, 0o600)
+				file, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY, 0o600)
+				if err != nil {
+					t.Errorf("unable to open file: filename: %v e: %v", filename, err)
+					return
+				}
+				defer file.Close()
+
 				write := bufio.NewWriter(file)
 				fmt.Fprintf(write, "%v\ntest", banTS)
 				write.Flush()
-				file.Close()
 				logrus.Infof("isToBan: filename: %v", filename)
 			}
 

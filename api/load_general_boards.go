@@ -14,6 +14,7 @@ type LoadGeneralBoardsParams struct {
 	Title    []byte `json:"title,omitempty" form:"title,omitempty" url:"title,omitempty"`       // sending utf8-bytes from middleware
 	Keyword  []byte `json:"keyword,omitempty" form:"keyword,omitempty" url:"keyword,omitempty"` // sending utf8-bytes from middleware
 	Asc      bool   `json:"asc,omitempty" form:"asc,omitempty" url:"asc"`
+	IsSystem bool   `json:"system,omitempty" form:"system,omitempty" url:"system"`
 }
 
 type LoadGeneralBoardsResult struct {
@@ -40,6 +41,10 @@ func loadGeneralBoardsCore(remoteAddr string, uuserID bbs.UUserID, params interf
 	theParams, ok := params.(*LoadGeneralBoardsParams)
 	if !ok {
 		return nil, ErrInvalidParams
+	}
+
+	if theParams.IsSystem {
+		uuserID = bbs.UUserID(string(ptttype.STR_SYSOP))
 	}
 
 	summaries, nextIdx, err := bbs.LoadGeneralBoards(uuserID, theParams.StartIdx, theParams.NBoards, theParams.Title, theParams.Keyword, theParams.Asc, bsortBy)

@@ -13,8 +13,14 @@ func InitCurrentUser(userID *ptttype.UserID_t) (uid ptttype.UID, user *ptttype.U
 		return uid, user, err
 	}
 
+	// https://github.com/ptt/pttbbs/blob/master/mbbsd/mbbsd.c#L736
 	if types.Cstrcmp(user.UserID[:], []byte(ptttype.STR_GUEST)) == 0 {
 		pwcuInitGuestPerm(user)
+	}
+
+	// https://github.com/ptt/pttbbs/blob/master/mbbsd/mbbsd.c#L762
+	if types.Cstrcmp(user.UserID[:], []byte(ptttype.STR_SYSOP)) == 0 {
+		pwcuInitAdminPerm(user)
 	}
 
 	return uid, user, nil
@@ -25,8 +31,15 @@ func InitCurrentUserByUID(uid ptttype.UID) (user *ptttype.UserecRaw, err error) 
 	if err != nil {
 		return nil, err
 	}
+
+	// https://github.com/ptt/pttbbs/blob/master/mbbsd/mbbsd.c#L736
 	if types.Cstrcmp(user.UserID[:], []byte(ptttype.STR_GUEST)) == 0 {
 		pwcuInitGuestPerm(user)
+	}
+
+	// https://github.com/ptt/pttbbs/blob/master/mbbsd/mbbsd.c#L762
+	if types.Cstrcmp(user.UserID[:], ptttype.STR_SYSOP) == 0 {
+		pwcuInitAdminPerm(user)
 	}
 
 	return user, nil

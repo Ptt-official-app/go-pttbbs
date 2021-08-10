@@ -1,0 +1,7 @@
+ParamsSystem:
+  name: system
+  in: query
+  type: boolean
+  required: false
+  description: is system
+  default: false

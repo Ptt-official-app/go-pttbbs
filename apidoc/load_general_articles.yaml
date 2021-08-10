@@ -16,6 +16,7 @@ parameters:
   - '$ref': '#/definitions/ParamsStartIdx'
   - '$ref': '#/definitions/ParamsMax'
   - '$ref': '#/definitions/ParamsDesc'
+  - '$ref': '#/definitions/ParamsSystem'
 responses:
   200:
     schema:

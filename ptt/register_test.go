@@ -11,7 +11,6 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/testutil"
 	"github.com/Ptt-official-app/go-pttbbs/types"
-	log "github.com/sirupsen/logrus"
 )
 
 func Test_registerCountEmail(t *testing.T) {
@@ -126,10 +125,12 @@ func Test_isToCleanUser(t *testing.T) {
 
 	file, err := os.OpenFile(ptttype.FN_FRESH, os.O_CREATE|os.O_WRONLY, 0o600)
 	if err != nil {
-		log.Warnf("unable to open-file: e: %v", err)
+		t.Errorf("unable to open-file: e: %v", err)
+		return
 	}
+	defer file.Close()
+
 	_, _ = file.Write([]byte("temp"))
-	file.Close()
 
 	newTime1 := time.Now().Add(-3700 * types.TS_TO_NANO_TS)
 	newTime2 := time.Now().Add(-2700 * types.TS_TO_NANO_TS)
@@ -343,7 +344,7 @@ func TestNewRegister(t *testing.T) {
 				over18:   testNewRegister1.Over18,
 			},
 			expected:    testNewRegister1,
-			expectedUID: 6,
+			expectedUID: 41,
 		},
 	}
 
@@ -520,7 +521,7 @@ func TestRegister(t *testing.T) {
 				over18:   testNewRegister1.Over18,
 			},
 			expectedUser: testNewRegister1,
-			expectedUid:  6,
+			expectedUid:  41,
 		},
 		{
 			args: args{

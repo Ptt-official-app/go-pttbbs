@@ -1,9 +1,10 @@
 package bbs
 
 import (
-	"reflect"
 	"sync"
 	"testing"
+
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 )
 
 func TestLoadAutoCompleteBoards(t *testing.T) {
@@ -26,16 +27,16 @@ func TestLoadAutoCompleteBoards(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{
-			args:              args{uuserID: "SYSOP", startIdxStr: "", nBoards: 3, keyword: "w", isAsc: true},
+			args:              args{uuserID: "SYSOP3", startIdxStr: "", nBoards: 3, keyword: "w", isAsc: true},
 			expectedSummaries: []*BoardSummary{testBoardSummary10},
 		},
 		{
-			args:               args{uuserID: "SYSOP", startIdxStr: "", nBoards: 3, keyword: "", isAsc: true},
-			expectedSummaries:  []*BoardSummary{testBoardSummary6, testBoardSummary7, testBoardSummary11},
-			expectedNextIdxStr: "Note",
+			args:               args{uuserID: "SYSOP3", startIdxStr: "", nBoards: 3, keyword: "", isAsc: true},
+			expectedSummaries:  []*BoardSummary{testBoardSummary6, testBoardSummary11, testBoardSummary8},
+			expectedNextIdxStr: "Record",
 		},
 		{
-			args:               args{uuserID: "SYSOP", startIdxStr: "SYSOP", nBoards: 3, keyword: "", isAsc: false},
+			args:               args{uuserID: "SYSOP3", startIdxStr: "SYSOP", nBoards: 3, keyword: "", isAsc: false},
 			expectedSummaries:  []*BoardSummary{testBoardSummary1, testBoardSummary9, testBoardSummary8},
 			expectedNextIdxStr: "EditExp",
 		},
@@ -50,9 +51,7 @@ func TestLoadAutoCompleteBoards(t *testing.T) {
 				t.Errorf("LoadAutoCompleteBoards() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(gotSummaries, tt.expectedSummaries) {
-				t.Errorf("LoadAutoCompleteBoards() gotSummaries = %v, want %v", gotSummaries, tt.expectedSummaries)
-			}
+			testutil.TDeepEqual(t, "got", gotSummaries, tt.expectedSummaries)
 			if gotNextIdxStr != tt.expectedNextIdxStr {
 				t.Errorf("LoadAutoCompleteBoards() gotNextIdxStr = %v, want %v", gotNextIdxStr, tt.expectedNextIdxStr)
 			}
