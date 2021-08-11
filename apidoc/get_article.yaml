@@ -18,6 +18,7 @@ parameters:
     type: string
     required: true
     description: article-id (returned from /boards/{bid}/articles)
+  - '$ref': '#/definitions/ParamsSystem'
 responses:
   200:
     schema:
