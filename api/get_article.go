@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
+	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
 	"github.com/gin-gonic/gin"
 )
@@ -10,6 +11,7 @@ const GET_ARTICLE_R = "/board/:bid/article/:aid"
 
 type GetArticleParams struct {
 	RetrieveTS types.Time4 `json:"last_ts,omitempty" form:"last_ts,omitempty" url:"last_ts,omitempty"`
+	IsSystem   bool        `json:"system,omitempty" form:"system,omitempty" url:"system"`
 }
 
 type GetArticlePath struct {
@@ -45,6 +47,10 @@ func GetArticle(remoteAddr string, uuserID bbs.UUserID, params interface{}, path
 	thePath, ok := path.(*GetArticlePath)
 	if !ok {
 		return nil, ErrInvalidPath
+	}
+
+	if theParams.IsSystem {
+		uuserID = bbs.UUserID(string(ptttype.STR_SYSOP))
 	}
 
 	content, mtime, err := bbs.GetArticle(uuserID, thePath.BBoardID, thePath.ArticleID, theParams.RetrieveTS)
