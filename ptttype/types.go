@@ -75,6 +75,7 @@ var (
 	EMPTY_BOARD_TITLE = BoardTitle_t{}
 	EMPTY_EMAIL       = Email_t{}
 	EMPTY_BM          = BM_t{}
+	EMPTY_AIDC        = Aidc{}
 )
 
 const (
@@ -88,6 +89,7 @@ const (
 	BID_SZ          = unsafe.Sizeof(Bid(0))
 	EMAIL_SZ        = unsafe.Sizeof(EMPTY_EMAIL)
 	BM_SZ           = unsafe.Sizeof(EMPTY_BM)
+	AIDC_SZ         = unsafe.Sizeof(EMPTY_AIDC)
 )
 
 func (u UIDInStore) ToUID() UID {

@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"sync"
 	"testing"
+
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 )
 
 func Test_initBig5(t *testing.T) {
@@ -206,6 +208,53 @@ func TestRune_Big5ToUtf8(t *testing.T) {
 			if utf8 != tt.expectedUtf8 {
 				t.Errorf("Big5ToUtf8: Utf8: %v expected: %v", utf8, expected1)
 			}
+		})
+	}
+	wg.Wait()
+}
+
+func TestTrimDBCS(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	cstr0 := []byte("abcde\x80")
+	expectedCstr0 := []byte("abcde\x00")
+	expected0 := []byte("abcde")
+
+	cstr1 := []byte("abcde\x80\x00\x80")
+	expectedCstr1 := []byte("abcde\x00\x00\x80")
+	expected1 := []byte("abcde")
+
+	type args struct {
+		theCstr Cstr
+	}
+	tests := []struct {
+		name         string
+		args         args
+		expectedCstr Cstr
+		expected     []byte
+	}{
+		// TODO: Add test cases.
+		{
+			args:         args{theCstr: cstr0},
+			expectedCstr: expectedCstr0,
+			expected:     expected0,
+		},
+		{
+			args:         args{theCstr: cstr1},
+			expectedCstr: expectedCstr1,
+			expected:     expected1,
+		},
+	}
+	var wg sync.WaitGroup
+	for _, tt := range tests {
+		wg.Add(1)
+		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
+			got := TrimDBCS(tt.args.theCstr)
+
+			testutil.TDeepEqual(t, "bytes", got, tt.expected)
+			testutil.TDeepEqual(t, "cstr", tt.args.theCstr, tt.expectedCstr)
 		})
 	}
 	wg.Wait()

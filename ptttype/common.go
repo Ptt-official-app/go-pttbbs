@@ -208,6 +208,7 @@ const (
 	/* ----------------------------------------------------- */
 	/* 編輯器選項                                            */
 	/* ----------------------------------------------------- */
+	EDITFLAG_NONE       EditFlag = 0x00000000
 	EDITFLAG_TEXTONLY   EditFlag = 0x00000001
 	EDITFLAG_UPLOAD     EditFlag = 0x00000002
 	EDITFLAG_ALLOWLARGE EditFlag = 0x00000004
@@ -313,6 +314,8 @@ var (
 	STR_TIME_BIG5  = []byte{0xae, 0xc9, 0xb6, 0xa1, 0x3a} // 時間:
 
 	STR_BBS_BIG5 = []byte{0xa1, 0xb0, 0x20, 0xb5, 0x6f, 0xab, 0x48, 0xaf, 0xb8, 0x3a} //※ 發信站:
+
+	STR_FORWARDER_BIG5 = []byte{0xa1, 0xb0, 0x20, 0xc2, 0xe0, 0xbf, 0xfd, 0xaa, 0xcc, 0x3a} //※ 轉錄者:
 
 	STR_FROM_BIG5 = []byte{0xa8, 0xd3, 0xa6, 0xdb, 0x3a} // 來自:
 

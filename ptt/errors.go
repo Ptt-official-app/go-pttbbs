@@ -25,6 +25,11 @@ var (
 	ErrPermitNoPost  = errors.New("permit no post")
 	ErrRestricted    = errors.New("restricted")
 	ErrViolateLaw    = errors.New("violate law")
+
+	// bbs.go
+	ErrVoteBoard  = errors.New("vote board")
+	ErrDeleted    = errors.New("deleted")
+	ErrNotLoginOk = errors.New("not login ok")
 )
 
 func FatalLockedUser(userID *ptttype.UserID_t) error {

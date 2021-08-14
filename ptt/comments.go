@@ -110,7 +110,7 @@ func doAddRecommend(dirFilename string, idx ptttype.SortIdx, fhdr *ptttype.FileH
 			return 0, err
 		}
 	} else {
-		for idx := 0; idx < 5; idx++ {
+		for idxSmartMerge := 0; idxSmartMerge < 5; idxSmartMerge++ {
 			err = doAddRecommendSmartMerge(filename, comment)
 			if err == nil {
 				break
@@ -133,6 +133,7 @@ func doAddRecommend(dirFilename string, idx ptttype.SortIdx, fhdr *ptttype.FileH
 	fhdr.Modified = types.DashT(filename)
 	if fhdr.Modified > 0 {
 		err = ModifyDirLite(dirFilename, idx, &fhdr.Filename, fhdr.Modified, nil, nil, nil, update, nil, 0, 0)
+
 		if err != nil {
 			return 0, err
 		}

@@ -51,7 +51,7 @@ func writeHeader(file *os.File, flags ptttype.EditFlag, title []byte, user *pttt
 	}
 
 	nowTS := types.NowTS()
-	fmt.Fprintf(file, "%s %s\n%s %s\n", ptttype.STR_TITLE_BIG5, title, ptttype.STR_TIME_BIG5, nowTS.Ctime())
+	fmt.Fprintf(file, "%s %s\n%s %s\n\n", ptttype.STR_TITLE_BIG5, title, ptttype.STR_TIME_BIG5, nowTS.Ctime())
 	return nil
 }
 
@@ -109,7 +109,20 @@ func addSimpleSignature(file *os.File, isUseAnony bool, ip *ptttype.IPv4_t, from
 		host = append(types.CstrToBytes(ip[:]), from...)
 	}
 
-	fmt.Fprintf(file, "\n--\n%s %s(%s), %s %s\n", ptttype.STR_BBS_BIG5, ptttype.BBSNAME_BIG5, ptttype.MYHOSTNAME, ptttype.STR_FROM_BIG5, host)
+	_, err = fmt.Fprintf(file, "\n--\n%s %s(%s), %s %s\n", ptttype.STR_BBS_BIG5, ptttype.BBSNAME_BIG5, ptttype.MYHOSTNAME, ptttype.STR_FROM_BIG5, host)
 
-	return nil
+	return err
+}
+
+func addForwardSignature(file *os.File, user *ptttype.UserecRaw, isUseAnony bool, ip *ptttype.IPv4_t, from []byte) (err error) {
+	var host []byte
+	if isUseAnony {
+		host = ptttype.ANONYMOUS_HOST
+	} else {
+		host = append(types.CstrToBytes(ip[:]), from...)
+	}
+
+	_, err = fmt.Fprintf(file, "\n%s %s(%s)\n%s %s (%s), %s\n", ptttype.STR_BBS_BIG5, ptttype.BBSNAME_BIG5, ptttype.MYHOSTNAME, ptttype.STR_FORWARDER_BIG5, types.CstrToBytes(user.UserID[:]), host, types.NowTS().Cdatelite())
+
+	return err
 }
