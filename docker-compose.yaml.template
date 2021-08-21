@@ -11,5 +11,6 @@ services:
     restart: always
     volumes:
       - ${BBSHOME}:/home/bbs
+      - ${ETC}:/etc/go-pttbbs
       - /Users/chhsiao/projects/go-pttbbs:/home/chhsiao/go-pttbbs
       - [local absolute directory]:/home/[username]/go-pttbbs

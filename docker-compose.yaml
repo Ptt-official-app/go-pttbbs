@@ -9,3 +9,4 @@ services:
     restart: always
     volumes:
       - ${BBSHOME}:/home/bbs
+      - ${ETC}:/etc/go-pttbbs

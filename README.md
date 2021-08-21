@@ -25,10 +25,12 @@ CORS issue.
 
 You can do the following to start with docker-compose:
 
+* copy `docs/etc/` to some etc directory (ex: `/etc/go-pttbbs`).
+* copy `01-config.docker.ini` to the etc directory as production.ini (ex: `cp 01-config.docker.ini /etc/go-pttbbs/production.ini`).
 * copy `docker_compose.env.template` to `docker_compose.env` and modify the settings.
 * `./scripts/docker_initbbs.sh [BBSHOME] pttofficialapps/go-pttbbs:latest`
 * `docker-compose --env-file docker_compose.env -f docker-compose.yaml up -d`
-* register SYSOP and pttguest (api.GUEST) at `http://localhost:3456/v1/register`
+* register SYSOP and guest (api.GUEST) at `http://localhost:3456/v1/register`
 * register your account at `http://localhost:3456/register`
 * login at `http://localhost:3456/v1/login`
 * `telnet localhost 8888` and use the account that you registered.
@@ -99,6 +101,7 @@ You can do the following to run with ./scripts/run.sh:
 
 You can do the following do run updated-code in docker:
 
+
 * Modify the docker-compose.yaml and add the expected ports and mount directory in volumes:
 
     ```
@@ -109,6 +112,7 @@ You can do the following do run updated-code in docker:
       - "127.0.0.1:[local-port]:[docker-port]"
     volumes:
       - ${BBSHOME}:/home/bbs
+      - ${ETC}:/etc/go-pttbbs
       - [local absolute directory]:/home/[username]/go-pttbbs
     ```
 
