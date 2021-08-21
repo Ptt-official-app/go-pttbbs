@@ -6,4 +6,8 @@ func config() {
 	DEFAULT_PID_MAX = Pid_t(setIntConfig("DEFAULT_PID_MAX", int(DEFAULT_PID_MAX)))
 
 	IS_ALLOW_CROSSDOMAIN = setBoolConfig("IS_ALLOW_CROSSDOMAIN", IS_ALLOW_CROSSDOMAIN)
+
+	BIG5_TO_UTF8 = setStringConfig("BIG5_TO_UTF8", BIG5_TO_UTF8)
+	UTF8_TO_BIG5 = setStringConfig("UTF8_TO_BIG5", UTF8_TO_BIG5)
+	AMBCJK = setStringConfig("AMBCJK", AMBCJK)
 }

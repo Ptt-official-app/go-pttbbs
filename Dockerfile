@@ -1,4 +1,4 @@
-FROM bbsdocker/imageptt:letflatcenable
+FROM bbsdocker/imageptt:latest
 
 
 # golang on debian
@@ -26,6 +26,7 @@ COPY . /srv/go-pttbbs
 WORKDIR /srv/go-pttbbs
 RUN cp 01-config-docker.go.template ptttype/00-config-production.go && \
     mkdir -p /etc/go-pttbbs && cp 01-config.docker.ini /etc/go-pttbbs/production.ini && \
+    cp docs/etc/* /etc/go-pttbbs && \
     chown -R bbs .
 
 USER bbs
