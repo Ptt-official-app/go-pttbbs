@@ -3,6 +3,7 @@ package ptttype
 type FileMode uint8
 
 const (
+	FILE_NONE      FileMode = 0x00
 	FILE_LOCAL     FileMode = 0x01 /* local saved,  non-mail */
 	FILE_READ      FileMode = 0x01 /* already read, mail only */
 	FILE_MARKED    FileMode = 0x02 /* non-mail + mail */

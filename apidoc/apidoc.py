@@ -154,6 +154,14 @@ def _create_comment(bid, aid):
     return ''
 
 
+@app.route(_with_app_prefix('/board/<bid>/article/<aid>/crosspost'), methods=['POST'])
+def _cross_post(bid, aid):
+    """
+    swagger_from_file: apidoc/cross_post.yaml
+    """
+    return ''
+
+
 @app.route(_with_app_prefix('/user/<uid>/information'), methods=['GET'])
 def _get_user(uid):
     """

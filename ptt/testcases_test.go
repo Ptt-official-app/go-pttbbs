@@ -46,7 +46,7 @@ var (
 		Version:      ptttype.PASSWD_VERSION,
 		UserID:       ptttype.UserID_t{'t', 'e', 's', 't'},
 		UFlag:        33557216,
-		UserLevel:    7 | ptttype.PERM_BOARD,
+		UserLevel:    7 | ptttype.PERM_BOARD | ptttype.PERM_POST | ptttype.PERM_LOGINOK,
 		NumLoginDays: 1,
 		NumPosts:     0,
 		FirstLogin:   1600737659,

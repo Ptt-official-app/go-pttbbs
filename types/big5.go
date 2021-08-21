@@ -221,3 +221,13 @@ func Utf8ToBig5(utf8 string) (big5 []byte) {
 
 	return big5
 }
+
+func TrimDBCS(theCstr Cstr) (theBytes []byte) {
+	theBytes = CstrToBytes(theCstr)
+	if theBytes[len(theBytes)-1] >= 0x80 {
+		theBytes[len(theBytes)-1] = 0
+		theBytes = theBytes[:len(theBytes)-1]
+	}
+
+	return theBytes
+}

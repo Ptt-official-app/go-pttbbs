@@ -1,6 +1,7 @@
 package initgin
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"sync"
@@ -17,6 +18,7 @@ func TestInitGin(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
+	// variables
 	_ = ptt.SetupNewUser(testNewPostUserRaw1)
 	_ = ptt.SetupNewUser(testUserecRaw3)
 
@@ -30,7 +32,21 @@ func TestInitGin(t *testing.T) {
 	filename0 := &ptttype.Filename_t{}
 	copy(filename0[:], []byte("M.1607202239.A.30D"))
 	articleID0 := bbs.ToArticleID(filename0)
+	ip0 := "127.0.0.1"
 
+	boardSummary, err := bbs.CreateBoard("test", 5, "mewboard0", []byte("CPBL"), []byte("new-board"), nil, 0, 0, 0, false)
+	logrus.Infof("after CreateBoard: mewboard0: boardSummary: %v e: %v", boardSummary, err)
+
+	forwardBoardSummary, err := bbs.CreateBoard("test", 5, "fwboard0", []byte("CPBL"), []byte("fw-board"), nil, 0, 0, 0, false)
+
+	logrus.Infof("after CreateBoard: fwboard0: forwardBoardSummary: %v e: %v", forwardBoardSummary, err)
+
+	articleSummary0, err := bbs.CreateArticle("test", boardSummary.BBoardID, class0, title0, content0, ip0)
+	if err != nil {
+		t.Errorf("unable to create article: e: %v", err)
+	}
+
+	// router
 	router, _ := InitGin()
 	jwtSysop := getJwt(router, "SYSOP", "123123")
 	jwtA1 := getJwt(router, "A1", "123123")
@@ -357,6 +373,17 @@ func TestInitGin(t *testing.T) {
 				jwt:  jwtSysop,
 				params: &api.SetUserPermParams{
 					Perm: testUserec.Userlevel,
+				},
+				method: "POST",
+			},
+		},
+		{
+			name: "CrossPost",
+			args: args{
+				path: fmt.Sprintf("/board/%v/article/%v/crosspost", boardSummary.BBoardID, articleSummary0.ArticleID),
+				jwt:  jwtSysop,
+				params: &api.CrossPostParams{
+					XBoardID: forwardBoardSummary.BBoardID,
 				},
 				method: "POST",
 			},

@@ -230,3 +230,7 @@ func bannedMsg(user *ptttype.UserecRaw, board *ptttype.BoardHeaderRaw) (err erro
 	}
 	return nil
 }
+
+func hasPostPerm(user *ptttype.UserecRaw, uid ptttype.UID, board *ptttype.BoardHeaderRaw, bid ptttype.Bid) bool {
+	return postpermMsg(uid, user, bid, board) == nil
+}
