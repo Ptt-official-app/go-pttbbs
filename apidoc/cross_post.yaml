@@ -1,0 +1,46 @@
+Cross Post
+---
+tags:
+  - board
+  - article
+parameters:
+  - '$ref': '#/definitions/Host'
+  - '$ref': '#/definitions/XForwardedFor'
+  - '$ref': '#/definitions/Authorization'
+  - name: bid
+    in: path
+    type: string
+    required: true
+    description: board-id
+  - name: aid
+    in: path
+    type: string
+    required: true
+    description: article-id
+  - name: params
+    in: body
+    required: true
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      type: object
+      properties:
+        xbid:
+          type: string
+          description: cross-post bid
+responses:
+  200:
+    description: index-response
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      type: object
+      properties:
+        article:
+          '$ref': '#/definitions/ArticleSummary'
+        comment:
+          type: array
+          items:
+            type: string
+          description: '[]base64-big5 of the comment line in the original article (orig bid/aid)'
+        comment_mtime:
+          type: number
+          description: comment mtime (in the original article (orig bid/aid))
