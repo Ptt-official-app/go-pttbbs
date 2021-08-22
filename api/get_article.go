@@ -11,7 +11,7 @@ const GET_ARTICLE_R = "/board/:bid/article/:aid"
 
 type GetArticleParams struct {
 	RetrieveTS types.Time4 `json:"last_ts,omitempty" form:"last_ts,omitempty" url:"last_ts,omitempty"`
-	IsSystem   bool        `json:"system,omitempty" form:"system,omitempty" url:"system"`
+	IsSystem   bool        `json:"system,omitempty" form:"system,omitempty" url:"system,omitempty"`
 }
 
 type GetArticlePath struct {

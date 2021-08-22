@@ -10,7 +10,7 @@ sed -i 's/git.*//g' /tmp/build_ptt_new.sh
 sed -i 's/cp .*//g' /tmp/build_ptt_new.sh
 
 # 4. bmake clean
-sed -i 's/bmake all/bmake clean all/g' /tmp/build_ptt_new.sh
+sed -i 's/pmake all/pmake clean all/g' /tmp/build_ptt_new.sh
 
 # 5. add NOKILLWATERBALL
 echo "#define NOKILLWATERBALL" >> /home/bbs/pttbbs/pttbbs.conf
