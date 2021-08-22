@@ -36,4 +36,4 @@ ArticleSummary:
       type: string
     subject_type:
       type: number
-      description: https://github.com/Ptt-official-app/go-pttbbs/blob/main/ptttype/common.go#L174
+      description: https://github.com/Ptt-official-app/go-pttbbs/blob/main/ptttype/subject_type.go
