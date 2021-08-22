@@ -20,7 +20,7 @@ func SubjectEx(title *ptttype.Title_t) (titleType ptttype.SubjectType, newTitle 
 		} else if cmsys.StrcaseStartsWith(pTitle, ptttype.STR_FORWARD) {
 			pTitle = pTitle[len(ptttype.STR_FORWARD):]
 			titleType = ptttype.SUBJECT_FORWARD
-		} else if ptttype.USE_LEGACY_FORWARD && cmsys.StrcaseStartsWith(pTitle, ptttype.STR_LEGACY_FORWARD) {
+		} else if cmsys.StrcaseStartsWith(pTitle, ptttype.STR_LEGACY_FORWARD) {
 			pTitle = pTitle[len(ptttype.STR_LEGACY_FORWARD):]
 			titleType = ptttype.SUBJECT_FORWARD
 		} else {

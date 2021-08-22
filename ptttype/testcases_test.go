@@ -52,6 +52,5 @@ var (
 			},
 			Filemode: FILE_MARKED,
 		},
-		Class: []byte{0xa4, 0xdf, 0xb1, 0x6f},
 	}
 )

@@ -814,63 +814,6 @@ func TestUserID_t_IsValid(t *testing.T) {
 	wg.Wait()
 }
 
-func TestTitle_t_ToClass(t *testing.T) {
-	title0 := &Title_t{}
-	copy(title0[:], []byte("Re:[and] then?"))
-
-	title1 := &Title_t{}
-	copy(title1[:], []byte("Fw:[a] then?"))
-
-	title2 := &Title_t{}
-	copy(title2[:], []byte{0x5b, 0xc2, 0xe0, 0xbf, 0xfd, 0x5d, 'a', 'n', 'd', ' ', 't', 'h', 'e', 'n', '?'})
-
-	title3 := &Title_t{}
-	copy(title3[:], []byte("and then?"))
-
-	title4 := &Title_t{}
-	copy(title4[:], []byte("[\xa4\xbd\xa7\x69] and then?"))
-
-	tests := []struct {
-		name     string
-		tr       *Title_t
-		expected []byte
-	}{
-		// TODO: Add test cases.
-		{
-			tr:       title0,
-			expected: ARTICLE_CLASS_REPLY,
-		},
-		{
-			tr:       title1,
-			expected: ARTICLE_CLASS_FORWARD,
-		},
-		{
-			tr:       title2,
-			expected: ARTICLE_CLASS_FORWARD,
-		},
-		{
-			tr:       title3,
-			expected: []byte{},
-		},
-
-		{
-			tr:       title4,
-			expected: []byte("\xa4\xbd\xa7\x69"),
-		},
-	}
-	var wg sync.WaitGroup
-	for _, tt := range tests {
-		wg.Add(1)
-		t.Run(tt.name, func(t *testing.T) {
-			defer wg.Done()
-			if got := tt.tr.ToClass(); !reflect.DeepEqual(got, tt.expected) {
-				t.Errorf("Title_t.ToClass() = %v, want %v", got, tt.expected)
-			}
-		})
-	}
-	wg.Wait()
-}
-
 func TestUserID_t_IsGuest(t *testing.T) {
 	userID0Str := "guest"
 	userID0 := &UserID_t{}

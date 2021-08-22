@@ -32,11 +32,12 @@ func TestCreateArticle(t *testing.T) {
 	}
 
 	expected0 := CreateArticleResult(&bbs.ArticleSummary{
-		BBoardID: "10_WhoAmI",
-		Owner:    "A1",
-		Title:    fullTitle0,
-		Class:    class0,
-		Idx:      "",
+		BBoardID:  "10_WhoAmI",
+		Owner:     "A1",
+		FullTitle: fullTitle0,
+		Class:     class0,
+		Idx:       "",
+		RealTitle: []byte("this is a test"),
 	})
 
 	type args struct {
