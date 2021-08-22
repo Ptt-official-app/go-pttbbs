@@ -131,7 +131,6 @@ func TestNewPost(t *testing.T) {
 	expectedSummary0 := &ptttype.ArticleSummaryRaw{
 		Aid:     3,
 		BoardID: boardID0,
-		Class:   class0,
 		FileHeaderRaw: &ptttype.FileHeaderRaw{
 			Title: fullTitle0,
 			Owner: owner0,
@@ -141,7 +140,6 @@ func TestNewPost(t *testing.T) {
 	expectedSummary1 := &ptttype.ArticleSummaryRaw{
 		Aid:     4,
 		BoardID: boardID0,
-		Class:   class0,
 		FileHeaderRaw: &ptttype.FileHeaderRaw{
 			Title: fullTitle0,
 			Owner: owner0,
@@ -335,7 +333,6 @@ func TestCrossPost(t *testing.T) {
 	expectedSummary0 := &ptttype.ArticleSummaryRaw{
 		Aid:     1,
 		BoardID: testForwardBoardID0,
-		Class:   ptttype.ARTICLE_CLASS_FORWARD,
 		FileHeaderRaw: &ptttype.FileHeaderRaw{
 			Title: fullForwardTitle0,
 			Owner: ownerForward0,
@@ -519,7 +516,6 @@ func TestCrossPost(t *testing.T) {
 				return
 			}
 
-			logrus.Infof("summary: class: %v articleSummary: class: %v", summary.Class, gotArticleSummary.Class)
 			gotArticleSummary.Date = ptttype.Date_t{}
 			gotArticleSummaryFilenameStr := gotArticleSummary.Filename.String()
 			gotArticleSummary.Filename = ptttype.Filename_t{}

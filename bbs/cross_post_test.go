@@ -32,13 +32,14 @@ func TestCrossPost(t *testing.T) {
 		t.Errorf("unable to create article: e: %v", err)
 	}
 
-	expectedClass0 := ptttype.ARTICLE_CLASS_FORWARD
 	expectedSummary0 := &ArticleSummary{
-		BBoardID: "14_fwboard0",
-		Owner:    "SYSOP",
-		Title:    fwTitle0,
-		Class:    expectedClass0,
-		Idx:      "",
+		BBoardID:    "14_fwboard0",
+		Owner:       "SYSOP",
+		FullTitle:   fwTitle0,
+		Class:       class0,
+		Idx:         "",
+		RealTitle:   []byte("this is a test"),
+		SubjectType: ptttype.SUBJECT_FORWARD,
 	}
 
 	expectedComment0 := []byte{

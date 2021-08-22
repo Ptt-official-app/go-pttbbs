@@ -18,10 +18,7 @@ ArticleSummary:
       type: number
     owner:
       type: string
-    date:
-      type: string
-      description: MM/DD
-    title:
+    full_title:
       type: string
       description: base64 of big5
     money:
@@ -29,9 +26,14 @@ ArticleSummary:
     mode:
       type: number
       description: https://github.com/Ptt-official-app/go-pttbbs/blob/main/ptttype/file_mode.go
-    url:
+    class:
       type: string
     read:
       type: boolean
     idx:
       type: string
+    title:
+      type: string
+    subject_type:
+      type: number
+      description: https://github.com/Ptt-official-app/go-pttbbs/blob/main/ptttype/common.go#L174

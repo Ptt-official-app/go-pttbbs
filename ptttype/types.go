@@ -429,35 +429,9 @@ func (o *Owner_t) ToUserID() *UserID_t {
 	return userID
 }
 
-//////////
-//Title
-//////////
-
-//ToClass
-//
-//https://github.com/ptt/pttbbs/blob/master/common/bbs/string.c#L58
-func (t *Title_t) ToClass() []byte {
-	// reply
-	if bytes.HasPrefix(t[:], STR_REPLY) {
-		return ARTICLE_CLASS_REPLY
-	}
-
-	// forward
-	if bytes.HasPrefix(t[:], STR_FORWARD) {
-		return ARTICLE_CLASS_FORWARD
-	}
-
-	// legacy-forward
-	if bytes.HasPrefix(t[:], STR_LEGACY_FORWARD) {
-		return ARTICLE_CLASS_FORWARD
-	}
-
-	// class
-	if t[0] == '[' && t[5] == ']' {
-		return t[1:5]
-	}
-
-	return []byte{}
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L653
+func (o *Owner_t) IsCorpse() bool {
+	return o[0] == '-' && o[1] == 0
 }
 
 //NewBM
