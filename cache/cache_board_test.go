@@ -12,6 +12,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/testutil"
 	"github.com/Ptt-official-app/go-pttbbs/types"
+	"github.com/sirupsen/logrus"
 )
 
 func TestGetBCache(t *testing.T) {
@@ -1241,6 +1242,107 @@ func TestTouchBPostNum(t *testing.T) {
 
 			total := GetBTotal(tt.args.bid)
 			testutil.TDeepEqual(t, "total", total, tt.expected)
+		})
+		wg.Wait()
+	}
+}
+
+func TestResolveBoardGroup(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	ReloadBCache()
+
+	board, _ := GetBCache(1)
+	logrus.Infof("before test: cls: 1: board: %v", board)
+
+	type args struct {
+		gid     ptttype.Bid
+		bsortBy ptttype.BSortBy
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+
+		expectedBid        ptttype.Bid
+		expectedFirstChild ptttype.Bid
+		expectedNext       ptttype.Bid
+		expectedParent     ptttype.Bid
+	}{
+		// TODO: Add test cases.
+		{
+			args:               args{gid: 1, bsortBy: 0},
+			expectedBid:        1,
+			expectedFirstChild: 2,
+		},
+		{
+			args:           args{gid: 1, bsortBy: 0},
+			expectedBid:    2,
+			expectedParent: 1,
+			expectedNext:   5,
+		},
+		{
+			args:           args{gid: 1, bsortBy: 0},
+			expectedBid:    5,
+			expectedParent: 1,
+		},
+	}
+
+	var wg sync.WaitGroup
+	for _, tt := range tests {
+		wg.Add(1)
+		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
+			if err := ResolveBoardGroup(tt.args.gid, tt.args.bsortBy); (err != nil) != tt.wantErr {
+				t.Errorf("ResolveBoardGroup() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			board, _ := GetBCache(tt.expectedBid)
+			testutil.TDeepEqual(t, "first", board.FirstChild[tt.args.bsortBy], tt.expectedFirstChild)
+			testutil.TDeepEqual(t, "next", board.Next[tt.args.bsortBy], tt.expectedNext)
+		})
+		wg.Wait()
+	}
+}
+
+func TestSetBoardChildCount(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	ReloadBCache()
+	ResolveBoardGroup(1, ptttype.BSORT_BY_NAME)
+
+	board, _ := GetBCache(1)
+	logrus.Infof("before test: cls: 1: board: %v", board)
+
+	type args struct {
+		bid   ptttype.Bid
+		count int32
+	}
+	tests := []struct {
+		name          string
+		args          args
+		wantErr       bool
+		expectedCount int32
+	}{
+		// TODO: Add test cases.
+		{
+			args:          args{bid: 1, count: 0},
+			expectedCount: 0,
+		},
+	}
+	var wg sync.WaitGroup
+	for _, tt := range tests {
+		wg.Add(1)
+		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
+			if err := SetBoardChildCount(tt.args.bid, tt.args.count); (err != nil) != tt.wantErr {
+				t.Errorf("SetBoardChildCount() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			board, _ := GetBCache(1)
+
+			testutil.TDeepEqual(t, "count", board.ChildCount, tt.expectedCount)
 		})
 		wg.Wait()
 	}

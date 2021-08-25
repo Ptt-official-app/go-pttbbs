@@ -1212,3 +1212,120 @@ func TouchBPostNum(bid ptttype.Bid, delta int32) (err error) {
 
 	return nil
 }
+
+func ResolveBoardGroup(gid ptttype.Bid, bsortBy ptttype.BSortBy) (err error) {
+	boardCount := int(NumBoards())
+	if boardCount < 0 || boardCount > ptttype.MAX_BOARD {
+		return ErrInvalidNumBoards
+	}
+
+	const bsort0sz = unsafe.Sizeof(Shm.Raw.BSorted[0])
+	bsortedOffset := unsafe.Offsetof(Shm.Raw.BSorted) + bsort0sz*uintptr(bsortBy)
+
+	bidInCache := ptttype.BidInStore(0)
+	bidInCache_ptr := unsafe.Pointer(&bidInCache)
+
+	parentBoard, err := GetBCache(gid)
+	if err != nil {
+		return err
+	}
+	currentBoard := parentBoard
+	currentBid := gid
+	for idxInStore := 0; idxInStore < boardCount; idxInStore++ {
+		Shm.ReadAt(
+			bsortedOffset+uintptr(idxInStore)*ptttype.BID_IN_STORE_SZ,
+			ptttype.BID_IN_STORE_SZ,
+			bidInCache_ptr,
+		)
+		bid := bidInCache.ToBid()
+		if !bid.IsValid() {
+			continue
+		}
+		board, err := GetBCache(bid)
+		if err != nil {
+			continue
+		}
+		if board.Brdname[0] == '\x00' {
+			continue
+		}
+		if board.Gid != gid {
+			continue
+		}
+		if currentBoard == parentBoard {
+			err = setBoardFirstChild(currentBid, bsortBy, bid)
+			if err != nil {
+				return err
+			}
+		} else {
+			err = setBoardNextChild(currentBid, bsortBy, bid)
+			if err != nil {
+				return err
+			}
+			err = setBoardParent(currentBid, gid)
+			if err != nil {
+				return err
+			}
+		}
+
+		currentBoard = board
+		currentBid = bid
+	}
+
+	return nil
+}
+
+func setBoardFirstChild(bid ptttype.Bid, bsortBy ptttype.BSortBy, childBid ptttype.Bid) (err error) {
+	bidInCache := bid.ToBidInStore()
+
+	const bcacheOffset = unsafe.Offsetof(Shm.Raw.BCache)
+
+	Shm.WriteAt(
+		bcacheOffset+ptttype.BOARD_HEADER_RAW_SZ*uintptr(bidInCache)+ptttype.BOARD_HEADER_FIRST_CHILD_OFFSET+ptttype.BID_SZ*uintptr(bsortBy),
+		ptttype.BID_SZ,
+		unsafe.Pointer(&childBid),
+	)
+
+	return nil
+}
+
+func setBoardNextChild(bid ptttype.Bid, bsortBy ptttype.BSortBy, childBid ptttype.Bid) (err error) {
+	bidInCache := bid.ToBidInStore()
+
+	const bcacheOffset = unsafe.Offsetof(Shm.Raw.BCache)
+
+	Shm.WriteAt(
+		bcacheOffset+ptttype.BOARD_HEADER_RAW_SZ*uintptr(bidInCache)+ptttype.BOARD_HEADER_NEXT_OFFSET+ptttype.BID_SZ*uintptr(bsortBy),
+		ptttype.BID_SZ,
+		unsafe.Pointer(&childBid),
+	)
+
+	return nil
+}
+
+func setBoardParent(bid ptttype.Bid, parentBid ptttype.Bid) (err error) {
+	bidInCache := bid.ToBidInStore()
+
+	const bcacheOffset = unsafe.Offsetof(Shm.Raw.BCache)
+
+	Shm.WriteAt(
+		bcacheOffset+ptttype.BOARD_HEADER_RAW_SZ*uintptr(bidInCache)+ptttype.BOARD_HEADER_PARENT_OFFSET,
+		ptttype.BID_SZ,
+		unsafe.Pointer(&parentBid),
+	)
+
+	return nil
+}
+
+func SetBoardChildCount(bid ptttype.Bid, count int32) (err error) {
+	bidInCache := bid.ToBidInStore()
+
+	const bcacheOffset = unsafe.Offsetof(Shm.Raw.BCache)
+
+	Shm.WriteAt(
+		bcacheOffset+ptttype.BOARD_HEADER_RAW_SZ*uintptr(bidInCache)+ptttype.BOARD_HEADER_CHILD_COUNT_OFFSET,
+		types.INT32_SZ,
+		unsafe.Pointer(&count),
+	)
+
+	return nil
+}

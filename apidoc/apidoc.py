@@ -74,6 +74,22 @@ def _load_general_boards():
     return ''
 
 
+@app.route(_with_app_prefix('/cls/<clsid>/boards'), methods=['GET'])
+def _load_class_boards(clsid):
+    """
+    swagger_from_file: apidoc/load_class_boards.yaml
+    """
+    return ''
+
+
+@app.route(_with_app_prefix('/cls/boards'), methods=['GET'])
+def _load_full_class_boards():
+    """
+    swagger_from_file: apidoc/load_full_class_boards.yaml
+    """
+    return ''
+
+
 @app.route(_with_app_prefix('/board/<bid>/articles'), methods=['GET'])
 def _load_general_articles(bid):
     """

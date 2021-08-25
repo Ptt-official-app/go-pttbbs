@@ -1,0 +1,34 @@
+loadClassBoards
+---
+tags:
+  - board
+  - class
+description: get board-summary in asecnding mode.
+parameters:
+  - '$ref': '#/definitions/Host'
+  - '$ref': '#/definitions/XForwardedFor'
+  - '$ref': '#/definitions/Authorization'
+  - name: clsid
+    in: path
+    type: string
+    required: true
+    description: clsid is the pttbid returned from board-list.
+  - name: sortby
+    in: query
+    type: number
+    required: false
+    description: '<a href="https://github.com/Ptt-official-app/go-pttbbs/blob/main/ptttype/bsort_by.go">sort-by</a>'
+    default: 0
+  - '$ref': '#/definitions/ParamsSystem'
+responses:
+  200:
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      type: object
+      properties:
+        data:
+          type: array
+          description: board information (board-summary)
+          required: true
+          items:
+            '$ref': '#/definitions/BoardSummary'
