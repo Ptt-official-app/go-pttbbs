@@ -560,6 +560,11 @@ func TestLoadFullClassBoards(t *testing.T) {
 			args:              args{user: testUserecRaw1, uid: 1, startBid: 1, nBoards: 100},
 			expectedSummaries: []*ptttype.BoardSummaryRaw{testClassSummary2, testClassSummary5},
 		},
+		{
+			args:                args{user: testUserecRaw1, uid: 1, startBid: 1, nBoards: 1},
+			expectedSummaries:   []*ptttype.BoardSummaryRaw{testClassSummary2},
+			expectedNextSummary: testClassSummary5,
+		},
 	}
 	var wg sync.WaitGroup
 	for _, tt := range tests {
