@@ -2,7 +2,7 @@ isBoardValidUser
 ---
 tags:
   - board
-description: get board-summary.
+description: is board valid user.
 parameters:
   - '$ref': '#/definitions/Host'
   - '$ref': '#/definitions/XForwardedFor'

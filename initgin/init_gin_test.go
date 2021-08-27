@@ -240,6 +240,17 @@ func TestInitGin(t *testing.T) {
 			},
 		},
 		{
+			name: "IsBoardsValidUser",
+			args: args{ // json: {}
+				path: "/boards/isvalid",
+				jwt:  jwtSysop,
+				params: &api.IsBoardsValidUserParams{
+					BoardIDs: []bbs.BBoardID{"1_SYSOP"},
+				},
+				method: "POST",
+			},
+		},
+		{
 			name: "LoadAutoCompleteBoards",
 			args: args{
 				path: api.LOAD_AUTO_COMPLETE_BOARDS_R,

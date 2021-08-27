@@ -146,6 +146,14 @@ def _is_board_valid_user(bid):
     return ''
 
 
+@app.route(_with_app_prefix('/boards/isvalid'), methods=['POST'])
+def _is_boards_valid_user():
+    """
+    swagger_from_file: apidoc/is_boards_valid_user.yaml
+    """
+    return ''
+
+
 @app.route(_with_app_prefix('/board/<bid>/article/<aid>'), methods=['GET'])
 def _get_article(bid, aid):
     """

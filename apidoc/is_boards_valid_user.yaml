@@ -1,0 +1,32 @@
+isBoardsValidUser
+---
+tags:
+  - board
+description: is boards valid user.
+parameters:
+  - '$ref': '#/definitions/Host'
+  - '$ref': '#/definitions/XForwardedFor'
+  - '$ref': '#/definitions/Authorization'
+  - name: params
+    in: body
+    type: array
+    required: true
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      type: object
+      properties:
+        bids:
+          type: array
+          items:
+            type: string
+          required: true
+          description: array of board-ids
+responses:
+  200:
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      type: object
+      properties:
+        is_valid:
+          type: object
+          description: map[board-id]bool
