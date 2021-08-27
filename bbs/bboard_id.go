@@ -51,9 +51,11 @@ func (b BBoardID) ToRaw() (bid ptttype.Bid, boardIDRaw *ptttype.BoardID_t, err e
 	boardIDRaw = &ptttype.BoardID_t{}
 	boardID := strings.Join(bList[1:], "_")
 	copy(boardIDRaw[:], []byte(boardID))
-	if !boardIDRaw.IsValid() {
-		return 0, nil, ErrInvalidBBoardID
-	}
+
+	// XXX It's possible that we send cls-id here.
+	// if !boardIDRaw.IsValid() {
+	//		return 0, nil, ErrInvalidBBoardID
+	//	}
 
 	return bid, boardIDRaw, nil
 }
