@@ -494,3 +494,95 @@ func TestFindBoardAutoCompleteStartIdx(t *testing.T) {
 		wg.Wait()
 	}
 }
+
+func TestLoadClassBoards(t *testing.T) {
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
+
+	cache.ReloadBCache()
+
+	type args struct {
+		user     *ptttype.UserecRaw
+		uid      ptttype.UID
+		classBid ptttype.Bid
+		bsortBy  ptttype.BSortBy
+	}
+	tests := []struct {
+		name              string
+		args              args
+		expectedSummaries []*ptttype.BoardSummaryRaw
+		wantErr           bool
+	}{
+		// TODO: Add test cases.
+		{
+			args: args{user: testUserecRaw1, uid: 1, classBid: 1, bsortBy: ptttype.BSORT_BY_NAME},
+
+			expectedSummaries: []*ptttype.BoardSummaryRaw{testClassSummary2, testClassSummary5},
+		},
+	}
+	var wg sync.WaitGroup
+	for _, tt := range tests {
+		wg.Add(1)
+		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
+			gotSummaries, err := LoadClassBoards(tt.args.user, tt.args.uid, tt.args.classBid, tt.args.bsortBy)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("LoadClassBoards() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			testutil.TDeepEqual(t, "got", gotSummaries, tt.expectedSummaries)
+		})
+		wg.Wait()
+	}
+}
+
+func TestLoadFullClassBoards(t *testing.T) {
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
+
+	cache.ReloadBCache()
+
+	type args struct {
+		user     *ptttype.UserecRaw
+		uid      ptttype.UID
+		startBid ptttype.Bid
+		nBoards  int
+	}
+	tests := []struct {
+		name                string
+		args                args
+		expectedSummaries   []*ptttype.BoardSummaryRaw
+		expectedNextSummary *ptttype.BoardSummaryRaw
+		wantErr             bool
+	}{
+		// TODO: Add test cases.
+		{
+			args:              args{user: testUserecRaw1, uid: 1, startBid: 1, nBoards: 100},
+			expectedSummaries: []*ptttype.BoardSummaryRaw{testClassSummary2, testClassSummary5},
+		},
+		{
+			args:                args{user: testUserecRaw1, uid: 1, startBid: 1, nBoards: 1},
+			expectedSummaries:   []*ptttype.BoardSummaryRaw{testClassSummary2},
+			expectedNextSummary: testClassSummary5,
+		},
+	}
+	var wg sync.WaitGroup
+	for _, tt := range tests {
+		wg.Add(1)
+		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
+			gotSummaries, gotNextSummary, err := LoadFullClassBoards(tt.args.user, tt.args.uid, tt.args.startBid, tt.args.nBoards)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("LoadFullClassBoards() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotSummaries, tt.expectedSummaries) {
+				t.Errorf("LoadFullClassBoards() gotSummaries = %v, want %v", gotSummaries, tt.expectedSummaries)
+			}
+			if !reflect.DeepEqual(gotNextSummary, tt.expectedNextSummary) {
+				t.Errorf("LoadFullClassBoards() gotNextSummary = %v, want %v", gotNextSummary, tt.expectedNextSummary)
+			}
+		})
+		wg.Wait()
+	}
+}

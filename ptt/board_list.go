@@ -8,6 +8,125 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
+//LoadFullClassBoards
+//
+//Load full class boards
+//
+//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1142
+//Params:
+//	user
+//	uid
+//	startIdx: the idx in bsorted.
+//  nBoards: try to get at most nBoards
+//
+//Return:
+//  summaries
+//	nextIdx: next idx in bsorted.
+//	err
+func LoadFullClassBoards(user *ptttype.UserecRaw, uid ptttype.UID, startBid ptttype.Bid, nBoards int) (summaries []*ptttype.BoardSummaryRaw, nextSummary *ptttype.BoardSummaryRaw, err error) {
+	if !startBid.IsValid() {
+		return nil, nil, ptttype.ErrInvalidBid
+	}
+
+	nBoardsInCache := cache.NumBoards()
+
+	nBoardsWithNext := nBoards + 1
+
+	// get board-stats
+	boardStats := make([]*ptttype.BoardStat, 0, nBoardsWithNext)
+	for bid := startBid; ; bid++ {
+		bidInCache := bid.ToBidInStore()
+		if int32(bidInCache) >= nBoardsInCache || len(boardStats) >= nBoardsWithNext { // add 1 more board for nextSummary
+			break
+		}
+		eachBoardStat, _, eachErr := loadClassBoardStat(user, uid, bid, true)
+		if eachErr != nil {
+			continue
+		}
+
+		boardStats = append(boardStats, eachBoardStat)
+	}
+
+	// boardStats to summaries
+	summaries, err = showBoardList(user, uid, boardStats, true)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	if len(summaries) == nBoardsWithNext {
+		nextSummary = summaries[nBoards]
+		summaries = summaries[:nBoards]
+	}
+
+	return summaries, nextSummary, nil
+}
+
+// LoadClassBoards
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1169
+func LoadClassBoards(user *ptttype.UserecRaw, uid ptttype.UID, classBid ptttype.Bid, bsortBy ptttype.BSortBy) (summaries []*ptttype.BoardSummaryRaw, err error) {
+	if !classBid.IsValid() {
+		return nil, ptttype.ErrInvalidBid
+	}
+
+	// https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1041
+	// override type in class root, because usually we don't need to sort
+	// class root; and there may be out-of-sync in that mode.
+	if isInClassRoot(classBid) {
+		bsortBy = ptttype.BSORT_BY_CLASS
+	}
+
+	board, err := cache.GetBCache(classBid)
+	if err != nil {
+		return nil, err
+	}
+
+	if board.FirstChild[bsortBy] == 0 || board.ChildCount == 0 {
+		err = cache.ResolveBoardGroup(classBid, bsortBy)
+		if err != nil {
+			return nil, err
+		}
+
+		board, err = cache.GetBCache(classBid)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	// Ptt: child count after resolve_board_group
+	childCount := int(board.ChildCount)
+
+	brdSize := childCount + 5
+	boardStats := make([]*ptttype.BoardStat, 0, brdSize)
+	var eachBoardStat *ptttype.BoardStat
+	var eachErr error
+	for bid := board.FirstChild[bsortBy]; bid > 0 && len(boardStats) < brdSize; bid = board.Next[bsortBy] {
+		if !bid.IsValid() {
+			break
+		}
+
+		eachBoardStat, board, eachErr = loadClassBoardStat(user, uid, bid, false)
+		if eachErr != nil {
+			continue
+		}
+		boardStats = append(boardStats, eachBoardStat)
+	}
+	if childCount < len(boardStats) {
+		// Ptt: dirty fix fix soon
+		_ = cache.SetBoardChildCount(classBid, int32(0))
+	}
+
+	summaries, err = showBoardList(user, uid, boardStats, true)
+	if err != nil {
+		return nil, err
+	}
+
+	return summaries, nil
+}
+
+func isInClassRoot(classBid ptttype.Bid) bool {
+	return classBid == 1
+}
+
 //LoadBoardSummary
 //
 //Load General Board Summary
@@ -38,7 +157,8 @@ func LoadBoardSummary(user *ptttype.UserecRaw, uid ptttype.UID, bid ptttype.Bid)
 		return nil, err
 	}
 
-	summary = parseBoardSummary(user, uid, boardStat)
+	isParseFolder := board.BrdAttr.HasPerm(ptttype.BRD_GROUPBOARD)
+	summary = parseBoardSummary(user, uid, boardStat, isParseFolder)
 
 	return summary, nil
 }
@@ -61,7 +181,7 @@ func LoadHotBoards(user *ptttype.UserecRaw, uid ptttype.UID) (summary []*ptttype
 		boardStats = append(boardStats, eachBoardStat)
 	}
 
-	summary, err = showBoardList(user, uid, boardStats)
+	summary, err = showBoardList(user, uid, boardStats, false)
 	if err != nil {
 		return nil, err
 	}
@@ -124,7 +244,7 @@ func LoadBoardsByBids(user *ptttype.UserecRaw, uid ptttype.UID, bids []ptttype.B
 		boardStats = append(boardStats, eachBoardStat)
 	}
 
-	summaries, err = showBoardList(user, uid, boardStats)
+	summaries, err = showBoardList(user, uid, boardStats, true)
 
 	return summaries, err
 }
@@ -198,7 +318,7 @@ func LoadAutoCompleteBoards(user *ptttype.UserecRaw, uid ptttype.UID, startIdx p
 	}
 
 	// boardStats to summaries
-	summaries, err = showBoardList(user, uid, boardStats)
+	summaries, err = showBoardList(user, uid, boardStats, false)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -266,7 +386,7 @@ func LoadGeneralBoards(user *ptttype.UserecRaw, uid ptttype.UID, startIdx ptttyp
 	}
 
 	// boardStats to summaries
-	summaries, err = showBoardList(user, uid, boardStats)
+	summaries, err = showBoardList(user, uid, boardStats, false)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -317,6 +437,45 @@ func loadAutoCompleteBoardStat(user *ptttype.UserecRaw, uid ptttype.UID, idxInSt
 
 	boardStat = newBoardStat(bidInCache, state, board, isGroupOp)
 	return boardStat, false
+}
+
+//loadClassBoardStat
+//
+//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1186
+func loadClassBoardStat(user *ptttype.UserecRaw, uid ptttype.UID, bid ptttype.Bid, isResolveBoardGroup bool) (boardStat *ptttype.BoardStat, board *ptttype.BoardHeaderRaw, err error) {
+	bsortBy := ptttype.BSORT_BY_CLASS
+
+	board, err = cache.GetBCache(bid)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	if board.Brdname[0] == '\x00' ||
+		!board.BrdAttr.HasPerm(ptttype.BRD_GROUPBOARD|ptttype.BRD_SYMBOLIC) {
+		return nil, nil, ErrInvalidBoard
+	}
+
+	if isResolveBoardGroup && (board.FirstChild[bsortBy] == 0 || board.ChildCount == 0) {
+		err = cache.ResolveBoardGroup(bid, bsortBy)
+		if err != nil {
+			return nil, nil, err
+		}
+
+		board, err = cache.GetBCache(bid)
+		if err != nil {
+			return nil, nil, err
+		}
+	}
+
+	isGroupOp := groupOp(user, uid, board)
+	state := boardPermStat(user, uid, board, bid)
+	if !((state != ptttype.NBRD_INVALID) || isGroupOp) {
+		return nil, nil, ErrNotPermitted
+	}
+
+	bidInCache := bid.ToBidInStore()
+	boardStat = newBoardStat(bidInCache, state, board, isGroupOp)
+	return boardStat, board, nil
 }
 
 //loadGeneralBoardStat
@@ -406,10 +565,10 @@ func keywordsNotInBoard(boardID *ptttype.BoardID_t, boardTitle *ptttype.BoardTit
 //showBoardList
 //
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1409
-func showBoardList(user *ptttype.UserecRaw, uid ptttype.UID, boardStats []*ptttype.BoardStat) (summary []*ptttype.BoardSummaryRaw, err error) {
+func showBoardList(user *ptttype.UserecRaw, uid ptttype.UID, boardStats []*ptttype.BoardStat, isParseFolder bool) (summary []*ptttype.BoardSummaryRaw, err error) {
 	summary = make([]*ptttype.BoardSummaryRaw, len(boardStats))
 	for idx, eachStat := range boardStats {
-		summary[idx] = parseBoardSummary(user, uid, eachStat)
+		summary[idx] = parseBoardSummary(user, uid, eachStat, isParseFolder)
 	}
 
 	return summary, nil
@@ -418,14 +577,14 @@ func showBoardList(user *ptttype.UserecRaw, uid ptttype.UID, boardStats []*pttty
 //parseBoardSummary
 //
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1460
-func parseBoardSummary(user *ptttype.UserecRaw, uid ptttype.UID, boardStat *ptttype.BoardStat) (summary *ptttype.BoardSummaryRaw) {
-	// XXX we do not deal with fav in go-bbs.
+func parseBoardSummary(user *ptttype.UserecRaw, uid ptttype.UID, boardStat *ptttype.BoardStat, isParseFolder bool) (summary *ptttype.BoardSummaryRaw) {
+	// XXX we do not deal with fav in go-pttbbs.
 	if boardStat.Attr&ptttype.NBRD_LINE != 0 {
 		return &ptttype.BoardSummaryRaw{Bid: boardStat.Bid, StatAttr: boardStat.Attr}
 	}
 
-	// XXX we do not deal with fav in go-bbs.
-	if boardStat.Attr&ptttype.NBRD_FOLDER != 0 {
+	// XXX we do not deal with fav in go-pttbbs.
+	if !isParseFolder && boardStat.Attr&ptttype.NBRD_FOLDER != 0 {
 		return &ptttype.BoardSummaryRaw{Bid: boardStat.Bid, StatAttr: boardStat.Attr}
 	}
 

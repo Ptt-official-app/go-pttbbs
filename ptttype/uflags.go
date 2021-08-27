@@ -37,3 +37,7 @@ const (
 	// #define UF_???	    0x40000000	// reserved
 	// #define UF_???	    0x80000000	// reserved
 )
+
+func (u UFlag) HasUserFlag(flag UFlag) bool {
+	return u&flag != 0
+}

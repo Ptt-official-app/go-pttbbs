@@ -388,6 +388,30 @@ func TestInitGin(t *testing.T) {
 				method: "POST",
 			},
 		},
+		{
+			name: "LoadClassBoards",
+			args: args{
+				path: fmt.Sprintf("/cls/1/boards"),
+				jwt:  jwtSysop,
+				params: &api.LoadClassBoardsParams{
+					IsSystem: true,
+				},
+				method: "GET",
+			},
+		},
+		{
+			name: "LoadFullClassBoards",
+			args: args{
+				path: fmt.Sprintf("/cls/boards"),
+				jwt:  jwtSysop,
+				params: &api.LoadFullClassBoardsParams{
+					StartBid: 1,
+					NBoards:  100,
+					IsSystem: true,
+				},
+				method: "GET",
+			},
+		},
 	}
 
 	var wg sync.WaitGroup

@@ -1,0 +1,32 @@
+loadFullClassBoards
+---
+tags:
+  - board
+  - class
+description: get board-summary in asecnding mode.
+parameters:
+  - '$ref': '#/definitions/Host'
+  - '$ref': '#/definitions/XForwardedFor'
+  - '$ref': '#/definitions/Authorization'
+  - name: start_bid
+    in: query
+    type: number
+    required: true
+    description: the pttbid in board-summary, starting by 1.
+  - '$ref': '#/definitions/ParamsMax'
+  - '$ref': '#/definitions/ParamsSystem'
+responses:
+  200:
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      type: object
+      properties:
+        data:
+          type: array
+          description: board information (board-summary)
+          required: true
+          items:
+            '$ref': '#/definitions/BoardSummary'
+        next_bid:
+          type: number
+          description: the pttbid in board-summary.

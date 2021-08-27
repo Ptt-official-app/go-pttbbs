@@ -21,6 +21,9 @@ var (
 	testBoardSummary14 *bbs.BoardSummary
 	testBoardSummary15 *bbs.BoardSummary
 
+	testClassSummary2 *bbs.BoardSummary
+	testClassSummary5 *bbs.BoardSummary
+
 	testNewPostUserRaw1 *ptttype.UserecRaw
 
 	testArticleSummary0 *bbs.ArticleSummary
@@ -258,6 +261,46 @@ func initTestVars() {
 		IdxByName:  "mnewtest2",
 		IdxByClass: "@mnewtest2",
 		BrdAttr:    0x200000,
+	}
+
+	testClassSummary2 = &bbs.BoardSummary{
+		Gid:        1,
+		Bid:        2,
+		BBoardID:   bbs.BBoardID("2_1..........."),
+		StatAttr:   ptttype.NBRD_FAV,
+		Brdname:    "1...........",
+		BoardClass: []byte("...."),
+		RealTitle: []byte{
+			0xa4, 0xa4, 0xa5, 0xa1, 0xac, 0x46, 0xa9, 0xb2,
+			0x20, 0x20, 0xa1, 0x6d, 0xb0, 0xaa, 0xc0, 0xa3, 0xa6, 0x4d,
+			0xc0, 0x49, 0x2c, 0xab, 0x44, 0xa4, 0x48, 0xa5, 0x69, 0xbc,
+			0xc4, 0xa1, 0x6e,
+		},
+		BoardType:  []byte{0xa3, 0x55},
+		BM:         []bbs.UUserID{},
+		IdxByName:  "1...........",
+		IdxByClass: "Li4uLg@1...........",
+		BrdAttr:    0x000008,
+	}
+
+	testClassSummary5 = &bbs.BoardSummary{
+		Gid:        1,
+		Bid:        5,
+		BBoardID:   bbs.BBoardID("5_2..........."),
+		StatAttr:   ptttype.NBRD_FAV,
+		Brdname:    "2...........",
+		BoardClass: []byte("...."),
+		RealTitle: []byte{
+			0xa5, 0xab, 0xa5, 0xc1, 0xbc, 0x73, 0xb3, 0xf5,
+			0x20, 0x20, 0x20, 0x20, 0x20, 0xb3, 0xf8, 0xa7, 0x69, 0x20,
+			0x20, 0xaf, 0xb8, 0xaa, 0xf8, 0x20, 0x20, 0xa3, 0xad, 0xa1,
+			0x49,
+		},
+		BoardType:  []byte{0xa3, 0x55},
+		BM:         []bbs.UUserID{},
+		IdxByName:  "2...........",
+		IdxByClass: "Li4uLg@2...........",
+		BrdAttr:    0x000008,
 	}
 
 	testArticleSummary0 = &bbs.ArticleSummary{

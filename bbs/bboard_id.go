@@ -18,9 +18,13 @@ func ToBBoardID(bid ptttype.Bid, boardIDRaw *ptttype.BoardID_t) BBoardID {
 	if !bid.IsValid() {
 		return BBoardID("")
 	}
-	if !boardIDRaw.IsValid() {
-		return BBoardID("")
-	}
+
+	// XXX It's possible that we have the class-id as board-id,
+	//     violating that the 1st char needs to be alpha.
+	//if !boardIDRaw.IsValid() {
+	//	return BBoardID("")
+	//}
+
 	return BBoardID(bid.String() + "_" + types.CstrToString(boardIDRaw[:]))
 }
 

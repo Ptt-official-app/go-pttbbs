@@ -18,4 +18,6 @@ var (
 
 	ErrNotFound = errors.New("not found")
 	ErrBusy     = errors.New("busy")
+
+	ErrInvalidNumBoards = errors.New("invalid num boards")
 )
