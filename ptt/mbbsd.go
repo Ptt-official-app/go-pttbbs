@@ -95,7 +95,7 @@ func userLogin(uid ptttype.UID, user *ptttype.UserecRaw, ip *ptttype.IPv4_t) (er
 	// https://github.com/ptt/pttbbs/blob/master/mbbsd/mbbsd.c#L1219
 	cache.Shm.CheckMaxUser()
 
-	//update
+	// update
 	_, _ = pwcuLoginSave(uid, user, ip)
 	if err != nil {
 		log.Errorf("SetupNewUser: unable to passwdSyncUpdate: uid: %v userID: %v e: %v", uid, user.UserID, err)
@@ -241,7 +241,7 @@ func pwcuLoginSave(uid ptttype.UID, user *ptttype.UserecRaw, ip *ptttype.IPv4_t)
 	// get 1st day at 00:00
 	firstLoginDay = time.Date(firstLoginDay.Year(), firstLoginDay.Month(), firstLoginDay.Day(), 0, 0, 0, 0, firstLoginDay.Location())
 	// calculate max num of login days
-	maxNumLoginDaysFromRegister := math.Ceil(time.Since(firstLoginDay).Hours()/24)
+	maxNumLoginDaysFromRegister := math.Ceil(time.Since(firstLoginDay).Hours() / 24)
 
 	lastLoginDay := user.LastLogin.ToLocal()
 	// set to 00:00
@@ -256,10 +256,10 @@ func pwcuLoginSave(uid ptttype.UID, user *ptttype.UserecRaw, ip *ptttype.IPv4_t)
 	} else {
 		isFirstLoginOfDay = false
 	}
-
+	now := types.NowTS()
 	user.NumLoginDays = newNumLoginDays
-	user.LastLogin = types.NowTS()
-	user.LastSeen = types.NowTS()
+	user.LastLogin = now
+	user.LastSeen = now
 	err = passwdSyncUpdate(uid, user)
 	if err != nil {
 		return isFirstLoginOfDay, err
