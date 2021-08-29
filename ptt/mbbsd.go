@@ -257,6 +257,7 @@ func pwcuLoginSave(uid ptttype.UID, user *ptttype.UserecRaw, ip *ptttype.IPv4_t)
 
 	user.LastLogin = loginStartTime
 	user.LastSeen = loginStartTime
+	user.LastHost = *ip
 	err = passwdSyncUpdate(uid, user)
 	if err != nil {
 		return isFirstLoginOfDay, err
