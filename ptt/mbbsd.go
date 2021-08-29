@@ -2,11 +2,6 @@ package ptt
 
 import (
 	"bufio"
-	"errors"
-	"math"
-	"os"
-	"time"
-
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs"
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs/path"
@@ -14,6 +9,8 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
 	log "github.com/sirupsen/logrus"
+	"os"
+	"time"
 )
 
 //Login
@@ -233,41 +230,36 @@ func mkUserDir(userID *ptttype.UserID_t) (err error) {
 }
 
 // pwcuLoginSave update user numLoginDays, LastLogin and LastSeen
-// But the num increases 1 for every single day from 00:00
 func pwcuLoginSave(uid ptttype.UID, user *ptttype.UserecRaw, ip *ptttype.IPv4_t) (isFirstLoginOfDay bool, err error) {
-	// get user 1st login (or register?)
+	// get user 1st login
 	firstLoginDay := user.FirstLogin.ToLocal()
 	// get 1st day at 00:00
-	firstLoginDay = time.Date(firstLoginDay.Year(), firstLoginDay.Month(), firstLoginDay.Day(), 0, 0, 0, 0, firstLoginDay.Location())
-	// calculate max num of login days
-	maxNumLoginDaysFromRegister := math.Ceil(time.Since(firstLoginDay).Hours() / 24)
+	baseRefTime := types.TimeToTime4(time.Date(firstLoginDay.Year(), firstLoginDay.Month(), firstLoginDay.Day(), 0, 0, 0, 0, firstLoginDay.Location()))
+	loginStartTime := types.NowTS()
+	refTime := loginStartTime
 
-	lastLoginDay := user.LastLogin.ToLocal()
-	// set to 00:00
-	lastLoginDay = time.Date(lastLoginDay.Year(), lastLoginDay.Month(), lastLoginDay.Day(), 0, 0, 0, 0, lastLoginDay.Location())
-	// set to 00:00
-	today := time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), 0, 0, 0, 0, time.Now().Location())
-	newNumLoginDays := user.NumLoginDays
-	// if lastLoginDay < today
-	if lastLoginDay.Sub(today) < 0 {
-		isFirstLoginOfDay = true
-		newNumLoginDays++
-	} else {
-		isFirstLoginOfDay = false
+	// multiple login?
+	if refTime < user.LastLogin {
+		refTime = user.LastLogin
 	}
-	now := types.NowTS()
-	user.NumLoginDays = newNumLoginDays
-	user.LastLogin = now
-	user.LastSeen = now
+	// no rounding?
+	regDays := (refTime - baseRefTime) / 86400
+	prevRegDays := (user.LastLogin - baseRefTime) / 86400
+	// error check?
+	if uint32(user.NumLoginDays) > uint32(prevRegDays) + 1 {
+		user.NumLoginDays = uint32(prevRegDays) + 1
+	}
+
+	if regDays > prevRegDays {
+		user.NumLoginDays++
+		isFirstLoginOfDay = true
+	}
+
+	user.LastLogin = loginStartTime
+	user.LastSeen = loginStartTime
 	err = passwdSyncUpdate(uid, user)
 	if err != nil {
 		return isFirstLoginOfDay, err
-	}
-
-	// check overflow
-	if float64(newNumLoginDays) > maxNumLoginDaysFromRegister {
-		// need to move error to ptttype
-		return isFirstLoginOfDay, errors.New("number of days login over maximum")
 	}
 
 	return isFirstLoginOfDay, nil
