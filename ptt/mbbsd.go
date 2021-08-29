@@ -85,7 +85,6 @@ func userLogin(uid ptttype.UID, user *ptttype.UserecRaw, ip *ptttype.IPv4_t) (er
 	if err != nil {
 		return err
 	}
-	log.Infof("utmpID: %v uinfo: %v\n", utmpID, uinfo)
 	//XXX We should have new stats for go-pttbbs
 	//_ = cache.StatInc(ptttype.STAT_MBBSD_ENTER)
 
