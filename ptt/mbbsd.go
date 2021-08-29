@@ -2,6 +2,9 @@ package ptt
 
 import (
 	"bufio"
+	"os"
+	"time"
+
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs"
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs/path"
@@ -9,8 +12,6 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
 	log "github.com/sirupsen/logrus"
-	"os"
-	"time"
 )
 
 //Login
@@ -246,7 +247,7 @@ func pwcuLoginSave(uid ptttype.UID, user *ptttype.UserecRaw, ip *ptttype.IPv4_t)
 	regDays := (refTime - baseRefTime) / 86400
 	prevRegDays := (user.LastLogin - baseRefTime) / 86400
 	// error check?
-	if uint32(user.NumLoginDays) > uint32(prevRegDays) + 1 {
+	if uint32(user.NumLoginDays) > uint32(prevRegDays)+1 {
 		user.NumLoginDays = uint32(prevRegDays) + 1
 	}
 
