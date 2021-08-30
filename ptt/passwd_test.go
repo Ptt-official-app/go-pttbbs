@@ -8,8 +8,6 @@ import (
 
 	"github.com/Ptt-official-app/go-pttbbs/types"
 
-	"github.com/sirupsen/logrus"
-
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/testutil"
 )
@@ -195,7 +193,7 @@ func Test_pwcuLoginSave(t *testing.T) {
 	userRaw5.NumLoginDays = 1
 	userRaw5.FirstLogin = 1630000000 // Thu Aug 26 2021 17:46:40 GMT+0000
 	userRaw5.LastLogin = baseNowDay - 1
-	logrus.Infof("LastLogin: %v \t now: %v\n", userRaw5.LastLogin, now.Unix())
+
 	type args struct {
 		uid  ptttype.UID
 		user *ptttype.UserecRaw
@@ -238,7 +236,7 @@ func Test_pwcuLoginSave(t *testing.T) {
 			args:                  args{uid: uID5, user: userRaw5, ip: ip},
 			wantIsFirstLoginOfDay: true,
 			wantErr:               false,
-			wantNumLoginDay:       1,
+			wantNumLoginDay:       2,
 			wantLastHost:          ptttype.IPv4_t{56, 46, 56, 46, 56, 46, 56},
 		},
 	}
