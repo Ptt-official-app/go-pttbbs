@@ -181,21 +181,23 @@ func Test_pwcuLoginSave(t *testing.T) {
 	uID3 := ptttype.UID(3)
 	userRaw3, _ := InitCurrentUserByUID(uID3)
 	userRaw3.NumLoginDays = 0
-	userRaw3.FirstLogin = 1630306583 // Mon Aug 30 2021 06:56:23 GMT+0000
+	userRaw3.FirstLogin = 1630000000 // Thu Aug 26 2021 17:46:40 GMT+0000
 	userRaw3.LastLogin = 0
 	// setup test case 3
+	now := time.Now()
+	baseNowDay := types.TimeToTime4(time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location()))
 	uID4 := ptttype.UID(4)
 	userRaw4, _ := InitCurrentUserByUID(uID4)
 	userRaw4.NumLoginDays = 1
-	userRaw4.FirstLogin = 1630306583 // Mon Aug 30 2021 06:56:23 GMT+0000
-	userRaw4.LastLogin = 1630306585
+	userRaw4.FirstLogin = 1630000000 // Thu Aug 26 2021 17:46:40 GMT+0000
+	userRaw4.LastLogin = baseNowDay + 600
 	// setup test case 4
 	uID5 := ptttype.UID(5)
 	userRaw5, _ := InitCurrentUserByUID(uID5)
 	userRaw5.NumLoginDays = 1
-	now := time.Now()
-	userRaw5.LastLogin = types.TimeToTime4(time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())) - 1
-	logrus.Info("userRaw5.LastLogin: ", userRaw5.LastLogin)
+	userRaw5.FirstLogin = 1630000000 // Thu Aug 26 2021 17:46:40 GMT+0000
+	userRaw5.LastLogin = baseNowDay - 1
+
 	type args struct {
 		uid  ptttype.UID
 		user *ptttype.UserecRaw
