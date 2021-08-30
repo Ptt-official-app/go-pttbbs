@@ -195,7 +195,7 @@ func Test_pwcuLoginSave(t *testing.T) {
 	userRaw5.NumLoginDays = 1
 	now := time.Now()
 	userRaw5.LastLogin = types.TimeToTime4(time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())) - 1
-
+	logrus.Info("userRaw5.LastLogin: ", userRaw5.LastLogin)
 	type args struct {
 		uid  ptttype.UID
 		user *ptttype.UserecRaw
