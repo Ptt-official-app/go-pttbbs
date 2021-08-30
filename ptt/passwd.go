@@ -1,6 +1,8 @@
 package ptt
 
 import (
+	"time"
+
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
@@ -69,4 +71,41 @@ func passwdSyncQuery(uid ptttype.UID) (*ptttype.UserecRaw, error) {
 	user.Money = cache.MoneyOf(uid)
 
 	return user, nil
+}
+
+// pwcuLoginSave update user numLoginDays, LastLogin and LastSeen
+func pwcuLoginSave(uid ptttype.UID, user *ptttype.UserecRaw, ip *ptttype.IPv4_t) (isFirstLoginOfDay bool, err error) {
+	// get user 1st login
+	firstLoginDay := user.FirstLogin.ToLocal()
+	// get 1st day at 00:00
+	baseRefTime := types.TimeToTime4(time.Date(firstLoginDay.Year(), firstLoginDay.Month(), firstLoginDay.Day(), 0, 0, 0, 0, firstLoginDay.Location()))
+	loginStartTime := types.NowTS()
+	refTime := loginStartTime
+
+	// multiple login?
+	if refTime < user.LastLogin {
+		refTime = user.LastLogin
+	}
+	// no rounding?
+	regDays := (refTime - baseRefTime) / 86400
+	prevRegDays := (user.LastLogin - baseRefTime) / 86400
+	// error check?
+	if uint32(user.NumLoginDays) > uint32(prevRegDays)+1 {
+		user.NumLoginDays = uint32(prevRegDays) + 1
+	}
+
+	if regDays > prevRegDays {
+		user.NumLoginDays++
+		isFirstLoginOfDay = true
+	}
+
+	user.LastLogin = loginStartTime
+	user.LastSeen = loginStartTime
+	user.LastHost = *ip
+	err = passwdSyncUpdate(uid, user)
+	if err != nil {
+		return isFirstLoginOfDay, err
+	}
+
+	return isFirstLoginOfDay, nil
 }
