@@ -147,6 +147,11 @@ func TestLogin(t *testing.T) {
 		unsafe.Sizeof(uinfo),
 		unsafe.Pointer(&uinfo),
 	)
+	// setup login data
+	testSetupNewUser1.LastHost = *ip1
+	testSetupNewUser1.NumLoginDays = testSetupNewUser1.NumLoginDays + 1
+	testSetupNewUser1.LastLogin = types.NowTS()
+	testSetupNewUser1.LastSeen = types.NowTS()
 
 	type args struct {
 		userID *ptttype.UserID_t

@@ -22,7 +22,6 @@ func Login(userID *ptttype.UserID_t, passwd []byte, ip *ptttype.IPv4_t) (uid ptt
 	if err != nil {
 		return 0, nil, err
 	}
-
 	// we don't do loadCurrentUser
 	// because logattempt, ensure_user_agreement_version
 	// should be in middleware.
@@ -83,7 +82,6 @@ func userLogin(uid ptttype.UID, user *ptttype.UserecRaw, ip *ptttype.IPv4_t) (er
 	if err != nil {
 		return err
 	}
-
 	//XXX We should have new stats for go-pttbbs
 	//_ = cache.StatInc(ptttype.STAT_MBBSD_ENTER)
 
@@ -92,6 +90,13 @@ func userLogin(uid ptttype.UID, user *ptttype.UserecRaw, ip *ptttype.IPv4_t) (er
 
 	// https://github.com/ptt/pttbbs/blob/master/mbbsd/mbbsd.c#L1219
 	cache.Shm.CheckMaxUser()
+
+	// update
+	_, _ = pwcuLoginSave(uid, user, ip)
+	if err != nil {
+		log.Errorf("SetupNewUser: unable to passwdSyncUpdate: uid: %v userID: %v e: %v", uid, user.UserID, err)
+		return err
+	}
 
 	if !(user.UserLevel.HasUserPerm(ptttype.PERM_SYSOP) && user.UserLevel.HasUserPerm(ptttype.PERM_SYSOPHIDE)) {
 		doAloha(utmpID, uinfo, ptttype.ALOHA_MSG)
