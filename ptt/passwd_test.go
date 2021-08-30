@@ -175,8 +175,6 @@ func Test_pwcuLoginSave(t *testing.T) {
 	userID1 := ptttype.UserID_t{}
 	copy(userID1[:], []byte("SYSOP"))
 	uID1, userRaw1, _ := InitCurrentUser(&userID1)
-	logrus.Infof("firstLogin: %v lastLogin: %v numLoginDays: %v\n",
-		userRaw1.FirstLogin, userRaw1.LastLogin, userRaw1.NumLoginDays)
 	// setup test case 2
 	uID3 := ptttype.UID(3)
 	userRaw3, _ := InitCurrentUserByUID(uID3)
@@ -197,7 +195,7 @@ func Test_pwcuLoginSave(t *testing.T) {
 	userRaw5.NumLoginDays = 1
 	userRaw5.FirstLogin = 1630000000 // Thu Aug 26 2021 17:46:40 GMT+0000
 	userRaw5.LastLogin = baseNowDay - 1
-	logrus.Infof("LastLogin: %v \t now: %v\n", userRaw5.LastLogin, now)
+	logrus.Infof("LastLogin: %v \t now: %v\n", userRaw5.LastLogin, now.Unix())
 	type args struct {
 		uid  ptttype.UID
 		user *ptttype.UserecRaw
@@ -240,7 +238,7 @@ func Test_pwcuLoginSave(t *testing.T) {
 			args:                  args{uid: uID5, user: userRaw5, ip: ip},
 			wantIsFirstLoginOfDay: true,
 			wantErr:               false,
-			wantNumLoginDay:       2,
+			wantNumLoginDay:       1,
 			wantLastHost:          ptttype.IPv4_t{56, 46, 56, 46, 56, 46, 56},
 		},
 	}

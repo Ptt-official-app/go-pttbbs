@@ -3,6 +3,8 @@ package ptt
 import (
 	"time"
 
+	"github.com/sirupsen/logrus"
+
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
@@ -86,14 +88,18 @@ func pwcuLoginSave(uid ptttype.UID, user *ptttype.UserecRaw, ip *ptttype.IPv4_t)
 	if refTime < user.LastLogin {
 		refTime = user.LastLogin
 	}
-	// no rounding?
+
 	regDays := (refTime - baseRefTime) / 86400
 	prevRegDays := (user.LastLogin - baseRefTime) / 86400
 	// error check?
 	if uint32(user.NumLoginDays) > uint32(prevRegDays)+1 {
 		user.NumLoginDays = uint32(prevRegDays) + 1
 	}
-
+	logrus.Info("refTime: ", refTime)
+	logrus.Info("baseRefTime: ", baseRefTime)
+	logrus.Info("user.LastLogin: ", user.LastLogin)
+	logrus.Info("regDays: ", regDays)
+	logrus.Info("prevRegDays: ", prevRegDays)
 	if regDays > prevRegDays {
 		user.NumLoginDays++
 		isFirstLoginOfDay = true
