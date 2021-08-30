@@ -190,7 +190,7 @@ func Test_pwcuLoginSave(t *testing.T) {
 	userRaw4.FirstLogin = 1630306583 // Mon Aug 30 2021 06:56:23 GMT+0000
 	userRaw4.LastLogin = 1630306585
 	// setup test case 4
-	uID5 := ptttype.UID(4)
+	uID5 := ptttype.UID(5)
 	userRaw5, _ := InitCurrentUserByUID(uID5)
 	userRaw5.NumLoginDays = 1
 	now := time.Now()
