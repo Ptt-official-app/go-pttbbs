@@ -197,7 +197,7 @@ func Test_pwcuLoginSave(t *testing.T) {
 	userRaw5.NumLoginDays = 1
 	userRaw5.FirstLogin = 1630000000 // Thu Aug 26 2021 17:46:40 GMT+0000
 	userRaw5.LastLogin = baseNowDay - 1
-
+	logrus.Infof("LastLogin: %v \t now: %v\n", userRaw5.LastLogin, now)
 	type args struct {
 		uid  ptttype.UID
 		user *ptttype.UserecRaw
