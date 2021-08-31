@@ -4,8 +4,6 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/sirupsen/logrus"
-
 	"github.com/Ptt-official-app/go-pttbbs/ptt"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
@@ -28,8 +26,7 @@ func TestReloadUHash(t *testing.T) {
 	// setup test case 3: For test2, should NOT be work
 	userID3 := ptttype.UserID_t{}
 	copy(userID3[:], []byte("test2"))
-	user, _ := ptt.GetUserLevel(&userID1)
-	logrus.Info("level: ", user)
+
 	type args struct {
 		userID *ptttype.UserID_t
 	}
