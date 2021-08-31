@@ -61,6 +61,8 @@ func processResult(c *gin.Context, result interface{}, err error) {
 		c.JSON(403, &errResult{err.Error()})
 	case ptt.ErrViolateLaw:
 		c.JSON(403, &errResult{err.Error()})
+	case bbs.ErrInvalidPermission:
+		c.JSON(403, &errResult{err.Error()})
 	default:
 		c.JSON(500, &errResult{err.Error()})
 	}
