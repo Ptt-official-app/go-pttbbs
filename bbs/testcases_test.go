@@ -34,6 +34,10 @@ var (
 	testBoardSummary11 *BoardSummary
 	testBoardSummary13 *BoardSummary
 
+	testBoardDetail3 *BoardDetail
+
+	testBoardHeader3 *ptttype.BoardHeaderRaw
+
 	testClassSummary2 *BoardSummary
 	testClassSummary5 *BoardSummary
 
@@ -472,6 +476,28 @@ func initTestVars() {
 		IdxByName:  "2...........",
 		IdxByClass: "Li4uLg@2...........",
 		BrdAttr:    0x000008,
+	}
+
+	testBoardHeader3 = &ptttype.BoardHeaderRaw{
+		Brdname: ptttype.BoardID_t{'S', 'Y', 'S', 'O', 'P'},
+		Title: ptttype.BoardTitle_t{
+			0xbc, 0x54, 0xad, 0xf9, 0x20, 0xa1, 0xb7, 0xaf, 0xb8, 0xaa,
+			0xf8, 0xa6, 0x6e, 0x21,
+		},
+		BrdAttr: ptttype.BRD_POSTMASK,
+		Gid:     2,
+	}
+
+	testBoardDetail3 = &BoardDetail{
+		Brdname: "SYSOP",
+		RealTitle: []byte{
+			0xaf, 0xb8, 0xaa, 0xf8, 0xa6, 0x6e, 0x21,
+		},
+		BM:       []UUserID{},
+		BrdAttr:  ptttype.BRD_POSTMASK,
+		Gid:      2,
+		Bid:      2,
+		BBoardID: "2_SYSOP",
 	}
 
 	testArticleSummary0 = &ArticleSummary{
