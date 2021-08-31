@@ -92,9 +92,9 @@ func userLogin(uid ptttype.UID, user *ptttype.UserecRaw, ip *ptttype.IPv4_t) (er
 	cache.Shm.CheckMaxUser()
 
 	// update
-	_, _ = pwcuLoginSave(uid, user, ip)
+	_, err = pwcuLoginSave(uid, user, uinfo, ip)
 	if err != nil {
-		log.Errorf("SetupNewUser: unable to passwdSyncUpdate: uid: %v userID: %v e: %v", uid, user.UserID, err)
+		log.Errorf("userLogin: unable to pwcuLoginSave: uid: %v userID: %v e: %v", uid, user.UserID, err)
 		return err
 	}
 
