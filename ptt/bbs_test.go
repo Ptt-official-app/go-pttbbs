@@ -105,8 +105,8 @@ func TestReadPost(t *testing.T) {
 				t.Errorf("ReadPost() gotMtime = %v, want %v", gotMtime, tt.expectedMtime)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestNewPost(t *testing.T) {

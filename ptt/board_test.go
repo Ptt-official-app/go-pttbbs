@@ -48,8 +48,8 @@ func Test_boardPermStatNormally(t *testing.T) {
 				t.Errorf("boardPermStatNormally() = %v, want %v", got, tt.expected)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestIsBoardValidUser(t *testing.T) {
@@ -95,8 +95,8 @@ func TestIsBoardValidUser(t *testing.T) {
 				t.Errorf("IsBoardValidUser() = %v, want %v", gotIsValid, tt.expectedIsValid)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestNewBoard(t *testing.T) {

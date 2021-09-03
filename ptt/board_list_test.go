@@ -148,8 +148,8 @@ func TestLoadGeneralBoards(t *testing.T) {
 
 			testutil.TDeepEqual(t, "nextSummary", gotNextSummary, tt.expectedNextSummary)
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestLoadBoardSummary(t *testing.T) {
@@ -196,8 +196,8 @@ func TestLoadBoardSummary(t *testing.T) {
 
 			testutil.TDeepEqual(t, "summary", gotSummary, tt.expectedSummary)
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestLoadHotBoards(t *testing.T) {
@@ -249,8 +249,8 @@ func TestLoadHotBoards(t *testing.T) {
 				t.Errorf("LoadHotBoards() = %v, want %v", gotSummary, tt.expectedSummary)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestLoadBoardsByBids(t *testing.T) {
@@ -293,8 +293,8 @@ func TestLoadBoardsByBids(t *testing.T) {
 				t.Errorf("LoadBoardsByBids() = %v, want %v", gotSummaries, tt.expectedSummaries)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestFindBoardStartIdxByName(t *testing.T) {
@@ -334,8 +334,8 @@ func TestFindBoardStartIdxByName(t *testing.T) {
 				t.Errorf("FindBoardStartIdxByName() = %v, want %v", gotStartIdx, tt.expectedStartIdx)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestFindBoardStartIdxByClass(t *testing.T) {
@@ -376,8 +376,8 @@ func TestFindBoardStartIdxByClass(t *testing.T) {
 				t.Errorf("FindBoardStartIdxByClass() = %v, want %v", gotStartIdx, tt.expectedStartIdx)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestLoadAutoCompleteBoards(t *testing.T) {

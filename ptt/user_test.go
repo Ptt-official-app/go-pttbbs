@@ -255,8 +255,8 @@ func TestCheckPasswd(t *testing.T) {
 				t.Errorf("CheckPasswd() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestChangeUserLevel2(t *testing.T) {
@@ -348,8 +348,8 @@ func TestGetUid(t *testing.T) {
 				t.Errorf("GetUid() = %v, want %v", gotUid, tt.expectedUid)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestSetUserPerm(t *testing.T) {
