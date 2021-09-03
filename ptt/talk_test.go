@@ -149,8 +149,8 @@ func Test_friendStat(t *testing.T) {
 				t.Errorf("friendStat() = %v, want %v", gotHit, tt.expectedHit)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func Test_myWrite(t *testing.T) {

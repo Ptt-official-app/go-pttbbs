@@ -1,6 +1,8 @@
 package ptt
 
 import (
+	"time"
+
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
@@ -123,4 +125,68 @@ func pwcuInitAdminPerm(user *ptttype.UserecRaw) {
 		ptttype.PERM_CLOAK | ptttype.PERM_SEECLOAK | ptttype.PERM_XEMPT |
 		ptttype.PERM_SYSOPHIDE | ptttype.PERM_BM | ptttype.PERM_ACCOUNTS |
 		ptttype.PERM_CHATROOM | ptttype.PERM_BOARD | ptttype.PERM_SYSOP | ptttype.PERM_BBSADM
+}
+
+// pwcuLoginSave
+// update user numLoginDays, LastLogin and LastSeen
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/passwd.c#L501
+func pwcuLoginSave(uid ptttype.UID, user *ptttype.UserecRaw, uinfo *ptttype.UserInfoRaw, ip *ptttype.IPv4_t) (isFirstLoginOfDay bool, err error) {
+	var u *ptttype.UserecRaw
+
+	u, err = pwcuStart(uid, &user.UserID)
+	if err != nil {
+		return false, err
+	}
+	defer func() {
+		err = pwcuEnd(uid, u)
+	}()
+
+	// new host from 'fromhost'
+	// https://github.com/ptt/pttbbs/blob/master/mbbsd/passwd.c#L517
+	u.LastHost = *ip
+	user.LastHost = *ip
+
+	// get user 1st login
+	firstLoginDay := u.FirstLogin.ToLocal()
+	// get 1st day at 00:00
+	baseRefTime := types.TimeToTime4(time.Date(firstLoginDay.Year(), firstLoginDay.Month(), firstLoginDay.Day(), 0, 0, 0, 0, firstLoginDay.Location()))
+
+	// loginStartTime
+	loginStartTime := types.NowTS()
+	refTime := loginStartTime
+
+	// multiple login?
+	if refTime < u.LastLogin {
+		refTime = u.LastLogin
+	}
+
+	regDays := (refTime - baseRefTime) / ptttype.DAY_SECONDS
+	prevRegDays := (u.LastLogin - baseRefTime) / ptttype.DAY_SECONDS
+	// error check?
+	// plus one for initial day
+	// https://github.com/ptt/pttbbs/blob/master/mbbsd/passwd.c#L540
+	if uint32(u.NumLoginDays) > uint32(prevRegDays)+1 {
+		u.NumLoginDays = uint32(prevRegDays) + 1
+	}
+
+	// calculate numlogindays (only increase one per each key)
+	// https://github.com/ptt/pttbbs/blob/master/mbbsd/passwd.c#L544
+	if regDays > prevRegDays {
+		u.NumLoginDays++
+		isFirstLoginOfDay = true
+	}
+
+	user.NumLoginDays = u.NumLoginDays
+
+	// update last login time
+	// https://github.com/ptt/pttbbs/blob/master/mbbsd/passwd.c#L552
+	u.LastLogin = loginStartTime
+	user.LastLogin = loginStartTime
+
+	if !uinfo.UserLevel.Hide() {
+		u.LastSeen = loginStartTime
+		user.LastSeen = loginStartTime
+	}
+
+	return isFirstLoginOfDay, nil
 }

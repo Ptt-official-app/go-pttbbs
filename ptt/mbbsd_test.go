@@ -191,9 +191,7 @@ func TestLogin(t *testing.T) {
 			if !reflect.DeepEqual(gotUid, tt.expectedUid) {
 				t.Errorf("Login() gotUid = %v, want %v", gotUid, tt.expectedUid)
 			}
-			if !reflect.DeepEqual(gotUser, tt.expectedUser) {
-				t.Errorf("Login() gotUser = %v, want %v", gotUser, tt.expectedUser)
-			}
+			testutil.TDeepEqual(t, "user", gotUser, tt.expectedUser)
 		})
 		wg.Wait()
 	}
