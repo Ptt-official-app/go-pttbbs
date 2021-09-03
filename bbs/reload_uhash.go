@@ -6,13 +6,20 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 )
 
-func ReloadUHash(userID *ptttype.UserID_t) (err error) {
-	userLevel, err := ptt.GetUserLevel(userID)
+func ReloadUHash(uuserID UUserID) (err error) {
+	userIDRaw, err := uuserID.ToRaw()
 	if err != nil {
 		return err
 	}
-	if userLevel.HasUserPerm(ptttype.PERM_SYSOP) {
-		return cache.LoadUHash()
+
+	_, userecRaw, err := ptt.InitCurrentUser(userIDRaw)
+	if err != nil {
+		return err
 	}
-	return ErrInvalidPermission
+
+	if !userecRaw.UserLevel.HasUserPerm(ptttype.PERM_SYSOP) {
+		return ErrInvalidPermission
+	}
+
+	return cache.LoadUHash()
 }

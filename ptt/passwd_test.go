@@ -240,8 +240,11 @@ func Test_pwcuLoginSave(t *testing.T) {
 			wantLastHost:          ptttype.IPv4_t{56, 46, 56, 46, 56, 46, 56},
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotIsFirstLoginOfDay, err := pwcuLoginSave(tt.args.uid, tt.args.user, tt.args.ip)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("pwcuLoginSave() error = %v, wantErr %v", err, tt.wantErr)
@@ -257,5 +260,6 @@ func Test_pwcuLoginSave(t *testing.T) {
 				t.Errorf("pwcuLoginSave() gotLastHost = %v, want %v", tt.args.user.LastHost, tt.wantLastHost)
 			}
 		})
+		wg.Wait()
 	}
 }
