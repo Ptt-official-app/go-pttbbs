@@ -117,8 +117,8 @@ func TestReadStat(t *testing.T) {
 				t.Errorf("ReadStat() = %v, expected %v", got, tt.expected)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestCleanStat(t *testing.T) {

@@ -149,8 +149,8 @@ func TestNumBoards(t *testing.T) {
 				t.Errorf("NumBoards() = %v, want %v", got, tt.expected)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestReloadBCache(t *testing.T) {
@@ -257,8 +257,8 @@ func Test_reloadCacheLoadBottom(t *testing.T) {
 				t.Errorf("nBottom: %v want: %v", nBottom, tt.expected)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestGetBTotal(t *testing.T) {
@@ -301,8 +301,8 @@ func TestGetBTotal(t *testing.T) {
 				t.Errorf("GetBTotal() = %v, want %v", gotTotal, tt.expectedTotal)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestSetBTotal(t *testing.T) {
@@ -450,8 +450,8 @@ func TestGetBid(t *testing.T) {
 				t.Errorf("GetBid() = %v, want %v", gotBid, tt.expectedBid)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestFindBoardIdxByName(t *testing.T) {
@@ -598,8 +598,8 @@ func TestFindBoardIdxByName(t *testing.T) {
 				t.Errorf("FindBoardIdxByName() = %v, want %v", gotIdx, tt.expectedIdx)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestFindBoardIdxByClass(t *testing.T) {
@@ -776,8 +776,8 @@ func TestFindBoardIdxByClass(t *testing.T) {
 				t.Errorf("FindBoardIdxByClass() = %v, want %v", gotIdx, tt.expectedIdx)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestFindBoardAutoCompleteStartIdx(t *testing.T) {
@@ -860,8 +860,8 @@ func TestFindBoardAutoCompleteStartIdx(t *testing.T) {
 				t.Errorf("FindBoardAutoCompleteStartIdx() = %v, want %v", gotStartIdx, tt.expectedStartIdx)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestGetBTotalWithRetry(t *testing.T) {
@@ -900,8 +900,8 @@ func TestGetBTotalWithRetry(t *testing.T) {
 				t.Errorf("GetBTotalWithRetry() = %v, want %v", gotTotal, tt.expectedTotal)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestNHots(t *testing.T) {
@@ -929,8 +929,8 @@ func TestNHots(t *testing.T) {
 				t.Errorf("NHots() = %v, want %v", gotNhots, tt.expectedNhots)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestSanitizeBMs(t *testing.T) {
@@ -979,8 +979,8 @@ func TestSanitizeBMs(t *testing.T) {
 				t.Errorf("SanitizeBMs() = %v, want %v", gotParsedBMs, tt.expectedParsedBMs)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestParseBMList(t *testing.T) {
@@ -1026,8 +1026,8 @@ func TestParseBMList(t *testing.T) {
 				t.Errorf("ParseBMList() = %v, want %v", gotUids, tt.expectedUids)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestResetBoard(t *testing.T) {

@@ -34,8 +34,8 @@ func TestAttachSHM(t *testing.T) {
 				t.Errorf("AttachSHM() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestAttachCheckSHM(t *testing.T) {
