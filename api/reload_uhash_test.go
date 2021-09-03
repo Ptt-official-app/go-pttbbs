@@ -5,20 +5,12 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/Ptt-official-app/go-pttbbs/ptt"
-
-	"github.com/Ptt-official-app/go-pttbbs/ptttype"
-
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
 )
 
 func TestReloadUHash(t *testing.T) {
 	setupTest(t.Name())
 	defer teardownTest(t.Name())
-	userID1 := ptttype.UserID_t{}
-	copy(userID1[:], []byte("SYSOP"))
-	uID, user, _ := ptt.InitCurrentUser(&userID1)
-	_, _ = ptt.SetUserPerm(user, uID, user, ptttype.PERM_SYSOP)
 
 	type args struct {
 		remoteAddr string
