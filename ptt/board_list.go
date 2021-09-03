@@ -261,7 +261,6 @@ func loadBoardStat(user *ptttype.UserecRaw, uid ptttype.UID, bid ptttype.Bid) (b
 	isGroupOp := groupOp(user, uid, board)
 	state := boardPermStat(user, uid, board, bid)
 	if (board.Brdname[0] == '\x00') ||
-		(board.BrdAttr&(ptttype.BRD_GROUPBOARD|ptttype.BRD_SYMBOLIC) != 0) ||
 		!((state != ptttype.NBRD_INVALID) || isGroupOp) {
 		return nil
 	}
