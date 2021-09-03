@@ -16,7 +16,7 @@ func ReloadUHashWrapper(c *gin.Context) {
 }
 
 func ReloadUHash(remoteAddr string, uuserID bbs.UUserID, params interface{}) (result interface{}, err error) {
-	err = bbs.ReloadUHash()
+	err = bbs.ReloadUHash(uuserID)
 	if err != nil {
 		return nil, err
 	}

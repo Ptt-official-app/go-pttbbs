@@ -37,7 +37,6 @@ func TestLoadGeneralBoards(t *testing.T) {
 
 	logrus.Infof("bsorted (by-class): %v", bsorted)
 
-	// move setupTest in for-loop
 	type args struct {
 		user     *ptttype.UserecRaw
 		uid      ptttype.UID
