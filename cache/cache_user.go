@@ -39,7 +39,7 @@ func AddToUHash(uidInCache ptttype.UIDInStore, userID *ptttype.UserID_t) error {
 	offsetNextInHash := unsafe.Offsetof(Shm.Raw.NextInHash)
 	for ; times < ptttype.MAX_USERS && val != -1; times++ {
 		offset = offsetNextInHash
-		p = uint32(val)
+		p = cmsys.Fnv32_t(val)
 		Shm.ReadAt(
 			offset+ptttype.UID_IN_STORE_SZ*uintptr(p),
 			ptttype.UID_IN_STORE_SZ,
@@ -97,7 +97,7 @@ func RemoveFromUHash(uidInCache ptttype.UIDInStore) error {
 	// line: 194
 	times := 0
 	for ; times < ptttype.MAX_USERS && val != -1 && val != uidInCache; times++ {
-		p = uint32(val)
+		p = cmsys.Fnv32_t(val)
 		offset = unsafe.Offsetof(Shm.Raw.NextInHash)
 		Shm.ReadAt(
 			offset+types.INT32_SZ*uintptr(p),

@@ -8,11 +8,11 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types/ansi"
 )
 
-func StringHashWithHashBits(theBytes []byte) uint32 {
+func StringHashWithHashBits(theBytes []byte) Fnv32_t {
 	return StringHash(theBytes) % (1 << ptttype.HASH_BITS)
 }
 
-func StringHash(theBytes []byte) uint32 {
+func StringHash(theBytes []byte) Fnv32_t {
 	return fnv1a32StrCase(theBytes, FNV1_32_INIT)
 }
 

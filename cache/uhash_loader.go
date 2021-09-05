@@ -185,7 +185,7 @@ func userecRawAddToUHash(uidInCache ptttype.UIDInStore, userecRaw *ptttype.Usere
 		// go to next
 		// 1. setting p as val
 		// 2. get val from next_in_hash[p]
-		p = uint32(val)
+		p = cmsys.Fnv32_t(val)
 		Shm.ReadAt(
 			offsetNextInHash+types.INT32_SZ*uintptr(p),
 			types.INT32_SZ,
@@ -208,7 +208,7 @@ func userecRawAddToUHash(uidInCache ptttype.UIDInStore, userecRaw *ptttype.Usere
 	)
 
 	// set next in hash as -1
-	p = uint32(val)
+	p = cmsys.Fnv32_t(val)
 	val = -1
 	Shm.WriteAt(
 		offsetNextInHash+types.INT32_SZ*uintptr(p),
@@ -229,13 +229,13 @@ func InitFillUHash(isOnfly bool) {
 			unsafe.Pointer(&toFillHashHead),
 		)
 	} else {
-		for idx := uint32(0); idx < (1 << ptttype.HASH_BITS); idx++ {
+		for idx := cmsys.Fnv32_t(0); idx < (1 << ptttype.HASH_BITS); idx++ {
 			checkHash(idx)
 		}
 	}
 }
 
-func checkHash(h uint32) {
+func checkHash(h cmsys.Fnv32_t) {
 	// p as delegate-pointer to the Shm.
 	// in the beginning, p is the indicator of HashHead.
 	// after 1st for-loop, p is in nextInHash.
@@ -312,7 +312,7 @@ func checkHash(h uint32) {
 		} else {
 			// 1. p as val (pointer in NextInHash)
 			// 2. update val as NextInHash[p]
-			p = uint32(val)
+			p = cmsys.Fnv32_t(val)
 			Shm.ReadAt(
 				offsetNextInHash+types.INT32_SZ*uintptr(p),
 				types.INT32_SZ,

@@ -12,7 +12,7 @@ func TestStringHashWithHashBits(t *testing.T) {
 	tests := []struct {
 		name     string
 		args     args
-		expected uint32
+		expected Fnv32_t
 	}{
 		// TODO: Add test cases.
 		{
@@ -36,7 +36,7 @@ func TestStringHash(t *testing.T) {
 	tests := []struct {
 		name     string
 		args     args
-		expected uint32
+		expected Fnv32_t
 	}{
 		// TODO: Add test cases.
 		{
