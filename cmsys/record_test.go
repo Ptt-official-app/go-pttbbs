@@ -153,20 +153,48 @@ func TestGetRecords(t *testing.T) {
 	}
 }
 
-func TestFindRecordStartAid(t *testing.T) {
-	fileHeaders := []ptttype.FileHeaderRaw{
-		*testArticleSummary1.FileHeaderRaw,
-		*testArticleSummary2.FileHeaderRaw,
-		*testArticleSummary3.FileHeaderRaw,
-		*testArticleSummary4.FileHeaderRaw,
-		*testArticleSummary5.FileHeaderRaw,
+func TestFindRecordStartIdx(t *testing.T) {
+	fileHeaders0 := []ptttype.FileHeaderRaw{
+		*testArticleSummary1.FileHeaderRaw, // M.1607202239.A.30D
+		*testArticleSummary2.FileHeaderRaw, // M.1607203395.A.F6C
+		*testArticleSummary3.FileHeaderRaw, // M.1607203395.A.F6D
+		*testArticleSummary4.FileHeaderRaw, // M.1607203395.A.F6A
+		*testArticleSummary5.FileHeaderRaw, // M.1607203396.A.F6A
 	}
+	filename0 := "./testcase/DIR_FIND_RECORD_START_IDX0"
+	defer os.RemoveAll(filename0)
+	file0, _ := os.OpenFile(filename0, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0o644)
+	defer file0.Close()
+	_ = types.BinaryWrite(file0, binary.LittleEndian, fileHeaders0)
 
-	filename := "./testcase/DIR_FIND_RECORD_START_IDX"
-	defer os.RemoveAll(filename)
-	file, _ := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0o644)
-	defer file.Close()
-	_ = types.BinaryWrite(file, binary.LittleEndian, fileHeaders)
+	fileHeaders1 := []ptttype.FileHeaderRaw{
+		*testArticleSummary1.FileHeaderRaw,   // M.1607202239.A.30D
+		*testArticleSummary2_d.FileHeaderRaw, // .d1607203395.A.F6C
+		*testArticleSummary3_d.FileHeaderRaw, // .d1607203395.A.F6D
+		*testArticleSummary4.FileHeaderRaw,   // M.1607203395.A.F6A
+		*testArticleSummary5.FileHeaderRaw,   // M.1607203396.A.F6A
+	}
+	filename1 := "./testcase/DIR_FIND_RECORD_START_IDX1"
+	defer os.RemoveAll(filename1)
+	file1, _ := os.OpenFile(filename1, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0o644)
+	defer file1.Close()
+	_ = types.BinaryWrite(file1, binary.LittleEndian, fileHeaders1)
+
+	fileHeaders2 := []ptttype.FileHeaderRaw{
+		*testArticleSummary1.FileHeaderRaw,    // M.1607202239.A.30D
+		*testArticleSummary2_d2.FileHeaderRaw, // .deleted
+		*testArticleSummary3_d.FileHeaderRaw,  // .d1607203395.A.F6D
+		*testArticleSummary4_d2.FileHeaderRaw, // .deleted
+		*testArticleSummary5.FileHeaderRaw,    // M.1607203396.A.F6A
+	}
+	filename2 := "./testcase/DIR_FIND_RECORD_START_IDX2"
+	defer os.RemoveAll(filename2)
+	file2, _ := os.OpenFile(filename2, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0o644)
+	defer file2.Close()
+	_ = types.BinaryWrite(file2, binary.LittleEndian, fileHeaders2)
+
+	searchFilename3 := &ptttype.Filename_t{}
+	copy(searchFilename3[:], []byte("M.1607203395.A.F6F"))
 
 	type args struct {
 		dirFilename string
@@ -183,78 +211,322 @@ func TestFindRecordStartAid(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{
-			name:             "find data before top with isDesc",
-			args:             args{dirFilename: filename, total: 5, createTime: 1607202239, filename: nil, isDesc: true},
+			name:             "find data before top with isDesc (file0)",
+			args:             args{dirFilename: filename0, total: 5, createTime: 1607202238, filename: nil, isDesc: true},
 			expectedStartIdx: -1,
+			wantErr:          true,
 		},
 		{
-			name:             "find data with same CreateTime with no isDesc, but with diff filename",
-			args:             args{dirFilename: filename, total: 5, createTime: 1607203395, filename: nil, isDesc: false},
-			expectedStartIdx: 5,
-		},
-		{
-			name:             "find data with same CreateTime with isDesc, but with diff filename",
-			args:             args{dirFilename: filename, total: 5, createTime: 1607203395, filename: nil, isDesc: true},
-			expectedStartIdx: 1,
-		},
-		{
-			name:             "find data after bottom with no isDesc",
-			args:             args{dirFilename: filename, total: 5, createTime: 1607203396, filename: nil, isDesc: false},
-			expectedStartIdx: -1,
-		},
-		{
-			name:             "1st-desc",
-			args:             args{dirFilename: filename, total: 5, createTime: 1607202239, filename: &testArticleSummary1.FileHeaderRaw.Filename, isDesc: true},
-			expectedStartIdx: 1,
-		},
-		{
-			name:             "2nd-desc",
-			args:             args{dirFilename: filename, total: 5, createTime: 1607203395, filename: &testArticleSummary2.FileHeaderRaw.Filename, isDesc: true},
+			name:             "find data with same CreateTime with isAsc (not isDesc), but with nil filename (file0)",
+			args:             args{dirFilename: filename0, total: 5, createTime: 1607203395, filename: nil, isDesc: false},
 			expectedStartIdx: 2,
 		},
 		{
-			name:             "3rd-desc",
-			args:             args{dirFilename: filename, total: 5, createTime: 1607203395, filename: &testArticleSummary3.FileHeaderRaw.Filename, isDesc: true},
-			expectedStartIdx: 3,
-		},
-		{
-			name:             "4th-desc",
-			args:             args{dirFilename: filename, total: 5, createTime: 1607203395, filename: &testArticleSummary4.FileHeaderRaw.Filename, isDesc: true},
-			expectedStartIdx: 4,
-		},
-		{
-			name:             "5th-desc",
-			args:             args{dirFilename: filename, total: 5, createTime: 1607203396, filename: &testArticleSummary5.FileHeaderRaw.Filename, isDesc: true},
-			expectedStartIdx: 5,
-		},
-		{
-			name:             "1st-asc",
-			args:             args{dirFilename: filename, total: 5, createTime: 1607202239, filename: &testArticleSummary1.FileHeaderRaw.Filename, isDesc: true},
+			name:             "find data with same CreateTime, boundary case (file0)",
+			args:             args{dirFilename: filename0, total: 5, createTime: 1607202239, filename: nil, isDesc: false},
 			expectedStartIdx: 1,
 		},
 		{
-			name:             "2nd-asc",
-			args:             args{dirFilename: filename, total: 5, createTime: 1607203395, filename: &testArticleSummary2.FileHeaderRaw.Filename, isDesc: true},
-			expectedStartIdx: 2,
+			name:             "find data with same CreateTime, boundary case (file0)",
+			args:             args{dirFilename: filename0, total: 5, createTime: 1607202239, filename: nil, isDesc: true},
+			expectedStartIdx: 1,
 		},
 		{
-			name:             "3rd-asc",
-			args:             args{dirFilename: filename, total: 5, createTime: 1607203395, filename: &testArticleSummary3.FileHeaderRaw.Filename, isDesc: true},
-			expectedStartIdx: 3,
+			name:             "find data with same CreateTime, boundary case (file0)",
+			args:             args{dirFilename: filename0, total: 5, createTime: 1607203396, filename: nil, isDesc: false},
+			expectedStartIdx: 5,
 		},
 		{
-			name:             "4th-asc",
-			args:             args{dirFilename: filename, total: 5, createTime: 1607203395, filename: &testArticleSummary4.FileHeaderRaw.Filename, isDesc: true},
+			name:             "find data with same CreateTime, boundary case (file0)",
+			args:             args{dirFilename: filename0, total: 5, createTime: 1607203396, filename: nil, isDesc: true},
+			expectedStartIdx: 5,
+		},
+		{
+			name:             "find data with same CreateTime with isDesc, but with nil filename (file0)",
+			args:             args{dirFilename: filename0, total: 5, createTime: 1607203395, filename: nil, isDesc: true},
 			expectedStartIdx: 4,
 		},
 		{
-			name:             "5th-asc",
-			args:             args{dirFilename: filename, total: 5, createTime: 1607203396, filename: &testArticleSummary5.FileHeaderRaw.Filename, isDesc: true},
+			name:             "find data after bottom with isAsc (not isDesc) (file0)",
+			args:             args{dirFilename: filename0, total: 5, createTime: 1607203397, filename: nil, isDesc: false},
+			expectedStartIdx: -1,
+			wantErr:          true,
+		},
+		{
+			name:             "1st-desc (file0)",
+			args:             args{dirFilename: filename0, total: 5, createTime: 1607202239, filename: &testArticleSummary1.FileHeaderRaw.Filename, isDesc: true},
+			expectedStartIdx: 1,
+		},
+		{
+			name:             "2nd-desc (file0)",
+			args:             args{dirFilename: filename0, total: 5, createTime: 1607203395, filename: &testArticleSummary2.FileHeaderRaw.Filename, isDesc: true},
+			expectedStartIdx: 2,
+		},
+		{
+			name:             "3rd-desc (file0)",
+			args:             args{dirFilename: filename0, total: 5, createTime: 1607203395, filename: &testArticleSummary3.FileHeaderRaw.Filename, isDesc: true},
+			expectedStartIdx: 3,
+		},
+		{
+			name:             "4th-desc (file0)",
+			args:             args{dirFilename: filename0, total: 5, createTime: 1607203395, filename: &testArticleSummary4.FileHeaderRaw.Filename, isDesc: true},
+			expectedStartIdx: 4,
+		},
+		{
+			name:             "5th-desc (file0)",
+			args:             args{dirFilename: filename0, total: 5, createTime: 1607203396, filename: &testArticleSummary5.FileHeaderRaw.Filename, isDesc: true},
 			expectedStartIdx: 5,
+		},
+		{
+			name:             "1st-asc (file0)",
+			args:             args{dirFilename: filename0, total: 5, createTime: 1607202239, filename: &testArticleSummary1.FileHeaderRaw.Filename, isDesc: false},
+			expectedStartIdx: 1,
+		},
+		{
+			name:             "2nd-asc (file0)",
+			args:             args{dirFilename: filename0, total: 5, createTime: 1607203395, filename: &testArticleSummary2.FileHeaderRaw.Filename, isDesc: false},
+			expectedStartIdx: 2,
+		},
+		{
+			name:             "3rd-asc (file0)",
+			args:             args{dirFilename: filename0, total: 5, createTime: 1607203395, filename: &testArticleSummary3.FileHeaderRaw.Filename, isDesc: false},
+			expectedStartIdx: 3,
+		},
+		{
+			name:             "4th-asc (file0)",
+			args:             args{dirFilename: filename0, total: 5, createTime: 1607203395, filename: &testArticleSummary4.FileHeaderRaw.Filename, isDesc: false},
+			expectedStartIdx: 4,
+		},
+		{
+			name:             "5th-asc (file0)",
+			args:             args{dirFilename: filename0, total: 5, createTime: 1607203396, filename: &testArticleSummary5.FileHeaderRaw.Filename, isDesc: false},
+			expectedStartIdx: 5,
+		},
+		{
+			name:             "find filename3 with isDesc (file0)",
+			args:             args{dirFilename: filename0, total: 5, createTime: 1607203395, filename: searchFilename3, isDesc: true},
+			expectedStartIdx: 4,
+		},
+		{
+			name:             "find filename3 with asc (not isDesc) (file0)",
+			args:             args{dirFilename: filename0, total: 5, createTime: 1607203395, filename: searchFilename3, isDesc: false},
+			expectedStartIdx: 2,
+		},
+
+		// filename1
+		{
+			name:             "find data before top with isDesc (file1)",
+			args:             args{dirFilename: filename1, total: 5, createTime: 1607202238, filename: nil, isDesc: true},
+			expectedStartIdx: -1,
+			wantErr:          true,
+		},
+		{
+			name:             "find data with same CreateTime with isAsc (not isDesc), but with nil filename (file1)",
+			args:             args{dirFilename: filename1, total: 5, createTime: 1607203395, filename: nil, isDesc: false},
+			expectedStartIdx: 2,
+		},
+		{
+			name:             "find data with same CreateTime, boundary case (file1)",
+			args:             args{dirFilename: filename1, total: 5, createTime: 1607202239, filename: nil, isDesc: false},
+			expectedStartIdx: 1,
+		},
+		{
+			name:             "find data with same CreateTime, boundary case (file1)",
+			args:             args{dirFilename: filename1, total: 5, createTime: 1607202239, filename: nil, isDesc: true},
+			expectedStartIdx: 1,
+		},
+		{
+			name:             "find data with same CreateTime, boundary case (file1)",
+			args:             args{dirFilename: filename1, total: 5, createTime: 1607203396, filename: nil, isDesc: false},
+			expectedStartIdx: 5,
+		},
+		{
+			name:             "find data with same CreateTime, boundary case (file1)",
+			args:             args{dirFilename: filename1, total: 5, createTime: 1607203396, filename: nil, isDesc: true},
+			expectedStartIdx: 5,
+		},
+		{
+			name:             "find data with same CreateTime with isDesc, but with nil filename (file1)",
+			args:             args{dirFilename: filename1, total: 5, createTime: 1607203395, filename: nil, isDesc: true},
+			expectedStartIdx: 4,
+		},
+		{
+			name:             "find data after bottom with isAsc (not isDesc) (file1)",
+			args:             args{dirFilename: filename1, total: 5, createTime: 1607203397, filename: nil, isDesc: false},
+			expectedStartIdx: -1,
+			wantErr:          true,
+		},
+		{
+			name:             "1st-desc (file1)",
+			args:             args{dirFilename: filename1, total: 5, createTime: 1607202239, filename: &testArticleSummary1.FileHeaderRaw.Filename, isDesc: true},
+			expectedStartIdx: 1,
+		},
+		{
+			name:             "2nd-desc (file1)",
+			args:             args{dirFilename: filename1, total: 5, createTime: 1607203395, filename: &testArticleSummary2.FileHeaderRaw.Filename, isDesc: true},
+			expectedStartIdx: 2,
+		},
+		{
+			name:             "3rd-desc (file1)",
+			args:             args{dirFilename: filename1, total: 5, createTime: 1607203395, filename: &testArticleSummary3.FileHeaderRaw.Filename, isDesc: true},
+			expectedStartIdx: 3,
+		},
+		{
+			name:             "4th-desc (file1)",
+			args:             args{dirFilename: filename1, total: 5, createTime: 1607203395, filename: &testArticleSummary4.FileHeaderRaw.Filename, isDesc: true},
+			expectedStartIdx: 4,
+		},
+		{
+			name:             "5th-desc (file1)",
+			args:             args{dirFilename: filename1, total: 5, createTime: 1607203396, filename: &testArticleSummary5.FileHeaderRaw.Filename, isDesc: true},
+			expectedStartIdx: 5,
+		},
+		{
+			name:             "1st-asc (file1)",
+			args:             args{dirFilename: filename1, total: 5, createTime: 1607202239, filename: &testArticleSummary1.FileHeaderRaw.Filename, isDesc: false},
+			expectedStartIdx: 1,
+		},
+		{
+			name:             "2nd-asc (file1)",
+			args:             args{dirFilename: filename1, total: 5, createTime: 1607203395, filename: &testArticleSummary2.FileHeaderRaw.Filename, isDesc: false},
+			expectedStartIdx: 2,
+		},
+		{
+			name:             "3rd-asc (file1)",
+			args:             args{dirFilename: filename1, total: 5, createTime: 1607203395, filename: &testArticleSummary3.FileHeaderRaw.Filename, isDesc: false},
+			expectedStartIdx: 3,
+		},
+		{
+			name:             "4th-asc (file1)",
+			args:             args{dirFilename: filename1, total: 5, createTime: 1607203395, filename: &testArticleSummary4.FileHeaderRaw.Filename, isDesc: false},
+			expectedStartIdx: 4,
+		},
+		{
+			name:             "5th-asc (file1)",
+			args:             args{dirFilename: filename1, total: 5, createTime: 1607203396, filename: &testArticleSummary5.FileHeaderRaw.Filename, isDesc: false},
+			expectedStartIdx: 5,
+		},
+		{
+			name:             "find filename3 with isDesc (file1)",
+			args:             args{dirFilename: filename1, total: 5, createTime: 1607203395, filename: searchFilename3, isDesc: true},
+			expectedStartIdx: 4,
+		},
+		{
+			name:             "find filename3 with asc (not isDesc) (file1)",
+			args:             args{dirFilename: filename1, total: 5, createTime: 1607203395, filename: searchFilename3, isDesc: false},
+			expectedStartIdx: 2,
+		},
+
+		// filename2
+		{
+			name:             "find data before top with isDesc (file2)",
+			args:             args{dirFilename: filename2, total: 5, createTime: 1607202238, filename: nil, isDesc: true},
+			expectedStartIdx: -1,
+			wantErr:          true,
+		},
+		{
+			name:             "find data with same CreateTime with isAsc (not isDesc), but with nil filename (2)",
+			args:             args{dirFilename: filename2, total: 5, createTime: 1607203395, filename: nil, isDesc: false},
+			expectedStartIdx: 3,
+		},
+		{
+			name:             "find data with same CreateTime, boundary case (file2)",
+			args:             args{dirFilename: filename2, total: 5, createTime: 1607202239, filename: nil, isDesc: false},
+			expectedStartIdx: 1,
+		},
+		{
+			name:             "find data with same CreateTime, boundary case (file2)",
+			args:             args{dirFilename: filename2, total: 5, createTime: 1607202239, filename: nil, isDesc: true},
+			expectedStartIdx: 1,
+		},
+		{
+			name:             "find data with same CreateTime, boundary case (file2)",
+			args:             args{dirFilename: filename2, total: 5, createTime: 1607203396, filename: nil, isDesc: false},
+			expectedStartIdx: 5,
+		},
+		{
+			name:             "find data with same CreateTime, boundary case (file2)",
+			args:             args{dirFilename: filename2, total: 5, createTime: 1607203396, filename: nil, isDesc: true},
+			expectedStartIdx: 5,
+		},
+		{
+			name:             "find data with same CreateTime with isDesc, but with nil filename (file2)",
+			args:             args{dirFilename: filename2, total: 5, createTime: 1607203395, filename: nil, isDesc: true},
+			expectedStartIdx: 3,
+		},
+		{
+			name:             "find data after bottom with isAsc (not isDesc) (file2)",
+			args:             args{dirFilename: filename2, total: 5, createTime: 1607203397, filename: nil, isDesc: false},
+			expectedStartIdx: -1,
+			wantErr:          true,
+		},
+		{
+			name:             "1st-desc (file2)",
+			args:             args{dirFilename: filename2, total: 5, createTime: 1607202239, filename: &testArticleSummary1.FileHeaderRaw.Filename, isDesc: true},
+			expectedStartIdx: 1,
+		},
+		{
+			name:             "2nd-desc (file2)",
+			args:             args{dirFilename: filename2, total: 5, createTime: 1607203395, filename: &testArticleSummary2.FileHeaderRaw.Filename, isDesc: true},
+			expectedStartIdx: 3,
+		},
+		{
+			name:             "3rd-desc (file2)",
+			args:             args{dirFilename: filename2, total: 5, createTime: 1607203395, filename: &testArticleSummary3.FileHeaderRaw.Filename, isDesc: true},
+			expectedStartIdx: 3,
+		},
+		{
+			name:             "4th-desc (file2)",
+			args:             args{dirFilename: filename2, total: 5, createTime: 1607203395, filename: &testArticleSummary4.FileHeaderRaw.Filename, isDesc: true},
+			expectedStartIdx: 3,
+		},
+		{
+			name:             "5th-desc (file2)",
+			args:             args{dirFilename: filename2, total: 5, createTime: 1607203396, filename: &testArticleSummary5.FileHeaderRaw.Filename, isDesc: true},
+			expectedStartIdx: 5,
+		},
+		{
+			name:             "1st-asc (file2)",
+			args:             args{dirFilename: filename2, total: 5, createTime: 1607202239, filename: &testArticleSummary1.FileHeaderRaw.Filename, isDesc: false},
+			expectedStartIdx: 1,
+		},
+		{
+			name:             "2nd-asc (file2)",
+			args:             args{dirFilename: filename2, total: 5, createTime: 1607203395, filename: &testArticleSummary2.FileHeaderRaw.Filename, isDesc: false},
+			expectedStartIdx: 3,
+		},
+		{
+			name:             "3rd-asc (file2)",
+			args:             args{dirFilename: filename2, total: 5, createTime: 1607203395, filename: &testArticleSummary3.FileHeaderRaw.Filename, isDesc: false},
+			expectedStartIdx: 3,
+		},
+		{
+			name:             "4th-asc (file2)",
+			args:             args{dirFilename: filename2, total: 5, createTime: 1607203395, filename: &testArticleSummary4.FileHeaderRaw.Filename, isDesc: false},
+			expectedStartIdx: 3,
+		},
+		{
+			name:             "5th-asc (file2)",
+			args:             args{dirFilename: filename2, total: 5, createTime: 1607203396, filename: &testArticleSummary5.FileHeaderRaw.Filename, isDesc: false},
+			expectedStartIdx: 5,
+		},
+
+		{
+			name:             "find filename3 with isDesc (file2)",
+			args:             args{dirFilename: filename2, total: 5, createTime: 1607203395, filename: searchFilename3, isDesc: true},
+			expectedStartIdx: 3,
+		},
+		{
+			name:             "find filename3 with asc (not isDesc) (file2)",
+			args:             args{dirFilename: filename2, total: 5, createTime: 1607203395, filename: searchFilename3, isDesc: false},
+			expectedStartIdx: 3,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotStartIdx, err := FindRecordStartIdx(tt.args.dirFilename, tt.args.total, tt.args.createTime, tt.args.filename, tt.args.isDesc)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("FindRecordStartIdx() error = %v, wantErr %v", err, tt.wantErr)
@@ -264,6 +536,7 @@ func TestFindRecordStartAid(t *testing.T) {
 				t.Errorf("FindRecordStartIdx() = %v, want %v", int(gotStartIdx), int(tt.expectedStartIdx))
 			}
 		})
+		wg.Wait()
 	}
 }
 

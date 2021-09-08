@@ -5,6 +5,7 @@ run:
     - testinit.go
     - cmsys/fnv_hash.go
     - 00-config.go
+    - ptttype/00-config-default.go
 linters-settings:
 
   misspell:

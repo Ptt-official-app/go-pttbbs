@@ -1,7 +1,6 @@
 package cmsys
 
 import (
-	"bytes"
 	"encoding/binary"
 	"io"
 	"os"
@@ -110,6 +109,11 @@ func GetRecord(dirFilename string, filename *ptttype.Filename_t, total int) (idx
 //FindRecordStartIdx
 //
 //startIdx should be 1-total.
+//find record:
+//if isDesc: search from the newest, until either find the filename,
+//           or the record of the createTime
+//else:      search from the oldest, until either find the filename,
+//           or the record of the createTime
 func FindRecordStartIdx(dirFilename string, total int, createTime types.Time4, filename *ptttype.Filename_t, isDesc bool) (startIdx ptttype.SortIdx, err error) {
 	file, err := os.Open(dirFilename)
 	if err != nil {
@@ -120,33 +124,116 @@ func FindRecordStartIdx(dirFilename string, total int, createTime types.Time4, f
 	}
 	defer file.Close()
 
-	start := 0
-	end := int(total) - 1
+	header := &ptttype.FileHeaderRaw{}
+
+	startStart := ptttype.SortIdxInStore(0)
+	endEnd := ptttype.SortIdxInStore(total) - 1
+	startStart, _, err = findValidRecordIdxInStore(startStart, file, header, false, startStart, endEnd)
+	if err != nil {
+		return -1, err
+	}
+	endEnd, _, err = findValidRecordIdxInStore(endEnd, file, header, true, startStart, endEnd)
+
+	idxInStore, fileFilename, err := findRecordStartIdxBinSearch(file, startStart, endEnd, createTime, filename, isDesc)
+	if err != nil {
+		return -1, err
+	}
+	fileCreateTime, err := fileFilename.CreateTime()
+	if err != nil {
+		return -1, err
+	}
+	if createTime == fileCreateTime && filename != nil && filename.Eq(fileFilename) {
+		return idxInStore.ToSortIdx(), nil
+	}
+
+	if isDesc {
+		idxInStore, err = findRecordStartIdxPostSearchDesc(idxInStore, file, startStart, endEnd, createTime, filename)
+		if err != nil {
+			return -1, err
+		}
+	} else { // is ascending
+		idxInStore, err = findRecordStartIdxPostSearchAsc(idxInStore, file, startStart, endEnd, createTime, filename)
+		if err != nil {
+			return -1, err
+		}
+	}
+
+	return idxInStore.ToSortIdx(), nil
+}
+
+func findValidRecordIdxInStore(idxInStore ptttype.SortIdxInStore, file *os.File, header *ptttype.FileHeaderRaw, isDesc bool, start ptttype.SortIdxInStore, end ptttype.SortIdxInStore) (newIdxInStore ptttype.SortIdxInStore, createTime types.Time4, err error) {
+	if !isDesc {
+		for ; idxInStore <= end; idxInStore++ {
+			_, err = file.Seek(int64(ptttype.FILE_HEADER_RAW_SZ)*int64(idxInStore), io.SeekStart)
+			if err != nil {
+				return -1, 0, err
+			}
+
+			err = types.BinaryRead(file, binary.LittleEndian, header)
+			if err != nil {
+				return -1, 0, err
+			}
+
+			createTime, err = header.Filename.CreateTime()
+			if err == nil {
+				return idxInStore, createTime, nil
+			}
+		}
+	} else {
+		for ; idxInStore >= start; idxInStore-- {
+			_, err = file.Seek(int64(ptttype.FILE_HEADER_RAW_SZ)*int64(idxInStore), io.SeekStart)
+			if err != nil {
+				return -1, 0, err
+			}
+
+			err = types.BinaryRead(file, binary.LittleEndian, header)
+			if err != nil {
+				return -1, 0, err
+			}
+
+			createTime, err = header.Filename.CreateTime()
+			if err == nil {
+				return idxInStore, createTime, nil
+			}
+		}
+	}
+
+	return -1, 0, ErrRecordNotFound
+}
+
+func findRecordStartIdxBinSearch(file *os.File, startStart ptttype.SortIdxInStore, endEnd ptttype.SortIdxInStore, createTime types.Time4, filename *ptttype.Filename_t, isDesc bool) (idxInStore ptttype.SortIdxInStore, fileFilename *ptttype.Filename_t, err error) {
+	start := startStart
+	end := endEnd
 
 	// binary-search based on create-time.
-	idxInStore := 0
+	// start, end should always be with valid idx.
 	header := &ptttype.FileHeaderRaw{}
+	idxInStore = ptttype.SortIdxInStore(0)
 	for idxInStore = (start + end) / 2; ; idxInStore = (start + end) / 2 {
 		_, err = file.Seek(int64(ptttype.FILE_HEADER_RAW_SZ)*int64(idxInStore), io.SeekStart)
 		if err != nil {
-			return -1, err
+			return -1, nil, err
 		}
-
 		err = types.BinaryRead(file, binary.LittleEndian, header)
 		if err != nil {
-			return -1, err
+			return -1, nil, err
 		}
-
 		fileCreateTime, err := header.Filename.CreateTime()
 		if err != nil {
-			return -1, err
+			if start == end {
+				break
+			}
+			idxInStore, fileCreateTime, start, end, err = findRecordStartIdxBinSearchValidIdxInStore(idxInStore, file, header, start, end)
+			if err != nil {
+				return -1, nil, err
+			}
 		}
-		j := createTime - fileCreateTime
 
+		// we should have valid idxInStore here.
+		j := createTime - fileCreateTime
 		if j == 0 {
 			break
 		}
-
 		if end == start {
 			break
 		} else if idxInStore == start {
@@ -159,106 +246,178 @@ func FindRecordStartIdx(dirFilename string, total int, createTime types.Time4, f
 		}
 	}
 
-	fileCreateTime, _ := header.Filename.CreateTime()
-	if createTime == fileCreateTime && filename != nil && bytes.Equal(filename[:], header.Filename[:]) {
-		return ptttype.SortIdx(idxInStore + 1), nil
-	}
+	// We should have valid header
+	return idxInStore, &header.Filename, nil
+}
 
+func findRecordStartIdxBinSearchValidIdxInStore(idxInStore ptttype.SortIdxInStore, file *os.File, header *ptttype.FileHeaderRaw, start ptttype.SortIdxInStore, end ptttype.SortIdxInStore) (newIdxInStore ptttype.SortIdxInStore, newFileCreateTime types.Time4, newStart ptttype.SortIdxInStore, newEnd ptttype.SortIdxInStore, err error) {
+	if idxInStore == start {
+		newIdxInStore, newFileCreateTime, err = findValidRecordIdxInStore(idxInStore, file, header, false, start, end)
+		if err != nil {
+			return -1, 0, 0, 0, err
+		}
+		return newIdxInStore, newFileCreateTime, newIdxInStore, end, nil
+	} else if idxInStore == end {
+		newIdxInStore, newFileCreateTime, err = findValidRecordIdxInStore(idxInStore, file, header, true, start, end)
+		if err != nil {
+			return -1, 0, 0, 0, err
+		}
+		return newIdxInStore, newFileCreateTime, start, newIdxInStore, nil
+	} else {
+		newIdxInStore, newFileCreateTime, err = findValidRecordIdxInStore(idxInStore, file, header, false, start, end)
+		if err != nil {
+			return -1, 0, 0, 0, err
+		}
+		if newIdxInStore == end {
+			newIdxInStore, newFileCreateTime, err = findValidRecordIdxInStore(idxInStore, file, header, true, start, end)
+			if err != nil {
+				return -1, 0, 0, 0, err
+			}
+		}
+
+		return newIdxInStore, newFileCreateTime, start, end, nil
+	}
+}
+
+func findRecordStartIdxPostSearchDesc(idxInStore ptttype.SortIdxInStore, file *os.File, startStart ptttype.SortIdxInStore, endEnd ptttype.SortIdxInStore, createTime types.Time4, filename *ptttype.Filename_t) (newIdxInStore ptttype.SortIdxInStore, err error) {
 	// find the start
-	if isDesc {
-		for ; idxInStore < total; idxInStore++ {
-			_, err = file.Seek(int64(ptttype.FILE_HEADER_RAW_SZ)*int64(idxInStore), io.SeekStart)
-			if err != nil {
-				return -1, err
-			}
-
-			err = types.BinaryRead(file, binary.LittleEndian, header)
-			if err != nil {
-				return -1, err
-			}
-			fileCreateTime, _ = header.Filename.CreateTime()
-
-			if createTime < fileCreateTime {
-				break
-			}
-
+	header := &ptttype.FileHeaderRaw{}
+	for ; idxInStore <= endEnd; idxInStore++ {
+		_, err = file.Seek(int64(ptttype.FILE_HEADER_RAW_SZ)*int64(idxInStore), io.SeekStart)
+		if err != nil {
+			return -1, err
 		}
-		if idxInStore == total {
-			idxInStore = total - 1
-		}
-	} else {
-		for ; idxInStore >= 0; idxInStore-- {
-			_, err = file.Seek(int64(ptttype.FILE_HEADER_RAW_SZ)*int64(idxInStore), io.SeekStart)
-			if err != nil {
-				return -1, err
-			}
 
-			err = types.BinaryRead(file, binary.LittleEndian, header)
-			if err != nil {
-				return -1, err
-			}
-			fileCreateTime, _ = header.Filename.CreateTime()
-
-			if createTime > fileCreateTime {
-				break
-			}
-
+		err = types.BinaryRead(file, binary.LittleEndian, header)
+		if err != nil {
+			return -1, err
 		}
-		if idxInStore == -1 {
-			idxInStore = 0
+
+		fileCreateTime, err := header.Filename.CreateTime()
+		if err != nil {
+			continue
 		}
+
+		if fileCreateTime > createTime {
+			break
+		}
+
+	}
+	if idxInStore > endEnd {
+		idxInStore = endEnd
 	}
 
+	newIdxInStore, err = findRecordStartIdxPostSearchDescLinearSearch(idxInStore, file, startStart, createTime, filename)
+	if err == nil {
+		return newIdxInStore, nil
+	}
+
+	return findRecordStartIdxPostSearchDescLinearSearch(idxInStore, file, startStart, createTime, nil)
+}
+
+func findRecordStartIdxPostSearchDescLinearSearch(idxInStore ptttype.SortIdxInStore, file *os.File, startStart ptttype.SortIdxInStore, createTime types.Time4, filename *ptttype.Filename_t) (newIdxInStore ptttype.SortIdxInStore, err error) {
 	// linear search
-	if isDesc {
-		// it's supposed that createTime <= fileCreateTime for now.
-		for ; idxInStore >= 0; idxInStore-- {
-			_, err = file.Seek(int64(ptttype.FILE_HEADER_RAW_SZ)*int64(idxInStore), io.SeekStart)
-			if err != nil {
-				return -1, err
-			}
-
-			err = types.BinaryRead(file, binary.LittleEndian, header)
-			if err != nil {
-				return -1, err
-			}
-			fileCreateTime, _ = header.Filename.CreateTime()
-
-			if createTime == fileCreateTime && filename != nil && bytes.Equal(filename[:], header.Filename[:]) {
-				return ptttype.SortIdx(idxInStore + 1), nil
-			} else if createTime > fileCreateTime {
-				break
-			}
+	// it's supposed that  fileCreateTime > createTime for now.
+	header := &ptttype.FileHeaderRaw{}
+	for ; idxInStore >= startStart; idxInStore-- {
+		_, err = file.Seek(int64(ptttype.FILE_HEADER_RAW_SZ)*int64(idxInStore), io.SeekStart)
+		if err != nil {
+			return -1, err
 		}
-	} else {
-		// it's supposed that createTime >= fileCreateTime for now.
-		for ; idxInStore < total; idxInStore++ {
-			_, err = file.Seek(int64(ptttype.FILE_HEADER_RAW_SZ)*int64(idxInStore), io.SeekStart)
-			if err != nil {
-				return -1, err
-			}
 
-			err = types.BinaryRead(file, binary.LittleEndian, header)
-			if err != nil {
-				return -1, err
-			}
-			fileCreateTime, _ = header.Filename.CreateTime()
-
-			if createTime == fileCreateTime && filename != nil && bytes.Equal(filename[:], header.Filename[:]) {
-				return ptttype.SortIdx(idxInStore + 1), nil
-			} else if createTime < fileCreateTime {
-				break
-			}
+		err = types.BinaryRead(file, binary.LittleEndian, header)
+		if err != nil {
+			return -1, err
 		}
-		if idxInStore == total {
-			idxInStore = -1
+		fileCreateTime, err := header.Filename.CreateTime()
+		if err != nil {
+			continue
+		}
+
+		if createTime == fileCreateTime && (filename == nil || filename.Eq(&header.Filename)) {
+			return idxInStore, nil
+		} else if fileCreateTime < createTime {
+			if filename != nil {
+				return -1, ErrRecordNotFound
+			}
+			break
 		}
 	}
-	if idxInStore == -1 {
-		return -1, nil
+	if idxInStore < startStart {
+		return -1, ErrRecordNotFound
 	}
 
-	return ptttype.SortIdx(idxInStore + 1), nil
+	return idxInStore, nil
+}
+
+func findRecordStartIdxPostSearchAsc(idxInStore ptttype.SortIdxInStore, file *os.File, startStart ptttype.SortIdxInStore, endEnd ptttype.SortIdxInStore, createTime types.Time4, filename *ptttype.Filename_t) (newIdxInStore ptttype.SortIdxInStore, err error) {
+	// find the start
+	header := &ptttype.FileHeaderRaw{}
+	for ; idxInStore >= startStart; idxInStore-- {
+		_, err = file.Seek(int64(ptttype.FILE_HEADER_RAW_SZ)*int64(idxInStore), io.SeekStart)
+		if err != nil {
+			return -1, err
+		}
+
+		err = types.BinaryRead(file, binary.LittleEndian, header)
+		if err != nil {
+			return -1, err
+		}
+		fileCreateTime, err := header.Filename.CreateTime()
+		if err != nil {
+			continue
+		}
+
+		if fileCreateTime > createTime {
+			break
+		}
+
+	}
+	if idxInStore < startStart {
+		idxInStore = startStart
+	}
+
+	newIdxInStore, err = findRecordStartIdxPostSearchAscLinearSearch(idxInStore, file, endEnd, createTime, filename)
+	if err == nil {
+		return newIdxInStore, nil
+	}
+
+	return findRecordStartIdxPostSearchAscLinearSearch(idxInStore, file, endEnd, createTime, nil)
+}
+
+func findRecordStartIdxPostSearchAscLinearSearch(idxInStore ptttype.SortIdxInStore, file *os.File, endEnd ptttype.SortIdxInStore, createTime types.Time4, filename *ptttype.Filename_t) (newIdxInStore ptttype.SortIdxInStore, err error) {
+	// linear search
+	// it's supposed that fileCreateTime < createTime for now.
+	header := &ptttype.FileHeaderRaw{}
+	for ; idxInStore <= endEnd; idxInStore++ {
+		_, err = file.Seek(int64(ptttype.FILE_HEADER_RAW_SZ)*int64(idxInStore), io.SeekStart)
+		if err != nil {
+			return -1, err
+		}
+
+		err = types.BinaryRead(file, binary.LittleEndian, header)
+		if err != nil {
+			return -1, err
+		}
+		fileCreateTime, err := header.Filename.CreateTime()
+		if err != nil {
+			continue
+		}
+
+		if createTime == fileCreateTime && (filename == nil || filename.Eq(&header.Filename)) {
+			return idxInStore, nil
+		} else if fileCreateTime > createTime {
+			if filename != nil {
+				return -1, ErrRecordNotFound
+			}
+			break
+		}
+	}
+	if idxInStore > endEnd {
+		return -1, ErrRecordNotFound
+	}
+
+	return idxInStore, nil
 }
 
 func SubstituteRecord(filename string, data interface{}, theSize uintptr, idxInStore int32) (err error) {

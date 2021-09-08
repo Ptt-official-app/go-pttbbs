@@ -223,6 +223,16 @@ func setRecycleBinName(recycleBinName string) string {
 	return origRecycleBinName
 }
 
+func setFNSafeDel(fnSafeDel string) (origFNSafeDel string) {
+	origFNSafeDel = FN_SAFEDEL
+
+	FN_SAFEDEL = fnSafeDel
+	FN_SAFEDEL_b = []byte(FN_SAFEDEL)
+	FN_SAFEDEL_PREFIX_LEN = len(fnSafeDel)
+
+	return origFNSafeDel
+}
+
 func postInitConfig() error {
 	_ = setServiceMode(SERVICE_MODE)
 	_ = SetBBSHOME(BBSHOME)
@@ -232,6 +242,7 @@ func postInitConfig() error {
 	_ = setMyHostname(MYHOSTNAME)
 	_ = setRecycleBinName(RECYCLE_BIN_NAME)
 	_ = setBoards()
+	_ = setFNSafeDel(FN_SAFEDEL)
 
 	return nil
 }

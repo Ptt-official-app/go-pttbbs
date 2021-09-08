@@ -180,6 +180,9 @@ func TestFavSave(t *testing.T) {
 }
 
 func TestFavRaw_AddBoard(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
 	f0 := NewFavRaw(nil)
 	ft0 := &FavType{FAVT_BOARD, 1, &FavBoard{1, 0, 0}}
 	type args struct {

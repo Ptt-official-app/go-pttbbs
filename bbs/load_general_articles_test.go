@@ -31,6 +31,54 @@ func TestLoadGeneralArticles(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{
+			name: "most basic setup: find 1 article with desc, starting from nil",
+			args: args{
+				uuserID:   "SYSOP",
+				bboardID:  "10_WhoAmI",
+				nArticles: 1,
+				isDesc:    true,
+			},
+			expectedSummary:        []*ArticleSummary{testArticleSummary1},
+			expectedNextIdxStr:     "1607202239@1Vo_M_CD",
+			expectedNextCreateTime: 1607202239,
+			expectedIsNewest:       true,
+		},
+		{
+			name: "most basic setup: find 2 articles with desc, starting from nil",
+			args: args{
+				uuserID:   "SYSOP",
+				bboardID:  "10_WhoAmI",
+				nArticles: 2,
+				isDesc:    true,
+			},
+			expectedSummary:  []*ArticleSummary{testArticleSummary1, testArticleSummary0},
+			expectedIsNewest: true,
+		},
+		{
+			name: "most basic setup: find 1 article with asc (not desc), starting from nil",
+			args: args{
+				uuserID:   "SYSOP",
+				bboardID:  "10_WhoAmI",
+				nArticles: 1,
+				isDesc:    false,
+			},
+			expectedSummary:        []*ArticleSummary{testArticleSummary0},
+			expectedNextIdxStr:     "1607203395@1Vo_f30D",
+			expectedNextCreateTime: 1607203395,
+		},
+		{
+			name: "most basic setup: find 2 articles with asc (not desc), starting from nil",
+			args: args{
+				uuserID:   "SYSOP",
+				bboardID:  "10_WhoAmI",
+				nArticles: 2,
+				isDesc:    false,
+			},
+			expectedSummary:  []*ArticleSummary{testArticleSummary0, testArticleSummary1},
+			expectedIsNewest: true,
+		},
+		{
+			name: "most basic setup: find 1 article with desc, starting from the last article",
 			args: args{
 				uuserID:     "SYSOP",
 				bboardID:    "10_WhoAmI",
@@ -44,6 +92,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 			expectedIsNewest:       true,
 		},
 		{
+			name: "find 2 articles with asc (not isDesc), starting from the last article, should return 1 article",
 			args: args{
 				uuserID:     "SYSOP",
 				bboardID:    "10_WhoAmI",
@@ -56,6 +105,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 			expectedIsNewest:   true,
 		},
 		{
+			name: "find 1 article with asc (not isDesc), starting from the beginning article",
 			args: args{
 				uuserID:     "SYSOP",
 				bboardID:    "10_WhoAmI",
@@ -69,6 +119,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 			expectedIsNewest:       false,
 		},
 		{
+			name: "find 2 articles with asc (not desc), starting from the beginning article, should return 2 articles",
 			args: args{
 				uuserID:     "SYSOP",
 				bboardID:    "10_WhoAmI",
@@ -81,6 +132,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 			expectedIsNewest:   true,
 		},
 		{
+			name: "find 2 articles with asc (not desc), starting from same create-time of the beginning article, but with diff filename, should return 1 articles",
 			args: args{
 				uuserID:     "SYSOP",
 				bboardID:    "10_WhoAmI",
@@ -93,6 +145,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 			expectedIsNewest:   true,
 		},
 		{
+			name: "find 2 articles with desc, starting from same create-time of the beginning article, but with diff filename, should return err.",
 			args: args{
 				uuserID:     "SYSOP",
 				bboardID:    "10_WhoAmI",
@@ -102,9 +155,9 @@ func TestLoadGeneralArticles(t *testing.T) {
 			},
 			expectedSummary:    []*ArticleSummary{testArticleSummary0},
 			expectedNextIdxStr: "",
-			expectedIsNewest:   false,
 		},
 		{
+			name: "find 2 articles with asc (not desc), starting after the beginning article, should return 1 article (last article)",
 			args: args{
 				uuserID:     "SYSOP",
 				bboardID:    "10_WhoAmI",
@@ -115,6 +168,19 @@ func TestLoadGeneralArticles(t *testing.T) {
 			expectedSummary:    []*ArticleSummary{testArticleSummary1},
 			expectedNextIdxStr: "",
 			expectedIsNewest:   true,
+		},
+		{
+			name: "find 2 articles with desc, starting after the beginning article, should return 1 article (beginning article)",
+			args: args{
+				uuserID:     "SYSOP",
+				bboardID:    "10_WhoAmI",
+				startIdxStr: "1607202240@1Vo_N0CD",
+				nArticles:   2,
+				isDesc:      true,
+			},
+			expectedSummary:    []*ArticleSummary{testArticleSummary0},
+			expectedNextIdxStr: "",
+			expectedIsNewest:   false,
 		},
 	}
 
