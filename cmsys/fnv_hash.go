@@ -65,6 +65,19 @@ func fnv1a32DBCSCase(theBytes []byte, hval Fnv32_t) Fnv32_t {
 //64bits
 //////////
 
+func Fnv64Buf(buf []byte, theLen int, hval Fnv64_t) (newHVal Fnv64_t) {
+	for _, each := range buf {
+		hval *= FNV_64_PRIME
+		hval ^= Fnv64_t(each)
+
+		theLen--
+		if theLen == 0 {
+			break
+		}
+	}
+	return hval
+}
+
 func fnv64Bytes(theBytes []byte, hval Fnv64_t) Fnv64_t {
 	for _, each := range theBytes {
 		hval *= FNV_64_PRIME

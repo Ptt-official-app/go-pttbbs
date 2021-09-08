@@ -115,6 +115,10 @@ func FindArticleStartIdx(user *ptttype.UserecRaw, uid ptttype.UID, boardID *pttt
 		return -1, ErrNotPermitted
 	}
 
+	return findArticleStartIdx(boardID, bid, createTime, filename, isDesc)
+}
+
+func findArticleStartIdx(boardID *ptttype.BoardID_t, bid ptttype.Bid, createTime types.Time4, filename *ptttype.Filename_t, isDesc bool) (startIdx ptttype.SortIdx, err error) {
 	// 3. get records
 	dirFilename, err := setBDir(boardID)
 	if err != nil {

@@ -18,3 +18,7 @@ const (
 	FILE_VOTE      FileMode = 0x40 /* for vote,	in non-announce */
 	FILE_ANONYMOUS FileMode = 0x80 /* anonymous file */
 )
+
+func (f FileMode) HasMode(mode FileMode) bool {
+	return f&mode != 0
+}

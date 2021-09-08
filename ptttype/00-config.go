@@ -175,7 +175,7 @@ var (
 	/* 若定義, 則在刪除看板文章的時候, 僅會在 .DIR 中標明, 並不會將該資料
 	   從 .DIR 中拿掉. 可以避免多項問題 (尤其是熱門看板一堆推薦及編輯時)
 	   須配合使用 (尚未完成)                                              */
-	SAFE_ARTICLE_DELETE = false
+	SAFE_ARTICLE_DELETE = true
 
 	/* 若定義, 則在傳送水球的時候, 不會直接 kill 該程序. 理論上可以減少大
 	   量的系統負和                                                       */
@@ -578,4 +578,20 @@ var (
 	USEREC_EMAIL_IS_CONTACT                  = true
 	ALLOW_REGISTER_WITH_ONLY_CONTACT_EMAIL   = true
 	REQUIRE_CONTACT_EMAIL_TO_CHANGE_PASSWORD = true
+)
+
+var (
+	// https://github.com/ptt/pttbbs/blob/master/mbbsd/edit.c#L45
+	POST_MONEY_RATIO = 0.5
+
+	USE_POST_ENTROPY = true
+	ENTROPY_RATIO    = 0.25
+
+	ENTROPY_MAX = int(float64(MAX_POST_MONEY) * ENTROPY_RATIO)
+
+	// https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L1451
+	USE_HIDDEN_BOARD_NOCREDIT = true
+
+	// https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L1898
+	USE_SYSOP_EDIT = true
 )

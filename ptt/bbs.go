@@ -3,7 +3,6 @@ package ptt
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"os"
 
 	"github.com/Ptt-official-app/go-pttbbs/cache"
@@ -14,6 +13,150 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types"
 	"github.com/Ptt-official-app/go-pttbbs/types/ansi"
 )
+
+// EditPost
+
+func EditPost(
+	user *ptttype.UserecRaw,
+	uid ptttype.UID,
+	boardID *ptttype.BoardID_t,
+	bid ptttype.Bid,
+	filename *ptttype.Filename_t,
+	title []byte,
+	content [][]byte,
+	oldSZ int,
+	oldsum cmsys.Fnv64_t,
+	ip *ptttype.IPv4_t,
+	from []byte) (
+
+	newContent []byte,
+	mtime types.Time4,
+	err error) {
+	// 1. check perm.
+	board, err := cache.GetBCache(bid)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	statAttr := boardPermStat(user, uid, board, bid)
+	if statAttr == ptttype.NBRD_INVALID {
+		return nil, 0, ErrNotPermitted
+	}
+
+	// 2. check
+	if isReadonlyBoard(boardID) || board.BrdAttr.HasPerm(ptttype.BRD_VOTEBOARD) {
+		return nil, 0, ErrNotPermitted
+	}
+
+	aid, fhdr, err := getFileHeader(boardID, bid, filename)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	if fhdr.Filemode.HasMode(ptttype.FILE_VOTE) {
+		return nil, 0, ErrNotPermitted
+	}
+
+	if ptttype.SAFE_ARTICLE_DELETE && fhdr.Filename[0] == '.' {
+		return nil, 0, ErrDeleted
+	}
+
+	if !user.UserLevel.HasUserPerm(ptttype.PERM_BASIC) {
+		return nil, 0, ErrNotPermitted
+	}
+	err = CheckPostPerm2(uid, user, bid, board)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	reason, err := getBoardRestrictionReason(user, uid, board, bid)
+	if err != nil {
+		return nil, 0, err
+	}
+	if reason != ptttype.RESTRICT_REASON_NONE {
+		return nil, 0, ErrNotPermitted
+	}
+
+	dirFilename, err := setBDir(boardID)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	theFilePath := path.SetDIRPath(dirFilename, types.CstrToString(filename[:]))
+
+	if !isFileOwner(fhdr, user) {
+		if ptttype.USE_SYSOP_EDIT {
+			if !user.UserLevel.HasUserPerm(ptttype.PERM_SYSOP) {
+				return nil, 0, ErrNotPermitted
+			}
+
+			nowTS := types.NowTS()
+			_ = cmsys.LogFilef("log/security", cmsys.LOG_CREAT, fmt.Sprintf("%v %v %v admin edit (board) file=%s\n", nowTS, nowTS.Cdate(), types.CstrToString(user.UserID[:]), theFilePath))
+		} else {
+			return nil, 0, ErrNotPermitted
+		}
+	}
+
+	// https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L1921
+	// TODO 由於現在檔案都是直接蓋回原檔，
+	// 在原看板目錄開已沒有很大意義。 (效率稍高一點)
+	// 可以考慮改開在 user home dir
+	// 好處是看板的檔案數不會狂成長。 (when someone crashed)
+	// sethomedir(fpath, cuser.userid);
+	// XXX 如果你的系統有定期看板清孤兒檔，那就不用放 user home。
+	bpath := path.SetBPath(boardID)
+
+	postfile := &ptttype.FileHeaderRaw{}
+	tmpFilename, err := cmbbs.Stampfile(bpath, postfile)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	_, err = WriteFile(tmpFilename, ptttype.EDITFLAG_NONE, false, board.BrdAttr.HasPerm(ptttype.BRD_ANGELANONYMOUS), nil, content, user, uid, board, bid, ip, from, ptttype.USER_OP_REEDIT)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	// 2. hash partial file
+	newsum, err := hashPartialFile(theFilePath, oldSZ)
+	if err != nil {
+		return nil, 0, err
+	}
+	if oldsum != newsum {
+		return nil, 0, ErrInvalidFileHash
+	}
+
+	// piaip Wed Jan  9 11:11:33 CST 2008
+	// in order to prevent calling system 'mv' all the
+	// time, it is better to unlink() first, which
+	// increased the chance of successfully using rename().
+	// WARNING: if genbuf and fpath are in different directory,
+	// you should disable pre-unlinking
+	_ = types.Unlink(theFilePath)
+	err = types.Rename(tmpFilename, theFilePath)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	newContent, mtime, _, err = readContent(theFilePath, 0, false)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	var titleRaw *ptttype.Title_t
+	if title == nil {
+		titleRaw = &fhdr.Title
+	} else {
+		titleRaw = &ptttype.Title_t{}
+		copy(titleRaw[:], title)
+	}
+	err = ModifyDirLite(dirFilename, aid, filename, mtime, titleRaw, nil, nil, 0, nil, 0, 0)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return newContent, mtime, nil
+}
 
 //ReadPost
 //
@@ -27,15 +170,17 @@ func ReadPost(
 	boardID *ptttype.BoardID_t,
 	bid ptttype.Bid,
 	filename *ptttype.Filename_t,
-	retrieveTS types.Time4) (
+	retrieveTS types.Time4,
+	isHash bool) (
 
 	content []byte,
 	mtime types.Time4,
+	hash cmsys.Fnv64_t,
 	err error,
 ) {
 	// 1. check valid filename
 	if filename[0] == 'L' || filename[0] == 0 {
-		return nil, 0, ErrInvalidParams
+		return nil, 0, 0, ErrInvalidParams
 	}
 
 	_ = cache.StatInc(ptttype.STAT_READPOST)
@@ -43,45 +188,21 @@ func ReadPost(
 	// 2. check perm.
 	board, err := cache.GetBCache(bid)
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, 0, err
 	}
 
 	statAttr := boardPermStat(user, uid, board, bid)
 	if statAttr == ptttype.NBRD_INVALID {
-		return nil, 0, ErrNotPermitted
+		return nil, 0, 0, ErrNotPermitted
 	}
 
 	// 3. get filename
 	theFilename, err := path.SetBFile(boardID, filename.String())
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, 0, err
 	}
 
-	// 4. check mtime
-	stat, err := os.Stat(theFilename)
-	if err != nil {
-		return nil, 0, err
-	}
-	mtime = types.TimeToTime4(stat.ModTime())
-	if mtime <= retrieveTS {
-		return nil, mtime, nil
-	}
-
-	file, err := os.Open(theFilename)
-	if err != nil {
-		return nil, 0, err
-	}
-	defer file.Close()
-
-	content, err = ioutil.ReadAll(file)
-	if err != nil {
-		return nil, 0, err
-	}
-
-	// XXX do not do brc for now.
-	// brcAddList(boardID, filename, updateTS)
-
-	return content, mtime, nil
+	return readContent(theFilename, retrieveTS, isHash)
 }
 
 // CheckPostRestriction
@@ -164,14 +285,6 @@ func DoPostArticle(
 		return nil, err
 	}
 
-	reason, err := getBoardRestrictionReason(user, uid, board, bid)
-	if err != nil {
-		return nil, err
-	}
-	if reason != ptttype.RESTRICT_REASON_NONE {
-		return nil, ErrNotPermitted
-	}
-
 	isCooldown, err := checkCooldown(user, uid, board, bid)
 	if err != nil {
 		return nil, err
@@ -205,18 +318,36 @@ func DoPostArticle(
 		ownerID = ptttype.ANONYMOUS_ID
 	}
 
-	err = doPostArticleWriteFile(fpath, flags, isUseAnony, fullTitle, content, user, uid, board, bid, ip, from)
+	money, err := doPostArticleWriteFile(fpath, flags, isUseAnony, fullTitle, content, user, uid, board, bid, ip, from)
 	if err != nil {
 		return nil, err
 	}
 
+	if ptttype.MAX_POST_MONEY > 0 {
+		if money >= ptttype.MAX_POST_MONEY {
+			money = ptttype.MAX_POST_MONEY
+		}
+	}
+
+	if !user.UserLevel.HasBasicUserPerm(ptttype.PERM_LOGINOK) ||
+		IsFreeBoardName(boardID) ||
+		board.BrdAttr.HasPerm(ptttype.BRD_NOCREDIT) ||
+		ptttype.USE_HIDDEN_BOARD_NOCREDIT && board.BrdAttr.HasPerm(ptttype.BRD_HIDE) || !doesBoardHavePublicBM(board) {
+		money = 0
+	}
+
 	if isUseAnony { // skip errcheck because what we focus is publishing the articles
+		money = 0
 		postfile.Filemode |= ptttype.FILE_ANONYMOUS
 		_ = postfile.SetAnonUID(uid)
 	} else {
 		postfile.Modified = types.DashT(fpath)
-		_ = postfile.SetMoney(0)
+		_ = postfile.SetMoney(int32(money))
 	}
+
+	// https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L1472
+	// ---- END OF MONEY VERIFICATION ----
+
 	copy(postfile.Owner[:], ownerID[:])
 	copy(postfile.Title[:], fullTitle)
 
@@ -290,6 +421,32 @@ func DoPostArticle(
 	summary = ptttype.NewArticleSummaryRaw(idx, boardID, postfile)
 
 	return summary, nil
+}
+
+func IsFreeBoardName(boardID *ptttype.BoardID_t) bool {
+	if types.Cstrcmp(boardID[:], ptttype.BN_TEST[:]) == 0 {
+		return true
+	}
+	if types.Cstrcmp(boardID[:], ptttype.BN_ALLPOST[:]) == 0 {
+		return true
+	}
+	if types.Cstrcasecmp(boardID[:], ptttype.DEFAULT_BOARD) == 0 {
+		return true
+	}
+
+	return false
+}
+
+//doesBoardHavePublicBM
+//https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L1220
+//
+//Usually we can assume SHM->BMcache contains complete BM list; however
+//sometimes boards may contains only private BMs (ex: [ <-space  some_uid])
+//另外還有人不知為了自己加了 [] 上去
+//搞了半天還是revert回原始的 BM[0] < ' ' 好了，
+//很糟但是還沒想到更好的作法。
+func doesBoardHavePublicBM(board *ptttype.BoardHeaderRaw) bool {
+	return board.BM[0] > ' '
 }
 
 func CrossPost(
@@ -723,11 +880,9 @@ func doPostArticleWriteFile(
 	board *ptttype.BoardHeaderRaw,
 	bid ptttype.Bid,
 	ip *ptttype.IPv4_t,
-	from []byte) (err error) {
+	from []byte) (entropy int, err error) {
 
-	_, err = WriteFile(fpath, flags, true, isUseAnony, title, content, user, uid, board, bid, ip, from)
-
-	return err
+	return WriteFile(fpath, flags, true, isUseAnony, title, content, user, uid, board, bid, ip, from, ptttype.USER_OP_POSTING)
 }
 
 func doCrosspost(
@@ -846,34 +1001,4 @@ func GetWebURL(board *ptttype.BoardHeaderRaw, fhdr *ptttype.FileHeaderRaw) (url 
 	}
 
 	return ptttype.URL_PREFIX + "/" + folder + "/" + fn + ext
-}
-
-func CheckPostPerm2(uid ptttype.UID, user *ptttype.UserecRaw, bid ptttype.Bid, board *ptttype.BoardHeaderRaw) (err error) {
-	return CheckModifyPerm(uid, user, bid, board)
-}
-
-func CheckModifyPerm(uid ptttype.UID, user *ptttype.UserecRaw, bid ptttype.Bid, board *ptttype.BoardHeaderRaw) (err error) {
-	return postpermMsg(uid, user, bid, board)
-}
-
-func getFileHeader(boardID *ptttype.BoardID_t, bid ptttype.Bid, filename *ptttype.Filename_t) (idx ptttype.SortIdx, fileHeader *ptttype.FileHeaderRaw, err error) {
-	dirFilename, err := setBDir(boardID)
-	if err != nil {
-		return 0, nil, err
-	}
-
-	total, err := cache.GetBTotalWithRetry(bid)
-	if err != nil {
-		return 0, nil, err
-	}
-	if total == 0 {
-		return 0, nil, ptttype.ErrInvalidFilename
-	}
-
-	idx, fileHeader, err = cmsys.GetRecord(dirFilename, filename, int(total))
-	if err != nil {
-		return 0, nil, err
-	}
-
-	return idx, fileHeader, nil
 }

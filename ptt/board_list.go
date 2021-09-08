@@ -6,7 +6,6 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
-	"github.com/sirupsen/logrus"
 )
 
 //LoadFullClassBoards
@@ -628,8 +627,6 @@ func parseBoardSummary(user *ptttype.UserecRaw, uid ptttype.UID, boardStat *pttt
 
 	lastPostTime, _ := cache.GetLastPosttime(boardStat.Bid)
 	total, _ := cache.GetBTotalWithRetry(boardStat.Bid)
-
-	logrus.Infof("parseBoardSummary: bid :%v lastPostTime: %v total: %v", boardStat.Bid, lastPostTime, total)
 
 	summary = ptttype.NewBoardSummaryRaw(boardStat, lastPostTime, total)
 
