@@ -126,7 +126,7 @@ func FindArticleStartIdx(user *ptttype.UserecRaw, uid ptttype.UID, boardID *pttt
 		return -1, err
 	}
 	if total == 0 {
-		return -1, nil
+		return -1, ErrNoRecord
 	}
 
 	return cmsys.FindRecordStartIdx(dirFilename, int(total), createTime, filename, isDesc)

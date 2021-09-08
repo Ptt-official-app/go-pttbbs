@@ -250,7 +250,7 @@ func TestLoadGeneralArticles(t *testing.T) {
 	}
 }
 
-func TestFindArticleStartAid(t *testing.T) {
+func TestFindArticleStartIdx(t *testing.T) {
 	setupTest(t.Name())
 	defer teardownTest(t.Name())
 
@@ -278,11 +278,12 @@ func TestFindArticleStartAid(t *testing.T) {
 	tests := []struct {
 		name             string
 		args             args
-		expectedStartAid ptttype.SortIdx
+		expectedStartIdx ptttype.SortIdx
 		wantErr          bool
 	}{
 		// TODO: Add test cases.
 		{
+			name: "most basic: filename: beginning, asc (not isDesc)",
 			args: args{
 				user:       testUserecRaw1,
 				uid:        1,
@@ -292,9 +293,10 @@ func TestFindArticleStartAid(t *testing.T) {
 				filename:   &testArticleSummary0.FileHeaderRaw.Filename,
 				isDesc:     false,
 			},
-			expectedStartAid: 1,
+			expectedStartIdx: 1,
 		},
 		{
+			name: "most basic: filename: last, asc (not isDesc)",
 			args: args{
 				user:       testUserecRaw1,
 				uid:        1,
@@ -304,9 +306,10 @@ func TestFindArticleStartAid(t *testing.T) {
 				filename:   &testArticleSummary1.FileHeaderRaw.Filename,
 				isDesc:     false,
 			},
-			expectedStartAid: 2,
+			expectedStartIdx: 2,
 		},
 		{
+			name: "most basic: filename: beginning, desc",
 			args: args{
 				user:       testUserecRaw1,
 				uid:        1,
@@ -316,9 +319,10 @@ func TestFindArticleStartAid(t *testing.T) {
 				filename:   &testArticleSummary0.FileHeaderRaw.Filename,
 				isDesc:     true,
 			},
-			expectedStartAid: 1,
+			expectedStartIdx: 1,
 		},
 		{
+			name: "most basic: filename: last, desc",
 			args: args{
 				user:       testUserecRaw1,
 				uid:        1,
@@ -328,9 +332,10 @@ func TestFindArticleStartAid(t *testing.T) {
 				filename:   &testArticleSummary1.FileHeaderRaw.Filename,
 				isDesc:     true,
 			},
-			expectedStartAid: 2,
+			expectedStartIdx: 2,
 		},
 		{
+			name: "createTime: beginning, filename: nil, desc",
 			args: args{
 				user:       testUserecRaw1,
 				uid:        1,
@@ -340,9 +345,10 @@ func TestFindArticleStartAid(t *testing.T) {
 				filename:   nil,
 				isDesc:     true,
 			},
-			expectedStartAid: -1,
+			expectedStartIdx: 1,
 		},
 		{
+			name: "createTime: last, filename: nil, desc",
 			args: args{
 				user:       testUserecRaw1,
 				uid:        1,
@@ -352,9 +358,10 @@ func TestFindArticleStartAid(t *testing.T) {
 				filename:   nil,
 				isDesc:     true,
 			},
-			expectedStartAid: 1,
+			expectedStartIdx: 2,
 		},
 		{
+			name: "createTime: beginning, filename: nil, asc (not isDesc)",
 			args: args{
 				user:       testUserecRaw1,
 				uid:        1,
@@ -364,9 +371,10 @@ func TestFindArticleStartAid(t *testing.T) {
 				filename:   nil,
 				isDesc:     false,
 			},
-			expectedStartAid: 2,
+			expectedStartIdx: 1,
 		},
 		{
+			name: "createTime: last, filename: nil, asc (not isDesc)",
 			args: args{
 				user:       testUserecRaw1,
 				uid:        1,
@@ -376,7 +384,7 @@ func TestFindArticleStartAid(t *testing.T) {
 				filename:   nil,
 				isDesc:     false,
 			},
-			expectedStartAid: -1,
+			expectedStartIdx: 2,
 		},
 	}
 
@@ -390,8 +398,8 @@ func TestFindArticleStartAid(t *testing.T) {
 				t.Errorf("FindArticleStartAid() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(gotStartAid, tt.expectedStartAid) {
-				t.Errorf("FindArticleStartAid() = %v, want %v", gotStartAid, tt.expectedStartAid)
+			if !reflect.DeepEqual(gotStartAid, tt.expectedStartIdx) {
+				t.Errorf("FindArticleStartAid() = %v, want %v", gotStartAid, tt.expectedStartIdx)
 			}
 		})
 		wg.Wait()

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# https://github.com/bbsdocker/imageptt/blob/master/pttbbs_conf
+
 # 1. copy to orig
 cp /tmp/build_ptt.sh /tmp/build_ptt_new.sh
 
@@ -17,6 +19,9 @@ echo "#define NOKILLWATERBALL" >> /home/bbs/pttbbs/pttbbs.conf
 
 # 6. add HOTBOARDCACHE
 echo "#define HOTBOARDCACHE (10)" >> /home/bbs/pttbbs/pttbbs.conf
+
+# 7. add USE_EDIT_HISTORY
+echo "#define USE_EDIT_HISTORY" >> /home/bbs/pttbbs/pttbbs.conf
 
 # 7. add contact-email
 echo "#define USEREC_EMAIL_IS_CONTACT" >> /home/bbs/pttbbs/pttbbs.conf

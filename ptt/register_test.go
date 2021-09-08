@@ -441,6 +441,8 @@ func Test_tryCleanUser(t *testing.T) {
 }
 
 func Test_registerCheckAndUpdateEmaildb(t *testing.T) {
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
 	email2 := &ptttype.Email_t{}
 	copy(email2[:], []byte("test@test.test"))
 

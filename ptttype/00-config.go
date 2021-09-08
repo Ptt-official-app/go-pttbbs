@@ -514,9 +514,11 @@ var (
 	// pttbbs commit: 6bdd36898bde207683a441cdffe2981e95de5b20
 	//
 	// FN_SAFEDEL_PREFIX_LEN is used in strncmp. we don' need this in go.
-	USE_EDIT_HISTORY      = false
-	FN_SAFEDEL            = ".deleted"
-	FN_SAFEDEL_PREFIX_LEN = 8 // must match FN_SAFEDEL
+	USE_EDIT_HISTORY      = true
+	FN_SAFEDEL            = ".d"
+	FN_SAFEDEL_PREFIX_LEN = 2 // must match FN_SAFEDEL
+
+	FN_SAFEDEL_b = []byte(FN_SAFEDEL)
 
 	STR_SAFEDEL_TITLE = "(本文已被刪除)"
 

@@ -32,6 +32,8 @@ var (
 	ErrNotLoginOk = errors.New("not login ok")
 
 	ErrInvalidBoard = errors.New("invalid board")
+
+	ErrNoRecord = errors.New("no record")
 )
 
 func FatalLockedUser(userID *ptttype.UserID_t) error {

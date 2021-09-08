@@ -323,6 +323,26 @@ func (f *Filename_t) String() string {
 	return types.CstrToString(f[:])
 }
 
+//Eq
+//
+//It's possible that the timestamp
+//Compare only with the timestamp and the rnd.
+func (f *Filename_t) Eq(f2 *Filename_t) bool {
+	return types.Cstrcmp(f[2:], f2[2:]) == 0
+}
+
+func (f *Filename_t) IsDeleted() bool {
+	return bytes.Equal(f[:FN_SAFEDEL_PREFIX_LEN], FN_SAFEDEL_b)
+}
+
+func (f *Filename_t) Basename() string {
+	if f.IsDeleted() {
+		return "M." + string(f[FN_SAFEDEL_PREFIX_LEN:])
+	}
+
+	return types.CstrToString(f[:])
+}
+
 //Type
 //
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/aids.c#L82

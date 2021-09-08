@@ -43,7 +43,7 @@ func LoadGeneralArticles(
 	// 1. find start idx. start-idx as nextCreateTime if unable to find startIdxStr
 	startIdx, err := loadGeneralArticlesToStartIdx(userecRaw, uid, boardIDRaw, bid, startIdxStr, isDesc)
 	if err != nil {
-		return nil, "", 0, false, -1, ErrInvalidParams
+		return nil, "", 0, false, -1, err
 	}
 
 	// 2. load articles.
@@ -70,23 +70,6 @@ func LoadGeneralArticles(
 		eachSummary := NewArticleSummaryFromRaw(bboardID, each)
 		summaries[idx] = eachSummary
 	}
-
-	if startIdxStr == "" { // no need to check startIdxStr
-		return summaries, nextIdxStr, nextCreateTime, isNewest, startNumIdx, nil
-	}
-
-	// check same-create-time
-	if len(summaries) > 0 && summaries[0].Idx == startIdxStr {
-		return summaries, nextIdxStr, nextCreateTime, isNewest, startNumIdx, nil
-	}
-
-	summariesSameCreateTime, startNumIdxSameCreateTime, err := loadGeneralArticlesSameCreateTime(userecRaw, uid, bboardID, boardIDRaw, bid, startIdxStr, isDesc)
-	if err != nil || len(summariesSameCreateTime) == 0 {
-		return summaries, nextIdxStr, nextCreateTime, isNewest, startNumIdx, nil
-	}
-
-	summaries = append(summariesSameCreateTime, summaries...)
-	startNumIdx = startNumIdxSameCreateTime
 
 	return summaries, nextIdxStr, nextCreateTime, isNewest, startNumIdx, nil
 }
@@ -116,55 +99,4 @@ func loadGeneralArticlesToStartIdx(
 	startIdx, err = ptt.FindArticleStartIdx(userecRaw, uid, boardIDRaw, bid, createTime, filename, isDesc)
 
 	return startIdx, err
-}
-
-func loadGeneralArticlesSameCreateTime(userecRaw *ptttype.UserecRaw, uid ptttype.UID, boardID BBoardID, boardIDRaw *ptttype.BoardID_t, bid ptttype.Bid, startIdxStr string, isDesc bool) (summaries []*ArticleSummary, startNumIdx ptttype.SortIdx, err error) {
-	createTime, _, err := DeserializeArticleIdxStr(startIdxStr)
-	if err != nil {
-		return nil, 0, err
-	}
-
-	startAid, err := ptt.FindArticleStartIdx(userecRaw, uid, boardIDRaw, bid, createTime, nil, true)
-	if err != nil {
-		return nil, 0, err
-	}
-	if startAid == -1 {
-		startAid = 1
-	}
-	endAid, err := ptt.FindArticleStartIdx(userecRaw, uid, boardIDRaw, bid, createTime, nil, false)
-	if err != nil {
-		return nil, 0, err
-	}
-	if endAid == -1 {
-		endAid = 0
-	}
-
-	summariesRaw, newStartNumIdx, newEndNumIdx, err := ptt.LoadGeneralArticlesSameCreateTime(boardIDRaw, bid, startAid, endAid, createTime)
-	if err != nil {
-		return nil, 0, err
-	}
-
-	if len(summariesRaw) == 0 {
-		return nil, 0, nil
-	}
-
-	summaries = make([]*ArticleSummary, len(summariesRaw))
-	for idx, each := range summariesRaw {
-		summaries[idx] = NewArticleSummaryFromRaw(boardID, each)
-	}
-
-	if isDesc {
-		reverseArticleSummaries(summaries)
-		startNumIdx = newEndNumIdx
-	} else {
-		startNumIdx = newStartNumIdx
-	}
-
-	return summaries, startNumIdx, nil
-}
-
-func reverseArticleSummaries(summaries []*ArticleSummary) {
-	for i, j := 0, len(summaries)-1; i < j; i, j = i+1, j-1 {
-		summaries[i], summaries[j] = summaries[j], summaries[i]
-	}
 }
