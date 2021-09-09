@@ -14,6 +14,7 @@ func TestNewBoardDetailFromRaw(t *testing.T) {
 
 	type args struct {
 		boardHeaderRaw *ptttype.BoardHeaderRaw
+		bid            ptttype.Bid
 	}
 	tests := []struct {
 		name     string
@@ -22,7 +23,7 @@ func TestNewBoardDetailFromRaw(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{
-			args:     args{testBoardHeader3},
+			args:     args{testBoardHeader3, 1},
 			expected: testBoardDetail3,
 		},
 	}
@@ -32,9 +33,9 @@ func TestNewBoardDetailFromRaw(t *testing.T) {
 
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
-			t.Log(NewBoardDetailFromRaw(tt.args.boardHeaderRaw))
+			t.Log(NewBoardDetailFromRaw(tt.args.boardHeaderRaw, tt.args.bid))
 			t.Log(tt.expected)
-			if got := NewBoardDetailFromRaw(tt.args.boardHeaderRaw); !reflect.DeepEqual(got, tt.expected) {
+			if got := NewBoardDetailFromRaw(tt.args.boardHeaderRaw, tt.args.bid); !reflect.DeepEqual(got, tt.expected) {
 				t.Errorf("NewBoardDetailFromRaw() = %v, want %v", got, tt.expected)
 			}
 		})

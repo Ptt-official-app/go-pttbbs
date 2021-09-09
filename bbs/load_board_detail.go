@@ -24,7 +24,7 @@ func LoadBoardDetail(uuserID UUserID, bboardID BBoardID) (detail *BoardDetail, e
 		return nil, err
 	}
 
-	detail = NewBoardDetailFromRaw(detailRaw)
+	detail = NewBoardDetailFromRaw(detailRaw, bid)
 
 	return detail, nil
 }

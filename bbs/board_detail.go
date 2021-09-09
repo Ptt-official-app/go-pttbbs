@@ -33,7 +33,7 @@ type BoardDetail struct {
 	VoteLimitBadpost   uint8           `json:"votelimitbadpost"`
 }
 
-func NewBoardDetailFromRaw(boardHeaderRaw *ptttype.BoardHeaderRaw) *BoardDetail {
+func NewBoardDetailFromRaw(boardHeaderRaw *ptttype.BoardHeaderRaw, bid ptttype.Bid) *BoardDetail {
 	bmsRaw := boardHeaderRaw.BM.ToBMs()
 	bms := make([]UUserID, len(bmsRaw))
 	for idx, each := range bmsRaw {
@@ -46,8 +46,8 @@ func NewBoardDetailFromRaw(boardHeaderRaw *ptttype.BoardHeaderRaw) *BoardDetail 
 		BM:                 bms,
 		BrdAttr:            boardHeaderRaw.BrdAttr,
 		Gid:                boardHeaderRaw.Gid,
-		Bid:                boardHeaderRaw.Gid,
-		BBoardID:           ToBBoardID(boardHeaderRaw.Gid, &boardHeaderRaw.Brdname),
+		Bid:                bid,
+		BBoardID:           ToBBoardID(bid, &boardHeaderRaw.Brdname),
 		ChessCountry:       byte(boardHeaderRaw.ChessCountry),
 		VoteLimitLogins:    boardHeaderRaw.VoteLimitLogins,
 		BUpdate:            boardHeaderRaw.BUpdate,

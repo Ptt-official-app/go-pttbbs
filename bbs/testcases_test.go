@@ -496,8 +496,8 @@ func initTestVars() {
 		BM:       []UUserID{},
 		BrdAttr:  ptttype.BRD_POSTMASK,
 		Gid:      2,
-		Bid:      2,
-		BBoardID: "2_SYSOP",
+		Bid:      1,
+		BBoardID: "1_SYSOP",
 	}
 
 	testArticleSummary0 = &ArticleSummary{
