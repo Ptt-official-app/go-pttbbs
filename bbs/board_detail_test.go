@@ -1,11 +1,11 @@
 package bbs
 
 import (
-	"reflect"
 	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 )
 
 func TestNewBoardDetailFromRaw(t *testing.T) {
@@ -13,7 +13,7 @@ func TestNewBoardDetailFromRaw(t *testing.T) {
 	defer teardownTest()
 
 	type args struct {
-		boardHeaderRaw *ptttype.BoardHeaderRaw
+		boardDetailRaw *ptttype.BoardDetailRaw
 		bid            ptttype.Bid
 	}
 	tests := []struct {
@@ -23,7 +23,7 @@ func TestNewBoardDetailFromRaw(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{
-			args:     args{testBoardHeader3, 1},
+			args:     args{testBoardDetailRaw3, 1},
 			expected: testBoardDetail3,
 		},
 	}
@@ -33,11 +33,8 @@ func TestNewBoardDetailFromRaw(t *testing.T) {
 
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
-			t.Log(NewBoardDetailFromRaw(tt.args.boardHeaderRaw, tt.args.bid))
-			t.Log(tt.expected)
-			if got := NewBoardDetailFromRaw(tt.args.boardHeaderRaw, tt.args.bid); !reflect.DeepEqual(got, tt.expected) {
-				t.Errorf("NewBoardDetailFromRaw() = %v, want %v", got, tt.expected)
-			}
+			got := NewBoardDetailFromRaw(tt.args.boardDetailRaw, tt.args.bid)
+			testutil.TDeepEqual(t, "got", got, tt.expected)
 		})
 		wg.Wait()
 	}

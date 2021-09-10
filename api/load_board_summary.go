@@ -23,7 +23,7 @@ func LoadBoardSummaryWrapper(c *gin.Context) {
 	loginRequiredPathProcess(LoadBoardSummary, nil, path, c)
 }
 
-func LoadBoardSummary(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (results interface{}, err error) {
+func LoadBoardSummary(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (result interface{}, err error) {
 	thePath, ok := path.(*LoadBoardSummaryPath)
 	if !ok {
 		return nil, ErrInvalidPath
@@ -35,7 +35,7 @@ func LoadBoardSummary(remoteAddr string, uuserID bbs.UUserID, params interface{}
 	if err != nil {
 		return nil, err
 	}
-	results = LoadBoardSummaryResult(summary)
+	result = LoadBoardSummaryResult(summary)
 
-	return results, nil
+	return result, nil
 }

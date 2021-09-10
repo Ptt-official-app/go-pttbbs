@@ -64,12 +64,17 @@ func TestLoadGeneralBoards(t *testing.T) {
 				return
 			}
 
+			for _, each := range gotSummaries {
+				each.Total = 0
+				each.LastPostTime = 0
+			}
+
 			testutil.TDeepEqual(t, "summaries", gotSummaries, tt.expectedSummaries)
 
 			if gotNextIdx != tt.expectedNextIdxStr {
 				t.Errorf("LoadGeneralBoards() gotNextIdx = %v, want %v", gotNextIdx, tt.expectedNextIdxStr)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }

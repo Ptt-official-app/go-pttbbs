@@ -6,6 +6,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
+	"github.com/sirupsen/logrus"
 )
 
 //LoadFullClassBoards
@@ -125,20 +126,38 @@ func LoadClassBoards(user *ptttype.UserecRaw, uid ptttype.UID, classBid ptttype.
 
 func isInClassRoot(classBid ptttype.Bid) bool {
 	return classBid == 1
-
 }
 
-func LoadBoardDetail(user *ptttype.UserecRaw, uid ptttype.UID, bid ptttype.Bid) (board *ptttype.BoardHeaderRaw, err error) {
-	bidInCache := bid.ToBidInStore()
-
-	if bidInCache < 0 {
-		return nil, nil
+func LoadBoardDetail(user *ptttype.UserecRaw, uid ptttype.UID, bid ptttype.Bid) (boardDetail *ptttype.BoardDetailRaw, err error) {
+	if !bid.IsValid() {
+		return nil, ptttype.ErrInvalidBid
 	}
-	board, err = cache.GetBCache(bid)
+
+	bidInCache := bid.ToBidInStore()
+	board, err := cache.GetBCache(bid)
 	if err != nil {
 		return nil, err
 	}
-	return board, nil
+
+	isGroupOp := groupOp(user, uid, board)
+	state := boardPermStat(user, uid, board, bid)
+	boardStat := newBoardStat(bidInCache, state, board, isGroupOp)
+
+	if boardStat == nil {
+		return nil, err
+	}
+
+	lastPostTime, _ := cache.GetLastPosttime(boardStat.Bid)
+	total, _ := cache.GetBTotalWithRetry(boardStat.Bid)
+
+	boardDetail = &ptttype.BoardDetailRaw{
+		Bid:            bid,
+		LastPostTime:   lastPostTime,
+		Total:          total,
+		BoardHeaderRaw: board,
+	}
+
+	return boardDetail, nil
 }
 
 //LoadBoardSummary
@@ -154,11 +173,11 @@ func LoadBoardDetail(user *ptttype.UserecRaw, uid ptttype.UID, bid ptttype.Bid) 
 //	summary
 //	err
 func LoadBoardSummary(user *ptttype.UserecRaw, uid ptttype.UID, bid ptttype.Bid) (summary *ptttype.BoardSummaryRaw, err error) {
-	bidInCache := bid.ToBidInStore()
-
-	if bidInCache < 0 {
-		return nil, nil
+	if !bid.IsValid() {
+		return nil, ptttype.ErrInvalidBid
 	}
+
+	bidInCache := bid.ToBidInStore()
 	board, err := cache.GetBCache(bid)
 	if err != nil {
 		return nil, err
@@ -607,20 +626,10 @@ func parseBoardSummary(user *ptttype.UserecRaw, uid ptttype.UID, boardStat *pttt
 		return summary
 	}
 
-	bidInCache := boardStat.Bid.ToBidInStore()
-	var lastPostTime types.Time4
-	cache.Shm.ReadAt(
-		unsafe.Offsetof(cache.Shm.Raw.LastPostTime)+types.TIME4_SZ*uintptr(bidInCache),
-		types.TIME4_SZ,
-		unsafe.Pointer(&lastPostTime),
-	)
+	lastPostTime, _ := cache.GetLastPosttime(boardStat.Bid)
+	total, _ := cache.GetBTotalWithRetry(boardStat.Bid)
 
-	var total int32
-	cache.Shm.ReadAt(
-		unsafe.Offsetof(cache.Shm.Raw.Total)+types.INT32_SZ*uintptr(bidInCache),
-		types.INT32_SZ,
-		unsafe.Pointer(&total),
-	)
+	logrus.Infof("parseBoardSummary: bid :%v lastPostTime: %v total: %v", boardStat.Bid, lastPostTime, total)
 
 	summary = ptttype.NewBoardSummaryRaw(boardStat, lastPostTime, total)
 

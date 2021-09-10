@@ -7,7 +7,9 @@ import (
 
 type BoardDetail struct {
 	Brdname            string          `json:"brdname"`
-	RealTitle          []byte          `json:"title"` //Require to separate RealTitle, BoardClass, BoardType, because it's hard to parse in utf8
+	RealTitle          []byte          `json:"title"` // Require to separate RealTitle, BoardClass, BoardType, because it's hard to parse in utf8
+	BoardClass         []byte          `json:"class"`
+	BoardType          []byte          `json:"type"` //□, ◎, Σ
 	BM                 []UUserID       `json:"moderators"`
 	BrdAttr            ptttype.BrdAttr `json:"attr"`
 	Gid                ptttype.Bid     `json:"pttgid"`
@@ -21,52 +23,59 @@ type BoardDetail struct {
 	VTime              types.Time4     `json:"vtime"`
 	Level              ptttype.PERM    `json:"level"`
 	PermReload         types.Time4     `json:"permreload"`
-	Next               [2]ptttype.Bid  `json:"next"`
-	FirstChild         [2]ptttype.Bid  `json:"firstchild"`
-	Parent             ptttype.Bid     `json:"parent"`
-	ChildCount         int32           `json:"childcount"`
 	NUser              int32           `json:"nuser"`
 	PostExpire         int32           `json:"postexpire"`
 	EndGamble          types.Time4     `json:"endgamble"`
 	PostType           []byte          `json:"posttype"`
 	FastRecommendPause uint8           `json:"fastrecommendpause"`
 	VoteLimitBadpost   uint8           `json:"votelimitbadpost"`
+
+	LastPostTime types.Time4 `json:"last_post_time"`
+	Total        int32       `json:"total"`
+
+	IdxByName  string `json:"idx_name"`
+	IdxByClass string `json:"idx_class"`
+
+	Reason ptttype.RestrictReason `json:"reason"`
 }
 
-func NewBoardDetailFromRaw(boardHeaderRaw *ptttype.BoardHeaderRaw, bid ptttype.Bid) *BoardDetail {
-	bmsRaw := boardHeaderRaw.BM.ToBMs()
+func NewBoardDetailFromRaw(boardDetailRaw *ptttype.BoardDetailRaw, bid ptttype.Bid) *BoardDetail {
+	bmsRaw := boardDetailRaw.BM.ToBMs()
 	bms := make([]UUserID, len(bmsRaw))
 	for idx, each := range bmsRaw {
 		bms[idx] = UUserID(types.CstrToString(each[:]))
 	}
 
 	boardDetail := &BoardDetail{
-		Brdname:            types.CstrToString(boardHeaderRaw.Brdname[:]),
-		RealTitle:          types.CstrToBytes(boardHeaderRaw.Title[7:]),
+		Brdname:            types.CstrToString(boardDetailRaw.Brdname[:]),
+		BoardClass:         types.CstrToBytes(boardDetailRaw.Title[:4]),
+		BoardType:          types.CstrToBytes(boardDetailRaw.Title[5:7]),
+		RealTitle:          types.CstrToBytes(boardDetailRaw.Title[7:]),
 		BM:                 bms,
-		BrdAttr:            boardHeaderRaw.BrdAttr,
-		Gid:                boardHeaderRaw.Gid,
+		BrdAttr:            boardDetailRaw.BrdAttr,
+		Gid:                boardDetailRaw.Gid,
 		Bid:                bid,
-		BBoardID:           ToBBoardID(bid, &boardHeaderRaw.Brdname),
-		ChessCountry:       byte(boardHeaderRaw.ChessCountry),
-		VoteLimitLogins:    boardHeaderRaw.VoteLimitLogins,
-		BUpdate:            boardHeaderRaw.BUpdate,
-		PostLimitLogins:    boardHeaderRaw.VoteLimitLogins,
-		BVote:              boardHeaderRaw.BVote,
-		VTime:              boardHeaderRaw.VTime,
-		Level:              boardHeaderRaw.Level,
-		PermReload:         boardHeaderRaw.PermReload,
-		Next:               [2]ptttype.Bid{},
-		FirstChild:         [2]ptttype.Bid{},
-		Parent:             boardHeaderRaw.Parent,
-		ChildCount:         boardHeaderRaw.ChildCount,
-		NUser:              boardHeaderRaw.ChildCount,
-		PostExpire:         boardHeaderRaw.PostExpire,
-		EndGamble:          boardHeaderRaw.EndGamble,
-		PostType:           types.CstrToBytes(boardHeaderRaw.PostType[:]),
-		FastRecommendPause: boardHeaderRaw.FastRecommendPause,
-		VoteLimitBadpost:   boardHeaderRaw.VoteLimitBadpost,
+		BBoardID:           ToBBoardID(bid, &boardDetailRaw.Brdname),
+		ChessCountry:       byte(boardDetailRaw.ChessCountry),
+		VoteLimitLogins:    boardDetailRaw.VoteLimitLogins,
+		BUpdate:            boardDetailRaw.BUpdate,
+		PostLimitLogins:    boardDetailRaw.VoteLimitLogins,
+		BVote:              boardDetailRaw.BVote,
+		VTime:              boardDetailRaw.VTime,
+		Level:              boardDetailRaw.Level,
+		PermReload:         boardDetailRaw.PermReload,
+		NUser:              boardDetailRaw.ChildCount,
+		PostExpire:         boardDetailRaw.PostExpire,
+		EndGamble:          boardDetailRaw.EndGamble,
+		PostType:           types.CstrToBytes(boardDetailRaw.PostType[:]),
+		FastRecommendPause: boardDetailRaw.FastRecommendPause,
+		VoteLimitBadpost:   boardDetailRaw.VoteLimitBadpost,
+
+		LastPostTime: boardDetailRaw.LastPostTime,
+		Total:        boardDetailRaw.Total,
 	}
+	boardDetail.IdxByName = serializeBoardIdxByNameStr(boardDetail.Brdname)
+	boardDetail.IdxByClass = serializeBoardIdxByClassStr(boardDetail.BoardClass, boardDetail.Brdname)
 
 	return boardDetail
 }

@@ -297,7 +297,8 @@ func TestCrossPost(t *testing.T) {
 	copy(testForwardBoardID0[:], []byte("fwboard0"))
 	testForwardBrdTitle0 := []byte("fw-board")
 
-	boardSummary, _ := NewBoard(testUserecRaw3, 6, 2, testBoardID0, testBrdClass0, testBrdTitle0, nil, ptttype.BRD_CPLOG, 0, ptttype.CHESSCODE_NONE, false)
+	boardSummary, err := NewBoard(testUserecRaw3, 6, 2, testBoardID0, testBrdClass0, testBrdTitle0, nil, ptttype.BRD_CPLOG, 0, ptttype.CHESSCODE_NONE, false)
+	logrus.Infof("TestCrossPost: after NewBoard: e: %v", err)
 
 	forwardBoardSummary, _ := NewBoard(testUserecRaw3, 6, 2, testForwardBoardID0, testBrdClass0, testForwardBrdTitle0, nil, ptttype.BRD_CPLOG, 0, ptttype.CHESSCODE_NONE, false)
 

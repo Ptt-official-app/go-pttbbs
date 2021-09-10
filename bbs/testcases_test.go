@@ -36,7 +36,8 @@ var (
 
 	testBoardDetail3 *BoardDetail
 
-	testBoardHeader3 *ptttype.BoardHeaderRaw
+	testBoardDetailRaw3 *ptttype.BoardDetailRaw
+	testBoardHeader3    *ptttype.BoardHeaderRaw
 
 	testClassSummary2 *BoardSummary
 	testClassSummary5 *BoardSummary
@@ -487,17 +488,25 @@ func initTestVars() {
 		BrdAttr: ptttype.BRD_POSTMASK,
 		Gid:     2,
 	}
+	testBoardDetailRaw3 = &ptttype.BoardDetailRaw{
+		Bid:            1,
+		BoardHeaderRaw: testBoardHeader3,
+	}
 
 	testBoardDetail3 = &BoardDetail{
 		Brdname: "SYSOP",
 		RealTitle: []byte{
 			0xaf, 0xb8, 0xaa, 0xf8, 0xa6, 0x6e, 0x21,
 		},
-		BM:       []UUserID{},
-		BrdAttr:  ptttype.BRD_POSTMASK,
-		Gid:      2,
-		Bid:      1,
-		BBoardID: "1_SYSOP",
+		BoardClass: []byte{0xbc, 0x54, 0xad, 0xf9},
+		BoardType:  []byte{0xa1, 0xb7},
+		BM:         []UUserID{},
+		BrdAttr:    ptttype.BRD_POSTMASK,
+		Gid:        2,
+		Bid:        1,
+		BBoardID:   "1_SYSOP",
+		IdxByName:  "SYSOP",
+		IdxByClass: "vFSt-Q@SYSOP",
 	}
 
 	testArticleSummary0 = &ArticleSummary{
