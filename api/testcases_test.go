@@ -21,6 +21,8 @@ var (
 	testBoardSummary14 *bbs.BoardSummary
 	testBoardSummary15 *bbs.BoardSummary
 
+	testBoardDetail6 *bbs.BoardDetail
+
 	testClassSummary2 *bbs.BoardSummary
 	testClassSummary5 *bbs.BoardSummary
 
@@ -261,6 +263,21 @@ func initTestVars() {
 		IdxByName:  "mnewtest2",
 		IdxByClass: "@mnewtest2",
 		BrdAttr:    0x200000,
+	}
+	testBoardDetail6 = &bbs.BoardDetail{
+		Gid:      5,
+		Bid:      6,
+		BBoardID: bbs.BBoardID("6_ALLPOST"),
+		BrdAttr:  ptttype.BRD_POSTMASK,
+		Brdname:  "ALLPOST",
+
+		RealTitle: []byte{
+			0xb8, 0xf3, 0xaa, 0x4f, 0xa6, 0xa1, 0x4c, 0x4f, 0x43, 0x41,
+			0x4c, 0xb7, 0x73, 0xa4, 0xe5, 0xb3, 0xb9,
+		},
+		BM:           []bbs.UUserID{},
+		ChessCountry: 0,
+		Level:        16384,
 	}
 
 	testClassSummary2 = &bbs.BoardSummary{

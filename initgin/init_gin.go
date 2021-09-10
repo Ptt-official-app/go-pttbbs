@@ -35,6 +35,7 @@ func InitGin() (*gin.Engine, error) {
 	router.GET(withPrefix(api.IS_BOARD_VALID_USER_R), api.IsBoardValidUserWrapper)
 	router.POST(withPrefix(api.IS_BOARDS_VALID_USER_R), api.IsBoardsValidUserWrapper)
 	router.GET(withPrefix(api.LOAD_AUTO_COMPLETE_BOARDS_R), api.LoadAutoCompleteBoardsWrapper)
+	router.GET(withPrefix(api.LOAD_BOARD_DETAIL_R), api.LoadBoardDetailWrapper)
 
 	router.POST(withPrefix(api.CREATE_BOARD_R), api.CreateBoardWrapper)
 

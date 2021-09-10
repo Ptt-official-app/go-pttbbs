@@ -125,6 +125,20 @@ func LoadClassBoards(user *ptttype.UserecRaw, uid ptttype.UID, classBid ptttype.
 
 func isInClassRoot(classBid ptttype.Bid) bool {
 	return classBid == 1
+
+}
+
+func LoadBoardDetail(user *ptttype.UserecRaw, uid ptttype.UID, bid ptttype.Bid) (board *ptttype.BoardHeaderRaw, err error) {
+	bidInCache := bid.ToBidInStore()
+
+	if bidInCache < 0 {
+		return nil, nil
+	}
+	board, err = cache.GetBCache(bid)
+	if err != nil {
+		return nil, err
+	}
+	return board, nil
 }
 
 //LoadBoardSummary
