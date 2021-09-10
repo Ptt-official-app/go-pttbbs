@@ -1,9 +1,10 @@
 package bbs
 
 import (
-	"reflect"
 	"sync"
 	"testing"
+
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 )
 
 func TestLoadBoardSummary(t *testing.T) {
@@ -37,10 +38,8 @@ func TestLoadBoardSummary(t *testing.T) {
 				t.Errorf("LoadBoardSummary() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(gotSummary, tt.expectedSummary) {
-				t.Errorf("LoadBoardSummary() = %v, want %v", gotSummary, tt.expectedSummary)
-			}
+			testutil.TDeepEqual(t, "got", gotSummary, tt.expectedSummary)
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }

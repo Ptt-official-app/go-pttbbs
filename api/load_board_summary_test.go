@@ -29,7 +29,7 @@ func TestLoadBoardSummary(t *testing.T) {
 	tests := []struct {
 		name            string
 		args            args
-		expectedResults interface{}
+		expectedResults LoadBoardSummaryResult
 		wantErr         bool
 	}{
 		// TODO: Add test cases.

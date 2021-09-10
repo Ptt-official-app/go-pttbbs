@@ -50,22 +50,22 @@ func NewBoardSummaryFromRaw(boardSummaryRaw *ptttype.BoardSummaryRaw) *BoardSumm
 		Total:        boardSummaryRaw.Total,
 		NUser:        boardSummaryRaw.NUser,
 	}
-	boardSummary.IdxByName = serializeBoardIdxByNameStr(boardSummary)
-	boardSummary.IdxByClass = serializeBoardIdxByClassStr(boardSummary)
+	boardSummary.IdxByName = serializeBoardIdxByNameStr(boardSummary.Brdname)
+	boardSummary.IdxByClass = serializeBoardIdxByClassStr(boardSummary.BoardClass, boardSummary.Brdname)
 
 	return boardSummary
 }
 
-func serializeBoardIdxByNameStr(summary *BoardSummary) (idxStr string) {
-	return string(summary.Brdname)
+func serializeBoardIdxByNameStr(brdname string) (idxStr string) {
+	return brdname
 }
 
 func deserializeBoardIdxByNameStr(idxStr string) (brdname string, err error) {
 	return idxStr, nil
 }
 
-func serializeBoardIdxByClassStr(summary *BoardSummary) (idxStr string) {
-	return base64.RawURLEncoding.EncodeToString(summary.BoardClass) + "@" + summary.Brdname
+func serializeBoardIdxByClassStr(boardClass []byte, brdname string) (idxStr string) {
+	return base64.RawURLEncoding.EncodeToString(boardClass) + "@" + brdname
 }
 
 func deserializeBoardIdxByClassStr(idxStr string) (boardClass []byte, brdname string, err error) {

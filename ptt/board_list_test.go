@@ -143,8 +143,16 @@ func TestLoadGeneralBoards(t *testing.T) {
 				return
 			}
 
+			for _, each := range gotSummaries {
+				each.Total = 0
+				each.LastPostTime = 0
+			}
 			testutil.TDeepEqual(t, "summaries", gotSummaries, tt.expectedSummaries)
 
+			if gotNextSummary != nil {
+				gotNextSummary.Total = 0
+				gotNextSummary.LastPostTime = 0
+			}
 			testutil.TDeepEqual(t, "nextSummary", gotNextSummary, tt.expectedNextSummary)
 		})
 		wg.Wait()
@@ -193,6 +201,8 @@ func TestLoadBoardSummary(t *testing.T) {
 				return
 			}
 
+			gotSummary.Total = 0
+			gotSummary.LastPostTime = 0
 			testutil.TDeepEqual(t, "summary", gotSummary, tt.expectedSummary)
 		})
 		wg.Wait()
@@ -244,9 +254,11 @@ func TestLoadHotBoards(t *testing.T) {
 				t.Errorf("LoadHotBoards() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(gotSummary, tt.expectedSummary) {
-				t.Errorf("LoadHotBoards() = %v, want %v", gotSummary, tt.expectedSummary)
+			for _, each := range gotSummary {
+				each.Total = 0
+				each.LastPostTime = 0
 			}
+			testutil.TDeepEqual(t, "got", gotSummary, tt.expectedSummary)
 		})
 		wg.Wait()
 	}
@@ -288,9 +300,12 @@ func TestLoadBoardsByBids(t *testing.T) {
 				t.Errorf("LoadBoardsByBids() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(gotSummaries, tt.expectedSummaries) {
-				t.Errorf("LoadBoardsByBids() = %v, want %v", gotSummaries, tt.expectedSummaries)
+			for _, each := range gotSummaries {
+				each.Total = 0
+				each.LastPostTime = 0
 			}
+
+			testutil.TDeepEqual(t, "got", gotSummaries, tt.expectedSummaries)
 		})
 		wg.Wait()
 	}
@@ -581,6 +596,48 @@ func TestLoadFullClassBoards(t *testing.T) {
 			if !reflect.DeepEqual(gotNextSummary, tt.expectedNextSummary) {
 				t.Errorf("LoadFullClassBoards() gotNextSummary = %v, want %v", gotNextSummary, tt.expectedNextSummary)
 			}
+		})
+		wg.Wait()
+	}
+}
+
+func TestLoadBoardDetail(t *testing.T) {
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
+
+	cache.ReloadBCache()
+
+	type args struct {
+		user *ptttype.UserecRaw
+		uid  ptttype.UID
+		bid  ptttype.Bid
+	}
+	tests := []struct {
+		name          string
+		args          args
+		expectedBoard *ptttype.BoardDetailRaw
+		wantErr       bool
+	}{
+		// TODO: Add test cases.
+		{
+			args:          args{user: testUserecRaw1, uid: 1, bid: 10},
+			expectedBoard: testBoardDetailRaw10,
+		},
+	}
+	var wg sync.WaitGroup
+	for _, tt := range tests {
+		wg.Add(1)
+		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
+			gotBoard, err := LoadBoardDetail(tt.args.user, tt.args.uid, tt.args.bid)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("LoadBoardDetail() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			gotBoard.Total = 0
+			gotBoard.LastPostTime = 0
+			testutil.TDeepEqual(t, "got", gotBoard, tt.expectedBoard)
 		})
 		wg.Wait()
 	}

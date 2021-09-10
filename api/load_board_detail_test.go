@@ -29,7 +29,7 @@ func TestLoadBoardDetail(t *testing.T) {
 	tests := []struct {
 		name            string
 		args            args
-		expectedResults interface{}
+		expectedResults LoadBoardDetailResult
 		wantErr         bool
 	}{
 		// TODO: Add test cases & more field.
@@ -49,7 +49,8 @@ func TestLoadBoardDetail(t *testing.T) {
 				return
 			}
 
-			testutil.TDeepEqual(t, "got", gotResults, tt.expectedResults)
+			result, _ := gotResults.(LoadBoardDetailResult)
+			testutil.TDeepEqual(t, "got", result, tt.expectedResults)
 		})
 		wg.Wait()
 	}

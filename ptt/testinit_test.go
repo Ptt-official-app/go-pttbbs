@@ -47,8 +47,10 @@ func setupTest(name string) {
 
 	time.Sleep(1 * time.Millisecond)
 
-	_ = cache.NewSHM(types.Key_t(cache.TestShmKey), ptttype.USE_HUGETLB, true)
-	_ = cache.AttachSHM()
+	err = cache.NewSHM(types.Key_t(cache.TestShmKey), ptttype.USE_HUGETLB, true)
+	if err != nil {
+		logrus.Errorf("unable to NewSHM! e: %v", err)
+	}
 
 	cache.Shm.Reset()
 

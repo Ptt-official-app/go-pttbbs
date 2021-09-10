@@ -51,11 +51,14 @@ func TestLoadAutoCompleteBoards(t *testing.T) {
 				t.Errorf("LoadAutoCompleteBoards() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
+			for _, each := range gotSummaries {
+				each.Total = 0
+			}
 			testutil.TDeepEqual(t, "got", gotSummaries, tt.expectedSummaries)
 			if gotNextIdxStr != tt.expectedNextIdxStr {
 				t.Errorf("LoadAutoCompleteBoards() gotNextIdxStr = %v, want %v", gotNextIdxStr, tt.expectedNextIdxStr)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }

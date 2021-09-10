@@ -41,8 +41,8 @@ func TestToArticleID(t *testing.T) {
 				t.Errorf("ToArticleID() = %v, want %v", got, tt.expected)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }
 
 func TestArticleID_ToRaw(t *testing.T) {
@@ -76,6 +76,6 @@ func TestArticleID_ToRaw(t *testing.T) {
 				t.Errorf("ArticleID.ToRaw() gotFilename = %v, want %v", gotFilename, tt.expectedFilename)
 			}
 		})
+		wg.Wait()
 	}
-	wg.Wait()
 }

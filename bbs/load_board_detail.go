@@ -6,7 +6,6 @@ import (
 
 func LoadBoardDetail(uuserID UUserID, bboardID BBoardID) (detail *BoardDetail, err error) {
 	bid, _, err := bboardID.ToRaw()
-
 	if err != nil {
 		return nil, ErrInvalidParams
 	}
@@ -19,12 +18,12 @@ func LoadBoardDetail(uuserID UUserID, bboardID BBoardID) (detail *BoardDetail, e
 		return nil, err
 	}
 
-	detailRaw, err := ptt.LoadBoardDetail(userecRaw, uid, bid)
-	if err != nil || detailRaw == nil {
+	boardDetailRaw, err := ptt.LoadBoardDetail(userecRaw, uid, bid)
+	if err != nil {
 		return nil, err
 	}
 
-	detail = NewBoardDetailFromRaw(detailRaw, bid)
+	detail = NewBoardDetailFromRaw(boardDetailRaw, bid)
 
 	return detail, nil
 }

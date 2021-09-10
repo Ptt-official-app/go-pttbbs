@@ -13,29 +13,25 @@ type LoadBoardDetailPath struct {
 	BBoardID bbs.BBoardID `uri:"bid" binding:"required"`
 }
 
-//XXX LoadBoardDetailResult is a pointer
+// XXX LoadBoardDetailResult is a pointer
 //    It's possible that this is unavoidable,
 //    and we need to change all the result-type to be pointer-based.
-type LoadBoardDetailResult *bbs.BoardSummary
+type LoadBoardDetailResult *bbs.BoardDetail
 
 func LoadBoardDetailWrapper(c *gin.Context) {
-
 	path := &LoadBoardDetailPath{}
 	loginRequiredPathProcess(LoadBoardDetail, nil, path, c)
-
 }
 
-func LoadBoardDetail(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (detail interface{}, err error) {
+func LoadBoardDetail(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (ret interface{}, err error) {
 	thePath, ok := path.(*LoadBoardDetailPath)
 	if !ok {
-
 		return nil, ErrInvalidPath
 	}
-	detail, err = bbs.LoadBoardDetail(uuserID, thePath.BBoardID)
-
+	detail, err := bbs.LoadBoardDetail(uuserID, thePath.BBoardID)
 	if err != nil {
 		return nil, err
 	}
 
-	return detail, nil
+	return LoadBoardDetailResult(detail), nil
 }

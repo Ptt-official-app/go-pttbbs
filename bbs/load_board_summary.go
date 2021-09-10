@@ -19,7 +19,7 @@ func LoadBoardSummary(uuserID UUserID, bboardID BBoardID) (summary *BoardSummary
 	}
 
 	summaryRaw, err := ptt.LoadBoardSummary(userecRaw, uid, bid)
-	if err != nil || summaryRaw == nil {
+	if err != nil {
 		return nil, err
 	}
 	summary = NewBoardSummaryFromRaw(summaryRaw)
