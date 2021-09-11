@@ -1,1 +1,4 @@
 package ptt
+
+func DeleteArticles() {
+}
