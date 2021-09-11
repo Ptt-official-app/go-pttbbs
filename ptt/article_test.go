@@ -4,6 +4,7 @@ import (
 	"io"
 	"os"
 	"reflect"
+	"sync"
 	"testing"
 
 	"github.com/Ptt-official-app/go-pttbbs/cache"
@@ -69,8 +70,11 @@ func Test_readContent(t *testing.T) {
 			expectedHash:    hash0,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			gotContent, _, gotHash, err := readContent(tt.args.filename, tt.args.retrieveTS, tt.args.isHash)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("readContent() error = %v, wantErr %v", err, tt.wantErr)
@@ -83,5 +87,6 @@ func Test_readContent(t *testing.T) {
 				t.Errorf("readContent() gotHash = %v, want %v", gotHash, tt.expectedHash)
 			}
 		})
+		wg.Wait()
 	}
 }
