@@ -337,7 +337,7 @@ func DoPostArticle(
 	}
 
 	if isUseAnony { // skip errcheck because what we focus is publishing the articles
-		money = 0
+		money = 0 // nolint
 		postfile.Filemode |= ptttype.FILE_ANONYMOUS
 		_ = postfile.SetAnonUID(uid)
 	} else {
