@@ -98,6 +98,14 @@ def _load_general_articles(bid):
     return ''
 
 
+@app.route(_with_app_prefix('/board/<bid>/detail'), methods=['GET'])
+def _get_board_detail(bid):
+    """
+    swagger_from_file: apidoc/get_board_detail.yaml
+    """
+    return ''
+
+
 @app.route(_with_app_prefix('/board/<bid>/articles/bottom'), methods=['GET'])
 def _load_bottom_articles(bid):
     """
@@ -163,9 +171,17 @@ def _get_article(bid, aid):
 
 
 @app.route(_with_app_prefix('/board/<bid>/article'), methods=['POST'])
-def _create_article(bid, aid):
+def _create_article(bid):
     """
     swagger_from_file: apidoc/create_article.yaml
+    """
+    return ''
+
+
+@app.route(_with_app_prefix('/board/<bid>/article/<aid>/edit'), methods=['POST'])
+def _edit_article(bid, aid):
+    """
+    swagger_from_file: apidoc/edit_article.yaml
     """
     return ''
 
