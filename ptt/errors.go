@@ -34,6 +34,8 @@ var (
 	ErrInvalidBoard = errors.New("invalid board")
 
 	ErrNoRecord = errors.New("no record")
+
+	ErrInvalidFileHash = errors.New("invalid file hash")
 )
 
 func FatalLockedUser(userID *ptttype.UserID_t) error {

@@ -22,3 +22,7 @@ func Isnumber(c byte) bool {
 func Isalnum(c byte) bool {
 	return Isalpha(c) || Isnumber(c)
 }
+
+func Isascii(c byte) bool {
+	return c < 0x80
+}

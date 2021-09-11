@@ -23,6 +23,9 @@ echo "#define HOTBOARDCACHE (10)" >> /home/bbs/pttbbs/pttbbs.conf
 # 7. add USE_EDIT_HISTORY
 echo "#define USE_EDIT_HISTORY" >> /home/bbs/pttbbs/pttbbs.conf
 
+# 7. add SAFE_ARTICLE_DELETE
+echo "#define SAFE_ARTICLE_DELETE" >> /home/bbs/pttbbs/pttbbs.conf
+
 # 7. add contact-email
 echo "#define USEREC_EMAIL_IS_CONTACT" >> /home/bbs/pttbbs/pttbbs.conf
 echo "#define ALLOW_REGISTER_WITH_ONLY_CONTACT_EMAIL" >> /home/bbs/pttbbs/pttbbs.conf

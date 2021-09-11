@@ -1,0 +1,72 @@
+BoardDetail:
+  type: object
+  properties:
+    brdname:
+      type: string
+    title:
+      type: string
+      description: base64 of big5, the title excluding board-class and board-type
+    class:
+      type: string
+      description: base64 of big5, the board class
+    type:
+      type: string
+      description: base64 of big5, the board-type (□, ◎, Σ, ...)
+    moderators:
+      type: array
+      items:
+        type: string
+      description: BMs
+    attr:
+      type: number
+      description: <a href="https://github.com/Ptt-official-app/go-pttbbs/blob/main/ptttype/brdattr.go">board-flag.</a>
+    pttgid:
+      type: string
+    pttbid:
+      type: string
+    bid:
+      type: string
+    chesscountry:
+      type: string
+      description: base64 of <a href="https://github.com/Ptt-official-app/go-pttbbs/blob/main/ptttype/ChessCode.go">chess code</a>.
+    votelimitlogins:
+      type: number
+    bupdate:
+      type: number
+      description: 最後一次 update 板的時間.
+    postlimitlogin:
+      type: number
+    bvote:
+      type: number
+    vtime:
+      type: number
+      description: end-time of vote.
+    level:
+      type: number
+      description: https://github.com/Ptt-official-app/go-pttbbs/blob/main/ptttype/perm.go
+    permreload:
+      type: number
+      description: 上次 perm update 時間.
+    nuser:
+      type: number
+    postexpire:
+      type: number
+    endgamble:
+      type: number
+      description: 賭盤截止時間
+    posttype:
+      type: string
+    fastrecommendpause:
+      type: number
+    votelimitbadpost:
+      type: number
+    last_post_time:
+      type: number
+    total:
+      type: number
+    idx_name:
+      type: string
+    idx_class:
+      type: string
+    reason:
+      type: string

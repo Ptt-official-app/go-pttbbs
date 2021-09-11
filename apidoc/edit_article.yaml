@@ -1,4 +1,4 @@
-get_article
+Edit Article
 ---
 tags:
   - board
@@ -18,18 +18,34 @@ parameters:
     type: string
     required: true
     description: article-id (returned from /boards/{bid}/articles)
-  - '$ref': '#/definitions/ParamsSystem'
-  - name: hash
-    in: query
-    type: bool
-    required: false
-    description: whether to return hash.
-    default: false
-responses:
-  200:
+  - name: params
+    in: body
+    required: true
     schema:
       '$id': https://json-schema.org/draft/2019-09/output/schema
       type: object
+      properties:
+        title:
+          type: string
+          description: base64-big5
+        content:
+          type: array
+          items:
+            type: array
+            items:
+              type: string
+          description: '[][]base64-big5'
+        oldsz:
+          type: number
+          description: original size from GetArticle
+        oldsum:
+          type: number
+          description: original hash from GetArticle
+responses:
+  200:
+    description: index-response
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
       properties:
         content:
           type: string
@@ -37,6 +53,3 @@ responses:
           required: true
         mtime:
           type: number
-        hash:
-          type: number
-          description: fnv64 number representing the DBCS-content.

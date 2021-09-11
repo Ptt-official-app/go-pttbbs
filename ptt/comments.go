@@ -1,8 +1,6 @@
 package ptt
 
 import (
-	"encoding/binary"
-	"io"
 	"os"
 	"time"
 
@@ -168,74 +166,6 @@ func doAddRecommendSmartMerge(filename string, comment []byte) (err error) {
 	defer func() { _ = cmsys.GoFunlock(file.Fd(), filename) }()
 
 	_, err = file.Write(comment)
-
-	return err
-}
-
-func ModifyDirLite(dirFilename string, idx ptttype.SortIdx, filename *ptttype.Filename_t, mtime types.Time4, title *ptttype.Title_t, owner *ptttype.Owner_t, theDate *ptttype.Date_t, recommend int8, multi []byte, enableModes ptttype.FileMode, disableModes ptttype.FileMode) (err error) {
-	sz := types.DashS(dirFilename)
-	if sz < int64(ptttype.FILE_HEADER_RAW_SZ)*int64(idx) {
-		return ptttype.ErrInvalidIdx
-	}
-
-	file, err := os.OpenFile(dirFilename, os.O_RDWR, 0o644)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	idxInFile := idx.ToSortIdxInStore()
-	_, err = file.Seek(int64(idxInFile)*int64(ptttype.FILE_HEADER_RAW_SZ), io.SeekStart)
-	if err != nil {
-		return err
-	}
-
-	fhdr := &ptttype.FileHeaderRaw{}
-	err = types.BinaryRead(file, binary.LittleEndian, fhdr)
-	if err != nil {
-		return err
-	}
-	if types.Cstrcmp(fhdr.Filename[:], filename[:]) != 0 {
-		return ptttype.ErrInvalidIdx
-	}
-
-	if mtime > 0 {
-		fhdr.Modified = mtime
-	}
-	if enableModes != 0 {
-		fhdr.Filemode |= enableModes
-	}
-	if disableModes != 0 {
-		fhdr.Filemode &= ^disableModes
-	}
-	if title != nil && title[0] != 0 {
-		fhdr.Title = *title
-	}
-	if owner != nil && owner[0] != 0 {
-		fhdr.Owner = *owner
-	}
-	if theDate != nil && theDate[0] != 0 {
-		fhdr.Date = *theDate
-	}
-	if multi != nil {
-		copy(fhdr.Multi[:], multi)
-	}
-
-	if recommend != 0 {
-		recommend += fhdr.Recommend
-		if recommend > ptttype.MAX_RECOMMENDS {
-			recommend = ptttype.MAX_RECOMMENDS
-		} else if recommend < -ptttype.MAX_RECOMMENDS {
-			recommend = -ptttype.MAX_RECOMMENDS
-		}
-		fhdr.Recommend = recommend
-	}
-
-	_, err = file.Seek(int64(idxInFile)*int64(ptttype.FILE_HEADER_RAW_SZ), io.SeekStart)
-	if err != nil {
-		return err
-	}
-	err = types.BinaryWrite(file, binary.LittleEndian, fhdr)
 
 	return err
 }

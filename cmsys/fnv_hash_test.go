@@ -7,12 +7,12 @@ import (
 func Test_fnv32Bytes(t *testing.T) {
 	type args struct {
 		theBytes []byte
-		hval     uint32
+		hval     Fnv32_t
 	}
 	tests := []struct {
 		name     string
 		args     args
-		expected uint32
+		expected Fnv32_t
 	}{
 		// TODO: Add test cases.
 		{
@@ -32,12 +32,12 @@ func Test_fnv32Bytes(t *testing.T) {
 func Test_fnv1a32Bytes(t *testing.T) {
 	type args struct {
 		theBytes []byte
-		hval     uint32
+		hval     Fnv32_t
 	}
 	tests := []struct {
 		name     string
 		args     args
-		expected uint32
+		expected Fnv32_t
 	}{
 		// TODO: Add test cases.
 		{
@@ -57,12 +57,12 @@ func Test_fnv1a32Bytes(t *testing.T) {
 func Test_fnv1a32StrCase(t *testing.T) {
 	type args struct {
 		theBytes []byte
-		hval     uint32
+		hval     Fnv32_t
 	}
 	tests := []struct {
 		name     string
 		args     args
-		expected uint32
+		expected Fnv32_t
 	}{
 		// TODO: Add test cases.
 		{
@@ -82,12 +82,12 @@ func Test_fnv1a32StrCase(t *testing.T) {
 func Test_fnv1a32DBCSCase(t *testing.T) {
 	type args struct {
 		theBytes []byte
-		hval     uint32
+		hval     Fnv32_t
 	}
 	tests := []struct {
 		name     string
 		args     args
-		expected uint32
+		expected Fnv32_t
 	}{
 		// TODO: Add test cases.
 		{
@@ -107,12 +107,12 @@ func Test_fnv1a32DBCSCase(t *testing.T) {
 func Test_fnv64Bytes(t *testing.T) {
 	type args struct {
 		theBytes []byte
-		hval     uint64
+		hval     Fnv64_t
 	}
 	tests := []struct {
 		name     string
 		args     args
-		expected uint64
+		expected Fnv64_t
 	}{
 		// TODO: Add test cases.
 		{
@@ -132,12 +132,12 @@ func Test_fnv64Bytes(t *testing.T) {
 func Test_fnv1a64Bytes(t *testing.T) {
 	type args struct {
 		theBytes []byte
-		hval     uint64
+		hval     Fnv64_t
 	}
 	tests := []struct {
 		name     string
 		args     args
-		expected uint64
+		expected Fnv64_t
 	}{
 		// TODO: Add test cases.
 		{
@@ -157,12 +157,12 @@ func Test_fnv1a64Bytes(t *testing.T) {
 func Test_fnv1a64StrCase(t *testing.T) {
 	type args struct {
 		theBytes []byte
-		hval     uint64
+		hval     Fnv64_t
 	}
 	tests := []struct {
 		name     string
 		args     args
-		expected uint64
+		expected Fnv64_t
 	}{
 		// TODO: Add test cases.
 		{
@@ -182,12 +182,12 @@ func Test_fnv1a64StrCase(t *testing.T) {
 func Test_fnv1a64DBCSCase(t *testing.T) {
 	type args struct {
 		theBytes []byte
-		hval     uint64
+		hval     Fnv64_t
 	}
 	tests := []struct {
 		name     string
 		args     args
-		expected uint64
+		expected Fnv64_t
 	}{
 		// TODO: Add test cases.
 		{
@@ -207,12 +207,12 @@ func Test_fnv1a64DBCSCase(t *testing.T) {
 func Test_fnv1aByte(t *testing.T) {
 	type args struct {
 		theByte byte
-		hval    uint32
+		hval    Fnv32_t
 	}
 	tests := []struct {
 		name     string
 		args     args
-		expected uint32
+		expected Fnv32_t
 	}{
 		// TODO: Add test cases.
 		{

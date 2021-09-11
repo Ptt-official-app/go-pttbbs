@@ -136,6 +136,10 @@ func CopyFileToDir(src string, dst string) (err error) {
 	return CopyFileToFile(src, dstFilename)
 }
 
+func Unlink(filename string) (err error) {
+	return os.Remove(filename)
+}
+
 //Rename
 //
 //Force rename src to dst by recursively-deleting old dst.

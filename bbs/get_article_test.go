@@ -2,12 +2,13 @@ package bbs
 
 import (
 	"os"
-	"reflect"
 	"sync"
 	"testing"
 	"time"
 
+	"github.com/Ptt-official-app/go-pttbbs/cmsys"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
@@ -28,12 +29,14 @@ func TestGetArticle(t *testing.T) {
 		bboardID   BBoardID
 		articleID  ArticleID
 		retrieveTS types.Time4
+		isHash     bool
 	}
 	tests := []struct {
 		name            string
 		args            args
 		expectedContent []byte
 		expectedMtime   types.Time4
+		expectedSum     cmsys.Fnv64_t
 		wantErr         bool
 	}{
 		// TODO: Add test cases.
@@ -52,17 +55,16 @@ func TestGetArticle(t *testing.T) {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
-			gotContent, gotMtime, err := GetArticle(tt.args.uuserID, tt.args.bboardID, tt.args.articleID, tt.args.retrieveTS)
+			gotContent, gotMtime, gotsum, err := GetArticle(tt.args.uuserID, tt.args.bboardID, tt.args.articleID, tt.args.retrieveTS, tt.args.isHash)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetArticle() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(gotContent, tt.expectedContent) {
-				t.Errorf("GetArticle() gotContent = %v, want %v", gotContent, tt.expectedContent)
-			}
-			if !reflect.DeepEqual(gotMtime, tt.expectedMtime) {
-				t.Errorf("GetArticle() gotMtime = %v, want %v", gotMtime, tt.expectedMtime)
-			}
+			testutil.TDeepEqual(t, "got", gotContent, tt.expectedContent)
+
+			testutil.TDeepEqual(t, "sum", gotsum, tt.expectedSum)
+
+			testutil.TDeepEqual(t, "mtime", gotMtime, tt.expectedMtime)
 		})
 	}
 	wg.Wait()

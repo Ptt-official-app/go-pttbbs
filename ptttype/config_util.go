@@ -233,6 +233,24 @@ func setFNSafeDel(fnSafeDel string) (origFNSafeDel string) {
 	return origFNSafeDel
 }
 
+func setMaxPostMoney(maxPostMoney int) (origMaxPostMoney int) {
+	origMaxPostMoney = MAX_POST_MONEY
+
+	MAX_POST_MONEY = maxPostMoney
+	ENTROPY_MAX = int(float64(MAX_POST_MONEY) * ENTROPY_RATIO)
+
+	return origMaxPostMoney
+}
+
+func setEntropyRatio(entropyRatio float64) (origEntropyRatio float64) {
+	origEntropyRatio = ENTROPY_RATIO
+
+	ENTROPY_RATIO = entropyRatio
+	ENTROPY_MAX = int(float64(MAX_POST_MONEY) * ENTROPY_RATIO)
+
+	return origEntropyRatio
+}
+
 func postInitConfig() error {
 	_ = setServiceMode(SERVICE_MODE)
 	_ = SetBBSHOME(BBSHOME)
@@ -243,6 +261,8 @@ func postInitConfig() error {
 	_ = setRecycleBinName(RECYCLE_BIN_NAME)
 	_ = setBoards()
 	_ = setFNSafeDel(FN_SAFEDEL)
+	_ = setMaxPostMoney(MAX_POST_MONEY)
+	_ = setEntropyRatio(ENTROPY_RATIO)
 
 	return nil
 }

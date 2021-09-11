@@ -18,3 +18,4 @@ definitions:
   !include defs/user.yaml
   !include defs/token.yaml
   !include defs/email_token.yaml
+  !include defs/board_detail.yaml

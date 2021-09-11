@@ -102,6 +102,9 @@ func GetRecord(dirFilename string, filename *ptttype.Filename_t, total int) (idx
 	if err != nil {
 		return 0, nil, err
 	}
+	if !filename.Eq(&fhdr.Filename) {
+		return 0, nil, ErrRecordNotFound
+	}
 
 	return idx, fhdr, nil
 }
