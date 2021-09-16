@@ -10,8 +10,9 @@ import (
 const EDIT_ARTICLE_R = "/board/:bid/article/:aid/edit"
 
 type EditArticleParams struct {
-	Title   []byte   `json:"title,omitempty" form:"title,omitempty" url:"title,omitempty"`
-	Content [][]byte `json:"content" form:"content" url:"content"`
+	PostType []byte   `json:"class" form:"class" url:"class"`
+	Title    []byte   `json:"title,omitempty" form:"title,omitempty" url:"title,omitempty"`
+	Content  [][]byte `json:"content" form:"content" url:"content"`
 
 	OldSZ  int           `json:"oldsz" form:"oldsz" url:"oldsz"`
 	OldSum cmsys.Fnv64_t `json:"oldsum" form:"oldsum" url:"oldsum"`
@@ -44,7 +45,7 @@ func EditArticle(remoteAddr string, uuserID bbs.UUserID, params interface{}, pat
 		return nil, ErrInvalidPath
 	}
 
-	content, mtime, err := bbs.EditArticle(uuserID, thePath.BBoardID, thePath.ArticleID, theParams.Title, theParams.Content, theParams.OldSZ, theParams.OldSum, remoteAddr)
+	content, mtime, err := bbs.EditArticle(uuserID, thePath.BBoardID, thePath.ArticleID, theParams.PostType, theParams.Title, theParams.Content, theParams.OldSZ, theParams.OldSum, remoteAddr)
 	if err != nil {
 		return nil, err
 	}

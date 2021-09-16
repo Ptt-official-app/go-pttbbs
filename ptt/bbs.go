@@ -22,6 +22,7 @@ func EditPost(
 	boardID *ptttype.BoardID_t,
 	bid ptttype.Bid,
 	filename *ptttype.Filename_t,
+	posttype []byte,
 	title []byte,
 	content [][]byte,
 	oldSZ int,
@@ -148,7 +149,8 @@ func EditPost(
 		titleRaw = &fhdr.Title
 	} else {
 		titleRaw = &ptttype.Title_t{}
-		copy(titleRaw[:], title)
+		fullTitle := doPostArticleFullTitle(posttype, title)
+		copy(titleRaw[:], fullTitle)
 	}
 	err = ModifyDirLite(dirFilename, aid, filename, mtime, titleRaw, nil, nil, 0, nil, 0, 0)
 	if err != nil {
