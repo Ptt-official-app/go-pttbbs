@@ -98,6 +98,7 @@ func TestEditArticle(t *testing.T) {
 		uuserID   UUserID
 		bboardID  BBoardID
 		articleID ArticleID
+		posttype  []byte
 		title     []byte
 		content   [][]byte
 		oldSZ     int
@@ -122,7 +123,7 @@ func TestEditArticle(t *testing.T) {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
-			gotNewContent, _, err := EditArticle(tt.args.uuserID, tt.args.bboardID, tt.args.articleID, tt.args.title, tt.args.content, tt.args.oldSZ, tt.args.oldsum, tt.args.ip)
+			gotNewContent, _, err := EditArticle(tt.args.uuserID, tt.args.bboardID, tt.args.articleID, tt.args.posttype, tt.args.title, tt.args.content, tt.args.oldSZ, tt.args.oldsum, tt.args.ip)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("EditArticle() error = %v, wantErr %v", err, tt.wantErr)
 				return

@@ -12,6 +12,7 @@ func EditArticle(
 	uuserID UUserID,
 	bboardID BBoardID,
 	articleID ArticleID,
+	posttype []byte,
 	title []byte,
 	content [][]byte,
 	oldSZ int,
@@ -39,5 +40,5 @@ func EditArticle(
 	from := fromd.GetFrom(ipRaw)
 
 	filename := articleID.ToFilename()
-	return ptt.EditPost(userecRaw, uid, boardIDRaw, bid, filename, title, content, oldSZ, oldsum, ipRaw, from)
+	return ptt.EditPost(userecRaw, uid, boardIDRaw, bid, filename, posttype, title, content, oldSZ, oldsum, ipRaw, from)
 }

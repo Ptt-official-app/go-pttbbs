@@ -766,6 +766,7 @@ func TestEditPost(t *testing.T) {
 		boardID  *ptttype.BoardID_t
 		bid      ptttype.Bid
 		filename *ptttype.Filename_t
+		posttype []byte
 		title    []byte
 		content  [][]byte
 		ip       *ptttype.IPv4_t
@@ -822,7 +823,7 @@ func TestEditPost(t *testing.T) {
 			oldSum := cmsys.FNV1_64_INIT
 			oldSum = cmsys.Fnv64Buf(postContent, oldSZ, oldSum)
 
-			gotNewContent, _, err := EditPost(tt.args.user, tt.args.uid, tt.args.boardID, tt.args.bid, tt.args.filename, tt.args.title, tt.args.content, oldSZ, oldSum, tt.args.ip, tt.args.from)
+			gotNewContent, _, err := EditPost(tt.args.user, tt.args.uid, tt.args.boardID, tt.args.bid, tt.args.filename, tt.args.posttype, tt.args.title, tt.args.content, oldSZ, oldSum, tt.args.ip, tt.args.from)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("EditPost() error = %v, wantErr %v", err, tt.wantErr)
 				return
