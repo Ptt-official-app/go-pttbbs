@@ -17,6 +17,7 @@ func TestEditArticle(t *testing.T) {
 
 	class0 := []byte("test")
 	title0 := []byte("this is a test")
+	fullTitle0 := []byte("[test] this is a test")
 	postContent0 := [][]byte{[]byte("test1"), []byte("test2")}
 	ip0 := "127.0.0.1"
 
@@ -108,6 +109,7 @@ func TestEditArticle(t *testing.T) {
 		Content:   expectedContent0,
 		Class:     class0,
 		RealTitle: title0,
+		FullTitle: fullTitle0,
 	}
 
 	type args struct {

@@ -21,6 +21,8 @@ func TestEditArticle(t *testing.T) {
 	postContent0 := [][]byte{[]byte("test1"), []byte("test2")}
 	ip0 := "127.0.0.1"
 
+	fullTitle0 := []byte("[test] this is a test")
+
 	gotSummary, _ := CreateArticle("A1", "10_WhoAmI", class0, title0, postContent0, ip0)
 
 	gotContent0, _, oldSum0, _ := GetArticle("A1", "10_WhoAmI", gotSummary.ArticleID, 0, true)
@@ -112,6 +114,7 @@ func TestEditArticle(t *testing.T) {
 		expectedMtime      types.Time4
 		expectedTitle      []byte
 		expectedClass      []byte
+		expectedFullTitle  []byte
 		wantErr            bool
 	}{
 		// TODO: Add test cases.
@@ -120,6 +123,7 @@ func TestEditArticle(t *testing.T) {
 			expectedNewContent: expectedContent0,
 			expectedTitle:      title0,
 			expectedClass:      class0,
+			expectedFullTitle:  fullTitle0,
 		},
 	}
 	var wg sync.WaitGroup
@@ -127,7 +131,7 @@ func TestEditArticle(t *testing.T) {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
-			gotNewContent, _, gotTitle, gotClass, err := EditArticle(tt.args.uuserID, tt.args.bboardID, tt.args.articleID, tt.args.posttype, tt.args.title, tt.args.content, tt.args.oldSZ, tt.args.oldsum, tt.args.ip)
+			gotNewContent, _, gotTitle, gotClass, gotFullTitle, err := EditArticle(tt.args.uuserID, tt.args.bboardID, tt.args.articleID, tt.args.posttype, tt.args.title, tt.args.content, tt.args.oldSZ, tt.args.oldsum, tt.args.ip)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("EditArticle() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -138,6 +142,7 @@ func TestEditArticle(t *testing.T) {
 			testutil.TDeepEqual(t, "got", gotNewContent, tt.expectedNewContent)
 			testutil.TDeepEqual(t, "title", gotTitle, tt.expectedTitle)
 			testutil.TDeepEqual(t, "class", gotClass, tt.expectedClass)
+			testutil.TDeepEqual(t, "full-title", gotFullTitle, tt.expectedFullTitle)
 		})
 		wg.Wait()
 	}
