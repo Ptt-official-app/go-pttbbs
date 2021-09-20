@@ -24,8 +24,10 @@ type EditArticlePath struct {
 }
 
 type EditArticleResult struct {
-	MTime   types.Time4 `json:"mtime"`
-	Content []byte      `json:"content"` // content contains all the necessary information.
+	MTime     types.Time4 `json:"mtime"`
+	Content   []byte      `json:"content"` // content contains all the necessary information.
+	RealTitle []byte      `json:"title"`
+	Class     []byte      `json:"class"`
 }
 
 func EditArticleWrapper(c *gin.Context) {
@@ -45,14 +47,16 @@ func EditArticle(remoteAddr string, uuserID bbs.UUserID, params interface{}, pat
 		return nil, ErrInvalidPath
 	}
 
-	content, mtime, err := bbs.EditArticle(uuserID, thePath.BBoardID, thePath.ArticleID, theParams.PostType, theParams.Title, theParams.Content, theParams.OldSZ, theParams.OldSum, remoteAddr)
+	content, mtime, theTitle, theClass, err := bbs.EditArticle(uuserID, thePath.BBoardID, thePath.ArticleID, theParams.PostType, theParams.Title, theParams.Content, theParams.OldSZ, theParams.OldSum, remoteAddr)
 	if err != nil {
 		return nil, err
 	}
 
 	r := &EditArticleResult{
-		Content: content,
-		MTime:   mtime,
+		Content:   content,
+		MTime:     mtime,
+		RealTitle: theTitle,
+		Class:     theClass,
 	}
 
 	return r, nil

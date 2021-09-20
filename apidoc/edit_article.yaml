@@ -53,3 +53,7 @@ responses:
           required: true
         mtime:
           type: number
+        class:
+          type: string
+        title:
+          type: string
