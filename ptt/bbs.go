@@ -32,55 +32,56 @@ func EditPost(
 
 	newContent []byte,
 	mtime types.Time4,
+	newTitle *ptttype.Title_t,
 	err error) {
 	// 1. check perm.
 	board, err := cache.GetBCache(bid)
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, nil, err
 	}
 
 	statAttr := boardPermStat(user, uid, board, bid)
 	if statAttr == ptttype.NBRD_INVALID {
-		return nil, 0, ErrNotPermitted
+		return nil, 0, nil, ErrNotPermitted
 	}
 
 	// 2. check
 	if isReadonlyBoard(boardID) || board.BrdAttr.HasPerm(ptttype.BRD_VOTEBOARD) {
-		return nil, 0, ErrNotPermitted
+		return nil, 0, nil, ErrNotPermitted
 	}
 
 	aid, fhdr, err := getFileHeader(boardID, bid, filename)
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, nil, err
 	}
 
 	if fhdr.Filemode.HasMode(ptttype.FILE_VOTE) {
-		return nil, 0, ErrNotPermitted
+		return nil, 0, nil, ErrNotPermitted
 	}
 
 	if ptttype.SAFE_ARTICLE_DELETE && fhdr.Filename[0] == '.' {
-		return nil, 0, ErrDeleted
+		return nil, 0, nil, ErrDeleted
 	}
 
 	if !user.UserLevel.HasUserPerm(ptttype.PERM_BASIC) {
-		return nil, 0, ErrNotPermitted
+		return nil, 0, nil, ErrNotPermitted
 	}
 	err = CheckPostPerm2(uid, user, bid, board)
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, nil, err
 	}
 
 	reason, err := getBoardRestrictionReason(user, uid, board, bid)
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, nil, err
 	}
 	if reason != ptttype.RESTRICT_REASON_NONE {
-		return nil, 0, ErrNotPermitted
+		return nil, 0, nil, ErrNotPermitted
 	}
 
 	dirFilename, err := setBDir(boardID)
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, nil, err
 	}
 
 	theFilePath := path.SetDIRPath(dirFilename, types.CstrToString(filename[:]))
@@ -88,13 +89,13 @@ func EditPost(
 	if !isFileOwner(fhdr, user) {
 		if ptttype.USE_SYSOP_EDIT {
 			if !user.UserLevel.HasUserPerm(ptttype.PERM_SYSOP) {
-				return nil, 0, ErrNotPermitted
+				return nil, 0, nil, ErrNotPermitted
 			}
 
 			nowTS := types.NowTS()
 			_ = cmsys.LogFilef("log/security", cmsys.LOG_CREAT, fmt.Sprintf("%v %v %v admin edit (board) file=%s\n", nowTS, nowTS.Cdate(), types.CstrToString(user.UserID[:]), theFilePath))
 		} else {
-			return nil, 0, ErrNotPermitted
+			return nil, 0, nil, ErrNotPermitted
 		}
 	}
 
@@ -110,21 +111,21 @@ func EditPost(
 	postfile := &ptttype.FileHeaderRaw{}
 	tmpFilename, err := cmbbs.Stampfile(bpath, postfile)
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, nil, err
 	}
 
 	_, err = WriteFile(tmpFilename, ptttype.EDITFLAG_NONE, false, board.BrdAttr.HasPerm(ptttype.BRD_ANGELANONYMOUS), nil, content, user, uid, board, bid, ip, from, ptttype.USER_OP_REEDIT)
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, nil, err
 	}
 
 	// 2. hash partial file
 	newsum, err := hashPartialFile(theFilePath, oldSZ)
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, nil, err
 	}
 	if oldsum != newsum {
-		return nil, 0, ErrInvalidFileHash
+		return nil, 0, nil, ErrInvalidFileHash
 	}
 
 	// piaip Wed Jan  9 11:11:33 CST 2008
@@ -136,12 +137,12 @@ func EditPost(
 	_ = types.Unlink(theFilePath)
 	err = types.Rename(tmpFilename, theFilePath)
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, nil, err
 	}
 
 	newContent, mtime, _, err = readContent(theFilePath, 0, false)
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, nil, err
 	}
 
 	var titleRaw *ptttype.Title_t
@@ -154,10 +155,10 @@ func EditPost(
 	}
 	err = ModifyDirLite(dirFilename, aid, filename, mtime, titleRaw, nil, nil, 0, nil, 0, 0)
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, nil, err
 	}
 
-	return newContent, mtime, nil
+	return newContent, mtime, titleRaw, nil
 }
 
 //ReadPost

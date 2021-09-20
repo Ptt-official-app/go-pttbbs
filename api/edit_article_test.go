@@ -105,7 +105,9 @@ func TestEditArticle(t *testing.T) {
 	}
 
 	expected := &EditArticleResult{
-		Content: expectedContent0,
+		Content:   expectedContent0,
+		Class:     class0,
+		RealTitle: title0,
 	}
 
 	type args struct {

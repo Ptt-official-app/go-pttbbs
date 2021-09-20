@@ -688,6 +688,8 @@ func TestEditPost(t *testing.T) {
 		193, 194, 196, 197, 199, 200, 201, 202, 204, 205, 207, 208, 210, 211, // 時間
 	}
 
+	expectedTitle0 := &fullTitle0
+
 	editContent1 := [][]byte{
 		{
 			0xa7, 0x40, 0xaa, 0xcc, 0x3a, 0x20, 0x41, 0x31, 0x20, // 作者: A1
@@ -760,6 +762,8 @@ func TestEditPost(t *testing.T) {
 		223, 224, 226, 227, 229, 230, 231, 232, 234, 235, 237, 238, 240, 241, // 時間
 	}
 
+	expectedTitle1 := &fullTitle0
+
 	type args struct {
 		user     *ptttype.UserecRaw
 		uid      ptttype.UID
@@ -777,6 +781,7 @@ func TestEditPost(t *testing.T) {
 		args               args
 		expectedNewContent []byte
 		expectedMtime      types.Time4
+		expectedTitle      *ptttype.Title_t
 		removeIdxes        []int
 		wantErr            bool
 	}{
@@ -793,6 +798,7 @@ func TestEditPost(t *testing.T) {
 			},
 			removeIdxes:        removeIdxes0,
 			expectedNewContent: expectedContent0,
+			expectedTitle:      expectedTitle0,
 		},
 		{
 			args: args{
@@ -806,6 +812,7 @@ func TestEditPost(t *testing.T) {
 			},
 			removeIdxes:        removeIdxes1,
 			expectedNewContent: expectedContent1,
+			expectedTitle:      expectedTitle1,
 		},
 	}
 	var wg sync.WaitGroup
@@ -823,7 +830,7 @@ func TestEditPost(t *testing.T) {
 			oldSum := cmsys.FNV1_64_INIT
 			oldSum = cmsys.Fnv64Buf(postContent, oldSZ, oldSum)
 
-			gotNewContent, _, err := EditPost(tt.args.user, tt.args.uid, tt.args.boardID, tt.args.bid, tt.args.filename, tt.args.posttype, tt.args.title, tt.args.content, oldSZ, oldSum, tt.args.ip, tt.args.from)
+			gotNewContent, _, gotTitle, err := EditPost(tt.args.user, tt.args.uid, tt.args.boardID, tt.args.bid, tt.args.filename, tt.args.posttype, tt.args.title, tt.args.content, oldSZ, oldSum, tt.args.ip, tt.args.from)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("EditPost() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -839,6 +846,8 @@ func TestEditPost(t *testing.T) {
 			}
 
 			testutil.TDeepEqual(t, "got", gotNewContent, tt.expectedNewContent)
+
+			testutil.TDeepEqual(t, "title", gotTitle, tt.expectedTitle)
 		})
 		wg.Wait()
 	}
