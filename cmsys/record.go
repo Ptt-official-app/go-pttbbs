@@ -483,3 +483,30 @@ func AppendRecord(filename string, data interface{}, theSize uintptr) (idx pttty
 
 	return idxInStore.ToSortIdx(), nil
 }
+
+func DeleteRecord(filename string, index ptttype.SortIdx, theSize uintptr) error {
+	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, os.FileMode(ptttype.DEFAULT_FILE_CREATE_PERM))
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	fd := file.Fd()
+	err = GoFlock(fd, filename)
+	if err != nil {
+		return err
+	}
+	defer func() { _ = GoFunlock(fd, filename) }()
+
+	offset := int64(index) * int64(theSize)
+	_, err = file.Seek(offset, io.SeekStart)
+	if err != nil {
+		return err
+	}
+
+	err = types.BinaryWrite(file, binary.LittleEndian, "test")
+	if err != nil {
+		return err
+	}
+	return nil
+}
