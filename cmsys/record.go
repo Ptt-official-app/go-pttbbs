@@ -504,7 +504,7 @@ func DeleteRecord(filename string, index ptttype.SortIdx, theSize uintptr) error
 		return err
 	}
 
-	err = types.BinaryWrite(file, binary.LittleEndian, "test")
+	err = types.BinaryWrite(file, binary.LittleEndian, ptttype.FN_SAFEDEL)
 	if err != nil {
 		return err
 	}
