@@ -26,11 +26,18 @@ func DeleteArticles(uuserID UUserID, bboardID BBoardID, articleIDs []ArticleID, 
 		filename := articleID.ToFilename()
 		createTime, err := filename.CreateTime()
 		startIdx, err := ptt.FindArticleStartIdx(userecRaw, uid, boardIDRaw, bid, createTime, filename, false)
-		result = append(result, startIdx)
-		// TODO is need recover deleted items if get error?
-		err = ptt.DeleteArticles(boardIDRaw, filename, startIdx)
-		if err != nil {
-			return nil, err
+		// FindArticleStartIdx only find nearest idx, so we must make sure filename is exactly correct
+		summariesRaw, _, _, _, _ := ptt.LoadGeneralArticles(userecRaw, uid, boardIDRaw, bid, startIdx, 1, true)
+		if len(summariesRaw) == 1 {
+			articleSummary := NewArticleSummaryFromRaw(bboardID, summariesRaw[0])
+			if articleID == articleSummary.ArticleID {
+				result = append(result, startIdx)
+				// TODO is need recover deleted items if get error?
+				err = ptt.DeleteArticles(boardIDRaw, filename, startIdx)
+				if err != nil {
+					return nil, err
+				}
+			}
 		}
 	}
 	return result, nil

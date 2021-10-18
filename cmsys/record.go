@@ -484,7 +484,7 @@ func AppendRecord(filename string, data interface{}, theSize uintptr) (idx pttty
 	return idxInStore.ToSortIdx(), nil
 }
 
-func DeleteRecord(filename string, index ptttype.SortIdx, theSize uintptr) error {
+func DeleteRecord(filename string, index ptttype.SortIdxInStore, theSize uintptr) error {
 	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, os.FileMode(ptttype.DEFAULT_FILE_CREATE_PERM))
 	if err != nil {
 		return err
@@ -503,8 +503,7 @@ func DeleteRecord(filename string, index ptttype.SortIdx, theSize uintptr) error
 	if err != nil {
 		return err
 	}
-
-	err = types.BinaryWrite(file, binary.LittleEndian, ptttype.FN_SAFEDEL)
+	err = types.BinaryWrite(file, binary.LittleEndian, []byte(ptttype.FN_SAFEDEL))
 	if err != nil {
 		return err
 	}
