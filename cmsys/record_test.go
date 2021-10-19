@@ -636,3 +636,47 @@ func TestAppendRecord(t *testing.T) {
 		wg.Wait()
 	}
 }
+
+func TestDeleteRecord(t *testing.T) {
+	case_1_FileHeaders := []ptttype.FileHeaderRaw{
+		*testArticleSummary1.FileHeaderRaw, // M.1607202239.A.30D
+		*testArticleSummary2.FileHeaderRaw, // M.1607203395.A.F6C
+		*testArticleSummary3.FileHeaderRaw, // M.1607203395.A.F6D
+		*testArticleSummary4.FileHeaderRaw, // M.1607203395.A.F6A
+		*testArticleSummary5.FileHeaderRaw, // M.1607203396.A.F6A
+	}
+	case_1_Filename := "./testcase/DIR_DELETE_ARTICLE"
+	defer os.RemoveAll(case_1_Filename)
+	file, _ := os.OpenFile(case_1_Filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0o644)
+	defer file.Close()
+	_ = types.BinaryWrite(file, binary.LittleEndian, case_1_FileHeaders)
+
+	type args struct {
+		filename string
+		index    ptttype.SortIdxInStore
+		theSize  uintptr
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+		{
+			name: "test delete index 0 w/o error",
+			args: args{
+				filename: case_1_Filename,
+				index:    0,
+				theSize:  ptttype.FILE_HEADER_RAW_SZ,
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := DeleteRecord(tt.args.filename, tt.args.index, tt.args.theSize); (err != nil) != tt.wantErr {
+				t.Errorf("DeleteRecord() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
