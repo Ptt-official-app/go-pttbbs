@@ -31,12 +31,12 @@ func DeleteArticles(uuserID UUserID, bboardID BBoardID, articleIDs []ArticleID, 
 		if len(summariesRaw) == 1 {
 			articleSummary := NewArticleSummaryFromRaw(bboardID, summariesRaw[0])
 			if articleID == articleSummary.ArticleID {
-				result = append(result, startIdx)
-				// TODO is need recover deleted items if get error?
 				err = ptt.DeleteArticles(boardIDRaw, filename, startIdx)
+				// TODO is need recover deleted items if get error?
 				if err != nil {
 					return nil, err
 				}
+				result = append(result, startIdx)
 			}
 		}
 	}
