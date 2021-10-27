@@ -25,7 +25,13 @@ func DeleteArticles(uuserID UUserID, bboardID BBoardID, articleIDs []ArticleID, 
 	for _, articleID := range articleIDs {
 		filename := articleID.ToFilename()
 		createTime, err := filename.CreateTime()
+		if err != nil {
+			return nil, err
+		}
 		startIdx, err := ptt.FindArticleStartIdx(userecRaw, uid, boardIDRaw, bid, createTime, filename, false)
+		if err != nil {
+			return nil, err
+		}
 		// FindArticleStartIdx only find nearest idx, so we must make sure filename is exactly correct
 		summariesRaw, _, _, _, _ := ptt.LoadGeneralArticles(userecRaw, uid, boardIDRaw, bid, startIdx, 1, true)
 		if len(summariesRaw) == 1 {
