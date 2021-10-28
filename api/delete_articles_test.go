@@ -4,13 +4,13 @@ import (
 	"encoding/binary"
 	"os"
 	"reflect"
+	"sync"
 	"testing"
 
+	"github.com/Ptt-official-app/go-pttbbs/bbs"
 	"github.com/Ptt-official-app/go-pttbbs/types"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
-
-	"github.com/Ptt-official-app/go-pttbbs/bbs"
 )
 
 func TestDeleteArticles(t *testing.T) {
@@ -99,8 +99,11 @@ func TestDeleteArticles(t *testing.T) {
 			false,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			wg.Done()
 			gotResult, err := DeleteArticles(tt.args.remoteAddr, tt.args.uuserID, tt.args.params, tt.args.path)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("DeleteArticles() error = %v, wantErr %v", err, tt.wantErr)
@@ -110,5 +113,6 @@ func TestDeleteArticles(t *testing.T) {
 				t.Errorf("DeleteArticles() gotResult = %v, want %v", gotResult, tt.wantResult)
 			}
 		})
+		wg.Wait()
 	}
 }

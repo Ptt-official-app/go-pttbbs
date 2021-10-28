@@ -672,11 +672,15 @@ func TestDeleteRecord(t *testing.T) {
 			wantErr: false,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			wg.Done()
 			if err := DeleteRecord(tt.args.filename, tt.args.index, tt.args.theSize); (err != nil) != tt.wantErr {
 				t.Errorf("DeleteRecord() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
+		wg.Wait()
 	}
 }

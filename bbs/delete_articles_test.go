@@ -3,6 +3,7 @@ package bbs
 import (
 	"encoding/binary"
 	"os"
+	"sync"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -100,8 +101,11 @@ func TestDeleteArticles(t *testing.T) {
 			wantErr: false,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			wg.Done()
 			idx, err := DeleteArticles(tt.args.uuserID, tt.args.bboardID, tt.args.articleIDs, tt.args.ip)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("DeleteArticles() error = %v, wantErr %v", err, tt.wantErr)
@@ -111,5 +115,6 @@ func TestDeleteArticles(t *testing.T) {
 				t.Errorf("DeleteArticles() result = %v, wanted %v", idx, tt.results)
 			}
 		})
+		wg.Wait()
 	}
 }
