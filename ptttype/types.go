@@ -343,6 +343,10 @@ func (f *Filename_t) Basename() string {
 	return types.CstrToString(f[:])
 }
 
+func (f *Filename_t) DeletedName() string {
+	return FN_SAFEDEL + types.CstrToString(f[FN_SAFEDEL_PREFIX_LEN:])
+}
+
 //Type
 //
 //https://github.com/ptt/pttbbs/blob/master/mbbsd/aids.c#L82

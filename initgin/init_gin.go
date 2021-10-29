@@ -47,6 +47,7 @@ func InitGin() (*gin.Engine, error) {
 	router.POST(withPrefix(api.CREATE_ARTICLE_R), api.CreateArticleWrapper)
 	router.POST(withPrefix(api.CROSS_POST_R), api.CrossPostWrapper)
 	router.POST(withPrefix(api.EDIT_ARTICLE_R), api.EditArticleWrapper)
+	router.POST(withPrefix(api.DELETE_ARTICLES_R), api.DeleteArticlesWrapper)
 
 	// comment
 	router.POST(withPrefix(api.CREATE_COMMENT_R), api.CreateCommentWrapper)

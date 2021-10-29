@@ -36,6 +36,9 @@ var (
 	ErrNoRecord = errors.New("no record")
 
 	ErrInvalidFileHash = errors.New("invalid file hash")
+
+	// read.go
+	ErrDeleteArticleFailed = errors.New("delete article failed")
 )
 
 func FatalLockedUser(userID *ptttype.UserID_t) error {
