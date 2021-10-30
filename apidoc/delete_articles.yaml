@@ -1,0 +1,38 @@
+Delete Articles
+---
+tags:
+  - board
+  - article
+parameters:
+  - '$ref': '#/definitions/Host'
+  - '$ref': '#/definitions/XForwardedFor'
+  - '$ref': '#/definitions/Authorization'
+  - name: bid
+    in: path
+    type: string
+    required: true
+    description: board-id
+  - name: params
+    in: body
+    required: true
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      type: object
+      properties:
+        aids:
+          type: array
+          items:
+            type: string
+            description: article-id
+responses:
+  200:
+    description: response
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      type: object
+      properties:
+        indexes:
+          type: array
+          items:
+            type: number
+            description: idx in .DIR

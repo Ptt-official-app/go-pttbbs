@@ -43,9 +43,10 @@ parameters:
           description: original hash from GetArticle
 responses:
   200:
-    description: index-response
+    description: response
     schema:
       '$id': https://json-schema.org/draft/2019-09/output/schema
+      type: object
       properties:
         content:
           type: string

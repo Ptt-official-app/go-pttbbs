@@ -186,6 +186,14 @@ def _edit_article(bid, aid):
     return ''
 
 
+@app.route(_with_app_prefix('/board/<bid>/deletearticles'), methods=['POST'])
+def _delete_articles(bid, aid):
+    """
+    swagger_from_file: apidoc/delete_articles.yaml
+    """
+    return ''
+
+
 @app.route(_with_app_prefix('/board/<bid>/article/<aid>/comment'), methods=['POST'])
 def _create_comment(bid, aid):
     """
