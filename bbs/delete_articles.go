@@ -20,7 +20,7 @@ func DeleteArticles(uuserID UUserID, bboardID BBoardID, articleIDs []ArticleID, 
 		return nil, err
 	}
 
-	var result []ArticleID
+	result := make([]ArticleID, 0, len(articleIDs))
 	for _, articleID := range articleIDs {
 		filename := articleID.ToFilename()
 		createTime, err := filename.CreateTime()
