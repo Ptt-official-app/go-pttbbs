@@ -75,7 +75,7 @@ func TestDeleteArticles(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		results []ptttype.SortIdx
+		results []ArticleID
 		wantErr bool
 	}{
 		{
@@ -86,7 +86,7 @@ func TestDeleteArticles(t *testing.T) {
 				articleIDs: []ArticleID{ToArticleID(filename0)},
 				ip:         "127.0.0.1",
 			},
-			results: []ptttype.SortIdx{1},
+			results: []ArticleID{ToArticleID(filename0)},
 			wantErr: false,
 		},
 		{
@@ -97,7 +97,7 @@ func TestDeleteArticles(t *testing.T) {
 				articleIDs: []ArticleID{ToArticleID(filename1)},
 				ip:         "127.0.0.1",
 			},
-			results: []ptttype.SortIdx{2},
+			results: []ArticleID{ToArticleID(filename1)},
 			wantErr: false,
 		},
 	}

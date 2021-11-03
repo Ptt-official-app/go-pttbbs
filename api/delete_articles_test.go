@@ -95,7 +95,7 @@ func TestDeleteArticles(t *testing.T) {
 				params0,
 				path0,
 			},
-			DeleteArticlesResult{Indexes: []ptttype.SortIdx{1}},
+			DeleteArticlesResult{ArticleIDs: []bbs.ArticleID{bbs.ToArticleID(filename0)}},
 			false,
 		},
 	}
