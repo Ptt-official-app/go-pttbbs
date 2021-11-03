@@ -2,7 +2,6 @@ package api
 
 import (
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
-	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,7 +16,7 @@ type DeleteArticlesPath struct {
 }
 
 type DeleteArticlesResult struct {
-	Indexes []ptttype.SortIdx `json:"indexes"`
+	ArticleIDs []bbs.ArticleID `json:"aids"`
 }
 
 func DeleteArticlesWrapper(c *gin.Context) {
@@ -41,5 +40,5 @@ func DeleteArticles(remoteAddr string, uuserID bbs.UUserID, params interface{}, 
 	if err != nil {
 		return nil, err
 	}
-	return DeleteArticlesResult{Indexes: result.([]ptttype.SortIdx)}, nil
+	return DeleteArticlesResult{ArticleIDs: result.([]bbs.ArticleID)}, nil
 }
