@@ -2,10 +2,9 @@ package bbs
 
 import (
 	"github.com/Ptt-official-app/go-pttbbs/ptt"
-	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 )
 
-func DeleteArticles(uuserID UUserID, bboardID BBoardID, articleIDs []ArticleID, ip string) ([]ptttype.SortIdx, error) {
+func DeleteArticles(uuserID UUserID, bboardID BBoardID, articleIDs []ArticleID, ip string) ([]ArticleID, error) {
 	userIDRaw, err := uuserID.ToRaw()
 	if err != nil {
 		return nil, err
@@ -21,7 +20,7 @@ func DeleteArticles(uuserID UUserID, bboardID BBoardID, articleIDs []ArticleID, 
 		return nil, err
 	}
 
-	var result []ptttype.SortIdx
+	var result []ArticleID
 	for _, articleID := range articleIDs {
 		filename := articleID.ToFilename()
 		createTime, err := filename.CreateTime()
@@ -38,11 +37,10 @@ func DeleteArticles(uuserID UUserID, bboardID BBoardID, articleIDs []ArticleID, 
 			articleSummary := NewArticleSummaryFromRaw(bboardID, summariesRaw[0])
 			if articleID == articleSummary.ArticleID {
 				err = ptt.DeleteArticles(boardIDRaw, filename, startIdx)
-				// TODO is need recover deleted items if get error?
 				if err != nil {
 					return nil, err
 				}
-				result = append(result, startIdx)
+				result = append(result, articleID)
 			}
 		}
 	}
