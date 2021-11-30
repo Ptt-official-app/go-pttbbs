@@ -7,6 +7,15 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
+func GetUTotal() (total int32) {
+	Shm.ReadAt(
+		unsafe.Offsetof(Shm.Raw.UTMPNumber),
+		types.INT32_SZ,
+		unsafe.Pointer(&total),
+	)
+	return total
+}
+
 func SearchUListUserID(userID *ptttype.UserID_t) (ptttype.UtmpID, *ptttype.UserInfoRaw) {
 	// start and end
 	start := int32(0)

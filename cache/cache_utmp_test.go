@@ -189,3 +189,34 @@ func TestSearchUListPID(t *testing.T) {
 		wg.Wait()
 	}
 }
+
+func TestGetUTotal(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	InitFillUHash(false)
+
+	nUser := 5
+	Shm.WriteAt(
+		unsafe.Offsetof(Shm.Raw.UTMPNumber),
+		types.INT32_SZ,
+		unsafe.Pointer(&nUser),
+	)
+	tests := []struct {
+		name      string
+		wantTotal int32
+	}{
+		// TODO: Add test cases.
+		{
+			"test get user numer",
+			5,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if gotTotal := GetUTotal(); gotTotal != tt.wantTotal {
+				t.Errorf("GetUTotal() = %v, want %v", gotTotal, tt.wantTotal)
+			}
+		})
+	}
+}
