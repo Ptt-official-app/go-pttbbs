@@ -214,7 +214,7 @@ func TestGetUTotal(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if gotTotal := GetUTotal(); gotTotal != tt.wantTotal {
+			if gotTotal := GetUTMPNumber(); gotTotal != tt.wantTotal {
 				t.Errorf("GetUTotal() = %v, want %v", gotTotal, tt.wantTotal)
 			}
 		})

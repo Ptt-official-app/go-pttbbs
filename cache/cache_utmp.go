@@ -7,7 +7,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
-func GetUTotal() (total int32) {
+func GetUTMPNumber() (total int32) {
 	Shm.ReadAt(
 		unsafe.Offsetof(Shm.Raw.UTMPNumber),
 		types.INT32_SZ,

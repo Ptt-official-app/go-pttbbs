@@ -178,5 +178,5 @@ func SetUserPerm(userec *ptttype.UserecRaw, setUID ptttype.UID, setUserec *pttty
 }
 
 func GetUserVisitCount() int32 {
-	return cache.GetUTotal()
+	return cache.GetUTMPNumber()
 }
