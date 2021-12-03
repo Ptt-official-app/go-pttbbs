@@ -2,6 +2,7 @@ package api
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 	"unsafe"
 
@@ -33,8 +34,11 @@ func TestGetUserVisitCount(t *testing.T) {
 			false,
 		},
 	}
+	var wg sync.WaitGroup
 	for _, tt := range tests {
+		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
 			got, err := GetUserVisitCount(testIP, nil)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetUserVisitCount() error = %v, wantErr %v", err, tt.wantErr)
@@ -44,5 +48,6 @@ func TestGetUserVisitCount(t *testing.T) {
 				t.Errorf("GetUserVisitCount() got = %v, want %v", got, tt.want)
 			}
 		})
+		wg.Wait()
 	}
 }
