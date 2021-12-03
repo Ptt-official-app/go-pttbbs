@@ -1,0 +1,19 @@
+getUserVisitCount
+---
+tags:
+  - user
+  - count
+description: get user visit count (the most recent 10 mins)
+parameters:
+  - '$ref': '#/definitions/Host'
+  - '$ref': '#/definitions/XForwardedFor'
+  - '$ref': '#/definitions/Authorization'
+responses:
+  200:
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      type: object
+      properties:
+        total:
+          type: number
+          description: total.

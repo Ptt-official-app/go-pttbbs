@@ -475,6 +475,14 @@ func TestInitGin(t *testing.T) {
 			},
 		},
 		{
+			name: "GetUserVisitCount",
+			args: args{
+				path:   fmt.Sprintf("/uservisitcount"),
+				jwt:    jwtTest,
+				method: "GET",
+			},
+		},
+		{
 			name: "EditArticle",
 			args: args{
 				path: fmt.Sprintf("/board/%v/article/%v/edit", boardSummary.BBoardID, articleSummary0.ArticleID),
