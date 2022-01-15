@@ -4,6 +4,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/Ptt-official-app/go-pttbbs/boardd"
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
@@ -16,6 +17,8 @@ func setupTest() {
 
 	cache.SetIsTest()
 	cmbbs.SetIsTest()
+
+	boardd.SetIsTest()
 
 	_ = types.CopyFileToFile("./testcase/.PASSWDS1", "./testcase/.PASSWDS")
 
@@ -50,6 +53,8 @@ func teardownTest() {
 	defer cache.UnsetIsTest()
 
 	defer cmbbs.UnsetIsTest()
+
+	defer boardd.UnsetIsTest()
 
 	defer os.Remove("./testcase/.PASSWDS")
 

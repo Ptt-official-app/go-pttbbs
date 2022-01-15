@@ -14,7 +14,7 @@ func TestLoadHotBoards(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	hbcache := []ptttype.BidInStore{10, 5, 7}
+	hbcache := []ptttype.BidInStore{9, 0, 7}
 	cache.Shm.WriteAt(
 		unsafe.Offsetof(cache.Shm.Raw.HBcache),
 		unsafe.Sizeof(hbcache),
@@ -39,7 +39,7 @@ func TestLoadHotBoards(t *testing.T) {
 		// TODO: Add test cases.
 		{
 			args:            args{uuserID: "SYSOP"},
-			expectedSummary: []*BoardSummary{testBoardSummary11, testBoardSummary6, testBoardSummary8},
+			expectedSummary: []*BoardSummary{testBoardSummary10, testBoardSummary1, testBoardSummary8},
 		},
 	}
 
@@ -52,6 +52,13 @@ func TestLoadHotBoards(t *testing.T) {
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadHotBoards() error = %v, wantErr %v", err, tt.wantErr)
 				return
+			}
+
+			for idx, each := range gotSummary {
+				if idx >= len(tt.expectedSummary) {
+					break
+				}
+				each.StatAttr = tt.expectedSummary[idx].StatAttr
 			}
 
 			testutil.TDeepEqual(t, "summary", gotSummary, tt.expectedSummary)

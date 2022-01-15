@@ -4,6 +4,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/Ptt-official-app/go-pttbbs/boardd"
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
@@ -19,6 +20,8 @@ func setupTest(name string) {
 
 	cache.SetIsTest()
 	cmbbs.SetIsTest()
+
+	boardd.SetIsTest()
 
 	err := types.CopyFileToFile("./testcase/.PASSWDS1", "./testcase/.PASSWDS")
 	logrus.Infof("%v: after copy .PASSWDS: e: %v", name, err)
@@ -58,6 +61,8 @@ func teardownTest(name string) {
 	defer cache.UnsetIsTest()
 
 	defer cmbbs.UnsetIsTest()
+
+	defer boardd.UnsetIsTest()
 
 	defer func() {
 		os.Remove("./testcase/.PASSWDS")

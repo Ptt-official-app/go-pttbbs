@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/Ptt-official-app/go-pttbbs/api"
+	"github.com/Ptt-official-app/go-pttbbs/boardd"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
 	log "github.com/sirupsen/logrus"
@@ -45,6 +46,11 @@ func InitAllConfig(filename string) error {
 		return err
 	}
 	err = ptttype.InitConfig()
+	if err != nil {
+		return err
+	}
+
+	err = boardd.InitConfig()
 	if err != nil {
 		return err
 	}

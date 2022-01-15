@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 
+	"github.com/Ptt-official-app/go-pttbbs/boardd"
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs"
 	"github.com/Ptt-official-app/go-pttbbs/initgin"
@@ -59,6 +60,12 @@ func initMain() error {
 
 	// init sem
 	err = cmbbs.PasswdInit()
+	if err != nil {
+		return err
+	}
+
+	// init grpc
+	err = boardd.Init(false)
 	if err != nil {
 		return err
 	}

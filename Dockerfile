@@ -15,7 +15,11 @@ RUN DEBIAN_FRONTEND=noninteractive &&  \
         libevent-dev \
         pkg-config \
         ccache \
-        clang
+        clang \
+        libgrpc++-dev \
+        protobuf-compiler \
+        protobuf-compiler-grpc \
+        libgflags-dev
 
 ENV GOROOT=/usr/local/go
 ENV PATH=${PATH}:/usr/local/go/bin:/home/bbs/bin:/opt/bbs/bin
@@ -41,6 +45,6 @@ RUN ./scripts/openrestry.sh
 
 # cmd
 WORKDIR /home/bbs
-CMD ["sh", "-c", "sudo -iu bbs /home/bbs/bin/shmctl init && sudo -iu bbs /home/bbs/bin/logind && /usr/bin/openresty && sudo -iu bbs /srv/go-pttbbs/go-pttbbs -ini production.ini"]
+CMD ["sh", "-c", "sudo -iu bbs /home/bbs/bin/shmctl init && sudo -iu bbs /home/bbs/bin/logind && /usr/bin/openresty && sudo -iu bbs /home/bbs/bin/boardd && sudo -iu bbs /srv/go-pttbbs/go-pttbbs -ini production.ini"]
 
 EXPOSE 3456

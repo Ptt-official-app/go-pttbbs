@@ -4,6 +4,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/Ptt-official-app/go-pttbbs/boardd"
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
@@ -25,6 +26,8 @@ func setupTest() {
 
 	cache.SetIsTest()
 	cmbbs.SetIsTest()
+
+	boardd.SetIsTest()
 
 	log.Infof("setupTest: to initAllConfig: sem_key: %v shm_key: %v", ptttype.PASSWDSEM_KEY, ptttype.SHM_KEY)
 
@@ -66,6 +69,8 @@ func teardownTest() {
 	defer cache.UnsetIsTest()
 
 	defer cmbbs.UnsetIsTest()
+
+	defer boardd.UnsetIsTest()
 
 	defer os.Remove("./testcase/.PASSWDS")
 	defer os.Remove("./testcase/.BRD")
