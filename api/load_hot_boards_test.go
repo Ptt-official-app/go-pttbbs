@@ -1,7 +1,6 @@
 package api
 
 import (
-	"reflect"
 	"sync"
 	"testing"
 	"unsafe"
@@ -9,13 +8,14 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 )
 
 func TestLoadHotBoards(t *testing.T) {
 	setupTest(t.Name())
 	defer teardownTest(t.Name())
 
-	hbcache := []ptttype.BidInStore{10, 5, 7}
+	hbcache := []ptttype.BidInStore{9, 0, 7}
 	cache.Shm.WriteAt(
 		unsafe.Offsetof(cache.Shm.Raw.HBcache),
 		unsafe.Sizeof(hbcache),
@@ -29,7 +29,7 @@ func TestLoadHotBoards(t *testing.T) {
 	)
 
 	result0 := &LoadHotBoardsResult{
-		Boards: []*bbs.BoardSummary{testBoardSummary11, testBoardSummary6, testBoardSummary8},
+		Boards: []*bbs.BoardSummary{testBoardSummary10, testBoardSummary1, testBoardSummary8},
 	}
 
 	type args struct {
@@ -40,7 +40,7 @@ func TestLoadHotBoards(t *testing.T) {
 	tests := []struct {
 		name           string
 		args           args
-		expectedResult interface{}
+		expectedResult *LoadHotBoardsResult
 		wantErr        bool
 	}{
 		// TODO: Add test cases.
@@ -59,9 +59,16 @@ func TestLoadHotBoards(t *testing.T) {
 				t.Errorf("LoadHotBoards() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(gotResult, tt.expectedResult) {
-				t.Errorf("LoadHotBoards() = %v, want %v", gotResult, tt.expectedResult)
+
+			result := gotResult.(*LoadHotBoardsResult)
+			for idx, each := range result.Boards {
+				if idx >= len(tt.expectedResult.Boards) {
+					break
+				}
+
+				each.StatAttr = tt.expectedResult.Boards[idx].StatAttr
 			}
+			testutil.TDeepEqual(t, "got", result, tt.expectedResult)
 		})
 		wg.Wait()
 	}

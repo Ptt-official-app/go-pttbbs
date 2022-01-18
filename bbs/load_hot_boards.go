@@ -1,6 +1,9 @@
 package bbs
 
-import "github.com/Ptt-official-app/go-pttbbs/ptt"
+import (
+	"github.com/Ptt-official-app/go-pttbbs/boardd"
+	"github.com/Ptt-official-app/go-pttbbs/ptt"
+)
 
 func LoadHotBoards(uuserID UUserID) (summary []*BoardSummary, err error) {
 	userID, err := uuserID.ToRaw()
@@ -13,7 +16,7 @@ func LoadHotBoards(uuserID UUserID) (summary []*BoardSummary, err error) {
 		return nil, err
 	}
 
-	summaryRaw, err := ptt.LoadHotBoards(userecRaw, uid)
+	summaryRaw, err := boardd.LoadHotBoards(userecRaw, uid)
 	if err != nil {
 		return nil, err
 	}

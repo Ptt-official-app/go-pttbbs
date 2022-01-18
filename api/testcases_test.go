@@ -11,10 +11,12 @@ import (
 var (
 	testUserecRaw3     *ptttype.UserecRaw
 	testUserec         *bbs.Userec
+	testBoardSummary1  *bbs.BoardSummary
 	testBoardSummary6  *bbs.BoardSummary
 	testBoardSummary7  *bbs.BoardSummary
 	testBoardSummary8  *bbs.BoardSummary
 	testBoardSummary9  *bbs.BoardSummary
+	testBoardSummary10 *bbs.BoardSummary
 	testBoardSummary11 *bbs.BoardSummary
 	testBoardSummary12 *bbs.BoardSummary
 	testBoardSummary13 *bbs.BoardSummary
@@ -122,6 +124,25 @@ func initTestVars() {
 		LastSeen: 1600681288,
 	}
 
+	testBoardSummary1 = &bbs.BoardSummary{
+		Gid:      2,
+		Bid:      1,
+		BBoardID: bbs.BBoardID("1_SYSOP"),
+		BrdAttr:  ptttype.BRD_POSTMASK,
+		StatAttr: ptttype.NBRD_FAV,
+		Brdname:  "SYSOP",
+		BoardClass: []byte{
+			0xbc, 0x54, 0xad, 0xf9,
+		},
+		RealTitle: []byte{
+			0xaf, 0xb8, 0xaa, 0xf8, 0xa6, 0x6e, 0x21,
+		},
+		BoardType:  []byte{0xa1, 0xb7},
+		BM:         []bbs.UUserID{},
+		IdxByName:  "SYSOP",
+		IdxByClass: "vFSt-Q@SYSOP",
+	}
+
 	testBoardSummary6 = &bbs.BoardSummary{
 		Gid:      5,
 		Bid:      6,
@@ -197,6 +218,25 @@ func initTestVars() {
 		BM:         []bbs.UUserID{},
 		IdxByName:  "Record",
 		IdxByClass: "vFSt-Q@Record",
+	}
+
+	testBoardSummary10 = &bbs.BoardSummary{
+		Gid:      5,
+		Bid:      10,
+		BBoardID: bbs.BBoardID("10_WhoAmI"),
+		StatAttr: ptttype.NBRD_FAV,
+		Brdname:  "WhoAmI",
+		BoardClass: []byte{
+			0xbc, 0x54, 0xad, 0xf9,
+		},
+		RealTitle: []byte{
+			0xa8, 0xfe, 0xa8, 0xfe, 0xa1, 0x41, 0xb2, 0x71, 0xb2, 0x71,
+			0xa7, 0xda, 0xac, 0x4f, 0xbd, 0xd6, 0xa1, 0x49,
+		},
+		BoardType:  []byte{0xa1, 0xb7},
+		BM:         []bbs.UUserID{},
+		IdxByName:  "WhoAmI",
+		IdxByClass: "vFSt-Q@WhoAmI",
 	}
 
 	testBoardSummary11 = &bbs.BoardSummary{
