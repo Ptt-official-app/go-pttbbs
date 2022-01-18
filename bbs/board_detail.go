@@ -74,8 +74,8 @@ func NewBoardDetailFromRaw(boardDetailRaw *ptttype.BoardDetailRaw, bid ptttype.B
 		LastPostTime: boardDetailRaw.LastPostTime,
 		Total:        boardDetailRaw.Total,
 	}
-	boardDetail.IdxByName = serializeBoardIdxByNameStr(boardDetail.Brdname)
-	boardDetail.IdxByClass = serializeBoardIdxByClassStr(boardDetail.BoardClass, boardDetail.Brdname)
+	boardDetail.IdxByName = SerializeBoardIdxByNameStr(boardDetail.Brdname)
+	boardDetail.IdxByClass = SerializeBoardIdxByClassStr(boardDetail.BoardClass, boardDetail.Brdname)
 
 	return boardDetail
 }
