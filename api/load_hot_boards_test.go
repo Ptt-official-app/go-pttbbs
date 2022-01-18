@@ -67,6 +67,7 @@ func TestLoadHotBoards(t *testing.T) {
 				}
 
 				each.StatAttr = tt.expectedResult.Boards[idx].StatAttr
+				each.Total = tt.expectedResult.Boards[idx].Total
 			}
 			testutil.TDeepEqual(t, "got", result, tt.expectedResult)
 		})
