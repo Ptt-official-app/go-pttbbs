@@ -58,7 +58,7 @@ func loadGeneralBoardsToStartIdx(startIdxStr string, isAsc bool, bsortBy ptttype
 
 	switch bsortBy {
 	case ptttype.BSORT_BY_NAME:
-		brdname, err := deserializeBoardIdxByNameStr(startIdxStr)
+		brdname, err := DeserializeBoardIdxByNameStr(startIdxStr)
 		if err != nil {
 			return -1, err
 		}
@@ -70,7 +70,7 @@ func loadGeneralBoardsToStartIdx(startIdxStr string, isAsc bool, bsortBy ptttype
 		}
 		return startIdx, nil
 	case ptttype.BSORT_BY_CLASS:
-		cls, brdname, err := deserializeBoardIdxByClassStr(startIdxStr)
+		cls, brdname, err := DeserializeBoardIdxByClassStr(startIdxStr)
 		if err != nil {
 			return -1, err
 		}
