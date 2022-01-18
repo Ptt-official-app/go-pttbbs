@@ -1,7 +1,6 @@
 package bbs
 
 import (
-	"github.com/Ptt-official-app/go-pttbbs/boardd"
 	"github.com/Ptt-official-app/go-pttbbs/ptt"
 )
 
@@ -16,7 +15,7 @@ func LoadHotBoards(uuserID UUserID) (summary []*BoardSummary, err error) {
 		return nil, err
 	}
 
-	summaryRaw, err := boardd.LoadHotBoards(userecRaw, uid)
+	summaryRaw, err := ptt.LoadHotBoards(userecRaw, uid)
 	if err != nil {
 		return nil, err
 	}
