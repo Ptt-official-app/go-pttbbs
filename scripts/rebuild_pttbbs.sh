@@ -44,7 +44,7 @@ sed -i 's/.*#define MAX_ACTIVE.*/#define MAX_ACTIVE (100)/g' /home/bbs/pttbbs/pt
 sed -i 's/.*#define\s*MAX_BOARD.*/#define MAX_BOARD (8192)/g' /home/bbs/pttbbs/pttbbs.conf
 
 # 7. add EXTENDED_INCHAR_ANSI
-echo "define EXTENDED_INCHAR_ANSI" >> /home/bbs/pttbbs/pttbbs.conf
+echo "#define EXTENDED_INCHAR_ANSI" >> /home/bbs/pttbbs/pttbbs.conf
 
 # 8. shm_offset.c
 cp /srv/go-pttbbs/c-pttbbs/shm_offset.c /home/bbs/pttbbs/util
