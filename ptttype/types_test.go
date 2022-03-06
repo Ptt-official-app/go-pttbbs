@@ -5,6 +5,7 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/Ptt-official-app/go-pttbbs/testutil"
 	"github.com/Ptt-official-app/go-pttbbs/types"
 	log "github.com/sirupsen/logrus"
 )
@@ -347,6 +348,10 @@ func TestFilename_t_ToAidu(t *testing.T) {
 
 	expected3 := Aidu(0x5fcbf5c030d)
 
+	f4 := &Filename_t{}
+	copy(f4[:], []byte("M.1607937174.A.082"))
+	expected4 := Aidu(0x5fd72c96082)
+
 	tests := []struct {
 		name     string
 		f        *Filename_t
@@ -368,6 +373,10 @@ func TestFilename_t_ToAidu(t *testing.T) {
 		{
 			f:        f3,
 			expected: expected3,
+		},
+		{
+			f:        f4,
+			expected: expected4,
 		},
 	}
 	var wg sync.WaitGroup
@@ -501,6 +510,10 @@ func TestAidu_ToFN(t *testing.T) {
 	expected1 := &Filename_t{}
 	copy(expected1[:], []byte("M.1607202239.A.30D"))
 
+	a2 := Aidu(0x04995e400081)
+	expected2 := &Filename_t{}
+	copy(expected2[:], []byte("M.1234560000.A.081"))
+
 	tests := []struct {
 		name     string
 		a        Aidu
@@ -515,20 +528,18 @@ func TestAidu_ToFN(t *testing.T) {
 			a:        a1,
 			expected: expected1,
 		},
+		{
+			a:        a2,
+			expected: expected2,
+		},
 	}
 	var wg sync.WaitGroup
 	for _, tt := range tests {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
-			if got := tt.a.ToFN(); !reflect.DeepEqual(got, tt.expected) {
-				t.Errorf("Aidu.ToFN() = %v, want %v", got, tt.expected)
-				for idx, each := range got {
-					if each != tt.expected[idx] {
-						t.Errorf("Aidu: (%v/%v) %v want: %v", idx, len(got), each, tt.expected[idx])
-					}
-				}
-			}
+			got := tt.a.ToFN()
+			testutil.TDeepEqual(t, "got", got, tt.expected)
 		})
 	}
 	wg.Wait()
@@ -585,6 +596,12 @@ func TestAidu_ToAidc(t *testing.T) {
 	expected8 := &Aidc{}
 	copy(expected8[:], []byte("19bWBK4Z"))
 
+	f9 := &Filename_t{}
+	copy(f9[:], []byte("M.1607937174.A.082"))
+	a9 := f9.ToAidu()
+	log.Infof("f9: %v a9: %x", f9, a9)
+	expected9 := &Aidc{}
+	copy(expected9[:], []byte("1VrooM22"))
 	tests := []struct {
 		name     string
 		a        Aidu
@@ -627,6 +644,10 @@ func TestAidu_ToAidc(t *testing.T) {
 			a:        a8,
 			expected: expected8,
 		},
+		{
+			a:        a9,
+			expected: expected9,
+		},
 	}
 	var wg sync.WaitGroup
 	for _, tt := range tests {
@@ -651,7 +672,11 @@ func TestAidc_ToAidu(t *testing.T) {
 
 	a1 := &Aidc{}
 	copy(a1[:], []byte("1VrooM21"))
-	expected1 := Aidu(0x5fd72c96081)
+	expected1 := Aidu(0x05fd72c96081)
+
+	a2 := &Aidc{}
+	copy(a2[:], []byte("19bUG021"))
+	expected2 := Aidu(0x04995e400081)
 
 	tests := []struct {
 		name         string
@@ -666,6 +691,10 @@ func TestAidc_ToAidu(t *testing.T) {
 		{
 			a:            a1,
 			expectedAidu: expected1,
+		},
+		{
+			a:            a2,
+			expectedAidu: expected2,
 		},
 	}
 	var wg sync.WaitGroup
