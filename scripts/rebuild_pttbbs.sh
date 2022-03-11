@@ -17,6 +17,9 @@ sed -i 's/pmake all/pmake clean all/g' /tmp/build_ptt_new.sh
 # 4.1. boardd
 sed -i '/^pmake install/a ## boardd\ncd ${BBSHOME}/pttbbs/daemon/boardd\npmake clean all\ncp ${BBSHOME}/pttbbs/daemon/boardd/boardd ${BBSHOME}/bin' /tmp/build_ptt_new.sh
 
+# 4.2. mand
+sed -i '/^pmake install/a ## mand\ncd ${BBSHOME}/pttbbs/daemon/mand\npmake clean all\ncp ${BBSHOME}/pttbbs/daemon/mand/mandd ${BBSHOME}/bin' /tmp/build_ptt_new.sh
+
 # 5. add NOKILLWATERBALL
 echo "#define NOKILLWATERBALL" >> /home/bbs/pttbbs/pttbbs.conf
 
