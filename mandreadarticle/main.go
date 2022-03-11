@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/Ptt-official-app/go-pttbbs/mand"
 	"github.com/sirupsen/logrus"
@@ -20,6 +19,7 @@ func main() {
 	req := &mand.ArticleRequest{
 		BoardName: brdname,
 		Path:      path,
+		MaxLength: -1,
 	}
 
 	resp, err := mand.Cli.Article(ctx, req)
@@ -29,7 +29,4 @@ func main() {
 	}
 
 	logrus.Infof("brdname: %v path: %v content: %v", brdname, path, string(resp.Content))
-
-	fmt.Printf("=====begin=====\n")
-	fmt.Printf("====end=====\n")
 }

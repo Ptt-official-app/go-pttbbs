@@ -27,7 +27,7 @@ func initAllConfig(filename string) error {
 	filenamePostfix := filenameList[len(filenameList)-1]
 	viper.SetConfigName(filenamePrefix)
 	viper.SetConfigType(filenamePostfix)
-	viper.AddConfigPath("/etc/go-openbbsmiddleware")
+	viper.AddConfigPath("/etc/go-pttbbs")
 	viper.AddConfigPath(".")
 	err := viper.ReadInConfig()
 	if err != nil {
