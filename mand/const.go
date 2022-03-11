@@ -1,14 +1,14 @@
-package boardd
+package mand
 
 import (
-	"sync"
+	sync "sync"
 
 	grpc "google.golang.org/grpc"
 )
 
 var (
 	conn *grpc.ClientConn
-	Cli  BoardServiceClient
+	Cli  ManServiceClient
 
 	cliLock sync.Mutex
 )

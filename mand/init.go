@@ -1,4 +1,4 @@
-package boardd
+package mand
 
 import (
 	grpc "google.golang.org/grpc"
@@ -17,14 +17,14 @@ func Init(isLocked bool) (err error) {
 
 	if IsTest {
 		mockConn := NewMockClientConn()
-		Cli = NewBoardServiceClient(mockConn)
+		Cli = NewManServiceClient(mockConn)
 	} else {
 		conn, err = grpc.Dial(GRPC_HOST, grpc.WithTransportCredentials(insecure.NewCredentials()))
 		if err != nil {
 			return err
 		}
 
-		Cli = NewBoardServiceClient(conn)
+		Cli = NewManServiceClient(conn)
 	}
 
 	return nil
