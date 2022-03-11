@@ -32,7 +32,7 @@ func main() {
 
 	fmt.Printf("=====begin=====\n")
 	for idx, each := range resp.Entries {
-		fmt.Printf("(%v/%v) %v", idx, len(resp.Entries), each)
+		fmt.Printf("(%v/%v) %v\n", idx, len(resp.Entries), each)
 	}
 	fmt.Printf("====end=====\n")
 }
