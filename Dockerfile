@@ -45,7 +45,7 @@ RUN ./scripts/openrestry.sh
 
 # cmd
 WORKDIR /home/bbs
-CMD ["sh", "-c", "sudo -iu bbs /home/bbs/bin/shmctl init && sudo -iu bbs /home/bbs/bin/logind && /usr/bin/openresty && sudo -iu bbs /home/bbs/bin/boardd -l 0.0.0.0:5150 && sudo -iu bbs /home/bbs/bin/mand --address 0.0.0.0:5151 && sudo -iu bbs /srv/go-pttbbs/go-pttbbs -ini production.ini"]
+CMD ["sh", "-c", "sudo -iu bbs /home/bbs/bin/shmctl init && sudo -iu bbs /home/bbs/bin/logind && /usr/bin/openresty && sudo -iu bbs /home/bbs/bin/boardd -l 0.0.0.0:5150 && /srv/go-pttbbs/scripts/docker-mand.sh && sudo -iu bbs /srv/go-pttbbs/go-pttbbs -ini production.ini"]
 
 EXPOSE 3456
 EXPOSE 5150
