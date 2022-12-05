@@ -3,7 +3,7 @@ package boardd
 import "github.com/Ptt-official-app/go-pttbbs/ptttype"
 
 var (
-	testBoard6 = &Board{ // nolint
+	testBoard6 = &Board{ //nolint
 		Parent:     5,
 		Bid:        6,
 		Attributes: uint32(ptttype.BRD_POSTMASK),
@@ -17,7 +17,7 @@ var (
 		RawModerators: "",
 	}
 
-	testBoard7 = &Board{ // nolint
+	testBoard7 = &Board{ //nolint
 		Parent: 5,
 		Bid:    7,
 		Name:   string([]byte{0x64, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x64, 0x00, 0x2e, 0x2e, 0x2e, 0x2e}),
@@ -30,7 +30,7 @@ var (
 		RawModerators: "",
 	}
 
-	testBoard11 = &Board{ // nolint
+	testBoard11 = &Board{ //nolint
 		Parent: 5,
 		Bid:    11,
 		Name:   string([]byte{0x45, 0x64, 0x69, 0x74, 0x45, 0x78, 0x70, 0x00, 0x2e, 0x2e, 0x2e, 0x2e}),
@@ -68,7 +68,7 @@ var (
 		RawModerators: "",
 	}
 
-	testBoard9 = &Board{ // nolint
+	testBoard9 = &Board{ //nolint
 		Parent:     5,
 		Bid:        9,
 		Attributes: uint32(ptttype.BRD_POSTMASK),

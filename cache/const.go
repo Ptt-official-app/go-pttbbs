@@ -1,6 +1,6 @@
 package cache
 
-//////////
+// ////////
 // !!! We should have only 1 Shm.
 var Shm *SHM
 

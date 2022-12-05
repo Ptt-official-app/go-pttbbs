@@ -7,19 +7,19 @@ import (
 
 type ArticleID string
 
-//ToArticleID
+// ToArticleID
 //
-//aidc is with fixed-size (8 bytes), no need the separator to do the separation.
+// aidc is with fixed-size (8 bytes), no need the separator to do the separation.
 func ToArticleID(filename *ptttype.Filename_t) ArticleID {
 	aidc := filename.ToAidu().ToAidc()
 	aidcStr := types.CstrToString(aidc[:])
 	return ArticleID(aidcStr)
 }
 
-//ToRaw
+// ToRaw
 //
-//1st 8 bytes are aidc.
-//bytes starting 8th are ownerID
+// 1st 8 bytes are aidc.
+// bytes starting 8th are ownerID
 func (a ArticleID) ToRaw() (filename *ptttype.Filename_t) {
 	// 1st 8 bytes are aidc
 	aidc := &ptttype.Aidc{}

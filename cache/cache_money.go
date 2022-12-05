@@ -8,9 +8,9 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-//SetUMoney
+// SetUMoney
 //
-//XXX uid-in-cache = uid - 1
+// XXX uid-in-cache = uid - 1
 func SetUMoney(uid ptttype.UID, money int32) (int32, error) {
 	Shm.WriteAt(
 		unsafe.Offsetof(Shm.Raw.Money)+types.INT32_SZ*uintptr(uid-1),
@@ -25,10 +25,10 @@ func SetUMoney(uid ptttype.UID, money int32) (int32, error) {
 	return MoneyOf(uid), nil
 }
 
-//DeUMoney
+// DeUMoney
 //
-//Add money to uid. (money can be >= 0 or < 0)
-//Get current money and set the money by adding to current-money.
+// Add money to uid. (money can be >= 0 or < 0)
+// Get current money and set the money by adding to current-money.
 func DeUMoney(uid ptttype.UID, money int32) (int32, error) {
 	if uid <= 0 || uid > ptttype.MAX_USERS {
 		log.Errorf("DeUMoney: uid is invalid: uid: %v money: %v", uid, money)

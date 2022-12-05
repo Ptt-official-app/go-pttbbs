@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/binary"
-	"io/ioutil"
+	"io"
 	"os"
 	"syscall"
 	"time"
@@ -92,10 +92,10 @@ func GetBTotal(bid ptttype.Bid) (total int32) {
 	return total
 }
 
-//SetBTotal
+// SetBTotal
 //
-//It's possible that we loaded nothing from ReloadBCache in the beginning of the program, and then there are some articles after a while.
-//We need to sync the btotal and lastposttime back to shm.
+// It's possible that we loaded nothing from ReloadBCache in the beginning of the program, and then there are some articles after a while.
+// We need to sync the btotal and lastposttime back to shm.
 func SetBTotal(bid ptttype.Bid) (err error) {
 	if !bid.IsValid() {
 		return ptttype.ErrInvalidBid
@@ -331,9 +331,9 @@ func HbflReload(bidInCache ptttype.BidInStore) {
 	)
 }
 
-//NumBoards
+// NumBoards
 //
-//https://github.com/ptt/pttbbs/blob/master/common/bbs/cache.c#L512
+// https://github.com/ptt/pttbbs/blob/master/common/bbs/cache.c#L512
 func NumBoards() int32 {
 	return Shm.GetBNumber()
 }
@@ -348,9 +348,9 @@ func NHots() (nhots uint8) {
 	return nhots
 }
 
-//Reload BCache
+// Reload BCache
 //
-//https://github.com/ptt/pttbbs/blob/master/common/bbs/cache.c#L458
+// https://github.com/ptt/pttbbs/blob/master/common/bbs/cache.c#L458
 func ReloadBCache() {
 	var busystate int32
 	for i := 0; i < 10; i++ { // Is it ok that we don't use mutex or semaphore here?
@@ -521,7 +521,7 @@ func reloadBCacheReadFile() ([]byte, error) {
 	}
 	defer file.Close()
 
-	theBytes, err := ioutil.ReadAll(file)
+	theBytes, err := io.ReadAll(file)
 	if err != nil {
 		return nil, err
 	}
@@ -591,7 +591,7 @@ func getBidByNameCore(boardID *ptttype.BoardID_t) (idx ptttype.SortIdxInStore, b
 		if end == start {
 			break
 		} else if idx_i32 == start {
-			idx_i32 = end // nolint
+			idx_i32 = end //nolint
 			start = end
 		} else if j > 0 {
 			start = idx_i32
@@ -664,7 +664,7 @@ func getBidByClassCore(cls []byte, boardID *ptttype.BoardID_t) (idx ptttype.Sort
 		if end == start {
 			break
 		} else if idx_i32 == start {
-			idx_i32 = end // nolint
+			idx_i32 = end //nolint
 			start = end
 		} else if j > 0 {
 			start = idx_i32

@@ -2,7 +2,6 @@ package ptt
 
 import (
 	"io"
-	"io/ioutil"
 	"os"
 	"reflect"
 	"sync"
@@ -546,7 +545,7 @@ func TestCrossPost(t *testing.T) {
 			}
 			defer file.Close()
 
-			content, _ := ioutil.ReadAll(file)
+			content, _ := io.ReadAll(file)
 			logrus.Infof("CrossPost: content: %v", content)
 
 			for _, idx := range removeIdxes {
@@ -568,7 +567,7 @@ func TestCrossPost(t *testing.T) {
 			}
 			defer fileForward.Close()
 
-			contentForward, _ := ioutil.ReadAll(fileForward)
+			contentForward, _ := io.ReadAll(fileForward)
 			logrus.Infof("CrossPost: contentForward: %v", contentForward)
 			for _, idx := range removeIdxesForward {
 				if idx >= len(contentForward) {

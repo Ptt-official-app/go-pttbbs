@@ -14,8 +14,9 @@ type LoadBoardDetailPath struct {
 }
 
 // XXX LoadBoardDetailResult is a pointer
-//    It's possible that this is unavoidable,
-//    and we need to change all the result-type to be pointer-based.
+//
+//	It's possible that this is unavoidable,
+//	and we need to change all the result-type to be pointer-based.
 type LoadBoardDetailResult *bbs.BoardDetail
 
 func LoadBoardDetailWrapper(c *gin.Context) {

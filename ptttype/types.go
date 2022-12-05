@@ -10,9 +10,9 @@ import (
 )
 
 // We have 3 different ids for user:
-//	UserID_t: (username)
-//	UID: (int32) (uid starting from 1)
-//  UIDInStore: (int32) (UID - 1)
+//   - UserID_t: (username)
+//   - UID: (int32) (uid starting from 1)
+//   - UIDInStore: (int32) (UID - 1)
 type (
 	UserID_t   [IDLEN + 1]byte
 	UID        int32
@@ -37,9 +37,9 @@ type From_t [27]byte
 type Date_t [6]byte
 
 // We have 3 different ids for board:
-//  BoardID_t: (brdname)
-//  Bid: (int32) (bid starting from 1)
-//  BidInStore (int32) (Bid - 1)
+//   - BoardID_t: (brdname)
+//   - Bid: (int32) (bid starting from 1)
+//   - BidInStore (int32) (Bid - 1)
 type (
 	BoardID_t    [IDLEN + 1]byte
 	Bid          int32
@@ -152,9 +152,9 @@ func (s SortIdxInStore) ToSortIdx() SortIdx {
 	return SortIdx(s + 1)
 }
 
-//valid UserID
+// valid UserID
 //
-//https://github.com/ptt/pttbbs/blob/master/common/bbs/names.c
+// https://github.com/ptt/pttbbs/blob/master/common/bbs/names.c
 func (u *UserID_t) IsValid() bool {
 	if u == nil {
 		return false
@@ -201,9 +201,9 @@ func ToBoardID(boardIDBytes []byte) (boardID *BoardID_t) {
 	return boardID
 }
 
-//Valid BoardID
+// Valid BoardID
 //
-//https://github.com/ptt/pttbbs/blob/master/common/bbs/string.c#L21
+// https://github.com/ptt/pttbbs/blob/master/common/bbs/string.c#L21
 func (b *BoardID_t) IsValid() bool {
 	lenB := types.Cstrlen(b[:])
 	if lenB < 2 || lenB > IDLEN {
@@ -223,16 +223,16 @@ func (b *BoardID_t) IsValid() bool {
 	return true
 }
 
-//RealTitle
+// RealTitle
 //
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1517
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1517
 func (t *BoardTitle_t) RealTitle() []byte {
 	return types.CstrToBytes(t[7:41])
 }
 
-//BoardClass
+// BoardClass
 //
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1517
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1517
 func (t *BoardTitle_t) BoardClass() []byte {
 	result := t[:5]
 	if result[4] == ' ' { // no ' ' in big5-encoding, we can safely remove ' '.
@@ -241,17 +241,17 @@ func (t *BoardTitle_t) BoardClass() []byte {
 	return result
 }
 
-//BoardType
+// BoardType
 //
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1517
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1517
 func (t *BoardTitle_t) BoardType() []byte {
 	return t[5:7]
 }
 
-//ToBMs
+// ToBMs
 //
-//We would like to have a better method
-//(We don't need to worry about this once we move everything to the db.)
+// We would like to have a better method
+// (We don't need to worry about this once we move everything to the db.)
 func (bm *BM_t) ToBMs() []*UserID_t {
 	bmBytes := types.CstrToBytes(bm[:])
 	theList := bytes.Split(bmBytes, []byte{'/'})
@@ -323,10 +323,10 @@ func (f *Filename_t) String() string {
 	return types.CstrToString(f[:])
 }
 
-//Eq
+// Eq
 //
-//It's possible that the timestamp
-//Compare only with the timestamp and the rnd.
+// It's possible that the timestamp
+// Compare only with the timestamp and the rnd.
 func (f *Filename_t) Eq(f2 *Filename_t) bool {
 	return types.Cstrcmp(f[2:], f2[2:]) == 0
 }
@@ -347,9 +347,9 @@ func (f *Filename_t) DeletedName() string {
 	return FN_SAFEDEL + types.CstrToString(f[FN_SAFEDEL_PREFIX_LEN:])
 }
 
-//Type
+// Type
 //
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/aids.c#L82
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/aids.c#L82
 func (a Aidu) Type() RecordType {
 	theType := (a >> 44) & 0xf
 	switch theType {
@@ -360,9 +360,9 @@ func (a Aidu) Type() RecordType {
 	}
 }
 
-//Time
+// Time
 //
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/aids.c#L83
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/aids.c#L83
 func (a Aidu) Time() types.Time4 {
 	return types.Time4((a >> 12) & 0xffffffff)
 }
@@ -371,9 +371,9 @@ func (a Aidu) Postfix() uint16 {
 	return uint16(a) & 0xfff
 }
 
-//FN
+// FN
 //
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/aids.c#L80
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/aids.c#L80
 func (a Aidu) ToFN() *Filename_t {
 	theType := a.Type()
 	theTime := a.Time()
@@ -458,11 +458,11 @@ func (o *Owner_t) IsCorpse() bool {
 	return o[0] == '-' && o[1] == 0
 }
 
-//NewBM
+// NewBM
 //
-//called only in cache.ParseBMList.
-//Already verified in cache.ParseBMList.
-//no need to worry that userIDs exceeds BM_t
+// called only in cache.ParseBMList.
+// Already verified in cache.ParseBMList.
+// no need to worry that userIDs exceeds BM_t
 func NewBM(userIDs []*UserID_t) (bms *BM_t) {
 	bms = &BM_t{}
 	bmsBytes := bms[:]

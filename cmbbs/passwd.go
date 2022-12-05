@@ -17,9 +17,9 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-//GenPasswd
+// GenPasswd
 //
-//If passwd as empty: return empty passwd (unable to login)
+// If passwd as empty: return empty passwd (unable to login)
 func GenPasswd(passwd []byte) (passwdHash *ptttype.Passwd_t, err error) {
 	if passwd[0] == 0 {
 		return &ptttype.Passwd_t{}, nil
@@ -37,12 +37,15 @@ func GenPasswd(passwd []byte) (passwdHash *ptttype.Passwd_t, err error) {
 	return passwdHash, err
 }
 
-//CheckPasswd
-//Params
+// CheckPasswd
+//
+// Params
+//
 //	expected: expected-passwd-hash
 //	input: input-passwd
 //
-//Return
+// Return
+//
 //	bool: true: good (password matched). false: bad (password not matched).
 //	error: err
 func CheckPasswd(expected []byte, input []byte) (bool, error) {
@@ -56,11 +59,14 @@ func CheckPasswd(expected []byte, input []byte) (bool, error) {
 func LogAttempt(userID *ptttype.UserID_t, ip *ptttype.IPv4_t, isWithUserHome bool) {
 }
 
-//PasswdLoadUser
-//Params
+// PasswdLoadUser
+//
+// Params
+//
 //	userID: user-id
 //
-//Return
+// Return
+//
 //	Uid: uid
 //	*ptttype.UserecRaw: user.
 //	error: err.
@@ -86,11 +92,14 @@ func PasswdLoadUser(userID *ptttype.UserID_t) (ptttype.UID, *ptttype.UserecRaw, 
 	return uid, user, nil
 }
 
-//PasswdQuery
-//Params
+// PasswdQuery
+//
+// Params
+//
 //	uid: uid
 //
-//Return
+// Return
+//
 //	*ptttype.UserecRaw: user.
 //	error: err.
 func PasswdQuery(uid ptttype.UID) (*ptttype.UserecRaw, error) {
@@ -119,11 +128,14 @@ func PasswdQuery(uid ptttype.UID) (*ptttype.UserecRaw, error) {
 	return user, nil
 }
 
-//PasswdQueryPasswd
-//Params
+// PasswdQueryPasswd
+//
+// Params
+//
 //	uid: uid
 //
-//Return
+// Return
+//
 //	*ptttype.UserecRaw: user.
 //	error: err.
 func PasswdQueryPasswd(uid ptttype.UID) (passwdHash *ptttype.Passwd_t, err error) {
@@ -152,11 +164,14 @@ func PasswdQueryPasswd(uid ptttype.UID) (passwdHash *ptttype.Passwd_t, err error
 	return passwdHash, nil
 }
 
-//PasswdQueryUserLevel
-//Params
+// PasswdQueryUserLevel
+//
+// Params
+//
 //	uid: uid
 //
-//Return
+// Return
+//
 //	userLevel: userLevel.
 //	error: err.
 func PasswdQueryUserLevel(uid ptttype.UID) (userLevel ptttype.PERM, err error) {
@@ -459,19 +474,20 @@ func PasswdUnlock() error {
 	return Sem.Post(0)
 }
 
-//PasswdDestroy
+// PasswdDestroy
 //
-//XXX [WARNING] know what you are doing before using Close!.
-//This is to be able to close the semaphore for the completeness of the sem-usage.
-//However, in production, we create sem without the need of closing the sem.
+// XXX [WARNING] know what you are doing before using Close!.
+// This is to be able to close the semaphore for the completeness of the sem-usage.
+// However, in production, we create sem without the need of closing the sem.
 //
-//We simply use ipcrm to delete the sem if necessary.
+// We simply use ipcrm to delete the sem if necessary.
 //
-//Currently used only in test.
+// Currently used only in test.
 //
-//XXX [2020-12-06] We don't do PasswdDestroy.
-//                 Just let PasswdInit do the checking to avoid
-//                 the duplication of sem.
+// XXX [2020-12-06] We don't do PasswdDestroy.
+//
+// Just let PasswdInit do the checking to avoid
+// the duplication of sem.
 func PasswdDestroy() error {
 	if !IsTest {
 		return ErrInvalidOp

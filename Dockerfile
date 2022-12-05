@@ -3,7 +3,7 @@ FROM bbsdocker/imageptt:latest
 
 # golang on debian
 WORKDIR /opt
-RUN curl -L https://dl.google.com/go/go1.16.2.linux-amd64.tar.gz | tar -zxv && \
+RUN curl -L https://dl.google.com/go/go1.19.3.linux-amd64.tar.gz | tar -zxv && \
     mv go /usr/local
 
 RUN DEBIAN_FRONTEND=noninteractive &&  \

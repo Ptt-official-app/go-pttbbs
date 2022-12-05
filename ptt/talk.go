@@ -58,10 +58,10 @@ func friendStat(meID ptttype.UtmpID, me *ptttype.UserInfoRaw, uentID ptttype.Utm
 	return hit
 }
 
-//myWrite
+// myWrite
 //
-//XXX dealing with only WATERBALL_ALOHA for now.
-//id in c-pttbbs is the same as puin.UserID
+// XXX dealing with only WATERBALL_ALOHA for now.
+// id in c-pttbbs is the same as puin.UserID
 func myWrite(myUtmpID ptttype.UtmpID, myInfo *ptttype.UserInfoRaw, pid types.Pid_t, prompt []byte, flag ptttype.WaterBall, putmpID ptttype.UtmpID, puin *ptttype.UserInfoRaw) (msgCount uint8, err error) {
 	if pid >= types.DEFAULT_PID_MAX {
 		return 0, nil

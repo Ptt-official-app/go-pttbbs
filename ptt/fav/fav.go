@@ -9,11 +9,11 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
-//FavRaw
+// FavRaw
 //
-//It's with it's own serialize method and does not directly copy by struct.
-//We can add MTime in FavRaw.
-//The content of FavFolder
+// It's with it's own serialize method and does not directly copy by struct.
+// We can add MTime in FavRaw.
+// The content of FavFolder
 type FavRaw struct {
 	MTime  types.Time4
 	FavNum int16
@@ -41,9 +41,9 @@ func NewFavRaw(root *FavRaw) (favRaw *FavRaw) {
 	return favRaw
 }
 
-//Load
+// Load
 //
-//Load fav from file.
+// Load fav from file.
 func Load(userID *ptttype.UserID_t) (favrec *FavRaw, err error) {
 	filename, err := path.SetHomeFile(userID, FAV)
 	if err != nil {
@@ -93,10 +93,10 @@ func Load(userID *ptttype.UserID_t) (favrec *FavRaw, err error) {
 	return favrec, nil
 }
 
-//Save
+// Save
 //
-//save fav to file.
-//XXX use rename to reduce the probability of race-condition.
+// save fav to file.
+// XXX use rename to reduce the probability of race-condition.
 func (f *FavRaw) Save(userID *ptttype.UserID_t) (*FavRaw, error) {
 	f.cleanup()
 
@@ -215,10 +215,8 @@ func (f *FavRaw) isNeedRebuildFav() bool {
 	return false
 }
 
-/**
- * 清除 fp(dir) 中無效的 entry/dir。「無效」指的是沒有 FAVH_FAV flag，所以
- * 不包含不存在的看板。
- */
+// 清除 fp(dir) 中無效的 entry/dir。「無效」指的是沒有 FAVH_FAV flag，所以
+// 不包含不存在的看板。
 func (f *FavRaw) rebuildFav() {
 	f.LineID = 0
 	f.FolderID = 0
@@ -543,10 +541,10 @@ func (f *FavRaw) GetFavItem(theID int, theType FavT) (favType *FavType) {
 	return nil
 }
 
-//PreAppend
+// PreAppend
 //
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/fav.c#L804
-//Although it is named PreAppend, actually it appends to DataTail
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/fav.c#L804
+// Although it is named PreAppend, actually it appends to DataTail
 func (f *FavRaw) PreAppend(theType FavT, fp interface{}) (favType *FavType, err error) {
 	favt := &FavType{
 		TheType: theType,

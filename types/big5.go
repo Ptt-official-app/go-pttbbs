@@ -3,7 +3,6 @@ package types
 import (
 	"encoding/hex"
 	"io"
-	"io/ioutil"
 	"os"
 	"strings"
 
@@ -43,7 +42,7 @@ func initB2U() error {
 	defer file.Close()
 
 	r := io.Reader(file)
-	content, err := ioutil.ReadAll(r)
+	content, err := io.ReadAll(r)
 	if err != nil {
 		return err
 	}
@@ -90,7 +89,7 @@ func initU2B() error {
 	defer file.Close()
 
 	r := io.Reader(file)
-	content, err := ioutil.ReadAll(r)
+	content, err := io.ReadAll(r)
 	if err != nil {
 		return err
 	}

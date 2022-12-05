@@ -11,12 +11,14 @@ import (
 	"github.com/spf13/viper"
 )
 
-//initConfig
+// initConfig
 //
-//Params
+// Params
+//
 //	filename: ini filename
 //
-//Return
+// Return
+//
 //	error: err
 func InitAllConfig(filename string) error {
 	filenameList := strings.Split(filename, ".")

@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"io"
-	"io/ioutil"
 	"os"
 	"strings"
 	"sync"
@@ -139,7 +138,7 @@ func TestCopyFile(t *testing.T) {
 				t.Errorf("CopyFile() error = %v, wantErr %v", err, tt.wantErr)
 			}
 
-			srcContent, _ := ioutil.ReadFile(tt.src)
+			srcContent, _ := os.ReadFile(tt.src)
 
 			_, err := os.Stat(tt.dst)
 			if err != nil {
@@ -147,7 +146,7 @@ func TestCopyFile(t *testing.T) {
 				return
 			}
 
-			dstContent, _ := ioutil.ReadFile(tt.dst)
+			dstContent, _ := os.ReadFile(tt.dst)
 
 			if !bytes.Equal(srcContent, dstContent) {
 				t.Errorf("CopyFile() diff: src: %v dst: %v srcContent: %v dstContent: %v", tt.args.src, tt.args.dst, srcContent, dstContent)
@@ -228,13 +227,13 @@ func TestRename(t *testing.T) {
 			_ = CopyFile("./testcase/dir2", "./testcase/dir2.orig")
 			defer Rename("./testcase/dir2.orig", "testcase/dir2")
 
-			srcContent, _ := ioutil.ReadFile(tt.src)
+			srcContent, _ := os.ReadFile(tt.src)
 
 			if err := Rename(tt.args.src, tt.args.dst); (err != nil) != tt.wantErr {
 				t.Errorf("Rename() error = %v, wantErr %v", err, tt.wantErr)
 			}
 
-			dstContent, _ := ioutil.ReadFile(tt.dst)
+			dstContent, _ := os.ReadFile(tt.dst)
 
 			if !bytes.Equal(srcContent, dstContent) {
 				t.Errorf("Rename() diff: src: %v dst: %v srcContent: %v dstContent: %v", tt.src, tt.dst, srcContent, dstContent)

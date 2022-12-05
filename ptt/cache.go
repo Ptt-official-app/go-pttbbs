@@ -152,9 +152,9 @@ func getNewUtmpEnt(uinfo *ptttype.UserInfoRaw) (utmpID ptttype.UtmpID, err error
 	return ptttype.UtmpID(-1), ErrNewUtmp
 }
 
-//postpermMsg
+// postpermMsg
 //
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/cache.c#L209
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/cache.c#L209
 func postpermMsg(uid ptttype.UID, user *ptttype.UserecRaw, bid ptttype.Bid, board *ptttype.BoardHeaderRaw) (err error) {
 	if isReadonlyBoard(&board.Brdname) {
 		return ErrReadOnly

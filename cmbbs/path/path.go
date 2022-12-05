@@ -72,10 +72,10 @@ func SetBBSHomePath(filename string) string {
 	return ptttype.SetBBSHomePath(filename)
 }
 
-//SetDIRPath
+// SetDIRPath
 //
-//dirFilename: boards/[boardID]/.DIR
-//filename: the filename in [boardID]
+// dirFilename: boards/[boardID]/.DIR
+// filename: the filename in [boardID]
 func SetDIRPath(dirFilename string, filename string) string {
 	idx := strings.LastIndex(dirFilename, string(os.PathSeparator))
 	theDir := dirFilename[:idx]

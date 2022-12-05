@@ -12,11 +12,12 @@ func IsLeapYear(year int) bool {
 	return year%400 == 0 || (year%4 == 0 && year%100 != 0)
 }
 
-//GetHoroscope
+// GetHoroscope
 //
-//給日期求星座
+// 給日期求星座
 //
-//Return:
+// Return:
+//
 //	1..12
 func GetHoroscope(m int, d int) int {
 	if m > 12 || m < 1 {

@@ -3,7 +3,6 @@ package types
 import (
 	"encoding/binary"
 	"io"
-	"io/ioutil"
 	"os"
 	"path"
 	"runtime/debug"
@@ -12,9 +11,9 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-//IsDir
+// IsDir
 //
-//dashd in cmsys/file.c
+// dashd in cmsys/file.c
 func IsDir(path string) bool {
 	theState, err := os.Stat(path)
 	if err != nil {
@@ -99,7 +98,7 @@ func CopyDirToDir(src string, dst string) (err error) {
 		}
 	}
 
-	entries, err := ioutil.ReadDir(src)
+	entries, err := os.ReadDir(src)
 	if err != nil {
 		return err
 	}
@@ -140,9 +139,9 @@ func Unlink(filename string) (err error) {
 	return os.Remove(filename)
 }
 
-//Rename
+// Rename
 //
-//Force rename src to dst by recursively-deleting old dst.
+// Force rename src to dst by recursively-deleting old dst.
 func Rename(src string, dst string) (err error) {
 	_, err = os.Stat(dst)
 	if err == nil {

@@ -15,11 +15,11 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-//Login
+// Login
 //
-//adopted from the original start_client with LOGINASNEW.
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/mbbsd.c#L1399
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/mbbsd.c#L714
+// adopted from the original start_client with LOGINASNEW.
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/mbbsd.c#L1399
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/mbbsd.c#L714
 func Register(
 	userID *ptttype.UserID_t,
 	passwd []byte,
@@ -70,9 +70,9 @@ func Register(
 	return uid, user, nil
 }
 
-//NewRegister
+// NewRegister
 //
-//XXX Assuming valid input. need to verify email at api.
+// XXX Assuming valid input. need to verify email at api.
 func NewRegister(
 	userID *ptttype.UserID_t,
 	passwd []byte,

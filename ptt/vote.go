@@ -3,7 +3,7 @@ package ptt
 import (
 	"bufio"
 	"bytes"
-	"io/ioutil"
+	"io"
 	"os"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
@@ -36,7 +36,7 @@ func bSuckinfileInvis(file *os.File, fname string, board *ptttype.BoardHeaderRaw
 		return err
 	}
 
-	content, err := ioutil.ReadAll(reader)
+	content, err := io.ReadAll(reader)
 	if err != nil {
 		return err
 	}
@@ -53,7 +53,7 @@ func bSuckinfile(file *os.File, fname string) (err error) {
 	}
 	defer inFile.Close()
 
-	content, err := ioutil.ReadAll(inFile)
+	content, err := io.ReadAll(inFile)
 	if err != nil {
 		return err
 	}

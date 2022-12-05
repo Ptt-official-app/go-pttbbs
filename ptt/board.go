@@ -20,11 +20,11 @@ func IsBoardValidUser(user *ptttype.UserecRaw, uid ptttype.UID, boardID *ptttype
 	return true, nil
 }
 
-//boardPermStat
+// boardPermStat
 //
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L197
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L197
 //
-//The original hasBoardPerm
+// The original hasBoardPerm
 func boardPermStat(user *ptttype.UserecRaw, uid ptttype.UID, board *ptttype.BoardHeaderRaw, bid ptttype.Bid) ptttype.BoardStatAttr {
 	// SYSOP
 	if user.UserLevel.HasUserPerm(ptttype.PERM_SYSOP) {
@@ -34,16 +34,15 @@ func boardPermStat(user *ptttype.UserecRaw, uid ptttype.UID, board *ptttype.Boar
 	return boardPermStatNormally(user, uid, board, bid)
 }
 
-//boardPermStatNormally
+// boardPermStatNormally
 //
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L157
+// The original hasBoardPermNormally
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L157
 //
-//The original hasBoardPermNormally
-//
-//Original code was mixing-up BoardStat with this function, making the code not easy to comprehend.
-//BM / Police / SYSOP treat the board as NBRD_FAV, while others treat the board as NBRD_BOARD.
-//It's because that newBoardStat is hacked to forcely add BRD_POSTMASK if not set properly and the type is NBRD_BOARD.
-//Need to figure out a better method to solve this issue.
+// Original code was mixing-up BoardStat with this function, making the code not easy to comprehend.
+// BM / Police / SYSOP treat the board as NBRD_FAV, while others treat the board as NBRD_BOARD.
+// It's because that newBoardStat is hacked to forcely add BRD_POSTMASK if not set properly and the type is NBRD_BOARD.
+// Need to figure out a better method to solve this issue.
 func boardPermStatNormally(user *ptttype.UserecRaw, uid ptttype.UID, board *ptttype.BoardHeaderRaw, bid ptttype.Bid) ptttype.BoardStatAttr {
 	level := board.Level
 	brdAttr := board.BrdAttr
@@ -89,9 +88,9 @@ func boardPermStatNormally(user *ptttype.UserecRaw, uid ptttype.UID, board *pttt
 	return ptttype.NBRD_FAV
 }
 
-//NewBoard
+// NewBoard
 //
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L2283
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L2283
 func NewBoard(
 	user *ptttype.UserecRaw,
 	uid ptttype.UID,
@@ -131,9 +130,9 @@ func NewBoard(
 	return summary, nil
 }
 
-//groupOp
+// groupOp
 //
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1579
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1579
 func groupOp(user *ptttype.UserecRaw, uid ptttype.UID, board *ptttype.BoardHeaderRaw) (isValid bool) {
 	if user.UserLevel.HasUserPerm(ptttype.PERM_NOCITIZEN) {
 		isValid = false

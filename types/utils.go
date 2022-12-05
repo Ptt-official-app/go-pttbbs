@@ -6,7 +6,6 @@ import (
 	"encoding/binary"
 	"errors"
 	"io"
-	"io/ioutil"
 	"net"
 	"os"
 	"reflect"
@@ -43,7 +42,7 @@ func ReadFile(filename string) ([]byte, error) {
 	if !IsRegularFile(filename) {
 		return nil, errors.New("not regular")
 	}
-	data, err := ioutil.ReadFile(filename)
+	data, err := os.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
@@ -51,11 +50,11 @@ func ReadFile(filename string) ([]byte, error) {
 	return data, nil
 }
 
-//BinRead
+// BinRead
 //
-//Read the file with identified size, the first bytes are fit in v.
-//Assuming that the size of v is <= theSize.
-//XXX not sure what to do if v > theSize.
+// Read the file with identified size, the first bytes are fit in v.
+// Assuming that the size of v is <= theSize.
+// XXX not sure what to do if v > theSize.
 func BinRead(file io.ReadSeeker, v interface{}, theSize uintptr) error {
 	vSize := binary.Size(v)
 	if vSize > int(theSize) {
@@ -81,11 +80,11 @@ func BinRead(file io.ReadSeeker, v interface{}, theSize uintptr) error {
 	return nil
 }
 
-//BinWrite
+// BinWrite
 //
-//Write the file with identified size, the first bytes are with v.
-//Assuming that the size of v is <= theSize.
-//XXX not sure what to do if v > theSize.
+// Write the file with identified size, the first bytes are with v.
+// Assuming that the size of v is <= theSize.
+// XXX not sure what to do if v > theSize.
 func BinWrite(file io.Writer, v interface{}, theSize uintptr) error {
 	vSize := binary.Size(v)
 	if vSize > int(theSize) {
@@ -110,10 +109,10 @@ func BinWrite(file io.Writer, v interface{}, theSize uintptr) error {
 	return nil
 }
 
-//ReadLine
+// ReadLine
 //
-//To avoid confusion, use only []byte is nil or not
-//to know whether it's the end of file.
+// To avoid confusion, use only []byte is nil or not
+// to know whether it's the end of file.
 func ReadLine(reader *bufio.Reader) ([]byte, error) {
 	if reader == nil {
 		return nil, ErrNilReader
@@ -138,9 +137,9 @@ func ReadLine(reader *bufio.Reader) ([]byte, error) {
 	return line, nil
 }
 
-//InetAddr
+// InetAddr
 //
-//if unable to parse: return 0 (0.0.0.0)
+// if unable to parse: return 0 (0.0.0.0)
 func InetAddr(ipStr string) InAddr_t {
 	ip := net.ParseIP(ipStr)
 	if ip == nil {

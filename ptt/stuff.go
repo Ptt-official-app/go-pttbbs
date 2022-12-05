@@ -27,18 +27,18 @@ func is_uBM(userID *ptttype.UserID_t, bm *ptttype.BM_t) bool {
 	return isValidHead && isValidTail
 }
 
-//setBDir
+// setBDir
 //
-//XXX do not deal with digest-mode in go-pttbbs.
-//    will use middleware for digest.
+// XXX do not deal with digest-mode in go-pttbbs.
+// will use middleware for digest.
 func setBDir(boardID *ptttype.BoardID_t) (filename string, err error) {
 	return path.SetBFile(boardID, ptttype.FN_DIR)
 }
 
-//setBBottom
+// setBBottom
 //
-//XXX do not deal with digest-mode in go-pttbbs.
-//    will use middleware for digest.
+// XXX do not deal with digest-mode in go-pttbbs.
+// will use middleware for digest.
 func setBBottom(boardID *ptttype.BoardID_t) (filename string, err error) {
 	return path.SetBFile(boardID, ptttype.FN_DIR_BOTTOM)
 }

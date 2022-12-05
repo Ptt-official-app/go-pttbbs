@@ -59,15 +59,17 @@ func setServiceMode(serviceMode ServiceMode) ServiceMode {
 	return serviceMode
 }
 
-//SetBBSHOME
+// SetBBSHOME
 //
-//This is to safely set BBSHOME
-//Public to be used in the tests of other modules.
+// This is to safely set BBSHOME
+// Public to be used in the tests of other modules.
 //
-//Params
+// Params
+//
 //	bbshome: new bbshome
 //
-//Return
+// Return
+//
 //	string: original bbshome
 func SetBBSHOME(bbshome string) string {
 	origBBSHome := BBSHOME
@@ -120,14 +122,17 @@ func setBBSName(bbsname string) (origBBSName string) {
 	return origBBSName
 }
 
-//setBBSMName
+// setBBSMName
 //
-//This is to safely set BBSMNAME
+// # Overview
+// This is to safely set BBSMNAME
 //
-//Params
+// Params
+//
 //	bbsmname: new bbsmname
 //
-//Return
+// Return
+//
 //	string: original bbsmname
 func setBBSMName(bbsmname string) string {
 	origBBSMName := BBSMNAME
@@ -188,12 +193,14 @@ func setCAPTCHAInsertServerAddr(captchaInsertServerAddr string) string {
 	return origCAPTCHAInsertServerAddr
 }
 
-//setMyHostname
+// setMyHostname
 //
-//Params
+// Params
+//
 //	myHostName: new my hostname
 //
-//Return
+// Return
+//
 //	string: orig my hostname
 func setMyHostname(myHostname string) string {
 	origMyHostname := MYHOSTNAME
@@ -207,12 +214,14 @@ func setMyHostname(myHostname string) string {
 	return origMyHostname
 }
 
-//setRecycleBinName
+// setRecycleBinName
 //
-//Params
+// Params
+//
 //	recycleBinName: new recycle bin name
 //
-//Return
+// Return
+//
 //	string: orig recycle bin name
 func setRecycleBinName(recycleBinName string) string {
 	origRecycleBinName := recycleBinName
