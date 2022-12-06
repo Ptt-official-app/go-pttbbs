@@ -11,7 +11,7 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0
 	github.com/spf13/viper v1.10.1
 	github.com/stretchr/testify v1.8.1
-	google.golang.org/grpc v1.45.0
+	google.golang.org/grpc v1.51.0
 	google.golang.org/protobuf v1.28.1
 )
 
@@ -39,9 +39,9 @@ require (
 	github.com/subosito/gotenv v1.2.0 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	golang.org/x/crypto v0.0.0-20220307211146-efcb8507fb70 // indirect
-	golang.org/x/net v0.0.0-20220225172249-27dd8689420f // indirect
-	golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 // indirect
-	golang.org/x/text v0.3.7 // indirect
+	golang.org/x/net v0.0.0-20220722155237-a158d28d115b // indirect
+	golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f // indirect
+	golang.org/x/text v0.4.0 // indirect
 	google.golang.org/genproto v0.0.0-20220310185008-1973136f34c6 // indirect
 	gopkg.in/ini.v1 v1.66.4 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
