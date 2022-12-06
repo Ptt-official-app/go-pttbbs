@@ -1,5 +1,5 @@
 info:
-  version: '0.21.8'
+  version: '0.21.9'
   title: go-pttbbs
 definitions:
   !include defs/board_summary.yaml
