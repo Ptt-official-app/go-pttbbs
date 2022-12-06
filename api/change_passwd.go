@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const CHANGE_PASSWD_R = "/user/:uid/changepasswd" // nolint
+const CHANGE_PASSWD_R = "/user/:uid/changepasswd" //nolint
 
 type ChangePasswdParams struct {
 	ClientInfo string `json:"client_info"`

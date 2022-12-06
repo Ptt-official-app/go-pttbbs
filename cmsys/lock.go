@@ -8,11 +8,11 @@ import (
 	"time"
 )
 
-//pttLock
+// pttLock
 //
-//XXX https://github.com/ptt/pttbbs/issues/100
-//Need to sync with ptt-code.
-//Requires file to be writable.
+// XXX https://github.com/ptt/pttbbs/issues/100
+// Need to sync with ptt-code.
+// Requires file to be writable.
 func pttLock(file *os.File, offset int64, theSize uintptr, mode int) (err error) {
 	fd := file.Fd()
 
@@ -34,10 +34,10 @@ func pttLock(file *os.File, offset int64, theSize uintptr, mode int) (err error)
 	return err
 }
 
-//GoPttLock
+// GoPttLock
 //
-//Original PttLock has no effect with multi-thread process.
-//We use single lock for now.
+// Original PttLock has no effect with multi-thread process.
+// We use single lock for now.
 func GoPttLock(file *os.File, filename string, offset int64, theSize uintptr) (err error) {
 	filenameOffset := fmt.Sprintf("%s%x", filename, offset)
 	err = lockFD(filenameOffset)
@@ -48,10 +48,10 @@ func GoPttLock(file *os.File, filename string, offset int64, theSize uintptr) (e
 	return pttLock(file, offset, theSize, syscall.F_WRLCK)
 }
 
-//GoPttUnlock
+// GoPttUnlock
 //
-//Original PttLock has no effect with multi-thread process.
-//We use single lock for now.
+// Original PttLock has no effect with multi-thread process.
+// We use single lock for now.
 func GoPttUnlock(file *os.File, filename string, offset int64, theSize uintptr) (err error) {
 	filenameOffset := fmt.Sprintf("%s%x", filename, offset)
 	defer func() { _ = unlockFD(filenameOffset) }()
@@ -59,10 +59,10 @@ func GoPttUnlock(file *os.File, filename string, offset int64, theSize uintptr) 
 	return pttLock(file, offset, theSize, syscall.F_UNLCK)
 }
 
-//GoFlock
+// GoFlock
 //
-//Original Flock has no effect with multi-thread process.
-//We use single lock for now.
+// Original Flock has no effect with multi-thread process.
+// We use single lock for now.
 func GoFlock(fd uintptr, filename string) (err error) {
 	err = lockFD(filename)
 	if err != nil {
@@ -72,10 +72,10 @@ func GoFlock(fd uintptr, filename string) (err error) {
 	return syscall.Flock(int(fd), syscall.LOCK_EX)
 }
 
-//GoFlock
+// GoFlock
 //
-//Original Flock has no effect with multi-thread process.
-//We use single lock for now.
+// Original Flock has no effect with multi-thread process.
+// We use single lock for now.
 func GoFlockExNb(fd uintptr, filename string) (err error) {
 	err = lockFD(filename)
 	if err != nil {
@@ -85,10 +85,10 @@ func GoFlockExNb(fd uintptr, filename string) (err error) {
 	return syscall.Flock(int(fd), syscall.LOCK_EX|syscall.LOCK_NB)
 }
 
-//GoFunlock
+// GoFunlock
 //
-//Original Flock has no effect with multi-thread process.
-//We use single lock for now.
+// Original Flock has no effect with multi-thread process.
+// We use single lock for now.
 func GoFunlock(fd uintptr, filename string) (err error) {
 	defer func() { _ = unlockFD(filename) }()
 

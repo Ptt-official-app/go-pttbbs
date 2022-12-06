@@ -109,14 +109,17 @@ func GetRecord(dirFilename string, filename *ptttype.Filename_t, total int) (idx
 	return idx, fhdr, nil
 }
 
-//FindRecordStartIdx
+// FindRecordStartIdx
 //
-//startIdx should be 1-total.
-//find record:
-//if isDesc: search from the newest, until either find the filename,
-//           or the record of the createTime
-//else:      search from the oldest, until either find the filename,
-//           or the record of the createTime
+// startIdx should be 1-total.
+// find record:
+// if isDesc: search from the newest, until either find the filename,
+//
+//	or the record of the createTime
+//
+// else:      search from the oldest, until either find the filename,
+//
+//	or the record of the createTime
 func FindRecordStartIdx(dirFilename string, total int, createTime types.Time4, filename *ptttype.Filename_t, isDesc bool) (startIdx ptttype.SortIdx, err error) {
 	file, err := os.Open(dirFilename)
 	if err != nil {
@@ -240,7 +243,7 @@ func findRecordStartIdxBinSearch(file *os.File, startStart ptttype.SortIdxInStor
 		if end == start {
 			break
 		} else if idxInStore == start {
-			idxInStore = end // nolint
+			idxInStore = end //nolint
 			start = end
 		} else if j > 0 {
 			start = idxInStore

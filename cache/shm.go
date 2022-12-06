@@ -21,9 +21,9 @@ type SHM struct {
 	Raw SHMRaw // dummy variable to get the offset and size of the shm-fields.
 }
 
-//NewSHM
+// NewSHM
 //
-//This is to init SHM with Version and Size checked.
+// This is to init SHM with Version and Size checked.
 func NewSHM(key types.Key_t, isUseHugeTlb bool, isCreate bool) error {
 	if Shm != nil {
 		return nil
@@ -146,16 +146,16 @@ func debugShm() {
 	}
 }
 
-//Close
+// Close
 //
-//XXX [WARNING] know what you are doing before using Close!.
-//This is to be able to close the shared mem for the completeness of the mem-usage.
-//However, in production, we create shm without the need of closing the shm.
+// XXX [WARNING] know what you are doing before using Close!.
+// This is to be able to close the shared mem for the completeness of the mem-usage.
+// However, in production, we create shm without the need of closing the shm.
 //
-//We simply use ipcrm to delete the shm if necessary.
+// We simply use ipcrm to delete the shm if necessary.
 //
-//Currently used only in test.
-//XXX not doing close shm to prevent opening too many shms in tests.
+// Currently used only in test.
+// XXX not doing close shm to prevent opening too many shms in tests.
 func CloseSHM() error {
 	if !IsTest {
 		return ErrInvalidOp
@@ -180,16 +180,16 @@ func CloseSHM() error {
 	return nil
 }
 
-//Close
+// Close
 //
-//XXX [WARNING] know what you are doing before using Close!.
-//This is to be able to close the shared mem for the completeness of the mem-usage.
-//However, in production, we create shm without the need of closing the shm.
+// XXX [WARNING] know what you are doing before using Close!.
+// This is to be able to close the shared mem for the completeness of the mem-usage.
+// However, in production, we create shm without the need of closing the shm.
 //
-//We simply use ipcrm to delete the shm if necessary.
+// We simply use ipcrm to delete the shm if necessary.
 //
-//Currently used only in test.
-//XXX not doing close shm to prevent opening too many shms in tests.
+// Currently used only in test.
+// XXX not doing close shm to prevent opening too many shms in tests.
 func (s *SHM) Close() error {
 	if !IsTest {
 		return ErrInvalidOp
@@ -209,32 +209,34 @@ func (s *SHM) Reset() {
 	)
 }
 
-//ReadAt
+// ReadAt
 //
-//Require precalculated offset and size and outptr to efficiently get the data.
-//See tests for exact usage.
-//[!!!] If we are reading from the array, make sure that have unit-size * n in the size.
+// Require precalculated offset and size and outptr to efficiently get the data.
+// See tests for exact usage.
+// [!!!] If we are reading from the array, make sure that have unit-size * n in the size.
 //
-//Params
-//  offsetOfSHMRawComponent: offset from SHMRaw
-//  size: size of the variable, usually can be referred from SHMRaw
-//        [!!!]If we are reading from the array, make sure that have unit-size * n in the size.
-//  outptr: the ptr of the object to read.
+// Params
+//
+//	offsetOfSHMRawComponent: offset from SHMRaw
+//	size: size of the variable, usually can be referred from SHMRaw
+//	      [!!!]If we are reading from the array, make sure that have unit-size * n in the size.
+//	outptr: the ptr of the object to read.
 func (s *SHM) ReadAt(offsetOfSHMRawComponent uintptr, size uintptr, outptr unsafe.Pointer) {
 	shm.ReadAt(s.Shmaddr, int(offsetOfSHMRawComponent), size, outptr)
 }
 
-//WriteAt
+// WriteAt
 //
-//Require recalculated offset and size and outptr to efficiently get the data.
-//See tests for exact usage.
-//[!!!]If we are reading from the array, make sure that have unit-size * n in the size.
+// Require recalculated offset and size and outptr to efficiently get the data.
+// See tests for exact usage.
+// [!!!]If we are reading from the array, make sure that have unit-size * n in the size.
 //
-//Params
-//  offsetOfSHMRawComponent: offset from SHMRaw
-//  size: size of the variable
-//        [!!!]If we are reading from the array, make sure that have unit-size * n in the size.
-//  inptr: the ptr of the object to write.
+// Params
+//
+//	offsetOfSHMRawComponent: offset from SHMRaw
+//	size: size of the variable
+//	      [!!!]If we are reading from the array, make sure that have unit-size * n in the size.
+//	inptr: the ptr of the object to write.
 func (s *SHM) WriteAt(offsetOfSHMRawComponent uintptr, size uintptr, inptr unsafe.Pointer) {
 	shm.WriteAt(s.Shmaddr, int(offsetOfSHMRawComponent), size, inptr)
 }
@@ -255,9 +257,9 @@ func (s *SHM) InnerSetInt32(offsetSrc uintptr, offsetDst uintptr) {
 	shm.InnerSetInt32(s.Shmaddr, int(offsetSrc), int(offsetDst))
 }
 
-//SetBCACHEPTR
+// SetBCACHEPTR
 //
-//!!!Required in NewSHM (and should be set only once in NewSHM)
+// !!!Required in NewSHM (and should be set only once in NewSHM)
 func (s *SHM) SetBCACHEPTR(offsetOfSHMRawComponent uintptr) {
 	shm.SetBCACHEPTR(s.Shmaddr, int(offsetOfSHMRawComponent))
 }

@@ -26,10 +26,10 @@ func ChangeEmailWrapper(c *gin.Context) {
 	LoginRequiredPathJSON(ChangeEmail, params, path, c)
 }
 
-//ChangeEmail
+// ChangeEmail
 //
-//Sysop initiates only attempt-change-mail.
-//Sysop does not change email directly.
+// Sysop initiates only attempt-change-mail.
+// Sysop does not change email directly.
 func ChangeEmail(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (result interface{}, err error) {
 	theParams, ok := params.(*ChangeEmailParams)
 	if !ok {

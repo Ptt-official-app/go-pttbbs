@@ -128,15 +128,16 @@ func RemoveFromUHash(uidInCache ptttype.UIDInStore) error {
 	return nil
 }
 
-//SearchUser
-//Params:
+// SearchUser
+// Params
+//
 //	userID: querying user-id.
 //	isReturn: is return the user-id in the shm.
 //
-//Return:
-//	int: uid.
-//	string: the userID in shm.
-//	error: err.
+// Return
+//
+//	uid:
+//	err:
 func SearchUserRaw(userID *ptttype.UserID_t, rightID *ptttype.UserID_t) (uid ptttype.UID, err error) {
 	if userID[0] == 0 {
 		return 0, nil
@@ -183,9 +184,9 @@ func DoSearchUserRaw(userID *ptttype.UserID_t, rightID *ptttype.UserID_t) (pttty
 	return 0, nil
 }
 
-//GetUserID
+// GetUserID
 //
-//XXX uid = uid-in-cache + 1
+// XXX uid = uid-in-cache + 1
 func GetUserID(uid ptttype.UID) (*ptttype.UserID_t, error) {
 	uidInCache := uid.ToUIDInStore()
 	if uidInCache < 0 || uidInCache >= ptttype.MAX_USERS {
@@ -202,9 +203,9 @@ func GetUserID(uid ptttype.UID) (*ptttype.UserID_t, error) {
 	return userID, nil
 }
 
-//SetUserID
+// SetUserID
 //
-//XXX uid = uid-in-cache + 1
+// XXX uid = uid-in-cache + 1
 func SetUserID(uid ptttype.UID, userID *ptttype.UserID_t) (err error) {
 	if uid <= 0 || uid > ptttype.MAX_USERS {
 		return ErrInvalidUID

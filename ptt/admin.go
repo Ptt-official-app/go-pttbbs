@@ -46,9 +46,9 @@ func addBoardRecord(board *ptttype.BoardHeaderRaw) (bid ptttype.Bid, err error) 
 	return bid, err
 }
 
-//mNewbrd
+// mNewbrd
 //
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/admin.c#L1071
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/admin.c#L1071
 func mNewbrd(
 	user *ptttype.UserecRaw,
 	clsBid ptttype.Bid,

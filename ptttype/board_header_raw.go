@@ -60,9 +60,9 @@ const (
 	BOARD_HEADER_NUSER_OFFSET       = unsafe.Offsetof(EMPTY_BOARD_HEADER_RAW.NUser)
 )
 
-//IsOpenBRD
+// IsOpenBRD
 //
-//https://github.com/ptt/pttbbs/blob/master/include/perm.h#L74
+// https://github.com/ptt/pttbbs/blob/master/include/perm.h#L74
 func (b *BoardHeaderRaw) IsOpenBRD() (isValid bool) {
 	if b.BrdAttr&(BRD_HIDE|BRD_TOP) != 0 {
 		return false

@@ -25,10 +25,10 @@ func StripBlank(theBytes []byte) []byte {
 	return theBytes[:theIdx]
 }
 
-//StringNoneBig5
+// StringNoneBig5
 //
-//https://github.com/ptt/pttbbs/issues/94
-//str is modified.
+// https://github.com/ptt/pttbbs/issues/94
+// str is modified.
 func StripNoneBig5(str_out []byte) (sanitizedStr []byte) {
 	theLen := 0
 	for idx := 0; idx < len(str_out) && str_out[idx] != 0; idx++ {

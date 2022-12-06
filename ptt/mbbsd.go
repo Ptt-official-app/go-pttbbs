@@ -13,10 +13,10 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-//Login
+// Login
 //
-//adopted from the original start_client.
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/mbbsd.c#L1399
+// adopted from the original start_client.
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/mbbsd.c#L1399
 func Login(userID *ptttype.UserID_t, passwd []byte, ip *ptttype.IPv4_t) (uid ptttype.UID, user *ptttype.UserecRaw, err error) {
 	uid, user, err = LoginQuery(userID, passwd, ip)
 	if err != nil {
@@ -37,16 +37,18 @@ func Login(userID *ptttype.UserID_t, passwd []byte, ip *ptttype.IPv4_t) (uid ptt
 	return uid, user, nil
 }
 
-//LoginQuery
+// LoginQuery
 //
-//Params
+// Params
+//
 //	userID: userID
 //	passwd: passwd
 //	ip: ip
 //
-//Return
+// Return
+//
 //	*UserecRaw: user
-//  error: err
+//	error: err
 func LoginQuery(userID *ptttype.UserID_t, passwd []byte, ip *ptttype.IPv4_t) (uid ptttype.UID, user *ptttype.UserecRaw, err error) {
 	if !userID.IsValid() {
 		log.Errorf("LoginQuery: invalid user id: userID: %v", userID)
@@ -105,9 +107,9 @@ func userLogin(uid ptttype.UID, user *ptttype.UserecRaw, ip *ptttype.IPv4_t) (er
 	return nil
 }
 
-//setupUtmp
+// setupUtmp
 //
-//There will be only 1-login per user in this process.
+// There will be only 1-login per user in this process.
 func setupUtmp(uid ptttype.UID, user *ptttype.UserecRaw, ip *ptttype.IPv4_t, op ptttype.UserOpMode) (utmpID ptttype.UtmpID, uinfo *ptttype.UserInfoRaw, err error) {
 	if !ptttype.IS_UTMP {
 		return 0, nil, nil
@@ -123,10 +125,10 @@ func setupUtmp(uid ptttype.UID, user *ptttype.UserecRaw, ip *ptttype.IPv4_t, op 
 	return utmpID, uinfo, nil
 }
 
-//newUserInfoRaw
+// newUserInfoRaw
 //
-//XXX we need cmsys.StripNoneBig5,
-//with which newUserInfoRaw cannot be in ptttype.
+// XXX we need cmsys.StripNoneBig5,
+// with which newUserInfoRaw cannot be in ptttype.
 func newUserInfoRaw(uid ptttype.UID, user *ptttype.UserecRaw, ip *ptttype.IPv4_t, op ptttype.UserOpMode) *ptttype.UserInfoRaw {
 	fromIP := types.InetAddr(types.CstrToString(ip[:]))
 	nowTS := types.NowTS()

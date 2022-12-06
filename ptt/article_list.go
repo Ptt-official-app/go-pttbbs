@@ -8,17 +8,17 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
-//LoadGeneralArticles
+// LoadGeneralArticles
 //
-//load general articles in descending mode.
+// load general articles in descending mode.
 //
-//Implementing:
-//1. preprocessing in i_read (perm-check, cache-preparation)
-//2. get_records_and_bottom (with only records)
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/read.c#L1197
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/read.c#L1106
+// Implementing:
+// 1. preprocessing in i_read (perm-check, cache-preparation)
+// 2. get_records_and_bottom (with only records)
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/read.c#L1197
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/read.c#L1106
 //
-//get bottom can be a separated api.
+// get bottom can be a separated api.
 func LoadGeneralArticles(user *ptttype.UserecRaw, uid ptttype.UID, boardIDRaw *ptttype.BoardID_t, bid ptttype.Bid, startIdx ptttype.SortIdx, nArticles int, isDesc bool) (summaries []*ptttype.ArticleSummaryRaw, isNewest bool, nextSummary *ptttype.ArticleSummaryRaw, startNumIdx ptttype.SortIdx, err error) {
 	// 1. check perm.
 	board, err := cache.GetBCache(bid)

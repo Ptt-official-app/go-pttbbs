@@ -39,9 +39,7 @@ func postConfig() (err error) {
 	return nil
 }
 
-//setTimeLocation
-//
-//
+// setTimeLocation
 func setTimeLocation(timeLocation string) (origTimeLocation string, err error) {
 	origTimeLocation = TIME_LOCATION
 	TIME_LOCATION = timeLocation

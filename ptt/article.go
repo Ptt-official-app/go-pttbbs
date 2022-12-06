@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"encoding/binary"
 	"io"
-	"io/ioutil"
 	"os"
 
 	"github.com/Ptt-official-app/go-pttbbs/cache"
@@ -130,7 +129,7 @@ func readContent(filename string, retrieveTS types.Time4, isHash bool) (content 
 	}
 	defer file.Close()
 
-	content, err = ioutil.ReadAll(file)
+	content, err = io.ReadAll(file)
 	if err != nil {
 		return nil, 0, 0, err
 	}
@@ -146,14 +145,14 @@ func readContent(filename string, retrieveTS types.Time4, isHash bool) (content 
 	return content, mtime, hash, nil
 }
 
-//isFileOwner
+// isFileOwner
 //
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L44
-//XXX there are two known issues here:
-//1. Anonymous post don't work anymore.
-//2. People cross-posting (^X) very old post can't own it.
-//Since ptt.cc does not have anonymous boards anymore, these issues are in
-//low priority.  Sites using anonymous boards can fix on your own.
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L44
+// XXX there are two known issues here:
+// 1. Anonymous post don't work anymore.
+// 2. People cross-posting (^X) very old post can't own it.
+// Since ptt.cc does not have anonymous boards anymore, these issues are in
+// low priority.  Sites using anonymous boards can fix on your own.
 func isFileOwner(fhdr *ptttype.FileHeaderRaw, user *ptttype.UserecRaw) bool {
 	if types.Cstrcmp(fhdr.Owner[:], user.UserID[:]) != 0 {
 		return false

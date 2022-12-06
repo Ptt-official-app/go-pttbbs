@@ -9,10 +9,10 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
-//passwdUpdateMoney
+// passwdUpdateMoney
 //
-//XXX should not call this directly.
-//    call this from DeUMoney (SetUMoney).
+// XXX should not call this directly.
+// call this from DeUMoney (SetUMoney).
 func passwdUpdateMoney(uid ptttype.UID, money int32) (err error) {
 	if uid < 1 || uid >= ptttype.MAX_USERS {
 		return ErrInvalidUID

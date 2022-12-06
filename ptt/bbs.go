@@ -161,12 +161,12 @@ func EditPost(
 	return newContent, mtime, titleRaw, nil
 }
 
-//ReadPost
+// ReadPost
 //
-//pmore is replaced by frontend.
-//We just need to return the whole content.
-//We do not update brc here, because it requires lots of file-disk.
-//require middlewares to handle user-read-article.
+// pmore is replaced by frontend.
+// We just need to return the whole content.
+// We do not update brc here, because it requires lots of file-disk.
+// require middlewares to handle user-read-article.
 func ReadPost(
 	user *ptttype.UserecRaw,
 	uid ptttype.UID,
@@ -235,9 +235,9 @@ func getBoardRestrictionReason(
 	return getRestrictionReason(user.NumLoginDays, user.BadPost, board.PostLimitLogins, board.PostLimitBadpost)
 }
 
-//NewPost
+// NewPost
 //
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L1624
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L1624
 func NewPost(
 	user *ptttype.UserecRaw,
 	uid ptttype.UID,
@@ -254,9 +254,9 @@ func NewPost(
 	return DoPostArticle(user, uid, boardID, bid, ptttype.EDITFLAG_KIND_NEWPOST, posttype, title, content, ip, from)
 }
 
-//DoPostArticle
+// DoPostArticle
 //
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L1258
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L1258
 func DoPostArticle(
 	user *ptttype.UserecRaw,
 	uid ptttype.UID,
@@ -340,7 +340,7 @@ func DoPostArticle(
 	}
 
 	if isUseAnony { // skip errcheck because what we focus is publishing the articles
-		money = 0 // nolint
+		money = 0 //nolint
 		postfile.Filemode |= ptttype.FILE_ANONYMOUS
 		_ = postfile.SetAnonUID(uid)
 	} else {
@@ -440,14 +440,14 @@ func IsFreeBoardName(boardID *ptttype.BoardID_t) bool {
 	return false
 }
 
-//doesBoardHavePublicBM
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L1220
+// doesBoardHavePublicBM
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L1220
 //
-//Usually we can assume SHM->BMcache contains complete BM list; however
-//sometimes boards may contains only private BMs (ex: [ <-space  some_uid])
-//另外還有人不知為了自己加了 [] 上去
-//搞了半天還是revert回原始的 BM[0] < ' ' 好了，
-//很糟但是還沒想到更好的作法。
+// Usually we can assume SHM->BMcache contains complete BM list; however
+// sometimes boards may contains only private BMs (ex: [ <-space  some_uid])
+// 另外還有人不知為了自己加了 [] 上去
+// 搞了半天還是revert回原始的 BM[0] < ' ' 好了，
+// 很糟但是還沒想到更好的作法。
 func doesBoardHavePublicBM(board *ptttype.BoardHeaderRaw) bool {
 	return board.BM[0] > ' '
 }
@@ -752,9 +752,9 @@ func checkBoardAnonymous(board *ptttype.BoardHeaderRaw) bool {
 	return board.BrdAttr.HasPerm(ptttype.BRD_ANONYMOUS)
 }
 
-//doPostArticleFullTitle
+// doPostArticleFullTitle
 //
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L1348
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L1348
 func doPostArticleFullTitle(posttype []byte, title []byte) (fullTitle []byte) {
 	if len(posttype) == 0 {
 		return title

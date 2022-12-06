@@ -10,10 +10,10 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
-//WriteFile
+// WriteFile
 //
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/edit.c#L3733
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/edit.c#L1924
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/edit.c#L3733
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/edit.c#L1924
 func WriteFile(fpath string, flags ptttype.EditFlag, isSaveHeader bool, isUseAnony bool, title []byte, content [][]byte, user *ptttype.UserecRaw, uid ptttype.UID, board *ptttype.BoardHeaderRaw, bid ptttype.Bid, ip *ptttype.IPv4_t, from []byte, mode ptttype.UserOpMode) (entropy int, err error) {
 	file, err := os.OpenFile(fpath, os.O_WRONLY|os.O_CREATE, ptttype.DEFAULT_FILE_CREATE_PERM)
 	if err != nil {
@@ -123,10 +123,10 @@ func writeHeaderAuthor(flags ptttype.EditFlag, user *ptttype.UserecRaw, board *p
 	return author, nickname
 }
 
-//addSignature
+// addSignature
 //
-//do not allow guest post.
-//no need to do 簽名檔. already provided by user.
+// do not allow guest post.
+// no need to do 簽名檔. already provided by user.
 func addSignature(file *os.File, isUseAnony bool, ip *ptttype.IPv4_t, from []byte) (err error) {
 	return addSimpleSignature(file, isUseAnony, ip, from)
 }
@@ -157,9 +157,9 @@ func addForwardSignature(file *os.File, user *ptttype.UserecRaw, isUseAnony bool
 	return err
 }
 
-//editSignature
+// editSignature
 //
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/edit.c#L2066
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/edit.c#L2066
 func editSignature(file *os.File, user *ptttype.UserecRaw, isUseAnony bool, ip *ptttype.IPv4_t, from []byte) (err error) {
 	var host []byte
 	if isUseAnony {

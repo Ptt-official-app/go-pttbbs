@@ -3,7 +3,7 @@ package ptttype
 import (
 	"bytes"
 	"encoding/binary"
-	"io/ioutil"
+	"io"
 	"os"
 	"reflect"
 	"sync"
@@ -80,7 +80,7 @@ func TestFileHeaderRaw_Money(t *testing.T) {
 	file, _ := os.Open("./testcase/DIR")
 	defer file.Close()
 
-	bin, _ := ioutil.ReadAll(file)
+	bin, _ := io.ReadAll(file)
 	buf := bytes.NewReader(bin)
 	records := [1]FileHeaderRaw{}
 	_ = types.BinaryRead(buf, binary.LittleEndian, &records)
@@ -132,7 +132,7 @@ func TestFileHeaderRaw_AnonUID(t *testing.T) {
 	file, _ := os.Open("./testcase/DIR")
 	defer file.Close()
 
-	bin, _ := ioutil.ReadAll(file)
+	bin, _ := io.ReadAll(file)
 	buf := bytes.NewReader(bin)
 	records := [1]FileHeaderRaw{}
 	_ = types.BinaryRead(buf, binary.LittleEndian, &records)
@@ -183,7 +183,7 @@ func TestFileHeaderRaw_VoteLimits(t *testing.T) {
 	file, _ := os.Open("./testcase/DIR")
 	defer file.Close()
 
-	bin, _ := ioutil.ReadAll(file)
+	bin, _ := io.ReadAll(file)
 	buf := bytes.NewReader(bin)
 	records := [1]FileHeaderRaw{}
 	_ = types.BinaryRead(buf, binary.LittleEndian, &records)
@@ -234,7 +234,7 @@ func TestFileHeaderRaw_VoteLimitPosts(t *testing.T) {
 	file, _ := os.Open("./testcase/DIR")
 	defer file.Close()
 
-	bin, _ := ioutil.ReadAll(file)
+	bin, _ := io.ReadAll(file)
 	buf := bytes.NewReader(bin)
 	records := [1]FileHeaderRaw{}
 	_ = types.BinaryRead(buf, binary.LittleEndian, &records)
@@ -286,7 +286,7 @@ func TestFileHeaderRaw_VoteLimitLogins(t *testing.T) {
 	file, _ := os.Open("./testcase/DIR")
 	defer file.Close()
 
-	bin, _ := ioutil.ReadAll(file)
+	bin, _ := io.ReadAll(file)
 	buf := bytes.NewReader(bin)
 	records := [1]FileHeaderRaw{}
 	_ = types.BinaryRead(buf, binary.LittleEndian, &records)
@@ -338,7 +338,7 @@ func TestFileHeaderRaw_VoteLimitRegTime(t *testing.T) {
 	file, _ := os.Open("./testcase/DIR")
 	defer file.Close()
 
-	bin, _ := ioutil.ReadAll(file)
+	bin, _ := io.ReadAll(file)
 	buf := bytes.NewReader(bin)
 	records := [1]FileHeaderRaw{}
 	_ = types.BinaryRead(buf, binary.LittleEndian, &records)
@@ -402,7 +402,7 @@ func TestFileHeaderRaw_VoteLimitBadpost(t *testing.T) {
 	file, _ := os.Open("./testcase/DIR")
 	defer file.Close()
 
-	bin, _ := ioutil.ReadAll(file)
+	bin, _ := io.ReadAll(file)
 	buf := bytes.NewReader(bin)
 	records := [1]FileHeaderRaw{}
 	_ = types.BinaryRead(buf, binary.LittleEndian, &records)

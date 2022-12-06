@@ -2,7 +2,7 @@ package ptt
 
 import (
 	"bufio"
-	"io/ioutil"
+	"io"
 	"os"
 
 	"github.com/Ptt-official-app/go-pttbbs/cache"
@@ -78,7 +78,7 @@ func GetFavorites(userID *ptttype.UserID_t, retrieveTS types.Time4) (content []b
 	}
 	defer file.Close()
 
-	content, err = ioutil.ReadAll(file)
+	content, err = io.ReadAll(file)
 	if err != nil {
 		return nil, 0, err
 	}

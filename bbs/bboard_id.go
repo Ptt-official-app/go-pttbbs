@@ -10,10 +10,10 @@ import (
 
 type BBoardID string // The integrated bid-boardID, concat with _, safe because bid is number >= 1.
 
-//ToBBoardID
+// ToBBoardID
 //
-//concat bid and boardID as BBoardID, concat with _
-//because bid and boardIDRaw are from ptt, no need to check the validity
+// concat bid and boardID as BBoardID, concat with _
+// because bid and boardIDRaw are from ptt, no need to check the validity
 func ToBBoardID(bid ptttype.Bid, boardIDRaw *ptttype.BoardID_t) BBoardID {
 	if !bid.IsValid() {
 		return BBoardID("")
@@ -28,9 +28,9 @@ func ToBBoardID(bid ptttype.Bid, boardIDRaw *ptttype.BoardID_t) BBoardID {
 	return BBoardID(bid.String() + "_" + types.CstrToString(boardIDRaw[:]))
 }
 
-//ToRaw
+// ToRaw
 //
-//BBoardID is possible coming from outside, requiring validation.
+// BBoardID is possible coming from outside, requiring validation.
 func (b BBoardID) ToRaw() (bid ptttype.Bid, boardIDRaw *ptttype.BoardID_t, err error) {
 	bList := strings.Split(string(b), "_")
 	if len(bList) < 2 {

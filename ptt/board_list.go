@@ -8,19 +8,21 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
-//LoadFullClassBoards
+// LoadFullClassBoards
 //
-//Load full class boards
+// Load full class boards
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1142
 //
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1142
-//Params:
+// Params
+//
 //	user
 //	uid
 //	startIdx: the idx in bsorted.
-//  nBoards: try to get at most nBoards
+//	nBoards: try to get at most nBoards
 //
-//Return:
-//  summaries
+// Return
+//
+//	summaries
 //	nextIdx: next idx in bsorted.
 //	err
 func LoadFullClassBoards(user *ptttype.UserecRaw, uid ptttype.UID, startBid ptttype.Bid, nBoards int) (summaries []*ptttype.BoardSummaryRaw, nextSummary *ptttype.BoardSummaryRaw, err error) {
@@ -159,16 +161,18 @@ func LoadBoardDetail(user *ptttype.UserecRaw, uid ptttype.UID, bid ptttype.Bid) 
 	return boardDetail, nil
 }
 
-//LoadBoardSummary
+// LoadBoardSummary
 //
-//Load General Board Summary
+// # Load General Board Summary
 //
-//Params:
+// Params:
+//
 //	user
-// 	uid
+//	uid
 //	bid
 //
-//Return:
+// Return:
+//
 //	summary
 //	err
 func LoadBoardSummary(user *ptttype.UserecRaw, uid ptttype.UID, bid ptttype.Bid) (summary *ptttype.BoardSummaryRaw, err error) {
@@ -195,9 +199,9 @@ func LoadBoardSummary(user *ptttype.UserecRaw, uid ptttype.UID, bid ptttype.Bid)
 	return summary, nil
 }
 
-//LoadHotBoards
+// LoadHotBoards
 //
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1125
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1125
 func LoadHotBoards(user *ptttype.UserecRaw, uid ptttype.UID) (summary []*ptttype.BoardSummaryRaw, err error) {
 	nBoards := cache.NHots()
 
@@ -221,9 +225,9 @@ func LoadHotBoards(user *ptttype.UserecRaw, uid ptttype.UID) (summary []*ptttype
 	return summary, nil
 }
 
-//loadHotBoardStat
+// loadHotBoardStat
 //
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1147
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1147
 func loadHotBoardStat(user *ptttype.UserecRaw, uid ptttype.UID, idx uint8) *ptttype.BoardStat {
 	// read bid-in-cache
 	var bidInCache ptttype.BidInStore
@@ -301,9 +305,9 @@ func loadBoardStat(user *ptttype.UserecRaw, uid ptttype.UID, bid ptttype.Bid) (b
 	return boardStat
 }
 
-//LoadAutoCompleteBoards
+// LoadAutoCompleteBoards
 //
-//Load auto-complete boards by name.
+// Load auto-complete boards by name.
 func LoadAutoCompleteBoards(user *ptttype.UserecRaw, uid ptttype.UID, startIdx ptttype.SortIdx, nBoards int, keyword []byte, isAsc bool) (summaries []*ptttype.BoardSummaryRaw, nextSummary *ptttype.BoardSummaryRaw, err error) {
 	nBoardsInCache := cache.NumBoards()
 	if startIdx == 0 && !isAsc {
@@ -362,22 +366,24 @@ func LoadAutoCompleteBoards(user *ptttype.UserecRaw, uid ptttype.UID, startIdx p
 	return summaries, nextSummary, nil
 }
 
-//LoadGeneralBoards
+// LoadGeneralBoards
 //
-//Load general boards by name.
+// Load general boards by name.
 //
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1142
-//Params:
-//	user
-//	uid
-//	startIdx: the idx in bsorted.
-//  nBoards: try to get at most nBoards
-//	keyword
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1142
+// Params:
 //
-//Return:
-//  summary
-//	nextIdx: next idx in bsorted.
-//	err
+//		user
+//		uid
+//		startIdx: the idx in bsorted.
+//	 nBoards: try to get at most nBoards
+//		keyword
+//
+// Return:
+//
+//	 summary
+//		nextIdx: next idx in bsorted.
+//		err
 func LoadGeneralBoards(user *ptttype.UserecRaw, uid ptttype.UID, startIdx ptttype.SortIdx, nBoards int, title []byte, keyword []byte, isAsc bool, bsortBy ptttype.BSortBy) (summaries []*ptttype.BoardSummaryRaw, nextSummary *ptttype.BoardSummaryRaw, err error) {
 	nBoardsInCache := cache.NumBoards()
 	if startIdx == 0 && !isAsc {
@@ -430,9 +436,9 @@ func LoadGeneralBoards(user *ptttype.UserecRaw, uid ptttype.UID, startIdx ptttyp
 	return summaries, nextSummary, nil
 }
 
-//loadAutoCompleteBoardStat
+// loadAutoCompleteBoardStat
 //
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1147
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1147
 func loadAutoCompleteBoardStat(user *ptttype.UserecRaw, uid ptttype.UID, idxInStore ptttype.SortIdxInStore, keyword []byte) (boardStat *ptttype.BoardStat, isEnd bool) {
 	var bidInCache ptttype.BidInStore
 
@@ -470,9 +476,9 @@ func loadAutoCompleteBoardStat(user *ptttype.UserecRaw, uid ptttype.UID, idxInSt
 	return boardStat, false
 }
 
-//loadClassBoardStat
+// loadClassBoardStat
 //
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1186
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1186
 func loadClassBoardStat(user *ptttype.UserecRaw, uid ptttype.UID, bid ptttype.Bid, isResolveBoardGroup bool) (boardStat *ptttype.BoardStat, board *ptttype.BoardHeaderRaw, err error) {
 	bsortBy := ptttype.BSORT_BY_CLASS
 
@@ -509,9 +515,9 @@ func loadClassBoardStat(user *ptttype.UserecRaw, uid ptttype.UID, bid ptttype.Bi
 	return boardStat, board, nil
 }
 
-//loadGeneralBoardStat
+// loadGeneralBoardStat
 //
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1147
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1147
 func loadGeneralBoardStat(user *ptttype.UserecRaw, uid ptttype.UID, idxInStore ptttype.SortIdxInStore, title []byte, keyword []byte, bsortBy ptttype.BSortBy) (boardStat *ptttype.BoardStat) {
 	var bidInCache ptttype.BidInStore
 
@@ -570,10 +576,10 @@ func newBoardStat(bidInCache ptttype.BidInStore, state ptttype.BoardStatAttr, bo
 	return boardStat
 }
 
-//keywordsNotInBoard
+// keywordsNotInBoard
 //
-//TITLE_MATCH in board.c
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L14
+// TITLE_MATCH in board.c
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L14
 func keywordsNotInBoard(boardID *ptttype.BoardID_t, boardTitle *ptttype.BoardTitle_t, title []byte, keyword []byte) bool {
 	if len(title) > 0 {
 		return (types.Cstrcasestr(boardTitle[:], title) < 0)
@@ -593,9 +599,9 @@ func keywordsNotInBoard(boardID *ptttype.BoardID_t, boardTitle *ptttype.BoardTit
 	return false
 }
 
-//showBoardList
+// showBoardList
 //
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1409
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1409
 func showBoardList(user *ptttype.UserecRaw, uid ptttype.UID, boardStats []*ptttype.BoardStat, isParseFolder bool) (summary []*ptttype.BoardSummaryRaw, err error) {
 	summary = make([]*ptttype.BoardSummaryRaw, len(boardStats))
 	for idx, eachStat := range boardStats {
@@ -605,9 +611,9 @@ func showBoardList(user *ptttype.UserecRaw, uid ptttype.UID, boardStats []*pttty
 	return summary, nil
 }
 
-//parseBoardSummary
+// parseBoardSummary
 //
-//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1460
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1460
 func parseBoardSummary(user *ptttype.UserecRaw, uid ptttype.UID, boardStat *ptttype.BoardStat, isParseFolder bool) (summary *ptttype.BoardSummaryRaw) {
 	// XXX we do not deal with fav in go-pttbbs.
 	if boardStat.Attr&ptttype.NBRD_LINE != 0 {

@@ -7,11 +7,11 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
-//AttachSHM
+// AttachSHM
 //
-//This is to have attach_shm (no checking loaded), not attach_SHM (checking loaded)
-//Should be used after LoadUHash (shmctl init) is done.
-//Should be used only once in the beginning of the program.
+// This is to have attach_shm (no checking loaded), not attach_SHM (checking loaded)
+// Should be used after LoadUHash (shmctl init) is done.
+// Should be used only once in the beginning of the program.
 func AttachSHM() error {
 	if Shm != nil {
 		return nil
@@ -20,11 +20,11 @@ func AttachSHM() error {
 	return NewSHM(types.Key_t(ptttype.SHM_KEY), ptttype.USE_HUGETLB, false)
 }
 
-//AttachCheckSHM
+// AttachCheckSHM
 //
-//This is to have attach_check_shm (checking loaded)
-//Should be used after LoadUHash (shmctl init) is done.
-//Should be used only once in the beginning of the program.
+// This is to have attach_check_shm (checking loaded)
+// Should be used after LoadUHash (shmctl init) is done.
+// Should be used only once in the beginning of the program.
 func AttachCheckSHM() (err error) {
 	err = AttachSHM()
 	if err != nil {

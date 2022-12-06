@@ -17,9 +17,9 @@ func GetUID(userID *ptttype.UserID_t) (uid ptttype.UID, err error) {
 	return cache.SearchUserRaw(userID, nil)
 }
 
-//killUser
+// killUser
 //
-//Assume correct uid / userID correspondance.
+// Assume correct uid / userID correspondance.
 func killUser(uid ptttype.UID, userID *ptttype.UserID_t) error {
 	if uid <= 0 || userID == nil {
 		return ptttype.ErrInvalidUserID
@@ -56,7 +56,7 @@ func tryDeleteHomePath(userID *ptttype.UserID_t) error {
 		return err
 	}
 
-	if err := os.RemoveAll(homePath); err != nil { // nolint
+	if err := os.RemoveAll(homePath); err != nil { //nolint
 		return err
 	}
 

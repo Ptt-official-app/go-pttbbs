@@ -3,7 +3,7 @@ package initgin
 import (
 	"bytes"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -45,7 +45,7 @@ func getJwt(router *gin.Engine, userID string, passwd string) string {
 	req := setRequest(api.LOGIN_R, loginParams, "", nil, "POST")
 	router.ServeHTTP(w, req)
 
-	body, _ := ioutil.ReadAll(w.Body)
+	body, _ := io.ReadAll(w.Body)
 
 	if w.Code != 200 {
 		logrus.Errorf("getJwt: unable to get Jwt: userID: %v passwd: %v code: %v body: %v", userID, passwd, w.Code, string(body))

@@ -34,13 +34,13 @@ func GetArticleWrapper(c *gin.Context) {
 	LoginRequiredPathQuery(GetArticle, params, path, c)
 }
 
-//GetArticle
+// GetArticle
 //
-//Require middleware to handle deleted files (by owner-name and by title).
-//We will handle user-board relation and filename prefix.
+// Require middleware to handle deleted files (by owner-name and by title).
+// We will handle user-board relation and filename prefix.
 //
-//Require middleware to parse the content.
-//Require middleware to take care of user-read-article.
+// Require middleware to parse the content.
+// Require middleware to take care of user-read-article.
 func GetArticle(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (result interface{}, err error) {
 	theParams, ok := params.(*GetArticleParams)
 	if !ok {

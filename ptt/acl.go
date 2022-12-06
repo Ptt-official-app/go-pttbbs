@@ -57,9 +57,7 @@ func bakumanGetInfo(filename string) (expireTS types.Time4, reason string, err e
 	return expireTS, reason, nil
 }
 
-//isBannedByBoard
-//
-//XXX TODO: implement details.
+// isBannedByBoard
 func isBannedByBoard(user *ptttype.UserecRaw, board *ptttype.BoardHeaderRaw) (expireTS types.Time4, reason string) {
 	return isBannedBy(&user.UserID, board.Brdname[:], BAKUMAN_OBJECT_TYPE_BOARD)
 }
