@@ -7,11 +7,11 @@ const (
 	// copy to ptttype/00-config-production.go to setup production config.
 	//
 	// type struct requires const.
-	MAX_USERS = 200000 /* 最高註冊人數 */
+	MAX_USERS = 2000000 /* 最高註冊人數 */
 
-	MAX_ACTIVE = 100 /* 最多同時上站人數 */
+	MAX_ACTIVE = 512 /* 最多同時上站人數 */
 
-	MAX_BOARD = 8192 /* 最大開板個數 */
+	MAX_BOARD = 20000 /* 最大開板個數 */
 
 	//////////
 	//config.h
@@ -26,7 +26,7 @@ const (
 
 	MAX_ADBANNER = 500 /* 最多動態看板數 */
 
-	HOTBOARDCACHE = 10 /* 熱門看板快取 */
+	HOTBOARDCACHE = 128 /* 熱門看板快取 */
 
 	MAX_FROM = 300 /* 最多故鄉數 */
 
