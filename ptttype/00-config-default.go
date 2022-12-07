@@ -1,6 +1,4 @@
-// +build !dev
-// +build !production
-// +build !debug
+//go:build !(dev) && !(production) && !(docker)
 
 package ptttype
 
