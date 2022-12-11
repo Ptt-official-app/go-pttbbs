@@ -24,7 +24,7 @@ sed -i '/^pmake install/a ## mand\ncd ${BBSHOME}/pttbbs/daemon/mand\npmake clean
 echo "#define NOKILLWATERBALL" >> /home/bbs/pttbbs/pttbbs.conf
 
 # 6. add HOTBOARDCACHE
-echo "#define HOTBOARDCACHE (10)" >> /home/bbs/pttbbs/pttbbs.conf
+echo "#define HOTBOARDCACHE (128)" >> /home/bbs/pttbbs/pttbbs.conf
 
 # 7. add USE_EDIT_HISTORY
 echo "#define USE_EDIT_HISTORY" >> /home/bbs/pttbbs/pttbbs.conf
@@ -37,14 +37,14 @@ echo "#define USEREC_EMAIL_IS_CONTACT" >> /home/bbs/pttbbs/pttbbs.conf
 echo "#define ALLOW_REGISTER_WITH_ONLY_CONTACT_EMAIL" >> /home/bbs/pttbbs/pttbbs.conf
 echo "#define REQUIRE_CONTACT_EMAIL_TO_CHANGE_PASSWORD" >> /home/bbs/pttbbs/pttbbs.conf
 
-# 7. update max user to 200000
-sed -i 's/.*#define MAX_USERS.*/#define MAX_USERS (200000)/g' /home/bbs/pttbbs/pttbbs.conf
+# 7. update max user to 2000000
+sed -i 's/.*#define MAX_USERS.*/#define MAX_USERS (2000000)/g' /home/bbs/pttbbs/pttbbs.conf
 
-# 7. update max-active user to 100
-sed -i 's/.*#define MAX_ACTIVE.*/#define MAX_ACTIVE (100)/g' /home/bbs/pttbbs/pttbbs.conf
+# 7. update max-active user to 512
+sed -i 's/.*#define MAX_ACTIVE.*/#define MAX_ACTIVE (512)/g' /home/bbs/pttbbs/pttbbs.conf
 
-# 7. update max board to 8192
-sed -i 's/.*#define\s*MAX_BOARD.*/#define MAX_BOARD (8192)/g' /home/bbs/pttbbs/pttbbs.conf
+# 7. update max board to 20000
+sed -i 's/.*#define\s*MAX_BOARD.*/#define MAX_BOARD (20000)/g' /home/bbs/pttbbs/pttbbs.conf
 
 # 7. add EXTENDED_INCHAR_ANSI
 echo "#define EXTENDED_INCHAR_ANSI" >> /home/bbs/pttbbs/pttbbs.conf
