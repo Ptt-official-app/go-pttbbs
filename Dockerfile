@@ -28,7 +28,7 @@ ENV PATH=${PATH}:/usr/local/go/bin:/home/bbs/bin:/opt/bbs/bin
 COPY . /srv/go-pttbbs
 
 WORKDIR /srv/go-pttbbs
-RUN cp 01-config-docker.go.template ptttype/00-config-production.go && \
+RUN cp 01-config-docker.go.template ptttype/01-config-docker.go && \
     mkdir -p /etc/go-pttbbs && cp 01-config.docker.ini /etc/go-pttbbs/production.ini && \
     cp docs/etc/* /etc/go-pttbbs && \
     chown -R bbs .
