@@ -1,8 +1,6 @@
 package cache
 
 import (
-	"unsafe"
-
 	"github.com/Ptt-official-app/go-pttbbs/cmsys"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
@@ -15,36 +13,19 @@ func AddToUHash(uidInCache ptttype.UIDInStore, userID *ptttype.UserID_t) error {
 	h := cmsys.StringHashWithHashBits(userID[:])
 
 	// line: 166
-	Shm.WriteAt(
-		unsafe.Offsetof(Shm.Raw.Userid)+ptttype.USER_ID_SZ*uintptr(uidInCache),
-		ptttype.USER_ID_SZ,
-		unsafe.Pointer(userID),
-	)
+	Shm.Shm.Userid[uidInCache] = *userID
 
 	// init vars
 	p := h
-	val := ptttype.UIDInStore(0)
-	pval := &val
-	valptr := unsafe.Pointer(pval)
-	offset := unsafe.Offsetof(Shm.Raw.HashHead)
+	val := Shm.Shm.HashHead[p]
 
 	// line: 168
-	Shm.ReadAt(
-		offset+ptttype.UID_IN_STORE_SZ*uintptr(p),
-		ptttype.UID_IN_STORE_SZ,
-		valptr,
-	)
-
 	times := 0
-	offsetNextInHash := unsafe.Offsetof(Shm.Raw.NextInHash)
+	isNext := false
 	for ; times < ptttype.MAX_USERS && val != -1; times++ {
-		offset = offsetNextInHash
+		isNext = true
 		p = cmsys.Fnv32_t(val)
-		Shm.ReadAt(
-			offset+ptttype.UID_IN_STORE_SZ*uintptr(p),
-			ptttype.UID_IN_STORE_SZ,
-			valptr,
-		)
+		val = Shm.Shm.NextInHash[p]
 	}
 	if times >= ptttype.MAX_USERS {
 		log.Errorf("Unable to add-to-uhash! uid-in-cache: %v userID: %v", uidInCache, string(userID[:]))
@@ -52,58 +33,35 @@ func AddToUHash(uidInCache ptttype.UIDInStore, userID *ptttype.UserID_t) error {
 	}
 
 	// set current ptr
-	*pval = uidInCache
-	Shm.WriteAt(
-		offset+ptttype.UID_IN_STORE_SZ*uintptr(p),
-		ptttype.UID_IN_STORE_SZ,
-		valptr,
-	)
+	if !isNext {
+		Shm.Shm.HashHead[p] = uidInCache
+	} else {
+		Shm.Shm.NextInHash[p] = uidInCache
+	}
 
 	// set next as -1
-	*pval = -1
-	Shm.WriteAt(
-		unsafe.Offsetof(Shm.Raw.NextInHash)+ptttype.UID_IN_STORE_SZ*uintptr(uidInCache),
-		ptttype.UID_IN_STORE_SZ,
-		valptr,
-	)
+	Shm.Shm.NextInHash[uidInCache] = -1
 
 	return nil
 }
 
 // RemoveFromUHash
 func RemoveFromUHash(uidInCache ptttype.UIDInStore) error {
-	userID := &ptttype.UserID_t{}
-
-	Shm.ReadAt(
-		unsafe.Offsetof(Shm.Raw.Userid)+ptttype.USER_ID_SZ*uintptr(uidInCache),
-		ptttype.USER_ID_SZ,
-		unsafe.Pointer(userID),
-	)
+	userID := &Shm.Shm.Userid[uidInCache]
 
 	h := cmsys.StringHashWithHashBits(userID[:])
 
 	// line: 191
 	p := h
-	val := ptttype.UIDInStore(0)
-	pval := &val
-	valptr := unsafe.Pointer(pval)
-	offset := unsafe.Offsetof(Shm.Raw.HashHead)
-	Shm.ReadAt(
-		offset+types.INT32_SZ*uintptr(p),
-		types.INT32_SZ,
-		valptr,
-	)
+	val := Shm.Shm.HashHead[p]
 
 	// line: 194
 	times := 0
+	isNext := false
 	for ; times < ptttype.MAX_USERS && val != -1 && val != uidInCache; times++ {
 		p = cmsys.Fnv32_t(val)
-		offset = unsafe.Offsetof(Shm.Raw.NextInHash)
-		Shm.ReadAt(
-			offset+types.INT32_SZ*uintptr(p),
-			types.INT32_SZ,
-			valptr,
-		)
+		isNext = true
+		val = Shm.Shm.NextInHash[p]
 	}
 	if times >= ptttype.MAX_USERS {
 		log.Errorf("Unable to remove-from-uhash! uid-in-cache: %v userID: %v", uidInCache, string(userID[:]))
@@ -111,19 +69,12 @@ func RemoveFromUHash(uidInCache ptttype.UIDInStore) error {
 	}
 
 	if val == uidInCache {
-		nextNum := ptttype.UIDInStore(0)
-		Shm.ReadAt(
-			unsafe.Offsetof(Shm.Raw.NextInHash)+ptttype.UID_IN_STORE_SZ*uintptr(uidInCache),
-			ptttype.UID_IN_STORE_SZ,
-			unsafe.Pointer(&nextNum),
-		)
-
-		*pval = nextNum
-		Shm.WriteAt(
-			offset+ptttype.UID_IN_STORE_SZ*uintptr(p),
-			ptttype.UID_IN_STORE_SZ,
-			valptr,
-		)
+		nextNum := Shm.Shm.NextInHash[uidInCache]
+		if !isNext {
+			Shm.Shm.HashHead[p] = nextNum
+		} else {
+			Shm.Shm.NextInHash[p] = nextNum
+		}
 	}
 	return nil
 }
@@ -153,32 +104,19 @@ func DoSearchUserRaw(userID *ptttype.UserID_t, rightID *ptttype.UserID_t) (pttty
 	h := cmsys.StringHashWithHashBits(userID[:])
 
 	// p = SHM->hash_head[h]  //line: 219
-	p := ptttype.UIDInStore(0)
-	Shm.ReadAt(
-		unsafe.Offsetof(Shm.Raw.HashHead)+types.INT32_SZ*uintptr(h),
-		types.INT32_SZ,
-		unsafe.Pointer(&p),
-	)
+	p := Shm.Shm.HashHead[h]
 
-	shmUserID := ptttype.UserID_t{}
+	shmUserID := (*ptttype.UserID_t)(nil)
 	for times := 0; times < ptttype.MAX_USERS && p != -1 && p < ptttype.MAX_USERS; times++ {
 		// if (strcasecmp(SHM->userid[p], userid) == 0)  //line: 222
-		Shm.ReadAt(
-			unsafe.Offsetof(Shm.Raw.Userid)+ptttype.USER_ID_SZ*uintptr(p),
-			ptttype.USER_ID_SZ,
-			unsafe.Pointer(&shmUserID),
-		)
+		shmUserID = &Shm.Shm.Userid[p]
 		if types.Cstrcasecmp(userID[:], shmUserID[:]) == 0 {
 			if userID[0] != 0 && rightID != nil {
 				copy(rightID[:], shmUserID[:])
 			}
 			return p.ToUID(), nil
 		}
-		Shm.ReadAt(
-			unsafe.Offsetof(Shm.Raw.NextInHash)+types.INT32_SZ*uintptr(p),
-			types.INT32_SZ,
-			unsafe.Pointer(&p),
-		)
+		p = Shm.Shm.NextInHash[p]
 	}
 
 	return 0, nil
@@ -193,14 +131,7 @@ func GetUserID(uid ptttype.UID) (*ptttype.UserID_t, error) {
 		return nil, ErrInvalidUID
 	}
 
-	userID := &ptttype.UserID_t{}
-	Shm.ReadAt(
-		unsafe.Offsetof(Shm.Raw.Userid)+ptttype.USER_ID_SZ*uintptr(uidInCache),
-		ptttype.USER_ID_SZ,
-		unsafe.Pointer(userID),
-	)
-
-	return userID, nil
+	return &Shm.Shm.Userid[uidInCache], nil
 }
 
 // SetUserID
@@ -229,30 +160,9 @@ func SetUserID(uid ptttype.UID, userID *ptttype.UserID_t) (err error) {
 func CooldownTimeOf(uid ptttype.UID) (cooldowntime types.Time4) {
 	uidInCache := uid.ToUIDInStore()
 
-	Shm.ReadAt(
-		unsafe.Offsetof(Shm.Raw.CooldownTime)+types.TIME4_SZ*uintptr(uidInCache),
-		types.TIME4_SZ,
-		unsafe.Pointer(&cooldowntime),
-	)
-
 	// types.Time4 is int32, not uint32
 	// we use 0x7FFFFFF0 instead of 0xFFFFFFF0
-	return cooldowntime & 0x7FFFFFF0
-}
-
-func SetCooldownTime(uid ptttype.UID, cooldowntime types.Time4) (err error) {
-	uidInCache := uid.ToUIDInStore()
-	posttimes := PosttimesOf(uid)
-
-	newCooldowntime := cooldowntime | posttimes
-
-	Shm.WriteAt(
-		unsafe.Offsetof(Shm.Raw.CooldownTime)+types.TIME4_SZ*uintptr(uidInCache),
-		types.TIME4_SZ,
-		unsafe.Pointer(&newCooldowntime),
-	)
-
-	return nil
+	return Shm.Shm.CooldownTime[uidInCache] & 0x7FFFFFF0
 }
 
 func AddCooldownTime(uid ptttype.UID, minutes int) (err error) {
@@ -265,7 +175,16 @@ func AddCooldownTime(uid ptttype.UID, minutes int) (err error) {
 	base += types.Time4(minutes) * 60
 	base &= 0x7FFFFFF0
 
-	return SetCooldownTime(uid, base)
+	uidInCache := uid.ToUIDInStore()
+	Shm.Shm.CooldownTime[uidInCache] = base
+
+	return nil
+}
+
+func SetCooldownTime(uid ptttype.UID, cooldownTime types.Time4) (err error) {
+	uidInCache := uid.ToUIDInStore()
+	Shm.Shm.CooldownTime[uidInCache] = cooldownTime
+	return nil
 }
 
 // PosttimesOf
@@ -273,34 +192,19 @@ func AddCooldownTime(uid ptttype.UID, minutes int) (err error) {
 func PosttimesOf(uid ptttype.UID) (posttimes types.Time4) {
 	uidInCache := uid.ToUIDInStore()
 
-	Shm.ReadAt(
-		unsafe.Offsetof(Shm.Raw.CooldownTime)+types.TIME4_SZ*uintptr(uidInCache),
-		types.TIME4_SZ,
-		unsafe.Pointer(&posttimes),
-	)
-
-	return posttimes & 0xF
-}
-
-func SetPosttimes(uid ptttype.UID, posttimes types.Time4) (err error) {
-	uidInCache := uid.ToUIDInStore()
-	cooldowntime := CooldownTimeOf(uid)
-	newPosttimes := cooldowntime | posttimes
-
-	Shm.WriteAt(
-		unsafe.Offsetof(Shm.Raw.CooldownTime)+types.TIME4_SZ*uintptr(uidInCache),
-		types.TIME4_SZ,
-		unsafe.Pointer(&newPosttimes),
-	)
-
-	return nil
+	return Shm.Shm.CooldownTime[uidInCache] & 0xF
 }
 
 func AddPosttimes(uid ptttype.UID, times int) (err error) {
 	posttimes := PosttimesOf(uid)
 	newPosttimes := posttimes + types.Time4(times)
-	if newPosttimes >= 0xf {
-		newPosttimes = posttimes | 0xf
+
+	uidInCache := uid.ToUIDInStore()
+	if newPosttimes < 0xf {
+		Shm.Shm.CooldownTime[uidInCache] += types.Time4(times)
+	} else {
+		Shm.Shm.CooldownTime[uidInCache] |= 0xf
 	}
-	return SetPosttimes(uid, newPosttimes)
+
+	return nil
 }

@@ -3,10 +3,8 @@ package cache
 import (
 	"sync"
 	"testing"
-	"unsafe"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
-	"github.com/Ptt-official-app/go-pttbbs/types"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -42,12 +40,7 @@ func TestAttachCheckSHM(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	loaded := int32(1)
-	Shm.WriteAt(
-		unsafe.Offsetof(Shm.Raw.Loaded),
-		types.INT32_SZ,
-		unsafe.Pointer(&loaded),
-	)
+	Shm.Shm.Loaded = 1
 
 	tests := []struct {
 		name    string

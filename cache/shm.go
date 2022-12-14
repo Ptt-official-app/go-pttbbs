@@ -4,12 +4,15 @@ import (
 	"encoding/binary"
 	"reflect"
 	"runtime/debug"
+	"sort"
+	"time"
 	"unsafe"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/shm"
 	"github.com/Ptt-official-app/go-pttbbs/types"
 
+	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -19,6 +22,8 @@ type SHM struct {
 	Shmaddr unsafe.Pointer
 
 	Raw SHMRaw // dummy variable to get the offset and size of the shm-fields.
+
+	Shm *SHMRaw
 }
 
 // NewSHM
@@ -63,6 +68,7 @@ func NewSHM(key types.Key_t, isUseHugeTlb bool, isCreate bool) error {
 		Shmid:   shmid,
 		IsNew:   isNew,
 		Shmaddr: shmaddr,
+		Shm:     (*SHMRaw)(shmaddr),
 	}
 
 	if isNew {
@@ -70,51 +76,25 @@ func NewSHM(key types.Key_t, isUseHugeTlb bool, isCreate bool) error {
 		in_size := int32(SHM_RAW_SZ)
 		in_number := int32(0)
 		in_loaded := int32(0)
-		Shm.WriteAt(
-			unsafe.Offsetof(Shm.Raw.Version),
-			unsafe.Sizeof(Shm.Raw.Version),
-			unsafe.Pointer(&in_version),
-		)
-		Shm.WriteAt(
-			unsafe.Offsetof(Shm.Raw.Size),
-			unsafe.Sizeof(Shm.Raw.Size),
-			unsafe.Pointer(&in_size),
-		)
-		Shm.WriteAt(
-			unsafe.Offsetof(Shm.Raw.Number),
-			unsafe.Sizeof(Shm.Raw.Number),
-			unsafe.Pointer(&in_number),
-		)
-		Shm.WriteAt(
-			unsafe.Offsetof(Shm.Raw.Loaded),
-			unsafe.Sizeof(Shm.Raw.Loaded),
-			unsafe.Pointer(&in_loaded),
-		)
+		Shm.Shm.Version = int32(in_version)
+		Shm.Shm.Size = in_size
+		Shm.Shm.Number = in_number
+		Shm.Shm.Loaded = in_loaded
 	}
 
 	// version and size should be fixed.
-	Shm.ReadAt(
-		unsafe.Offsetof(Shm.Raw.Version),
-		unsafe.Sizeof(Shm.Raw.Version),
-		unsafe.Pointer(&Shm.Raw.Version),
-	)
-	Shm.ReadAt(
-		unsafe.Offsetof(Shm.Raw.Size),
-		unsafe.Sizeof(Shm.Raw.Size),
-		unsafe.Pointer(&Shm.Raw.Size),
-	)
-
-	Shm.SetBCACHEPTR(
-		unsafe.Offsetof(Shm.Raw.BCache),
-	)
+	Shm.Raw.Version = Shm.Shm.Version
+	Shm.Raw.Size = Shm.Shm.Size
 
 	// verify version
+	logrus.Infof("cache.NewSHM: shmid: %v isNew: %v shmaddr: %v Raw.Version: %v SHM_VERSION: %v", shmid, isNew, shmaddr, Shm.Raw.Version, SHM_VERSION)
 	if Shm.Raw.Version != SHM_VERSION {
 		log.Errorf("cache.NewSHM: version not match: key: %v Shm.Raw.Version: %v SHM_VERSION: %v isCreate: %v isNew: %v", key, Shm.Raw.Version, SHM_VERSION, isCreate, isNew)
 		debug.PrintStack()
 		_ = CloseSHM()
 		return ErrShmVersion
 	}
+	logrus.Infof("cache.NewSHM: Raw.Size: %v SHM_RAW_SZ: %v", Shm.Raw.Size, SHM_RAW_SZ)
 	if Shm.Raw.Size != int32(SHM_RAW_SZ) {
 		log.Warnf("cache.NewSHM: size not match (version matched): key: %v Shm.Raw.Size: %v SHM_RAW_SZ: %v size: %v isCreate: %v isNew: %v", key, Shm.Raw.Size, SHM_RAW_SZ, size, isCreate, isNew)
 
@@ -175,6 +155,8 @@ func CloseSHM() error {
 
 	Shm = nil
 
+	time.Sleep(3 * time.Millisecond)
+
 	log.Infof("cache.CloseSHM: done")
 
 	return nil
@@ -202,127 +184,39 @@ func (s *SHM) Reset() {
 	if !IsTest {
 		return
 	}
-	s.WriteAt(
-		unsafe.Offsetof(s.Raw.Userid),
-		SHM_RAW_SZ-uintptr(types.INT32_SZ*2),
-		unsafe.Pointer(&EMPTY_SHM_RAW.Userid),
-	)
-}
 
-// ReadAt
-//
-// Require precalculated offset and size and outptr to efficiently get the data.
-// See tests for exact usage.
-// [!!!] If we are reading from the array, make sure that have unit-size * n in the size.
-//
-// Params
-//
-//	offsetOfSHMRawComponent: offset from SHMRaw
-//	size: size of the variable, usually can be referred from SHMRaw
-//	      [!!!]If we are reading from the array, make sure that have unit-size * n in the size.
-//	outptr: the ptr of the object to read.
-func (s *SHM) ReadAt(offsetOfSHMRawComponent uintptr, size uintptr, outptr unsafe.Pointer) {
-	shm.ReadAt(s.Shmaddr, int(offsetOfSHMRawComponent), size, outptr)
-}
-
-// WriteAt
-//
-// Require recalculated offset and size and outptr to efficiently get the data.
-// See tests for exact usage.
-// [!!!]If we are reading from the array, make sure that have unit-size * n in the size.
-//
-// Params
-//
-//	offsetOfSHMRawComponent: offset from SHMRaw
-//	size: size of the variable
-//	      [!!!]If we are reading from the array, make sure that have unit-size * n in the size.
-//	inptr: the ptr of the object to write.
-func (s *SHM) WriteAt(offsetOfSHMRawComponent uintptr, size uintptr, inptr unsafe.Pointer) {
-	shm.WriteAt(s.Shmaddr, int(offsetOfSHMRawComponent), size, inptr)
-}
-
-func (s *SHM) SetOrUint32(offsetOfSHMRawComponent uintptr, flag uint32) {
-	shm.SetOrUint32(s.Shmaddr, int(offsetOfSHMRawComponent), flag)
-}
-
-func (s *SHM) IncUint32(offsetOfSHMRawComponent uintptr) {
-	shm.IncUint32(s.Shmaddr, int(offsetOfSHMRawComponent))
-}
-
-func (s *SHM) Memset(offsetOfSHMRawComponent uintptr, c byte, size uintptr) {
-	shm.Memset(s.Shmaddr, int(offsetOfSHMRawComponent), c, size)
-}
-
-func (s *SHM) InnerSetInt32(offsetSrc uintptr, offsetDst uintptr) {
-	shm.InnerSetInt32(s.Shmaddr, int(offsetSrc), int(offsetDst))
-}
-
-// SetBCACHEPTR
-//
-// !!!Required in NewSHM (and should be set only once in NewSHM)
-func (s *SHM) SetBCACHEPTR(offsetOfSHMRawComponent uintptr) {
-	shm.SetBCACHEPTR(s.Shmaddr, int(offsetOfSHMRawComponent))
+	const sz = SHM_RAW_SZ - uintptr(types.INT32_SZ*2)
+	ptrBytes := (*[sz]byte)(unsafe.Pointer(&EMPTY_SHM_RAW.Userid))
+	shmBytes := (*[SHM_RAW_SZ]byte)(unsafe.Pointer(&s.Shm.Userid))
+	copy(shmBytes[:], ptrBytes[:])
 }
 
 func (s *SHM) GetBNumber() (bnumber int32) {
-	s.ReadAt(
-		unsafe.Offsetof(s.Raw.BNumber),
-		types.TIME4_SZ,
-		unsafe.Pointer(&bnumber),
-	)
-	return
+	return s.Shm.BNumber
 }
 
 func (s *SHM) QsortCmpBoardName() {
-	bnumber := s.GetBNumber()
-
-	const bsorted0sz = unsafe.Sizeof(s.Raw.BSorted[0])
-	offsetBsorted := unsafe.Offsetof(s.Raw.BSorted) + bsorted0sz*uintptr(ptttype.BSORT_BY_NAME)
-	shm.QsortCmpBoardName(s.Shmaddr, int(offsetBsorted), uint32(bnumber))
+	bnumber := ptttype.BidInStore(s.GetBNumber())
+	for i := ptttype.BidInStore(0); i < bnumber; i++ {
+		s.Shm.BSorted[ptttype.BSORT_BY_NAME][i] = i
+	}
+	sort.Sort(shmBoardByName(s.Shm.BSorted[ptttype.BSORT_BY_NAME][:bnumber]))
 }
 
 func (s *SHM) QsortCmpBoardClass() {
-	bnumber := s.GetBNumber()
-
-	const bsorted0sz = unsafe.Sizeof(s.Raw.BSorted[0])
-	offsetBsorted := unsafe.Offsetof(s.Raw.BSorted) + bsorted0sz*uintptr(ptttype.BSORT_BY_CLASS)
-	shm.QsortCmpBoardClass(s.Shmaddr, int(offsetBsorted), uint32(bnumber))
+	bnumber := ptttype.BidInStore(s.GetBNumber())
+	for i := ptttype.BidInStore(0); i < bnumber; i++ {
+		s.Shm.BSorted[ptttype.BSORT_BY_CLASS][i] = i
+	}
+	sort.Sort(shmBoardByClass(s.Shm.BSorted[ptttype.BSORT_BY_CLASS][:bnumber]))
 }
 
 func (s *SHM) CheckMaxUser() {
-	utmpnumber := int32(0)
-	utmpnumber_p := &utmpnumber
-	utmpnumber_ptr := unsafe.Pointer(utmpnumber_p)
-	maxuser := int32(0)
-	maxuser_p := &maxuser
-	maxuser_ptr := unsafe.Pointer(maxuser_p)
-
-	s.ReadAt(
-		unsafe.Offsetof(s.Raw.UTMPNumber),
-		types.INT32_SZ,
-		utmpnumber_ptr,
-	)
-
-	s.ReadAt(
-		unsafe.Offsetof(s.Raw.MaxUser),
-		types.INT32_SZ,
-		maxuser_ptr,
-	)
-
+	utmpnumber := s.Shm.UTMPNumber
+	maxuser := s.Shm.MaxUser
 	if maxuser < utmpnumber {
-		*maxuser_p = utmpnumber
-		s.WriteAt(
-			unsafe.Offsetof(s.Raw.MaxUser),
-			types.INT32_SZ,
-			maxuser_ptr,
-		)
-
 		nowTS := types.NowTS()
-
-		s.WriteAt(
-			unsafe.Offsetof(s.Raw.MaxTime),
-			types.TIME4_SZ,
-			unsafe.Pointer(&nowTS),
-		)
+		s.Shm.MaxUser = utmpnumber
+		s.Shm.MaxTime = nowTS
 	}
 }

@@ -3,7 +3,6 @@ package cache
 import (
 	"io"
 	"os"
-	"unsafe"
 
 	"github.com/Ptt-official-app/go-pttbbs/cmsys"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
@@ -20,19 +19,8 @@ func LoadUHash() (err error) {
 	}
 
 	// line: 58
-	number := int32(0)
-	Shm.ReadAt(
-		unsafe.Offsetof(Shm.Raw.Number),
-		unsafe.Sizeof(Shm.Raw.Number),
-		unsafe.Pointer(&number),
-	)
-
-	loaded := int32(0)
-	Shm.ReadAt(
-		unsafe.Offsetof(Shm.Raw.Loaded),
-		unsafe.Sizeof(Shm.Raw.Loaded),
-		unsafe.Pointer(&loaded),
-	)
+	number := Shm.Shm.Number
+	loaded := Shm.Shm.Loaded
 
 	// XXX in case it's not assumed zero, this becomes a race...
 	if number == 0 && loaded == 0 {
@@ -45,19 +33,10 @@ func LoadUHash() (err error) {
 		// line: 61
 		// use golang style.
 		todayIsZeroBytes := [ptttype.TODAYISSZ]byte{}
-		Shm.WriteAt(
-			unsafe.Offsetof(Shm.Raw.TodayIs),
-			unsafe.Sizeof(Shm.Raw.TodayIs),
-			unsafe.Pointer(&todayIsZeroBytes),
-		)
+		Shm.Shm.TodayIs = todayIsZeroBytes
 
 		// line: 62
-		loaded = 1
-		Shm.WriteAt(
-			unsafe.Offsetof(Shm.Raw.Loaded),
-			unsafe.Sizeof(Shm.Raw.Loaded),
-			unsafe.Pointer(&loaded),
-		)
+		Shm.Shm.Loaded = 1
 	} else {
 		// line: 65
 		err = fillUHash(true)
@@ -108,11 +87,7 @@ func fillUHash(isOnfly bool) error {
 
 	log.Infof("fillUHash: to write usernum: %v", uidInCache)
 
-	Shm.WriteAt(
-		unsafe.Offsetof(Shm.Raw.Number),
-		unsafe.Sizeof(Shm.Raw.Number),
-		unsafe.Pointer(&uidInCache),
-	)
+	Shm.Shm.Number = int32(uidInCache)
 
 	return nil
 }
@@ -131,49 +106,19 @@ func userecRawAddToUHash(uidInCache ptttype.UIDInStore, userecRaw *ptttype.Usere
 
 	h := cmsys.StringHashWithHashBits(userecRaw.UserID[:])
 
-	shmUserID := ptttype.UserID_t{}
-	Shm.ReadAt(
-		unsafe.Offsetof(Shm.Raw.Userid)+ptttype.USER_ID_SZ*uintptr(uidInCache),
-		ptttype.USER_ID_SZ,
-		unsafe.Pointer(&shmUserID),
-	)
-
-	offsetNextInHash := unsafe.Offsetof(Shm.Raw.NextInHash)
-
+	shmUserID := &Shm.Shm.Userid[uidInCache]
 	if !isOnfly || types.Cstrcmp(userecRaw.UserID[:], shmUserID[:]) != 0 {
-		Shm.WriteAt(
-			unsafe.Offsetof(Shm.Raw.Userid)+ptttype.USER_ID_SZ*uintptr(uidInCache),
-			ptttype.USER_ID_SZ,
-			unsafe.Pointer(&userecRaw.UserID),
-		)
-
-		Shm.WriteAt(
-			unsafe.Offsetof(Shm.Raw.Money)+types.INT32_SZ*uintptr(uidInCache),
-			types.INT32_SZ,
-			unsafe.Pointer(&userecRaw.Money),
-		)
-
+		Shm.Shm.Userid[uidInCache] = userecRaw.UserID
+		Shm.Shm.Money[uidInCache] = userecRaw.Money
 		if ptttype.USE_COOLDOWN {
-			zero := types.Time4(0)
-			Shm.WriteAt(
-				unsafe.Offsetof(Shm.Raw.CooldownTime)+types.TIME4_SZ*uintptr(uidInCache),
-				types.TIME4_SZ,
-				unsafe.Pointer(&zero),
-			)
+			Shm.Shm.CooldownTime[uidInCache] = 0
 		}
 	}
 
 	p := h
-	val := ptttype.UIDInStore(0)
-	offsetHashHead := unsafe.Offsetof(Shm.Raw.HashHead)
+	val := Shm.Shm.HashHead[p]
 	// offsetNextInHash := unsafe.Offsetof(Shm.Raw.NextInHash)
 	isFirst := true
-
-	Shm.ReadAt(
-		offsetHashHead+types.INT32_SZ*uintptr(p),
-		types.INT32_SZ,
-		unsafe.Pointer(&val),
-	)
 
 	l := 0
 	for val >= 0 && val < ptttype.MAX_USERS {
@@ -186,35 +131,20 @@ func userecRawAddToUHash(uidInCache ptttype.UIDInStore, userecRaw *ptttype.Usere
 		// 1. setting p as val
 		// 2. get val from next_in_hash[p]
 		p = cmsys.Fnv32_t(val)
-		Shm.ReadAt(
-			offsetNextInHash+types.INT32_SZ*uintptr(p),
-			types.INT32_SZ,
-			unsafe.Pointer(&val),
-		)
+		val = Shm.Shm.NextInHash[p]
 
 		isFirst = false
 	}
 
 	// set next in hash as n
-	offset := offsetHashHead
-	if !isFirst {
-		offset = offsetNextInHash
-	}
-	val = uidInCache
-	Shm.WriteAt(
-		offset+types.INT32_SZ*uintptr(p),
-		types.INT32_SZ,
-		unsafe.Pointer(&val),
-	)
 
+	if isFirst {
+		Shm.Shm.HashHead[p] = uidInCache
+	} else {
+		Shm.Shm.NextInHash[p] = uidInCache
+	}
 	// set next in hash as -1
-	p = cmsys.Fnv32_t(val)
-	val = -1
-	Shm.WriteAt(
-		offsetNextInHash+types.INT32_SZ*uintptr(p),
-		types.INT32_SZ,
-		unsafe.Pointer(&val),
-	)
+	Shm.Shm.NextInHash[uidInCache] = -1
 }
 
 func InitFillUHash(isOnfly bool) {
@@ -223,11 +153,7 @@ func InitFillUHash(isOnfly bool) {
 		for idx := range toFillHashHead {
 			toFillHashHead[idx] = -1
 		}
-		Shm.WriteAt(
-			unsafe.Offsetof(Shm.Raw.HashHead),
-			unsafe.Sizeof(Shm.Raw.HashHead),
-			unsafe.Pointer(&toFillHashHead),
-		)
+		Shm.Shm.HashHead = toFillHashHead
 	} else {
 		for idx := cmsys.Fnv32_t(0); idx < (1 << ptttype.HASH_BITS); idx++ {
 			checkHash(idx)
@@ -243,49 +169,26 @@ func checkHash(h cmsys.Fnv32_t) {
 
 	// line: 71
 	p := h
-	val := ptttype.UIDInStore(0)
-	pval := &val
-	valptr := unsafe.Pointer(pval)
-	Shm.ReadAt(
-		unsafe.Offsetof(Shm.Raw.HashHead)+types.INT32_SZ*uintptr(p),
-		types.INT32_SZ,
-		valptr,
-	)
+	val := Shm.Shm.HashHead[p]
 
 	// line: 72
 	isFirst := true
-
-	var offset uintptr
-	offsetHashHead := unsafe.Offsetof(Shm.Raw.HashHead)
-	offsetNextInHash := unsafe.Offsetof(Shm.Raw.NextInHash)
-
-	userID := ptttype.UserID_t{}
+	userID := (*ptttype.UserID_t)(nil)
 	deep := 0
 	for val != -1 {
-		offset = offsetNextInHash
-		if isFirst {
-			offset = offsetHashHead
-		}
-
 		// check invalid pointer-val, set as -1  line: 74
 		if val < -1 || val >= ptttype.MAX_USERS {
 			log.Warnf("uhash_loader.checkHash: val invalid: h: %v p: %v val: %v isHead: %v", h, p, val, isFirst)
-			*pval = -1
-			Shm.WriteAt(
-				offset+types.INT32_SZ*uintptr(p),
-				types.INT32_SZ,
-				valptr,
-			)
+			if isFirst {
+				Shm.Shm.HashHead[p] = -1
+			} else {
+				Shm.Shm.NextInHash[p] = -1
+			}
 			break
 		}
 
 		// get user-id: line: 75
-		Shm.ReadAt(
-			unsafe.Offsetof(Shm.Raw.Userid)+ptttype.USER_ID_SZ*uintptr(val),
-			ptttype.USER_ID_SZ,
-			unsafe.Pointer(&userID),
-		)
-
+		userID = &Shm.Shm.Userid[val]
 		userIDHash := cmsys.StringHashWithHashBits(userID[:])
 
 		// check hash as expected line: 76
@@ -293,33 +196,23 @@ func checkHash(h cmsys.Fnv32_t) {
 			// XXX
 			// the result of the userID does not fit the h (broken?).
 			// XXX uhash_loader is used only 1-time when starting the service.
-			next := ptttype.UIDInStore(0)
+			next := Shm.Shm.NextInHash[val]
 
 			// get next from *p (val)
-			Shm.ReadAt(
-				offsetNextInHash+types.INT32_SZ*uintptr(val),
-				types.INT32_SZ,
-				unsafe.Pointer(&next),
-			)
 			log.Warnf("userID hash is not in the corresponding idx (to remove) (%v): userID: %v userIDHash: %v h: %v next: %v", deep, types.CstrToString(userID[:]), userIDHash, h, next)
 			// remove current by setting current as the next, hopefully the next user can fit the userIDHash.
-			*pval = next
-			Shm.WriteAt(
-				offset+types.INT32_SZ*uintptr(p),
-				types.INT32_SZ,
-				unsafe.Pointer(&next),
-			)
+			val = next
+			if isFirst {
+				Shm.Shm.HashHead[p] = next
+			} else {
+				Shm.Shm.NextInHash[p] = next
+			}
 		} else {
 			// 1. p as val (pointer in NextInHash)
 			// 2. update val as NextInHash[p]
 			p = cmsys.Fnv32_t(val)
-			Shm.ReadAt(
-				offsetNextInHash+types.INT32_SZ*uintptr(p),
-				types.INT32_SZ,
-				unsafe.Pointer(&val),
-			)
+			val = Shm.Shm.NextInHash[p]
 			isFirst = false
-
 		}
 
 		// line: 87

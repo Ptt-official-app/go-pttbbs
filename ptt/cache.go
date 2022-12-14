@@ -1,8 +1,6 @@
 package ptt
 
 import (
-	"unsafe"
-
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs"
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs/path"
@@ -30,13 +28,7 @@ func IsBMCache(user *ptttype.UserecRaw, uid ptttype.UID, bid ptttype.Bid) bool {
 		return false
 	}
 
-	pbm := [ptttype.MAX_BMs]ptttype.UID{}
-	const bmcache0sz = unsafe.Sizeof(cache.Shm.Raw.BMCache[0])
-	cache.Shm.ReadAt(
-		unsafe.Offsetof(cache.Shm.Raw.BMCache)+uintptr(bidInCache)*bmcache0sz,
-		bmcache0sz,
-		unsafe.Pointer(&pbm),
-	)
+	pbm := &cache.Shm.Shm.BMCache[bidInCache]
 	if uid == pbm[0] || uid == pbm[1] || uid == pbm[2] || uid == pbm[3] {
 		if user.UserLevel.HasUserPerm(ptttype.PERM_BM) {
 			_ = pwcuBitEnableLevel(uid, &user.UserID, ptttype.PERM_BM)
@@ -96,54 +88,27 @@ func GetUser2(userID *ptttype.UserID_t) (user *ptttype.Userec2Raw, err error) {
 
 func getNewUtmpEnt(uinfo *ptttype.UserInfoRaw) (utmpID ptttype.UtmpID, err error) {
 	p := cmsys.StringHash(uinfo.UserID[:]) % ptttype.USHM_SIZE
-
-	var pid types.Pid_t
-	ppid := &pid
-
+	pid := types.Pid_t(0)
 	for idx := 0; idx < ptttype.USHM_SIZE; idx, p = idx+1, p+1 {
-		cache.Shm.ReadAt(
-			unsafe.Offsetof(cache.Shm.Raw.UInfo)+uintptr(p)*ptttype.USER_INFO_RAW_SZ+unsafe.Offsetof(ptttype.EMPTY_USER_INFO_RAW.Pid),
-			types.PID_SZ,
-			unsafe.Pointer(ppid),
-		)
+		pid = cache.Shm.Shm.UInfo[p].Pid
 		// found same pid.
 		// update the newest status.
 		// XXX race condition with auto-logout.
 		// XXX c-pttbbs does not care the race-condition here.
 		// XXX we may not do anything with utmpID though.
 		if pid == uinfo.Pid {
-			cache.Shm.WriteAt(
-				unsafe.Offsetof(cache.Shm.Raw.UInfo)+uintptr(p)*ptttype.USER_INFO_RAW_SZ,
-				ptttype.USER_INFO_RAW_SZ,
-				unsafe.Pointer(uinfo),
-			)
-
+			cache.Shm.Shm.UInfo[p] = *uinfo
 			// https://github.com/ptt/pttbbs/blob/master/mbbsd/mbbsd.c#L998
-			one := uint8(1)
-			cache.Shm.WriteAt(
-				unsafe.Offsetof(cache.Shm.Raw.UTMPNeedSort),
-				types.UINT8_SZ,
-				unsafe.Pointer(&one),
-			)
+			cache.Shm.Shm.UTMPNeedSort = 1
 
 			return ptttype.UtmpID(p), nil
 		}
 
 		// new pid
 		if pid == 0 {
-			cache.Shm.WriteAt(
-				unsafe.Offsetof(cache.Shm.Raw.UInfo)+uintptr(p)*ptttype.USER_INFO_RAW_SZ,
-				ptttype.USER_INFO_RAW_SZ,
-				unsafe.Pointer(uinfo),
-			)
-
+			cache.Shm.Shm.UInfo[p] = *uinfo
 			// https://github.com/ptt/pttbbs/blob/master/mbbsd/mbbsd.c#L998
-			one := uint8(1)
-			cache.Shm.WriteAt(
-				unsafe.Offsetof(cache.Shm.Raw.UTMPNeedSort),
-				types.UINT8_SZ,
-				unsafe.Pointer(&one),
-			)
+			cache.Shm.Shm.UTMPNeedSort = 1
 
 			return ptttype.UtmpID(p), nil
 		}

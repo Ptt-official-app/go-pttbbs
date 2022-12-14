@@ -19,22 +19,12 @@ func TestLoadGeneralBoards(t *testing.T) {
 
 	cache.ReloadBCache()
 
-	bsorted := [12]ptttype.BidInStore{}
-	cache.Shm.ReadAt(
-		unsafe.Offsetof(cache.Shm.Raw.BSorted),
-		unsafe.Sizeof(bsorted),
-		unsafe.Pointer(&bsorted),
-	)
-
+	bsorted := &cache.Shm.Shm.BSorted[ptttype.BSORT_BY_NAME]
 	logrus.Infof("bsorted (by-name): %v", bsorted)
+
 	const bsort0sz = unsafe.Sizeof(cache.Shm.Raw.BSorted[0])
 
-	cache.Shm.ReadAt(
-		unsafe.Offsetof(cache.Shm.Raw.BSorted)+bsort0sz*uintptr(ptttype.BSORT_BY_CLASS),
-		unsafe.Sizeof(bsorted),
-		unsafe.Pointer(&bsorted),
-	)
-
+	bsorted = &cache.Shm.Shm.BSorted[ptttype.BSORT_BY_CLASS]
 	logrus.Infof("bsorted (by-class): %v", bsorted)
 
 	type args struct {
@@ -165,13 +155,6 @@ func TestLoadBoardSummary(t *testing.T) {
 
 	cache.ReloadBCache()
 
-	bsorted := [12]ptttype.BidInStore{}
-	cache.Shm.ReadAt(
-		unsafe.Offsetof(cache.Shm.Raw.BSorted),
-		unsafe.Sizeof(bsorted),
-		unsafe.Pointer(&bsorted),
-	)
-
 	type args struct {
 		user *ptttype.UserecRaw
 		uid  ptttype.UID
@@ -216,17 +199,9 @@ func TestLoadHotBoards(t *testing.T) {
 	cache.ReloadBCache()
 
 	hbcache := []ptttype.BidInStore{9, 0, 7}
-	cache.Shm.WriteAt(
-		unsafe.Offsetof(cache.Shm.Raw.HBcache),
-		unsafe.Sizeof(hbcache),
-		unsafe.Pointer(&hbcache[0]),
-	)
-	nhots := uint8(3)
-	cache.Shm.WriteAt(
-		unsafe.Offsetof(cache.Shm.Raw.NHOTs),
-		unsafe.Sizeof(uint8(0)),
-		unsafe.Pointer(&nhots),
-	)
+	copy(cache.Shm.Shm.HBcache[:], hbcache)
+	cache.Shm.Shm.NHOTs = 3
+
 	type args struct {
 		user *ptttype.UserecRaw
 		uid  ptttype.UID

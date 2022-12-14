@@ -41,7 +41,7 @@ type UserInfoRaw struct {
 	MsgCount uint8
 	Unused4_ [3]byte
 	Msgs     [MAX_MSGS]MsgQueueRaw
-	Gap4     [MSG_QUEUE_RAW_SZ]byte /* avoid msgs racing and overflow */
+	Gap4     [MSG_QUEUE_RAW_SZ] /* avoid msgs racing and overflow */ byte
 
 	/* user status */
 	Birth        int8       /* 是否是生日 Ptt*/

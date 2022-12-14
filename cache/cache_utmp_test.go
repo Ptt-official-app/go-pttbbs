@@ -20,33 +20,14 @@ func TestSearchUListUserID(t *testing.T) {
 	userID0 := &ptttype.UserID_t{}
 	copy(userID0[:], []byte("not-exists"))
 
-	currSorted := 0
-	Shm.WriteAt(
-		unsafe.Offsetof(Shm.Raw.CurrSorted),
-		types.INT32_SZ,
-		unsafe.Pointer(&currSorted),
-	)
+	Shm.Shm.CurrSorted = 0
+	Shm.Shm.UTMPNumber = 5
 
-	nUser := 5
-	Shm.WriteAt(
-		unsafe.Offsetof(Shm.Raw.UTMPNumber),
-		types.INT32_SZ,
-		unsafe.Pointer(&nUser),
-	)
+	sorted := []ptttype.UtmpID{2, 1, 0, 4, 3}
+	copy(Shm.Shm.Sorted[0][0][:], sorted)
 
-	sorted := [5]ptttype.UtmpID{2, 1, 0, 4, 3}
-	Shm.WriteAt(
-		unsafe.Offsetof(Shm.Raw.Sorted),
-		unsafe.Sizeof(sorted),
-		unsafe.Pointer(&sorted),
-	)
-
-	uinfo := [6]ptttype.UserInfoRaw{testUserInfo1, testUserInfo2, testUserInfo3, testUserInfo4, testUserInfo5, testUserInfo6}
-	Shm.WriteAt(
-		unsafe.Offsetof(Shm.Raw.UInfo),
-		unsafe.Sizeof(uinfo),
-		unsafe.Pointer(&uinfo),
-	)
+	uinfo := []ptttype.UserInfoRaw{testUserInfo1, testUserInfo2, testUserInfo3, testUserInfo4, testUserInfo5, testUserInfo6}
+	copy(Shm.Shm.UInfo[:], uinfo)
 
 	type args struct {
 		userID *ptttype.UserID_t
@@ -103,34 +84,16 @@ func TestSearchUListPID(t *testing.T) {
 	userID0 := &ptttype.UserID_t{}
 	copy(userID0[:], []byte("not-exists"))
 
-	currSorted := 0
-	Shm.WriteAt(
-		unsafe.Offsetof(Shm.Raw.CurrSorted),
-		types.INT32_SZ,
-		unsafe.Pointer(&currSorted),
-	)
+	Shm.Shm.CurrSorted = 0
 
-	nUser := 5
-	Shm.WriteAt(
-		unsafe.Offsetof(Shm.Raw.UTMPNumber),
-		types.INT32_SZ,
-		unsafe.Pointer(&nUser),
-	)
+	Shm.Shm.UTMPNumber = 5
 
-	sorted := [6]ptttype.UtmpID{2, 1, 0, 4, 3}
+	sorted := []ptttype.UtmpID{2, 1, 0, 4, 3}
+	copy(Shm.Shm.Sorted[0][ptttype.SORT_BY_PID][:], sorted)
 	const sizeOfSorted2 = unsafe.Sizeof(Shm.Raw.Sorted[0][0])
-	Shm.WriteAt(
-		unsafe.Offsetof(Shm.Raw.Sorted)+sizeOfSorted2*uintptr(ptttype.SORT_BY_PID),
-		unsafe.Sizeof(sorted),
-		unsafe.Pointer(&sorted),
-	)
 
-	uinfo := [6]ptttype.UserInfoRaw{testUserInfo1, testUserInfo2, testUserInfo3, testUserInfo4, testUserInfo5, testUserInfo6}
-	Shm.WriteAt(
-		unsafe.Offsetof(Shm.Raw.UInfo),
-		unsafe.Sizeof(uinfo),
-		unsafe.Pointer(&uinfo),
-	)
+	uinfo := []ptttype.UserInfoRaw{testUserInfo1, testUserInfo2, testUserInfo3, testUserInfo4, testUserInfo5, testUserInfo6}
+	copy(Shm.Shm.UInfo[:], uinfo)
 
 	type args struct {
 		pid types.Pid_t
@@ -196,12 +159,7 @@ func TestGetUTotal(t *testing.T) {
 
 	InitFillUHash(false)
 
-	nUser := 5
-	Shm.WriteAt(
-		unsafe.Offsetof(Shm.Raw.UTMPNumber),
-		types.INT32_SZ,
-		unsafe.Pointer(&nUser),
-	)
+	Shm.Shm.UTMPNumber = 5
 	tests := []struct {
 		name      string
 		wantTotal int32

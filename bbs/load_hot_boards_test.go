@@ -3,7 +3,6 @@ package bbs
 import (
 	"sync"
 	"testing"
-	"unsafe"
 
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
@@ -15,17 +14,8 @@ func TestLoadHotBoards(t *testing.T) {
 	defer teardownTest()
 
 	hbcache := []ptttype.BidInStore{9, 0, 7}
-	cache.Shm.WriteAt(
-		unsafe.Offsetof(cache.Shm.Raw.HBcache),
-		unsafe.Sizeof(hbcache),
-		unsafe.Pointer(&hbcache[0]),
-	)
-	nhots := uint8(3)
-	cache.Shm.WriteAt(
-		unsafe.Offsetof(cache.Shm.Raw.NHOTs),
-		unsafe.Sizeof(uint8(0)),
-		unsafe.Pointer(&nhots),
-	)
+	copy(cache.Shm.Shm.HBcache[:], hbcache)
+	cache.Shm.Shm.NHOTs = 3
 
 	type args struct {
 		uuserID UUserID

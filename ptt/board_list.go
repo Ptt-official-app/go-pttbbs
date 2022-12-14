@@ -1,8 +1,6 @@
 package ptt
 
 import (
-	"unsafe"
-
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
@@ -230,24 +228,13 @@ func LoadHotBoards(user *ptttype.UserecRaw, uid ptttype.UID) (summary []*ptttype
 // https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1147
 func loadHotBoardStat(user *ptttype.UserecRaw, uid ptttype.UID, idx uint8) *ptttype.BoardStat {
 	// read bid-in-cache
-	var bidInCache ptttype.BidInStore
-
-	cache.Shm.ReadAt(
-		unsafe.Offsetof(cache.Shm.Raw.HBcache)+uintptr(idx)*ptttype.BID_IN_STORE_SZ,
-		ptttype.BID_IN_STORE_SZ,
-		unsafe.Pointer(&bidInCache),
-	)
+	bidInCache := cache.Shm.Shm.HBcache[idx]
 	if bidInCache < 0 {
 		return nil
 	}
 
 	// get board
-	board := &ptttype.BoardHeaderRaw{}
-	cache.Shm.ReadAt(
-		unsafe.Offsetof(cache.Shm.Raw.BCache)+ptttype.BOARD_HEADER_RAW_SZ*uintptr(bidInCache),
-		ptttype.BOARD_HEADER_RAW_SZ,
-		unsafe.Pointer(board),
-	)
+	board := &cache.Shm.Shm.BCache[bidInCache]
 
 	// board-stat
 	// assuming that the hot-boards can be accessed by the public.
@@ -287,12 +274,7 @@ func LoadBoardsByBids(user *ptttype.UserecRaw, uid ptttype.UID, bids []ptttype.B
 
 func loadBoardStat(user *ptttype.UserecRaw, uid ptttype.UID, bid ptttype.Bid) (boardStat *ptttype.BoardStat) {
 	bidInCache := bid.ToBidInStore()
-	board := &ptttype.BoardHeaderRaw{}
-	cache.Shm.ReadAt(
-		unsafe.Offsetof(cache.Shm.Raw.BCache)+ptttype.BOARD_HEADER_RAW_SZ*uintptr(bidInCache),
-		ptttype.BOARD_HEADER_RAW_SZ,
-		unsafe.Pointer(board),
-	)
+	board := &cache.Shm.Shm.BCache[bidInCache]
 
 	isGroupOp := groupOp(user, uid, board)
 	state := boardPermStat(user, uid, board, bid)
@@ -440,24 +422,12 @@ func LoadGeneralBoards(user *ptttype.UserecRaw, uid ptttype.UID, startIdx ptttyp
 //
 // https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1147
 func loadAutoCompleteBoardStat(user *ptttype.UserecRaw, uid ptttype.UID, idxInStore ptttype.SortIdxInStore, keyword []byte) (boardStat *ptttype.BoardStat, isEnd bool) {
-	var bidInCache ptttype.BidInStore
-
-	const bsort0sz = unsafe.Sizeof(cache.Shm.Raw.BSorted[0])
-	cache.Shm.ReadAt(
-		unsafe.Offsetof(cache.Shm.Raw.BSorted)+bsort0sz*uintptr(ptttype.BSORT_BY_NAME)+uintptr(idxInStore)*ptttype.BID_IN_STORE_SZ,
-		ptttype.BID_IN_STORE_SZ,
-		unsafe.Pointer(&bidInCache),
-	)
+	bidInCache := cache.Shm.Shm.BSorted[ptttype.BSORT_BY_NAME][idxInStore]
 	if bidInCache < 0 {
 		return nil, false
 	}
 
-	board := &ptttype.BoardHeaderRaw{}
-	cache.Shm.ReadAt(
-		unsafe.Offsetof(cache.Shm.Raw.BCache)+ptttype.BOARD_HEADER_RAW_SZ*uintptr(bidInCache),
-		ptttype.BOARD_HEADER_RAW_SZ,
-		unsafe.Pointer(board),
-	)
+	board := &cache.Shm.Shm.BCache[bidInCache]
 
 	if !types.CstrCaseHasPrefix(board.Brdname[:], keyword) {
 		return nil, true
@@ -519,24 +489,12 @@ func loadClassBoardStat(user *ptttype.UserecRaw, uid ptttype.UID, bid ptttype.Bi
 //
 // https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1147
 func loadGeneralBoardStat(user *ptttype.UserecRaw, uid ptttype.UID, idxInStore ptttype.SortIdxInStore, title []byte, keyword []byte, bsortBy ptttype.BSortBy) (boardStat *ptttype.BoardStat) {
-	var bidInCache ptttype.BidInStore
-
-	const bsort0sz = unsafe.Sizeof(cache.Shm.Raw.BSorted[0])
-	cache.Shm.ReadAt(
-		unsafe.Offsetof(cache.Shm.Raw.BSorted)+bsort0sz*uintptr(bsortBy)+uintptr(idxInStore)*ptttype.BID_IN_STORE_SZ,
-		ptttype.BID_IN_STORE_SZ,
-		unsafe.Pointer(&bidInCache),
-	)
+	bidInCache := cache.Shm.Shm.BSorted[bsortBy][idxInStore]
 	if bidInCache < 0 {
 		return nil
 	}
 
-	board := &ptttype.BoardHeaderRaw{}
-	cache.Shm.ReadAt(
-		unsafe.Offsetof(cache.Shm.Raw.BCache)+ptttype.BOARD_HEADER_RAW_SZ*uintptr(bidInCache),
-		ptttype.BOARD_HEADER_RAW_SZ,
-		unsafe.Pointer(board),
-	)
+	board := &cache.Shm.Shm.BCache[bidInCache]
 
 	bid := bidInCache.ToBid()
 	isGroupOp := groupOp(user, uid, board)
@@ -566,10 +524,7 @@ func newBoardStat(bidInCache ptttype.BidInStore, state ptttype.BoardStatAttr, bo
 	// XXX this is a hack to ensure the brd-postmask
 	brd_postmask := ptttype.BRD_POSTMASK
 	if (board.BrdAttr&ptttype.BRD_HIDE != 0) && (board.BrdAttr&ptttype.BRD_POSTMASK == 0) && state == ptttype.NBRD_BOARD {
-		cache.Shm.SetOrUint32(
-			unsafe.Offsetof(cache.Shm.Raw.BCache)+ptttype.BOARD_HEADER_RAW_SZ*uintptr(bidInCache)+ptttype.BOARD_HEADER_BRD_ATTR_OFFSET,
-			uint32(brd_postmask),
-		)
+		cache.Shm.Shm.BCache[bidInCache].BrdAttr |= brd_postmask
 		board.BrdAttr |= brd_postmask
 	}
 
