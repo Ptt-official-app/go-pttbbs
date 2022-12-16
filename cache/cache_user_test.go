@@ -4,7 +4,6 @@ import (
 	"reflect"
 	"sync"
 	"testing"
-	"unsafe"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
@@ -124,21 +123,10 @@ func TestRemoveFromUHash(t *testing.T) {
 	AddToUHash(3, user)
 	AddToUHash(4, user)
 
-	hashHead := &[1 << ptttype.HASH_BITS]ptttype.UIDInStore{}
-	nextInHash := &[ptttype.MAX_USERS]ptttype.UIDInStore{}
-
-	Shm.ReadAt(
-		unsafe.Offsetof(Shm.Raw.HashHead),
-		unsafe.Sizeof(Shm.Raw.HashHead),
-		unsafe.Pointer(hashHead),
-	)
+	hashHead := &Shm.Shm.HashHead
 	assert.Equal(t, ptttype.UIDInStore(0), hashHead[35])
 
-	Shm.ReadAt(
-		unsafe.Offsetof(Shm.Raw.NextInHash),
-		unsafe.Sizeof(Shm.Raw.NextInHash),
-		unsafe.Pointer(nextInHash),
-	)
+	nextInHash := &Shm.Shm.NextInHash
 	for i := 0; i < 4; i++ {
 		assert.Equal(t, ptttype.UIDInStore(i+1), nextInHash[i])
 	}
@@ -200,18 +188,6 @@ func TestRemoveFromUHash(t *testing.T) {
 			if err := RemoveFromUHash(tt.args.uidInHash); (err != nil) != tt.wantErr {
 				t.Errorf("RemoveFromUHash() error = %v, wantErr %v", err, tt.wantErr)
 			}
-
-			Shm.ReadAt(
-				unsafe.Offsetof(Shm.Raw.HashHead),
-				unsafe.Sizeof(Shm.Raw.HashHead),
-				unsafe.Pointer(hashHead),
-			)
-
-			Shm.ReadAt(
-				unsafe.Offsetof(Shm.Raw.NextInHash),
-				unsafe.Sizeof(Shm.Raw.NextInHash),
-				unsafe.Pointer(nextInHash),
-			)
 
 			if !reflect.DeepEqual(hashHead[35], tt.wantHashHead) {
 				t.Errorf("RemoveFromHash() hashHead: %v wantHashHead :%v", hashHead[35], tt.wantHashHead)
@@ -302,11 +278,11 @@ func TestSetUserID(t *testing.T) {
 	userID2 := &ptttype.UserID_t{}
 	copy(userID2[:], []byte("SYSOP2"))
 
-	nextInHash1 := &[ptttype.MAX_USERS]int32{}
-	copy(nextInHash1[:], []int32{-1})
+	nextInHash1 := &[ptttype.MAX_USERS]ptttype.UIDInStore{}
+	copy(nextInHash1[:], []ptttype.UIDInStore{-1})
 
-	nextInHash2 := &[ptttype.MAX_USERS]int32{}
-	copy(nextInHash2[:], []int32{-1, -1})
+	nextInHash2 := &[ptttype.MAX_USERS]ptttype.UIDInStore{}
+	copy(nextInHash2[:], []ptttype.UIDInStore{-1, -1})
 
 	type args struct {
 		uid    ptttype.UID
@@ -316,7 +292,7 @@ func TestSetUserID(t *testing.T) {
 		name           string
 		args           args
 		wantUserID     *ptttype.UserID_t
-		wantNextInHash *[ptttype.MAX_USERS]int32
+		wantNextInHash *[ptttype.MAX_USERS]ptttype.UIDInStore
 		wantErr        bool
 	}{
 		// TODO: Add test cases.
@@ -357,12 +333,7 @@ func TestSetUserID(t *testing.T) {
 				t.Errorf("SetUserID() userID: %v want: %v", userID, tt.args.userID)
 			}
 
-			nextInHash := &[ptttype.MAX_USERS]int32{}
-			Shm.ReadAt(
-				unsafe.Offsetof(Shm.Raw.NextInHash),
-				unsafe.Sizeof(Shm.Raw.NextInHash),
-				unsafe.Pointer(nextInHash),
-			)
+			nextInHash := &Shm.Shm.NextInHash
 			assert.Equalf(t, nextInHash, tt.wantNextInHash, "SetUserID() nextInHash: %v want: %v", nextInHash, tt.wantNextInHash)
 		})
 		wg.Wait()

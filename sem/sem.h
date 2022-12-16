@@ -1,16 +1,16 @@
-#ifndef __GO_BBS_SEM_H__
-#define __GO_BBS_SEM_H__
+#ifndef __GO_PTTBBS_SEM_H__
+#define __GO_PTTBBS_SEM_H__
 
 // from: https://github.com/shubhros/drunkendeluge/blob/master/semaphore/semaphore.go
 
 #include <sys/sem.h>
 // /* https://comp.os.linux.development.system.narkive.com/rvJxp3Vb/union-variable-error-storage-size-isn-t-known */
-#if defined ( _SEM_SEMUN_UNDEFINED )
+#if defined(_SEM_SEMUN_UNDEFINED)
 union semun {
-   int val; /* value for SETVAL */
-   struct semid_ds *buf; /* buffer for IPC_STAT, IPC_SET */
-   unsigned short int *array; /* array for GETALL, SETALL */
-   struct seminfo *__buf; /* buffer for IPC_INFO */
+  int val;                   /* value for SETVAL */
+  struct semid_ds *buf;      /* buffer for IPC_STAT, IPC_SET */
+  unsigned short int *array; /* array for GETALL, SETALL */
+  struct seminfo *__buf;     /* buffer for IPC_INFO */
 };
 #endif
 
@@ -28,4 +28,4 @@ int semdestroywrapper(int semid, int semnum);
 int semwaitwrapper(int semid, int semnum);
 int sempostwrapper(int semid, int semnum);
 
-#endif //__GO_BBS_SEM_H__
+#endif  //__GO_PTTBBS_SEM_H__

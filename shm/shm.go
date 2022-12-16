@@ -82,42 +82,6 @@ func CloseShm(shmid int, shmaddr unsafe.Pointer) (err error) {
 	return nil
 }
 
-func ReadAt(shmaddr unsafe.Pointer, offset int, size uintptr, outptr unsafe.Pointer) {
-	C.readwrapper(outptr, shmaddr, C.int(offset), C.ulong(size))
-}
-
-func WriteAt(shmaddr unsafe.Pointer, offset int, size uintptr, inptr unsafe.Pointer) {
-	C.writewrapper(shmaddr, C.int(offset), inptr, C.ulong(size))
-}
-
-func IncUint32(shmaddr unsafe.Pointer, offset int) {
-	C.incuint32wrapper(shmaddr, C.int(offset))
-}
-
-func SetOrUint32(shmaddr unsafe.Pointer, offset int, flag uint32) {
-	C.set_or_uint32wrapper(shmaddr, C.int(offset), C.uint(flag))
-}
-
-func InnerSetInt32(shmaddr unsafe.Pointer, offsetSrc int, offsetDst int) {
-	C.innerset_int32wrapper(shmaddr, C.int(offsetSrc), C.int(offsetDst))
-}
-
-func Memset(shmaddr unsafe.Pointer, offset int, c byte, size uintptr) {
-	C.memsetwrapper(shmaddr, C.int(offset), C.uchar(c), C.ulong(size))
-}
-
-func SetBCACHEPTR(shmaddr unsafe.Pointer, offset int) {
-	C.set_bcacheptr(shmaddr, C.int(offset))
-}
-
-func QsortCmpBoardName(shmaddr unsafe.Pointer, offset int, n uint32) {
-	C.qsort_cmpboardname_wrapper(shmaddr, C.int(offset), C.ulong(n))
-}
-
-func QsortCmpBoardClass(shmaddr unsafe.Pointer, offset int, n uint32) {
-	C.qsort_cmpboardclass_wrapper(shmaddr, C.int(offset), C.ulong(n))
-}
-
 func shmget(key types.Key_t, size types.Size_t, shmflg int) (int, error) {
 	cshmid, err := C.shmget(C.int(key), C.ulong(size), C.int(shmflg))
 	shmid := int(cshmid)

@@ -5,7 +5,6 @@ import (
 	"sync"
 	"testing"
 	"time"
-	"unsafe"
 
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
@@ -52,12 +51,7 @@ func Test_getNewUtmpEnt(t *testing.T) {
 				t.Errorf("getNewUtmpEnt() = %v, want %v", gotUtmpID, tt.expectedUtmpID)
 			}
 
-			got := &ptttype.UserInfoRaw{}
-			cache.Shm.ReadAt(
-				unsafe.Offsetof(cache.Shm.Raw.UInfo)+uintptr(gotUtmpID)*ptttype.USER_INFO_RAW_SZ,
-				ptttype.USER_INFO_RAW_SZ,
-				unsafe.Pointer(got),
-			)
+			got := &cache.Shm.Shm.UInfo[gotUtmpID]
 
 			testutil.TDeepEqual(t, "got", got, tt.args.uinfo)
 		})

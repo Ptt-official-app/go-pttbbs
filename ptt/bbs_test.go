@@ -7,7 +7,6 @@ import (
 	"sync"
 	"testing"
 	"time"
-	"unsafe"
 
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs/path"
@@ -147,12 +146,7 @@ func TestNewPost(t *testing.T) {
 		},
 	}
 
-	nuser := int32(40)
-	cache.Shm.WriteAt(
-		unsafe.Offsetof(cache.Shm.Raw.BCache)+ptttype.BOARD_HEADER_RAW_SZ*uintptr(9)+ptttype.BOARD_HEADER_NUSER_OFFSET,
-		types.INT32_SZ,
-		unsafe.Pointer(&nuser),
-	)
+	cache.Shm.Shm.BCache[9].NUser = 40
 
 	uid0, _ := cache.DoSearchUserRaw(&testNewPostUser1.UserID, nil)
 
@@ -318,12 +312,7 @@ func TestCrossPost(t *testing.T) {
 	fullForwardTitle0 := ptttype.Title_t{}
 	copy(fullForwardTitle0[:], []byte("Fw: [test] this is a test"))
 
-	nuser := int32(40)
-	cache.Shm.WriteAt(
-		unsafe.Offsetof(cache.Shm.Raw.BCache)+ptttype.BOARD_HEADER_RAW_SZ*uintptr(9)+ptttype.BOARD_HEADER_NUSER_OFFSET,
-		types.INT32_SZ,
-		unsafe.Pointer(&nuser),
-	)
+	cache.Shm.Shm.BCache[9].NUser = 40
 
 	uid0, _ := cache.DoSearchUserRaw(&testNewPostUser1.UserID, nil)
 

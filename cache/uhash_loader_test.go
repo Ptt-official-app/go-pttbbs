@@ -4,7 +4,6 @@ import (
 	"reflect"
 	"sync"
 	"testing"
-	"unsafe"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/sirupsen/logrus"
@@ -20,8 +19,8 @@ func TestLoadUHash(t *testing.T) {
 	}
 	defer CloseSHM()
 
-	wantHashHead := [1 << ptttype.HASH_BITS]int32{}
-	wantNextInHash := [ptttype.MAX_USERS]int32{}
+	wantHashHead := [1 << ptttype.HASH_BITS]ptttype.UIDInStore{}
+	wantNextInHash := [ptttype.MAX_USERS]ptttype.UIDInStore{}
 	for idx := range wantHashHead {
 		wantHashHead[idx] = -1
 	}
@@ -38,7 +37,7 @@ func TestLoadUHash(t *testing.T) {
 	wantNextInHash[3] = -1
 	wantNextInHash[4] = -1
 	for idx := 5; idx < 49; idx++ {
-		wantNextInHash[idx] = int32(idx + 1)
+		wantNextInHash[idx] = ptttype.UIDInStore(idx + 1)
 	}
 	wantNextInHash[49] = -1
 
@@ -60,14 +59,8 @@ func TestLoadUHash(t *testing.T) {
 				t.Errorf("loadUHash() error = %v, wantErr %v", err, tt.wantErr)
 			}
 
-			hashHead := [1 << ptttype.HASH_BITS]int32{}
-			nextInHash := [ptttype.MAX_USERS]int32{}
-
-			Shm.ReadAt(
-				unsafe.Offsetof(Shm.Raw.HashHead),
-				unsafe.Sizeof(Shm.Raw.HashHead),
-				unsafe.Pointer(&hashHead),
-			)
+			hashHead := &Shm.Shm.HashHead
+			nextInHash := Shm.Shm.NextInHash
 
 			for idx, each := range hashHead {
 				if each != wantHashHead[idx] {
@@ -75,12 +68,6 @@ func TestLoadUHash(t *testing.T) {
 					break
 				}
 			}
-
-			Shm.ReadAt(
-				unsafe.Offsetof(Shm.Raw.NextInHash),
-				unsafe.Sizeof(Shm.Raw.NextInHash),
-				unsafe.Pointer(&nextInHash),
-			)
 
 			if !reflect.DeepEqual(nextInHash, wantNextInHash) {
 				t.Errorf("loadUHash() nextInHash: %v expected: %v", nextInHash, wantNextInHash)
@@ -103,8 +90,8 @@ func Test_fillUHash(t *testing.T) {
 	_ = LoadUHash()
 
 	// move setupTest in for-loop
-	wantHashHead := [1 << ptttype.HASH_BITS]int32{}
-	wantNextInHash := [ptttype.MAX_USERS]int32{}
+	wantHashHead := [1 << ptttype.HASH_BITS]ptttype.UIDInStore{}
+	wantNextInHash := [ptttype.MAX_USERS]ptttype.UIDInStore{}
 	for idx := range wantHashHead {
 		wantHashHead[idx] = -1
 	}
@@ -121,7 +108,7 @@ func Test_fillUHash(t *testing.T) {
 	wantNextInHash[3] = -1
 	wantNextInHash[4] = -1
 	for idx := 5; idx < 49; idx++ {
-		wantNextInHash[idx] = int32(idx + 1)
+		wantNextInHash[idx] = ptttype.UIDInStore(idx + 1)
 	}
 	wantNextInHash[49] = -1
 
@@ -153,14 +140,8 @@ func Test_fillUHash(t *testing.T) {
 				t.Errorf("fillUHash() error = %v, wantErr %v", err, tt.wantErr)
 			}
 
-			hashHead := [1 << ptttype.HASH_BITS]int32{}
-			nextInHash := [ptttype.MAX_USERS]int32{}
-
-			Shm.ReadAt(
-				unsafe.Offsetof(Shm.Raw.HashHead),
-				unsafe.Sizeof(Shm.Raw.HashHead),
-				unsafe.Pointer(&hashHead),
-			)
+			hashHead := &Shm.Shm.HashHead
+			nextInHash := Shm.Shm.NextInHash
 
 			for idx, each := range hashHead {
 				if each != wantHashHead[idx] {
@@ -168,13 +149,6 @@ func Test_fillUHash(t *testing.T) {
 					break
 				}
 			}
-
-			Shm.ReadAt(
-				unsafe.Offsetof(Shm.Raw.NextInHash),
-				unsafe.Sizeof(Shm.Raw.NextInHash),
-				unsafe.Pointer(&nextInHash),
-			)
-
 			if !reflect.DeepEqual(nextInHash, wantNextInHash) {
 				t.Errorf("loadUHash() nextInHash: %v expected: %v", nextInHash, wantNextInHash)
 			}
@@ -197,8 +171,8 @@ func TestInitFillUHash(t *testing.T) {
 
 	_ = LoadUHash()
 
-	wantHashHead := [1 << ptttype.HASH_BITS]int32{}
-	wantNextInHash := [ptttype.MAX_USERS]int32{}
+	wantHashHead := [1 << ptttype.HASH_BITS]ptttype.UIDInStore{}
+	wantNextInHash := [ptttype.MAX_USERS]ptttype.UIDInStore{}
 	for idx := range wantHashHead {
 		wantHashHead[idx] = -1
 	}
@@ -215,7 +189,7 @@ func TestInitFillUHash(t *testing.T) {
 	wantNextInHash[3] = -1
 	wantNextInHash[4] = -1
 	for idx := 5; idx < 49; idx++ {
-		wantNextInHash[idx] = int32(idx + 1)
+		wantNextInHash[idx] = ptttype.UIDInStore(idx + 1)
 	}
 	wantNextInHash[49] = -1
 
@@ -241,14 +215,8 @@ func TestInitFillUHash(t *testing.T) {
 
 			InitFillUHash(tt.args.isOnfly)
 
-			hashHead := [1 << ptttype.HASH_BITS]int32{}
-			nextInHash := [ptttype.MAX_USERS]int32{}
-
-			Shm.ReadAt(
-				unsafe.Offsetof(Shm.Raw.HashHead),
-				unsafe.Sizeof(Shm.Raw.HashHead),
-				unsafe.Pointer(&hashHead),
-			)
+			hashHead := &Shm.Shm.HashHead
+			nextInHash := Shm.Shm.NextInHash
 
 			for idx, each := range hashHead {
 				if each != wantHashHead[idx] {
@@ -256,12 +224,6 @@ func TestInitFillUHash(t *testing.T) {
 					break
 				}
 			}
-
-			Shm.ReadAt(
-				unsafe.Offsetof(Shm.Raw.NextInHash),
-				unsafe.Sizeof(Shm.Raw.NextInHash),
-				unsafe.Pointer(&nextInHash),
-			)
 
 			if !reflect.DeepEqual(nextInHash, wantNextInHash) {
 				t.Errorf("loadUHash() nextInHash: %v expected: %v", nextInHash, wantNextInHash)

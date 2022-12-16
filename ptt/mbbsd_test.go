@@ -4,7 +4,6 @@ import (
 	"reflect"
 	"sync"
 	"testing"
-	"unsafe"
 
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
@@ -119,34 +118,16 @@ func TestLogin(t *testing.T) {
 	ip1 := &ptttype.IPv4_t{}
 	copy(ip1[:], []byte("192.168.0.1"))
 
-	currSorted := 0
-	cache.Shm.WriteAt(
-		unsafe.Offsetof(cache.Shm.Raw.CurrSorted),
-		types.INT32_SZ,
-		unsafe.Pointer(&currSorted),
-	)
+	cache.Shm.Shm.CurrSorted = 0
 
-	nUser := 5
-	cache.Shm.WriteAt(
-		unsafe.Offsetof(cache.Shm.Raw.UTMPNumber),
-		types.INT32_SZ,
-		unsafe.Pointer(&nUser),
-	)
+	cache.Shm.Shm.UTMPNumber = 5
 
-	sorted := [6]ptttype.UtmpID{2, 1, 0, 4, 3}
-	const sizeOfSorted2 = unsafe.Sizeof(cache.Shm.Raw.Sorted[0][0])
-	cache.Shm.WriteAt(
-		unsafe.Offsetof(cache.Shm.Raw.Sorted)+sizeOfSorted2*uintptr(ptttype.SORT_BY_PID),
-		unsafe.Sizeof(sorted),
-		unsafe.Pointer(&sorted),
-	)
+	sorted := []ptttype.UtmpID{2, 1, 0, 4, 3}
+	copy(cache.Shm.Shm.Sorted[0][ptttype.SORT_BY_PID][:], sorted)
 
-	uinfo := [6]ptttype.UserInfoRaw{testUserInfo1, testUserInfo2, testUserInfo3, testUserInfo4, testUserInfo5, testUserInfo6}
-	cache.Shm.WriteAt(
-		unsafe.Offsetof(cache.Shm.Raw.UInfo),
-		unsafe.Sizeof(uinfo),
-		unsafe.Pointer(&uinfo),
-	)
+	uinfo := []ptttype.UserInfoRaw{testUserInfo1, testUserInfo2, testUserInfo3, testUserInfo4, testUserInfo5, testUserInfo6}
+	copy(cache.Shm.Shm.UInfo[:], uinfo)
+
 	// setup login data
 	testSetupNewUser1.LastHost = *ip1
 	testSetupNewUser1.NumLoginDays = testSetupNewUser1.NumLoginDays + 1

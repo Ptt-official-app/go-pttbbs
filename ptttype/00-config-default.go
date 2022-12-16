@@ -1,4 +1,4 @@
-//go:build !(dev) && !(production) && !(docker)
+//go:build !dev && !production && !docker
 
 package ptttype
 
@@ -26,7 +26,7 @@ const (
 
 	MAX_ADBANNER = 100 /* 最多動態看板數 */
 
-	HOTBOARDCACHE = 0 /* 熱門看板快取 */
+	HOTBOARDCACHE = 10 /* 熱門看板快取 */
 
 	MAX_FROM = 30 /* 最多故鄉數 */
 

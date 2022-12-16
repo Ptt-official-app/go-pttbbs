@@ -4,23 +4,15 @@ import (
 	"reflect"
 	"sync"
 	"testing"
-	"unsafe"
 
 	"github.com/Ptt-official-app/go-pttbbs/cache"
-
-	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
 func TestGetUserVisitCount(t *testing.T) {
 	setupTest(t.Name())
 	defer teardownTest(t.Name())
 
-	nUser := 5
-	cache.Shm.WriteAt(
-		unsafe.Offsetof(cache.Shm.Raw.UTMPNumber),
-		types.INT32_SZ,
-		unsafe.Pointer(&nUser),
-	)
+	cache.Shm.Shm.UTMPNumber = 5
 
 	expected := &GetUserVisitCountResult{5}
 	tests := []struct {

@@ -1,85 +1,41 @@
 package cache
 
 import (
-	"unsafe"
-
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
 
 func GetUTMPNumber() (total int32) {
-	Shm.ReadAt(
-		unsafe.Offsetof(Shm.Raw.UTMPNumber),
-		types.INT32_SZ,
-		unsafe.Pointer(&total),
-	)
-	return total
+	return Shm.Shm.UTMPNumber
 }
 
-func SearchUListUserID(userID *ptttype.UserID_t) (ptttype.UtmpID, *ptttype.UserInfoRaw) {
+func SearchUListUserID(userID *ptttype.UserID_t) (utmpID ptttype.UtmpID, uInfo *ptttype.UserInfoRaw) {
 	// start and end
 	start := int32(0)
 
-	end := int32(0)
-	Shm.ReadAt(
-		unsafe.Offsetof(Shm.Raw.UTMPNumber),
-		types.INT32_SZ,
-		unsafe.Pointer(&end),
-	)
+	end := Shm.Shm.UTMPNumber
 	end--
 	if end < 0 {
 		return -1, nil
 	}
 
 	// current-sorted (for double-buffer)
-	currentSorted := int32(0)
-	Shm.ReadAt(
-		unsafe.Offsetof(Shm.Raw.CurrSorted),
-		types.INT32_SZ,
-		unsafe.Pointer(&currentSorted),
-	)
+	currentSorted := Shm.Shm.CurrSorted
 
 	// search
-	utmpID := ptttype.UtmpID(0)
-	utmpID_p := &utmpID
-	utmpID_ptr := unsafe.Pointer(utmpID_p)
-	const offsetUInfo = unsafe.Offsetof(Shm.Raw.UInfo)
-	const sizeOfSorted = unsafe.Sizeof(Shm.Raw.Sorted[0])
-	const sizeOfSorted2 = unsafe.Sizeof(Shm.Raw.Sorted[0][0])
-	userIDInCache := &ptttype.UserID_t{}
-	userIDInCache_ptr := unsafe.Pointer(userIDInCache)
+	userIDInCache := (*ptttype.UserID_t)(nil)
 	for i := (start + end) / 2; ; i = (start + end) / 2 {
 		// get utmpID
-		Shm.ReadAt(
-			unsafe.Offsetof(Shm.Raw.Sorted)+
-				sizeOfSorted*uintptr(currentSorted)+
-				sizeOfSorted2*uintptr(ptttype.SORT_BY_ID)+
-				ptttype.UTMP_ID_SZ*uintptr(i),
-			ptttype.UTMP_ID_SZ,
-			utmpID_ptr,
-		)
+		utmpID = Shm.Shm.Sorted[currentSorted][ptttype.SORT_BY_ID][i]
 
 		// get user-id
-		Shm.ReadAt(
-			offsetUInfo+
-				ptttype.USER_INFO_RAW_SZ*uintptr(utmpID)+
-				ptttype.USER_INFO_USER_ID_OFFSET,
-			ptttype.USER_ID_SZ,
-			userIDInCache_ptr,
-		)
+		userIDInCache = &Shm.Shm.UInfo[utmpID].UserID
 
 		// cmp
 		j := types.Cstrcasecmp(userID[:], userIDInCache[:])
 
 		if j == 0 {
-			uInfo := &ptttype.UserInfoRaw{}
-			Shm.ReadAt(
-				offsetUInfo+
-					ptttype.USER_INFO_RAW_SZ*uintptr(utmpID),
-				ptttype.USER_INFO_RAW_SZ,
-				unsafe.Pointer(uInfo),
-			)
-
+			uInfo = &Shm.Shm.UInfo[utmpID]
 			return utmpID, uInfo
 		}
 
@@ -99,74 +55,34 @@ func SearchUListUserID(userID *ptttype.UserID_t) (ptttype.UtmpID, *ptttype.UserI
 	return -1, nil
 }
 
-func SearchUListPID(pid types.Pid_t) (ptttype.UtmpID, *ptttype.UserInfoRaw) {
+func SearchUListPID(pid types.Pid_t) (utmpID ptttype.UtmpID, uInfo *ptttype.UserInfoRaw) {
 	// start and end
 	start := int32(0)
 
-	end := int32(0)
-	Shm.ReadAt(
-		unsafe.Offsetof(Shm.Raw.UTMPNumber),
-		types.INT32_SZ,
-		unsafe.Pointer(&end),
-	)
+	end := Shm.Shm.UTMPNumber
 	end--
 	if end < 0 {
 		return -1, nil
 	}
 
 	// current-sorted (for double-buffer)
-	currentSorted := int32(0)
-	Shm.ReadAt(
-		unsafe.Offsetof(Shm.Raw.CurrSorted),
-		types.INT32_SZ,
-		unsafe.Pointer(&currentSorted),
-	)
+	currentSorted := Shm.Shm.CurrSorted
 
 	// search
-	utmpID := ptttype.UtmpID(0)
-	utmpID_p := &utmpID
-	utmpID_ptr := unsafe.Pointer(utmpID_p)
 	isDiff := types.Pid_t(0)
-
 	uPid := types.Pid_t(0)
-	uPid_p := &uPid
-	uPid_ptr := unsafe.Pointer(uPid_p)
-
-	const offsetUInfo = unsafe.Offsetof(Shm.Raw.UInfo)
-	const sizeOfSorted = unsafe.Sizeof(Shm.Raw.Sorted[0])
-	const sizeOfSorted2 = unsafe.Sizeof(Shm.Raw.Sorted[0][0])
 	for i := (start + end) / 2; ; i = (start + end) / 2 {
 		// get utmpID
-		Shm.ReadAt(
-			unsafe.Offsetof(Shm.Raw.Sorted)+
-				sizeOfSorted*uintptr(currentSorted)+
-				sizeOfSorted2*uintptr(ptttype.SORT_BY_PID)+
-				ptttype.UTMP_ID_SZ*uintptr(i),
-			ptttype.UTMP_ID_SZ,
-			utmpID_ptr,
-		)
+		utmpID = Shm.Shm.Sorted[currentSorted][ptttype.SORT_BY_PID][i]
 
 		// get uPid
-		Shm.ReadAt(
-			offsetUInfo+
-				ptttype.USER_INFO_RAW_SZ*uintptr(utmpID)+
-				ptttype.USER_INFO_PID_OFFSET,
-			types.PID_SZ,
-			uPid_ptr,
-		)
+		uPid = Shm.Shm.UInfo[utmpID].Pid
 
 		// do cmp()
 		isDiff = pid - uPid
 
 		if isDiff == 0 {
-			uInfo := &ptttype.UserInfoRaw{}
-			Shm.ReadAt(
-				offsetUInfo+
-					ptttype.USER_INFO_RAW_SZ*uintptr(utmpID),
-				ptttype.USER_INFO_RAW_SZ,
-				unsafe.Pointer(uInfo),
-			)
-
+			uInfo = &Shm.Shm.UInfo[utmpID]
 			return utmpID, uInfo
 		}
 
@@ -190,18 +106,12 @@ func SearchUListPID(pid types.Pid_t) (ptttype.UtmpID, *ptttype.UserInfoRaw) {
 //
 // XXX skip utmp for now.
 func SetUtmpMode(uid ptttype.UID, mode ptttype.UserOpMode) (err error) {
-	/*
-		pid := uid.ToPid()
-		utmpID, _ := SearchUListPID(pid)
-		if utmpID == -1 {
-			return ErrNotFound
-		}
-		Shm.WriteAt(
-			unsafe.Offsetof(Shm.Raw.UInfo)+ptttype.USER_INFO_RAW_SZ*uintptr(utmpID)+ptttype.USER_INFO_MODE_OFFSET,
-			ptttype.USER_INFO_MODE_SZ,
-			unsafe.Pointer(&mode),
-		)
-	*/
+	pid := uid.ToPid()
+	utmpID, _ := SearchUListPID(pid)
+	if utmpID == -1 {
+		return ErrNotFound
+	}
+	Shm.Shm.UInfo[utmpID].Mode = mode
 
 	return nil
 }

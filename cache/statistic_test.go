@@ -4,10 +4,8 @@ import (
 	"reflect"
 	"sync"
 	"testing"
-	"unsafe"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
-	"github.com/Ptt-official-app/go-pttbbs/types"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -51,12 +49,7 @@ func TestStatInc(t *testing.T) {
 				t.Errorf("StatInc() error = %v, wantErr %v", err, tt.wantErr)
 			}
 
-			out := uint32(0)
-			Shm.ReadAt(
-				unsafe.Offsetof(Shm.Raw.Statistic)+types.UINT32_SZ*uintptr(ptttype.STAT_BOARDREC),
-				unsafe.Sizeof(Shm.Raw.Statistic[ptttype.STAT_BOARDREC]),
-				unsafe.Pointer(&out),
-			)
+			out := Shm.Shm.Statistic[ptttype.STAT_BOARDREC]
 
 			if !reflect.DeepEqual(out, tt.expected) {
 				t.Errorf("StatInc() out: %v expected: %v", out, tt.expected)
