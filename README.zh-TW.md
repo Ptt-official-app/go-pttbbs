@@ -16,9 +16,7 @@
 
 ## 開始
 
-您可以從 [swagger api](https://api.devptt.site:8080) 開始測試 api.
-
-如果您遇到 CORS 的問題, 您可以直接使用 "Try it out" 裡的 curl command.
+您可以從 [swagger api](https://api.devptt.dev:8080) 查看 api 文件.
 
 ## Coding Convention
 

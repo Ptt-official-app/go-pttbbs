@@ -16,11 +16,8 @@ Collaborating with [Ptt-official-app middleware](https://github.com/ptt-official
 
 ## Getting Started
 
-You can start with the [swagger api](https://api.devptt.site:8080)
-and try the api.
-
-You can use the curl command from "Try it out" if you encounter
-CORS issue.
+You can start with the [swagger api](https://api.devptt.dev:8080)
+and check the api document.
 
 ## Coding Convention
 
