@@ -26,7 +26,7 @@ type BoardDetail struct {
 	NUser              int32             `json:"nuser"`
 	PostExpire         int32             `json:"postexpire"`
 	EndGamble          types.Time4       `json:"endgamble"`
-	PostType           []byte            `json:"posttype"`
+	PostType           [][]byte          `json:"posttype"`
 	FastRecommendPause uint8             `json:"fastrecommendpause"`
 	VoteLimitBadpost   uint8             `json:"votelimitbadpost"`
 
@@ -45,6 +45,8 @@ func NewBoardDetailFromRaw(boardDetailRaw *ptttype.BoardDetailRaw, bid ptttype.B
 	for idx, each := range bmsRaw {
 		bms[idx] = UUserID(types.CstrToString(each[:]))
 	}
+
+	postTypes := postTypeRawToPostTypes(boardDetailRaw.PostType[:])
 
 	boardDetail := &BoardDetail{
 		Brdname:            types.CstrToString(boardDetailRaw.Brdname[:]),
@@ -67,7 +69,7 @@ func NewBoardDetailFromRaw(boardDetailRaw *ptttype.BoardDetailRaw, bid ptttype.B
 		NUser:              boardDetailRaw.ChildCount,
 		PostExpire:         boardDetailRaw.PostExpire,
 		EndGamble:          boardDetailRaw.EndGamble,
-		PostType:           types.CstrToBytes(boardDetailRaw.PostType[:]),
+		PostType:           postTypes,
 		FastRecommendPause: boardDetailRaw.FastRecommendPause,
 		VoteLimitBadpost:   boardDetailRaw.VoteLimitBadpost,
 
@@ -78,4 +80,13 @@ func NewBoardDetailFromRaw(boardDetailRaw *ptttype.BoardDetailRaw, bid ptttype.B
 	boardDetail.IdxByClass = SerializeBoardIdxByClassStr(boardDetail.BoardClass, boardDetail.Brdname)
 
 	return boardDetail
+}
+
+func postTypeRawToPostTypes(postType []byte) (postTypes [][]byte) {
+	postTypes = make([][]byte, 0, 8)
+	for idx, pPostType := 0, postType; idx < 32; idx, pPostType = idx+4, pPostType[4:] {
+		postTypes = append(postTypes, pPostType[:4])
+	}
+
+	return postTypes
 }

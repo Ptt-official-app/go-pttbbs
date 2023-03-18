@@ -90,6 +90,7 @@ func StripAnsi(src []byte, flag StripAnsiFlag) (dst []byte) {
 		}
 
 		// line: 163 (while(isEscapeParam(*++p));)
+		//nolint:revive
 		for idxP = idxP + 1; idxP < len(src) && isEscapeParam(src[idxP]); idxP = idxP + 1 {
 		}
 		p = src[idxP]

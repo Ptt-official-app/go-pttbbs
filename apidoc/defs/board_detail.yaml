@@ -55,7 +55,10 @@ BoardDetail:
       type: number
       description: 賭盤截止時間
     posttype:
-      type: string
+      type: array
+      items:
+        type: string
+      description: base64 of big5, post types.
     fastrecommendpause:
       type: number
     votelimitbadpost:

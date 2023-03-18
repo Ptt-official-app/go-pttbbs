@@ -43,5 +43,6 @@ issues:
     - 'exported:'
     - '`setBBottom` is unused'
     - '`pwcuSetByBit` is unused'
+    - 'unused-parameter: parameter'
   exclude-rules:
   exclude-use-default: true

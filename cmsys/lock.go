@@ -2,6 +2,7 @@ package cmsys
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"sync"
 	"syscall"
@@ -17,7 +18,7 @@ func pttLock(file *os.File, offset int64, theSize uintptr, mode int) (err error)
 	fd := file.Fd()
 
 	lock_it := &syscall.Flock_t{
-		Whence: int16(os.SEEK_CUR),
+		Whence: int16(io.SeekCurrent),
 		Start:  offset,
 		Len:    int64(theSize),
 		Type:   int16(mode),
