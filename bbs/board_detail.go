@@ -29,6 +29,7 @@ type BoardDetail struct {
 	PostType           [][]byte          `json:"posttype"`
 	FastRecommendPause uint8             `json:"fastrecommendpause"`
 	VoteLimitBadpost   uint8             `json:"votelimitbadpost"`
+	PostLimitBadPost   uint8             `json:"postlimitbadpost"`
 
 	LastPostTime types.Time4 `json:"last_post_time"`
 	Total        int32       `json:"total"`
@@ -72,6 +73,7 @@ func NewBoardDetailFromRaw(boardDetailRaw *ptttype.BoardDetailRaw, bid ptttype.B
 		PostType:           postTypes,
 		FastRecommendPause: boardDetailRaw.FastRecommendPause,
 		VoteLimitBadpost:   boardDetailRaw.VoteLimitBadpost,
+		PostLimitBadPost:   boardDetailRaw.PostLimitBadpost,
 
 		LastPostTime: boardDetailRaw.LastPostTime,
 		Total:        boardDetailRaw.Total,
