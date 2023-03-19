@@ -214,6 +214,8 @@ func findRecordStartIdxBinSearch(file *os.File, startStart ptttype.SortIdxInStor
 	// binary-search based on create-time.
 	// start, end should always be with valid idx.
 	header := &ptttype.FileHeaderRaw{}
+
+	//nolint:ineffassign
 	idxInStore = ptttype.SortIdxInStore(0)
 	for idxInStore = (start + end) / 2; ; idxInStore = (start + end) / 2 {
 		_, err = file.Seek(int64(ptttype.FILE_HEADER_RAW_SZ)*int64(idxInStore), io.SeekStart)

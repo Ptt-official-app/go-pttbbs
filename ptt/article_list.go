@@ -56,6 +56,7 @@ func LoadGeneralArticles(user *ptttype.UserecRaw, uid ptttype.UID, boardIDRaw *p
 	}
 
 	// 4. return
+	//nolint:ineffassign
 	isNewest = false
 	if isDesc {
 		isNewest = startIdx == ptttype.SortIdx(total)

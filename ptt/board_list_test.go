@@ -617,3 +617,74 @@ func TestLoadBoardDetail(t *testing.T) {
 		wg.Wait()
 	}
 }
+
+func TestLoadGeneralBoardDetails(t *testing.T) {
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
+
+	cache.ReloadBCache()
+
+	bsorted := &cache.Shm.Shm.BSorted[ptttype.BSORT_BY_NAME]
+	logrus.Infof("bsorted (by-name): %v", bsorted)
+
+	const bsort0sz = unsafe.Sizeof(cache.Shm.Raw.BSorted[0])
+
+	bsorted = &cache.Shm.Shm.BSorted[ptttype.BSORT_BY_CLASS]
+	logrus.Infof("bsorted (by-class): %v", bsorted)
+
+	type args struct {
+		user     *ptttype.UserecRaw
+		uid      ptttype.UID
+		startIdx ptttype.SortIdx
+		nBoards  int
+		isAsc    bool
+		bsortBy  ptttype.BSortBy
+	}
+	tests := []struct {
+		name           string
+		args           args
+		wantDetails    []*ptttype.BoardDetailRaw
+		wantNextDetail *ptttype.BoardDetailRaw
+		wantErr        bool
+	}{
+		// TODO: Add test cases.
+		{
+			args: args{
+				user:     testUserecRaw4,
+				uid:      11,
+				startIdx: 1,
+				nBoards:  4,
+				bsortBy:  ptttype.BSORT_BY_NAME,
+				isAsc:    true,
+			},
+			wantDetails:    []*ptttype.BoardDetailRaw{testClassDetail2, testClassDetail5, testBoardDetail12, testBoardDetail6},
+			wantNextDetail: testBoardDetail7,
+		},
+	}
+
+	var wg sync.WaitGroup
+	for _, tt := range tests {
+		wg.Add(1)
+		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
+			gotDetails, gotNextDetail, err := LoadGeneralBoardDetails(tt.args.user, tt.args.uid, tt.args.startIdx, tt.args.nBoards, tt.args.isAsc, tt.args.bsortBy)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("LoadGeneralBoardDetails() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			for _, each := range gotDetails {
+				each.Total = 0
+				each.LastPostTime = 0
+			}
+			testutil.TDeepEqual(t, "details", gotDetails, tt.wantDetails)
+
+			if gotNextDetail != nil {
+				gotNextDetail.Total = 0
+				gotNextDetail.LastPostTime = 0
+			}
+
+			testutil.TDeepEqual(t, "nextDetail", gotNextDetail, tt.wantNextDetail)
+		})
+	}
+}

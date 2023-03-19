@@ -19,6 +19,7 @@ func StripANSIMoveCmd(line []byte) (newLine []byte) {
 			break
 		}
 		newLine = newLine[1:]
+		//nolint:revive
 		for ; len(newLine) > 0 && bytes.IndexByte(ptttype.PATTERN_ANSI_CODE, newLine[0]) >= 0; newLine = newLine[1:] {
 		}
 

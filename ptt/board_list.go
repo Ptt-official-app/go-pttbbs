@@ -418,6 +418,91 @@ func LoadGeneralBoards(user *ptttype.UserecRaw, uid ptttype.UID, startIdx ptttyp
 	return summaries, nextSummary, nil
 }
 
+// LoadGeneralBoardDetails
+//
+// Load general boards by name.
+//
+// https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1142
+// Params:
+//
+//		user
+//		uid
+//		startIdx: the idx in bsorted.
+//	 nBoards: try to get at most nBoards
+//		keyword
+//
+// Return:
+//
+//	 summary
+//		nextIdx: next idx in bsorted.
+//		err
+func LoadGeneralBoardDetails(user *ptttype.UserecRaw, uid ptttype.UID, startIdx ptttype.SortIdx, nBoards int, isAsc bool, bsortBy ptttype.BSortBy) (details []*ptttype.BoardDetailRaw, nextDetail *ptttype.BoardDetailRaw, err error) {
+	nBoardsInCache := cache.NumBoards()
+	if startIdx == 0 && !isAsc {
+		startIdx = ptttype.SortIdx(nBoardsInCache)
+	}
+
+	startIdxInStore := startIdx.ToSortIdxInStore()
+
+	nBoardsInCache_siis := ptttype.SortIdxInStore(nBoardsInCache)
+
+	nBoardsWithNext := nBoards + 1
+
+	// get details
+	details = make([]*ptttype.BoardDetailRaw, 0, nBoardsWithNext)
+	if isAsc {
+		for idx, idxInStore := 0, startIdxInStore; idxInStore < nBoardsInCache_siis && idx < nBoardsWithNext; idx, idxInStore = idx+1, idxInStore+1 {
+			bidInCache := cache.Shm.Shm.BSorted[bsortBy][idxInStore]
+			bid := bidInCache.ToBid()
+			if !bid.IsValid() {
+				continue
+			}
+
+			eachBoard := &cache.Shm.Shm.BCache[bidInCache]
+			lastPostTime, _ := cache.GetLastPosttime(bid)
+			total, _ := cache.GetBTotalWithRetry(bid)
+			eachBoardDetail := &ptttype.BoardDetailRaw{
+				Bid: bid,
+
+				BoardHeaderRaw: eachBoard,
+
+				LastPostTime: lastPostTime,
+				Total:        total,
+			}
+
+			details = append(details, eachBoardDetail)
+		}
+	} else {
+		for idx, idxInStore := 0, startIdxInStore; idxInStore >= 0 && idx < nBoardsWithNext; idx, idxInStore = idx+1, idxInStore-1 {
+			bidInCache := cache.Shm.Shm.BSorted[bsortBy][idxInStore]
+			bid := bidInCache.ToBid()
+			if !bid.IsValid() {
+				continue
+			}
+
+			eachBoard := &cache.Shm.Shm.BCache[bidInCache]
+			lastPostTime, _ := cache.GetLastPosttime(bid)
+			total, _ := cache.GetBTotalWithRetry(bid)
+			eachBoardDetail := &ptttype.BoardDetailRaw{
+				Bid: bid,
+
+				BoardHeaderRaw: eachBoard,
+
+				LastPostTime: lastPostTime,
+				Total:        total,
+			}
+			details = append(details, eachBoardDetail)
+		}
+	}
+
+	if len(details) == nBoardsWithNext {
+		nextDetail = details[nBoards]
+		details = details[:nBoards]
+	}
+
+	return details, nextDetail, nil
+}
+
 // loadAutoCompleteBoardStat
 //
 // https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1147
