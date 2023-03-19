@@ -31,7 +31,7 @@ type BoardHeaderRaw struct {
 	Parent             Bid         /* 這個看板的 parent 看板 bid */
 	ChildCount         int32       /* 有多少個child */
 	NUser              int32       /* 多少人在這板 */
-	PostExpire         int32       /* postexpire */
+	PostExpire         Bid         /* postexpire 看板連結的 bid */
 	EndGamble          types.Time4
 	PostType           [33]byte
 	PostTypeF          byte

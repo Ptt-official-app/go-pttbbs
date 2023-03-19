@@ -24,7 +24,7 @@ type BoardDetail struct {
 	Level              ptttype.PERM      `json:"level"`
 	PermReload         types.Time4       `json:"permreload"`
 	NUser              int32             `json:"nuser"`
-	PostExpire         int32             `json:"postexpire"`
+	PostExpire         ptttype.Bid       `json:"postexpire"`
 	EndGamble          types.Time4       `json:"endgamble"`
 	PostType           [][]byte          `json:"posttype"`
 	FastRecommendPause uint8             `json:"fastrecommendpause"`
