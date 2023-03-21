@@ -44,6 +44,8 @@ func InitGin() (*gin.Engine, error) {
 
 	router.GET(withPrefix(api.LOAD_GENERAL_BOARD_DETAILS_R), api.LoadGeneralBoardDetailsWrapper)
 
+	router.GET(withPrefix(api.GET_POST_TEMPLATE_R), api.GetPostTemplateWrapper)
+
 	// article
 	router.GET(withPrefix(api.GET_ARTICLE_R), api.GetArticleWrapper)
 	router.POST(withPrefix(api.CREATE_ARTICLE_R), api.CreateArticleWrapper)

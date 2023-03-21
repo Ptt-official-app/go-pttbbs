@@ -74,6 +74,14 @@ def _load_general_boards():
     return ''
 
 
+@app.route(_with_app_prefix('/boards/detail'), methods=['GET'])
+def _load_general_boards():
+    """
+    swagger_from_file: apidoc/load_general_board_details.yaml
+    """
+    return ''
+
+
 @app.route(_with_app_prefix('/cls/<clsid>/boards'), methods=['GET'])
 def _load_class_boards(clsid):
     """
@@ -158,6 +166,14 @@ def _is_board_valid_user(bid):
 def _is_boards_valid_user():
     """
     swagger_from_file: apidoc/is_boards_valid_user.yaml
+    """
+    return ''
+
+
+@app.route(_with_app_prefix('/board/<bid>/posttemplate/<tid>'), methods=['GET'])
+def _get_post_template(bid, tid):
+    """
+    swagger_from_file: apidoc/get_post_template.yaml
     """
     return ''
 

@@ -1,0 +1,41 @@
+get_post_template
+---
+tags:
+  - board
+description: get the post-template of the post-type.
+parameters:
+  - '$ref': '#/definitions/Host'
+  - '$ref': '#/definitions/XForwardedFor'
+  - '$ref': '#/definitions/Authorization'
+  - name: bid
+    in: path
+    type: string
+    required: true
+    description: board-id
+  - name: tid
+    in: path
+    type: number
+    required: true
+    description: template-id ([1-8])
+  - '$ref': '#/definitions/ParamsSystem'
+  - name: hash
+    in: query
+    type: bool
+    required: false
+    description: whether to return hash.
+    default: false
+responses:
+  200:
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      type: object
+      properties:
+        content:
+          type: string
+          description: base64-encoded bytes representing the DBCS-content.
+          required: true
+        mtime:
+          type: number
+        hash:
+          type: number
+          description: fnv64 number representing the DBCS-content.

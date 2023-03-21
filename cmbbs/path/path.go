@@ -2,6 +2,7 @@ package path
 
 import (
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
@@ -63,6 +64,24 @@ func SetBFile(boardID *ptttype.BoardID_t, filename string) (string, error) {
 		string(boardID[0]),
 		types.CstrToString(boardID[:]),
 		filename,
+	},
+		string(os.PathSeparator),
+	), nil
+}
+
+func SetBNFile(boardID *ptttype.BoardID_t, filename string, idx int) (string, error) {
+	if filename[0] == '\x00' || !IsValidFilename(filename) {
+		return "", ptttype.ErrInvalidFilename
+	}
+
+	theFilename := filename + "." + strconv.Itoa(idx)
+
+	return strings.Join([]string{
+		ptttype.BBSHOME,
+		ptttype.DIR_BOARD,
+		string(boardID[0]),
+		types.CstrToString(boardID[:]),
+		theFilename,
 	},
 		string(os.PathSeparator),
 	), nil
