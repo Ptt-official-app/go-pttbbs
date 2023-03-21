@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const LOAD_GENERAL_BOARD_DETAILS_R = "/boarddetails"
+const LOAD_GENERAL_BOARD_DETAILS_R = "/boards/detail"
 
 type LoadGeneralBoardDetailsParams struct {
 	StartIdx string `json:"start_idx,omitempty" form:"start_idx,omitempty" url:"start_idx,omitempty"`

@@ -840,3 +840,83 @@ func TestEditPost(t *testing.T) {
 		wg.Wait()
 	}
 }
+
+func TestReadPostTemplate(t *testing.T) {
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
+
+	cache.ReloadBCache()
+
+	filename := "testcase/boards/W/WhoAmI/postsample.0"
+	mtime := time.Unix(1679419504, 0)
+	os.Chtimes(filename, mtime, mtime)
+
+	boardID1 := &ptttype.BoardID_t{}
+	copy(boardID1[:], []byte("WhoAmI"))
+
+	type args struct {
+		user       *ptttype.UserecRaw
+		uid        ptttype.UID
+		boardID    *ptttype.BoardID_t
+		bid        ptttype.Bid
+		templateID ptttype.SortIdx
+		retrieveTS types.Time4
+		isHash     bool
+	}
+	tests := []struct {
+		name         string
+		args         args
+		wantContent  []byte
+		wantMtime    types.Time4
+		wantChecksum cmsys.Fnv64_t
+		wantErr      bool
+	}{
+		// TODO: Add test cases.
+		{
+			args: args{
+				user:       testUserecRaw1,
+				uid:        1,
+				boardID:    boardID1,
+				bid:        10,
+				templateID: 1,
+			},
+			wantContent: testContent1,
+			wantMtime:   1679419504,
+		},
+		{
+			args: args{
+				user:       testUserecRaw1,
+				uid:        1,
+				boardID:    boardID1,
+				bid:        10,
+				templateID: 1,
+				isHash:     true,
+			},
+			wantContent:  testContent1,
+			wantMtime:    1679419504,
+			wantChecksum: 708027644387720498,
+		},
+	}
+	var wg sync.WaitGroup
+	for _, tt := range tests {
+		wg.Add(1)
+		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
+			gotContent, gotMtime, gotChecksum, err := ReadPostTemplate(tt.args.user, tt.args.uid, tt.args.boardID, tt.args.bid, tt.args.templateID, tt.args.retrieveTS, tt.args.isHash)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ReadPostTemplate() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotContent, tt.wantContent) {
+				t.Errorf("ReadPostTemplate() gotContent = %v, want %v", gotContent, tt.wantContent)
+			}
+			if !reflect.DeepEqual(gotMtime, tt.wantMtime) {
+				t.Errorf("ReadPostTemplate() gotMtime = %v, want %v", gotMtime, tt.wantMtime)
+			}
+			if !reflect.DeepEqual(gotChecksum, tt.wantChecksum) {
+				t.Errorf("ReadPostTemplate() gotChecksum = %v, want %v", gotChecksum, tt.wantChecksum)
+			}
+		})
+		wg.Wait()
+	}
+}

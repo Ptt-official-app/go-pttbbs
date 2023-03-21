@@ -27,6 +27,7 @@ type BoardDetail struct {
 	PostExpire         ptttype.Bid       `json:"postexpire"`
 	EndGamble          types.Time4       `json:"endgamble"`
 	PostType           [][]byte          `json:"posttype"`
+	PostTypeTemplate   []bool            `json:"posttype_tmpl"`
 	FastRecommendPause uint8             `json:"fastrecommendpause"`
 	VoteLimitBadpost   uint8             `json:"votelimitbadpost"`
 	PostLimitBadPost   uint8             `json:"postlimitbadpost"`
@@ -48,6 +49,7 @@ func NewBoardDetailFromRaw(boardDetailRaw *ptttype.BoardDetailRaw, bid ptttype.B
 	}
 
 	postTypes := postTypeRawToPostTypes(boardDetailRaw.PostType[:])
+	postTypeTemplates := postTypeTemplateRawToPostTypeTemplates(boardDetailRaw.PostTypeF)
 
 	boardDetail := &BoardDetail{
 		Brdname:            types.CstrToString(boardDetailRaw.Brdname[:]),
@@ -71,6 +73,7 @@ func NewBoardDetailFromRaw(boardDetailRaw *ptttype.BoardDetailRaw, bid ptttype.B
 		PostExpire:         boardDetailRaw.PostExpire,
 		EndGamble:          boardDetailRaw.EndGamble,
 		PostType:           postTypes,
+		PostTypeTemplate:   postTypeTemplates,
 		FastRecommendPause: boardDetailRaw.FastRecommendPause,
 		VoteLimitBadpost:   boardDetailRaw.VoteLimitBadpost,
 		PostLimitBadPost:   boardDetailRaw.PostLimitBadpost,
@@ -91,4 +94,17 @@ func postTypeRawToPostTypes(postType []byte) (postTypes [][]byte) {
 	}
 
 	return postTypes
+}
+
+func postTypeTemplateRawToPostTypeTemplates(postTypeTemplateRaw uint8) (postTypeTemplate []bool) {
+	postTypeTemplate = make([]bool, 8)
+	for idx := 0; idx < 8; idx++ {
+		if postTypeTemplateRaw&(1<<idx) > 0 {
+			postTypeTemplate[idx] = true
+		} else {
+			postTypeTemplate[idx] = false
+		}
+	}
+
+	return postTypeTemplate
 }

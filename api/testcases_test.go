@@ -299,12 +299,14 @@ func initTestVars() {
 			0x4c, 0xb7, 0x73, 0xa4, 0xe5, 0xb3, 0xb9, 0x28, 0xc1, 0xf4,
 			0xaa, 0x4f, 0x29,
 		},
-		BoardType:  []byte{0xa1, 0xb7},
-		BM:         []bbs.UUserID{},
-		IdxByName:  "ALLHIDPOST",
-		IdxByClass: "vFSt-Q@ALLHIDPOST",
-		PostType:   [][]byte{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}},
-		Level:      ptttype.PERM_SYSOP,
+		BoardType:        []byte{0xa1, 0xb7},
+		BM:               []bbs.UUserID{},
+		IdxByName:        "ALLHIDPOST",
+		IdxByClass:       "vFSt-Q@ALLHIDPOST",
+		PostType:         [][]byte{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}},
+		PostTypeTemplate: []bool{false, false, false, false, false, false, false, false},
+
+		Level: ptttype.PERM_SYSOP,
 	}
 
 	testBoardSummary13 = &bbs.BoardSummary{
@@ -343,14 +345,15 @@ func initTestVars() {
 			0xb8, 0xf3, 0xaa, 0x4f, 0xa6, 0xa1, 0x4c, 0x4f, 0x43, 0x41,
 			0x4c, 0xb7, 0x73, 0xa4, 0xe5, 0xb3, 0xb9,
 		},
-		BoardClass:   []byte{0xbc, 0x54, 0xad, 0xf9},
-		BoardType:    []byte{0xa1, 0xb7},
-		BM:           []bbs.UUserID{},
-		ChessCountry: 0,
-		Level:        16384,
-		IdxByName:    "ALLPOST",
-		IdxByClass:   "vFSt-Q@ALLPOST",
-		PostType:     [][]byte{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}},
+		BoardClass:       []byte{0xbc, 0x54, 0xad, 0xf9},
+		BoardType:        []byte{0xa1, 0xb7},
+		BM:               []bbs.UUserID{},
+		ChessCountry:     0,
+		Level:            16384,
+		IdxByName:        "ALLPOST",
+		IdxByClass:       "vFSt-Q@ALLPOST",
+		PostType:         [][]byte{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}},
+		PostTypeTemplate: []bool{false, false, false, false, false, false, false, false},
 	}
 
 	testClassSummary2 = &bbs.BoardSummary{
@@ -385,13 +388,14 @@ func initTestVars() {
 			0xc0, 0x49, 0x2c, 0xab, 0x44, 0xa4, 0x48, 0xa5, 0x69, 0xbc,
 			0xc4, 0xa1, 0x6e,
 		},
-		BoardType:  []byte{0xa3, 0x55},
-		BM:         []bbs.UUserID{},
-		IdxByName:  "1...........",
-		IdxByClass: "Li4uLg@1...........",
-		BrdAttr:    ptttype.BRD_GROUPBOARD,
-		Level:      ptttype.PERM_SYSOP,
-		PostType:   [][]byte{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}},
+		BoardType:        []byte{0xa3, 0x55},
+		BM:               []bbs.UUserID{},
+		IdxByName:        "1...........",
+		IdxByClass:       "Li4uLg@1...........",
+		BrdAttr:          ptttype.BRD_GROUPBOARD,
+		Level:            ptttype.PERM_SYSOP,
+		PostType:         [][]byte{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}},
+		PostTypeTemplate: []bool{false, false, false, false, false, false, false, false},
 	}
 
 	testClassSummary5 = &bbs.BoardSummary{
@@ -426,12 +430,13 @@ func initTestVars() {
 			0x20, 0xaf, 0xb8, 0xaa, 0xf8, 0x20, 0x20, 0xa3, 0xad, 0xa1,
 			0x49,
 		},
-		BoardType:  []byte{0xa3, 0x55},
-		BM:         []bbs.UUserID{},
-		IdxByName:  "2...........",
-		IdxByClass: "Li4uLg@2...........",
-		BrdAttr:    ptttype.BRD_GROUPBOARD,
-		PostType:   [][]byte{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}},
+		BoardType:        []byte{0xa3, 0x55},
+		BM:               []bbs.UUserID{},
+		IdxByName:        "2...........",
+		IdxByClass:       "Li4uLg@2...........",
+		BrdAttr:          ptttype.BRD_GROUPBOARD,
+		PostType:         [][]byte{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}},
+		PostTypeTemplate: []bool{false, false, false, false, false, false, false, false},
 	}
 
 	testArticleSummary0 = &bbs.ArticleSummary{

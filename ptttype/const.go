@@ -139,3 +139,8 @@ var (
 	PATTERN_ANSI_MOVECMD = []byte("ABCDfjHJRu")
 	PATTERN_ANSI_CODE    = []byte("0123456789;,[")
 )
+
+const (
+	// https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L1396
+	POSTSAMPLE = "postsample"
+)
