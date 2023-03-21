@@ -111,15 +111,15 @@ func userLogin(uid ptttype.UID, user *ptttype.UserecRaw, ip *ptttype.IPv4_t) (er
 //
 // There will be only 1-login per user in this process.
 func setupUtmp(uid ptttype.UID, user *ptttype.UserecRaw, ip *ptttype.IPv4_t, op ptttype.UserOpMode) (utmpID ptttype.UtmpID, uinfo *ptttype.UserInfoRaw, err error) {
-	if !ptttype.IS_UTMP {
-		return 0, nil, nil
-	}
-
 	uinfo = newUserInfoRaw(uid, user, ip, op)
+
+	if !ptttype.IS_UTMP {
+		return -1, uinfo, nil
+	}
 
 	utmpID, err = getNewUtmpEnt(uinfo)
 	if err != nil {
-		return 0, nil, err
+		return -1, nil, err
 	}
 
 	return utmpID, uinfo, nil
@@ -176,7 +176,7 @@ func newUserInfoRaw(uid ptttype.UID, user *ptttype.UserecRaw, ip *ptttype.IPv4_t
 }
 
 func doAloha(utmpID ptttype.UtmpID, uinfo *ptttype.UserInfoRaw, hello []byte) {
-	if !ptttype.IS_UTMP {
+	if !ptttype.IS_UTMP || !utmpID.IsValid() {
 		return
 	}
 

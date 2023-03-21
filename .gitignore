@@ -15,3 +15,6 @@
 
 .idea/
 /test-config
+
+/apidoc/__pycache__
+/apidoc/apidoc.egg-info

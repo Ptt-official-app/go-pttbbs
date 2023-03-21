@@ -9,4 +9,6 @@
 /apidoc/template.json
 /swagger
 **/boards
+/00-config-production.go.template
+/ptttype/00-config-production.go
 /02-config.run.ini

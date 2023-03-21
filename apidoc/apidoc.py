@@ -75,7 +75,7 @@ def _load_general_boards():
 
 
 @app.route(_with_app_prefix('/boards/detail'), methods=['GET'])
-def _load_general_boards():
+def _load_general_board_details():
     """
     swagger_from_file: apidoc/load_general_board_details.yaml
     """

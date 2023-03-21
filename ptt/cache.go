@@ -90,10 +90,15 @@ func getNewUtmpEnt(uinfo *ptttype.UserInfoRaw) (utmpID ptttype.UtmpID, err error
 	p := cmsys.StringHash(uinfo.UserID[:]) % ptttype.USHM_SIZE
 	pid := types.Pid_t(0)
 	for idx := 0; idx < ptttype.USHM_SIZE; idx, p = idx+1, p+1 {
+		if p == ptttype.USHM_SIZE {
+			p = 0
+		}
+
 		pid = cache.Shm.Shm.UInfo[p].Pid
 		// found same pid.
 		// update the newest status.
 		// XXX race condition with auto-logout.
+		// XXX It happens in go-pttbbs because we use fake pid, as MaxPID + uid.
 		// XXX c-pttbbs does not care the race-condition here.
 		// XXX we may not do anything with utmpID though.
 		if pid == uinfo.Pid {
