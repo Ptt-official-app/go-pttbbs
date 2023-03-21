@@ -152,6 +152,10 @@ func (s SortIdxInStore) ToSortIdx() SortIdx {
 	return SortIdx(s + 1)
 }
 
+func (u UtmpID) IsValid() bool {
+	return u >= 0 && u < USHM_SIZE
+}
+
 // valid UserID
 //
 // https://github.com/ptt/pttbbs/blob/master/common/bbs/names.c
