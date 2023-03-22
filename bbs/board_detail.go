@@ -69,7 +69,7 @@ func NewBoardDetailFromRaw(boardDetailRaw *ptttype.BoardDetailRaw, bid ptttype.B
 		VTime:              boardDetailRaw.VTime,
 		Level:              boardDetailRaw.Level,
 		PermReload:         boardDetailRaw.PermReload,
-		NUser:              boardDetailRaw.ChildCount,
+		NUser:              boardDetailRaw.NUser,
 		PostExpire:         boardDetailRaw.PostExpire,
 		EndGamble:          boardDetailRaw.EndGamble,
 		PostType:           postTypes,
