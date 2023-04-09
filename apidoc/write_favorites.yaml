@@ -1,9 +1,9 @@
-getFavorites
+writeFavorites
 ---
 tags:
   - user
   - board
-description: get user favorites (in bytes)
+description: write user favorites (in bytes)
 parameters:
   - '$ref': '#/definitions/Host'
   - '$ref': '#/definitions/XForwardedFor'
@@ -11,10 +11,16 @@ parameters:
   - name: uid
     in: path
     type: string
-  - name: last_ts
-    in: query
-    description: last updated ts.
-    type: number
+  - name: params
+    in: body
+    required: true
+    schema:
+      '$id': https://json-schema.org/draft/2019-09/output/schema
+      type: object
+      properties:
+        content:
+          type: string
+          description: base64-big5
 responses:
   200:
     schema:
@@ -24,6 +30,3 @@ responses:
         mtime:
           type: number
           description: mtime of the file.
-        content:
-          type: string
-          description: base64-big5

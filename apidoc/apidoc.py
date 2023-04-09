@@ -298,6 +298,14 @@ def _get_fav(uid):
     return ''
 
 
+@app.route(_with_app_prefix('/user/<uid>/favorites/post'), methods=['POST'])
+def _write_favorites(uid):
+    """
+    swagger_from_file: apidoc/write_favorites.yaml
+    """
+    return ''
+
+
 @app.route(_with_app_prefix('/uservisitcount'), methods=['GET'])
 def _get_user_visit_count():
     """

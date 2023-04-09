@@ -53,6 +53,26 @@ func reginitFav(uid ptttype.UID, user *ptttype.UserecRaw) (err error) {
 	return err
 }
 
+func WriteFavorites(userID *ptttype.UserID_t, content []byte) (mtime types.Time4, err error) {
+	// 1. get filename
+	filename, err := path.SetHomeFile(userID, fav.FAV)
+	if err != nil {
+		return 0, err
+	}
+
+	err = os.WriteFile(filename, content, types.DEFAULT_FILE_CREATE_PERM)
+	if err != nil {
+		return 0, err
+	}
+
+	mtime, err = getFavoritesGetMTime(userID, filename)
+	if err != nil {
+		return 0, err
+	}
+
+	return mtime, nil
+}
+
 func GetFavorites(userID *ptttype.UserID_t, retrieveTS types.Time4) (content []byte, mtime types.Time4, err error) {
 	// 1. get filename
 	filename, err := path.SetHomeFile(userID, fav.FAV)
