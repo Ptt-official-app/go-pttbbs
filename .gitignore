@@ -18,3 +18,5 @@
 
 /apidoc/__pycache__
 /apidoc/apidoc.egg-info
+
+/docker-compose.yaml.me
