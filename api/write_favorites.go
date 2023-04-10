@@ -21,9 +21,9 @@ type WriteFavoritesResult struct {
 }
 
 func WriteFavoritesWrapper(c *gin.Context) {
-	params := &GetFavoritesParams{}
-	path := &GetFavoritesPath{}
-	LoginRequiredPathQuery(WriteFavorites, params, path, c)
+	params := &WriteFavoritesParams{}
+	path := &WriteFavoritesPath{}
+	LoginRequiredPathJSON(WriteFavorites, params, path, c)
 }
 
 func WriteFavorites(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (result interface{}, err error) {
