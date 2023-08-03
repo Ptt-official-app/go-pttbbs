@@ -20,7 +20,7 @@ func IsBoardValidUserWrapper(c *gin.Context) {
 	LoginRequiredPathQuery(IsBoardValidUser, nil, path, c)
 }
 
-func IsBoardValidUser(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (result interface{}, err error) {
+func IsBoardValidUser(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}, c *gin.Context) (result interface{}, err error) {
 	thePath, ok := path.(*IsBoardValidUserPath)
 	if !ok {
 		return nil, ErrInvalidPath

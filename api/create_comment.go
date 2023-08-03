@@ -30,7 +30,7 @@ func CreateCommentWrapper(c *gin.Context) {
 	LoginRequiredPathJSON(CreateComment, params, path, c)
 }
 
-func CreateComment(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (result interface{}, err error) {
+func CreateComment(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}, c *gin.Context) (result interface{}, err error) {
 	theParams, ok := params.(*CreateCommentParams)
 	if !ok {
 		return nil, ErrInvalidParams

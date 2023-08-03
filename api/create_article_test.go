@@ -69,7 +69,7 @@ func TestCreateArticle(t *testing.T) {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
-			gotResult, err := CreateArticle(tt.args.remoteAddr, tt.args.uuser, tt.args.params, tt.args.path)
+			gotResult, err := CreateArticle(tt.args.remoteAddr, tt.args.uuser, tt.args.params, tt.args.path, nil)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CreateArticle() error = %v, wantErr %v", err, tt.wantErr)
 				return

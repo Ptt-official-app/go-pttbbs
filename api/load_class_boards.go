@@ -27,7 +27,7 @@ func LoadClassBoardsWrapper(c *gin.Context) {
 	LoginRequiredPathQuery(LoadClassBoards, params, path, c)
 }
 
-func LoadClassBoards(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (ret interface{}, err error) {
+func LoadClassBoards(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}, c *gin.Context) (ret interface{}, err error) {
 	theParams, ok := params.(*LoadClassBoardsParams)
 	if !ok {
 		return nil, ErrInvalidParams

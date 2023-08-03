@@ -25,7 +25,7 @@ func DeleteArticlesWrapper(c *gin.Context) {
 	LoginRequiredPathJSON(DeleteArticles, params, path, c)
 }
 
-func DeleteArticles(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (result interface{}, err error) {
+func DeleteArticles(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}, c *gin.Context) (result interface{}, err error) {
 	theParams, ok := params.(*DeleteArticlesParams)
 	if !ok {
 		return nil, ErrInvalidParams

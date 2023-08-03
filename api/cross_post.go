@@ -31,7 +31,7 @@ type CrossPostResult struct {
 	CommentMTime types.Time4 `json:"comment_mtime"`
 }
 
-func CrossPost(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (result interface{}, err error) {
+func CrossPost(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}, c *gin.Context) (result interface{}, err error) {
 	theParams, ok := params.(*CrossPostParams)
 	if !ok {
 		return nil, ErrInvalidParams

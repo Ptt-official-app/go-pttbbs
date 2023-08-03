@@ -20,7 +20,7 @@ func IsBoardsValidUserWrapper(c *gin.Context) {
 	LoginRequiredJSON(IsBoardsValidUser, params, c)
 }
 
-func IsBoardsValidUser(remoteAddr string, uuserID bbs.UUserID, params interface{}) (result interface{}, err error) {
+func IsBoardsValidUser(remoteAddr string, uuserID bbs.UUserID, params interface{}, c *gin.Context) (result interface{}, err error) {
 	theParams, ok := params.(*IsBoardsValidUserParams)
 	if !ok {
 		return nil, ErrInvalidParams

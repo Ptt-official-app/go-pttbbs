@@ -45,7 +45,7 @@ func TestVerifyJwt(t *testing.T) {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
-			gotUserID, _, err := VerifyJwt(tt.args.raw)
+			gotUserID, _, _, err := VerifyJwt(tt.args.raw, true)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("VerifyJwt() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -88,7 +88,7 @@ func TestVerifyEmailJwt(t *testing.T) {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
-			gotUserID, gotClientInfo, gotEmail, err := VerifyEmailJwt(tt.args.raw, CONTEXT_CHANGE_EMAIL)
+			gotUserID, _, gotClientInfo, gotEmail, err := VerifyEmailJwt(tt.args.raw, CONTEXT_CHANGE_EMAIL)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("VerifyEmailJwt() error = %v, wantErr %v", err, tt.wantErr)
 				return

@@ -34,7 +34,7 @@ func GetPostTemplateWrapper(c *gin.Context) {
 	LoginRequiredPathQuery(GetPostTemplate, params, path, c)
 }
 
-func GetPostTemplate(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (result interface{}, err error) {
+func GetPostTemplate(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}, c *gin.Context) (result interface{}, err error) {
 	theParams, ok := params.(*GetPostTemplateParams)
 	if !ok {
 		return nil, ErrInvalidParams

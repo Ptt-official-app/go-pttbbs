@@ -29,7 +29,7 @@ func SetIDEmailWrapper(c *gin.Context) {
 	LoginRequiredPathJSON(SetIDEmail, params, path, c)
 }
 
-func SetIDEmail(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (result interface{}, err error) {
+func SetIDEmail(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}, c *gin.Context) (result interface{}, err error) {
 	theParams, ok := params.(*SetIDEmailParams)
 	if !ok {
 		return nil, ErrInvalidParams

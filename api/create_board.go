@@ -31,7 +31,7 @@ func CreateBoardWrapper(c *gin.Context) {
 	LoginRequiredPathJSON(CreateBoard, params, path, c)
 }
 
-func CreateBoard(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (result interface{}, err error) {
+func CreateBoard(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}, c *gin.Context) (result interface{}, err error) {
 	theParams, ok := params.(*CreateBoardParams)
 	if !ok {
 		return nil, ErrInvalidParams

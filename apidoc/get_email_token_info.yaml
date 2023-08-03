@@ -33,3 +33,5 @@ responses:
           type: string
         email:
           type: string
+        expire:
+          type: number

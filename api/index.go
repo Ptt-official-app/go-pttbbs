@@ -18,7 +18,7 @@ func IndexWrapper(c *gin.Context) {
 	LoginRequiredJSON(Index, params, c)
 }
 
-func Index(remoteAddr string, uuserID bbs.UUserID, params interface{}) (interface{}, error) {
+func Index(remoteAddr string, uuserID bbs.UUserID, params interface{}, c *gin.Context) (interface{}, error) {
 	result := &IndexResult{Data: "index"}
 	return result, nil
 }

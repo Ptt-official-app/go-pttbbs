@@ -24,7 +24,7 @@ func LoadFullClassBoardsWrapper(c *gin.Context) {
 	LoginRequiredQuery(LoadFullClassBoards, params, c)
 }
 
-func LoadFullClassBoards(remoteAddr string, uuserID bbs.UUserID, params interface{}) (ret interface{}, err error) {
+func LoadFullClassBoards(remoteAddr string, uuserID bbs.UUserID, params interface{}, c *gin.Context) (ret interface{}, err error) {
 	theParams, ok := params.(*LoadFullClassBoardsParams)
 	if !ok {
 		return nil, ErrInvalidParams
