@@ -40,7 +40,7 @@ func LoadGeneralArticlesWrapper(c *gin.Context) {
 	LoginRequiredPathQuery(LoadGeneralArticles, params, path, c)
 }
 
-func LoadGeneralArticles(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (result interface{}, err error) {
+func LoadGeneralArticles(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}, c *gin.Context) (result interface{}, err error) {
 	theParams, ok := params.(*LoadGeneralArticlesParams)
 	if !ok {
 		return nil, ErrInvalidParams

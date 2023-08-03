@@ -38,12 +38,14 @@ func TestGetEmailTokenInfo(t *testing.T) {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
-			gotResult, err := GetEmailTokenInfo(tt.args.remoteAddr, tt.args.uuserID, tt.args.params)
+			gotResult, err := GetEmailTokenInfo(tt.args.remoteAddr, tt.args.uuserID, tt.args.params, nil)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetEmailTokenInfo() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(gotResult, tt.expectedResult) {
+			result, _ := gotResult.(*GetEmailTokenInfoResult)
+			result.Expire = 0
+			if !reflect.DeepEqual(result, tt.expectedResult) {
 				t.Errorf("GetEmailTokenInfo() = %v, want %v", gotResult, tt.expectedResult)
 			}
 		})

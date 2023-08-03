@@ -27,7 +27,7 @@ func GetFavoritesWrapper(c *gin.Context) {
 	LoginRequiredPathQuery(GetFavorites, params, path, c)
 }
 
-func GetFavorites(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (result interface{}, err error) {
+func GetFavorites(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}, c *gin.Context) (result interface{}, err error) {
 	theParams, ok := params.(*GetFavoritesParams)
 	if !ok {
 		return nil, ErrInvalidParams

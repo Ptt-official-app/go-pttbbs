@@ -20,7 +20,7 @@ func LoadBottomArticlesWrapper(c *gin.Context) {
 	LoginRequiredPathQuery(LoadBottomArticles, nil, path, c)
 }
 
-func LoadBottomArticles(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (result interface{}, err error) {
+func LoadBottomArticles(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}, c *gin.Context) (result interface{}, err error) {
 	thePath, ok := path.(*LoadGeneralArticlesPath)
 	if !ok {
 		return nil, ErrInvalidPath

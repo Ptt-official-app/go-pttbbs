@@ -24,7 +24,7 @@ func LoadBoardDetailWrapper(c *gin.Context) {
 	loginRequiredPathProcess(LoadBoardDetail, nil, path, c)
 }
 
-func LoadBoardDetail(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (ret interface{}, err error) {
+func LoadBoardDetail(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}, c *gin.Context) (ret interface{}, err error) {
 	thePath, ok := path.(*LoadBoardDetailPath)
 	if !ok {
 		return nil, ErrInvalidPath

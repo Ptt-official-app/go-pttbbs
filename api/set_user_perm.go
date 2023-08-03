@@ -26,7 +26,7 @@ func SetUserPermWrapper(c *gin.Context) {
 	LoginRequiredPathJSON(SetUserPerm, params, path, c)
 }
 
-func SetUserPerm(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (result interface{}, err error) {
+func SetUserPerm(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}, c *gin.Context) (result interface{}, err error) {
 	theParams, ok := params.(*SetUserPermParams)
 	if !ok {
 		return nil, ErrInvalidParams

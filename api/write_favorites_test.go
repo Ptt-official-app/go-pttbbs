@@ -61,7 +61,7 @@ func TestWriteFavorites(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
 			now := types.NowTS()
-			gotResult, err := WriteFavorites(tt.args.remoteAddr, tt.args.uuserID, tt.args.params, tt.args.path)
+			gotResult, err := WriteFavorites(tt.args.remoteAddr, tt.args.uuserID, tt.args.params, tt.args.path, nil)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("WriteFavorites() error = %v, wantErr %v", err, tt.wantErr)
 				return

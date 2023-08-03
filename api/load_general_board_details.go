@@ -31,7 +31,7 @@ func LoadGeneralBoardDetailsWrapper(c *gin.Context) {
 	LoginRequiredQuery(LoadGeneralBoardDetails, params, c)
 }
 
-func LoadGeneralBoardDetails(remoteAddr string, uuserID bbs.UUserID, params interface{}) (interface{}, error) {
+func LoadGeneralBoardDetails(remoteAddr string, uuserID bbs.UUserID, params interface{}, c *gin.Context) (interface{}, error) {
 	return loadGeneralBoardDetailsCore(remoteAddr, uuserID, params, ptttype.BSORT_BY_NAME)
 }
 

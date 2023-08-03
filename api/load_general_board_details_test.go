@@ -41,7 +41,7 @@ func TestLoadGeneralBoardDetails(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := LoadGeneralBoardDetails(tt.args.remoteAddr, tt.args.uuserID, tt.args.params)
+			got, err := LoadGeneralBoardDetails(tt.args.remoteAddr, tt.args.uuserID, tt.args.params, nil)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadGeneralBoardDetails() error = %v, wantErr %v", err, tt.wantErr)
 				return

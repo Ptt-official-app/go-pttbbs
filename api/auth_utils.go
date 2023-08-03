@@ -20,22 +20,24 @@ func GetJwt(c *gin.Context) (jwt string) {
 	return tokenList[1]
 }
 
-func VerifyJwt(raw string) (userID bbs.UUserID, clientInfo string, err error) {
+func VerifyJwt(raw string, isCheckExpire bool) (userID bbs.UUserID, expireTS int, clientInfo string, err error) {
 	if raw == "" {
-		return bbs.UUserID(GUEST), "", nil
+		return bbs.UUserID(GUEST), 0, "", nil
 	}
 
 	cl, err := parseJwtClaim(raw)
 	if err != nil {
-		return "", "", ErrInvalidToken
+		return "", 0, "", ErrInvalidToken
 	}
 
-	currentTS := int(types.NowTS())
-	if currentTS > cl.Expire {
-		return "", "", ErrInvalidToken
+	if isCheckExpire {
+		currentTS := int(types.NowTS())
+		if currentTS > cl.Expire {
+			return "", 0, "", ErrInvalidToken
+		}
 	}
 
-	return bbs.UUserID(cl.UUserID), cl.ClientInfo, nil
+	return bbs.UUserID(cl.UUserID), cl.Expire, cl.ClientInfo, nil
 }
 
 func parseJwtClaim(raw string) (cl *JwtClaim, err error) {
@@ -95,26 +97,26 @@ func CreateToken(userID bbs.UUserID, clientInfo string) (raw string, err error) 
 	return raw, nil
 }
 
-func VerifyEmailJwt(raw string, context EmailTokenContext) (userID bbs.UUserID, clientInfo string, email string, err error) {
+func VerifyEmailJwt(raw string, context EmailTokenContext) (userID bbs.UUserID, expireTS int, clientInfo string, email string, err error) {
 	if raw == "" {
-		return "", "", "", ErrInvalidToken
+		return "", 0, "", "", ErrInvalidToken
 	}
 
 	cl, err := parseEmailJwtClaim(raw)
 	if err != nil {
-		return "", "", "", ErrInvalidToken
+		return "", 0, "", "", ErrInvalidToken
 	}
 
 	currentTS := int(types.NowTS())
 	if currentTS > cl.Expire {
-		return "", "", "", ErrInvalidToken
+		return "", 0, "", "", ErrInvalidToken
 	}
 
 	if cl.Context != string(context) {
-		return "", "", "", ErrInvalidToken
+		return "", 0, "", "", ErrInvalidToken
 	}
 
-	return bbs.UUserID(cl.UUserID), cl.ClientInfo, cl.Email, nil
+	return bbs.UUserID(cl.UUserID), cl.Expire, cl.ClientInfo, cl.Email, nil
 }
 
 func parseEmailJwtClaim(raw string) (cl *EmailJwtClaim, err error) {
@@ -179,6 +181,91 @@ func CreateEmailToken(userID bbs.UUserID, clientInfo string, email string, conte
 	})
 
 	raw, err = token.SignedString(EMAIL_JWT_SECRET)
+	if err != nil {
+		return "", err
+	}
+
+	return raw, nil
+}
+
+func VerifyRefreshJwt(raw string) (userID bbs.UUserID, expireTS int, clientInfo string, err error) {
+	if raw == "" {
+		return bbs.UUserID(GUEST), 0, "", nil
+	}
+
+	cl, err := parseRefreshJwtClaim(raw)
+	if err != nil {
+		return "", 0, "", ErrInvalidToken
+	}
+
+	currentTS := int(types.NowTS())
+	if currentTS > cl.Expire {
+		return "", 0, "", ErrInvalidToken
+	}
+
+	if cl.TheType != REFRESH_JWT_CLAIM_TYPE {
+		return "", 0, "", ErrInvalidToken
+	}
+
+	return bbs.UUserID(cl.UUserID), cl.Expire, cl.ClientInfo, nil
+}
+
+func parseRefreshJwtClaim(raw string) (cl *RefreshJwtClaim, err error) {
+	tok, err := ParseJwt(raw, REFRESH_JWT_SECRET)
+	if err != nil {
+		return nil, err
+	}
+
+	claim, ok := tok.Claims.(jwt.MapClaims)
+	if !ok {
+		return nil, ErrInvalidToken
+	}
+
+	cli, err := ParseClaimString(claim, "cli")
+	if err != nil {
+		return nil, err
+	}
+	sub, err := ParseClaimString(claim, "sub")
+	if err != nil {
+		return nil, err
+	}
+	exp, err := ParseClaimInt(claim, "exp")
+	if err != nil {
+		return nil, err
+	}
+	typ, err := ParseClaimString(claim, "typ")
+	if err != nil {
+		return nil, err
+	}
+
+	cl = &RefreshJwtClaim{
+		ClientInfo: cli,
+		UUserID:    sub,
+		Expire:     exp,
+		TheType:    typ,
+	}
+
+	return cl, nil
+}
+
+func CreateRefreshToken(userID bbs.UUserID, clientInfo string) (raw string, err error) {
+	defer func() {
+		err2 := recover()
+		if err2 == nil {
+			return
+		}
+
+		err = types.ErrRecover(err2)
+	}()
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"cli": clientInfo,
+		"sub": userID,
+		"exp": int(types.NowTS()) + REFRESH_JWT_TOKEN_EXPIRE_TS,
+		"typ": REFRESH_JWT_CLAIM_TYPE,
+	})
+
+	raw, err = token.SignedString(REFRESH_JWT_SECRET)
 	if err != nil {
 		return "", err
 	}

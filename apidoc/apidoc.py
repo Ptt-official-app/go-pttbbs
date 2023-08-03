@@ -289,6 +289,21 @@ def _get_email_token_info():
     """
     return ''
 
+@app.route(_with_app_prefix('/refresh'), methods=['POST'])
+def _refresh():
+    """
+    swagger_from_file: apidoc/refresh.yaml
+    """
+    return ''
+
+
+@app.route(_with_app_prefix('/refreshtoken/info'), methods=['POST'])
+def _get_refresh_token_info():
+    """
+    swagger_from_file: apidoc/get_refresh_token_info.yaml
+    """
+    return ''
+
 
 @app.route(_with_app_prefix('/user/<uid>/favorites'), methods=['GET'])
 def _get_fav(uid):

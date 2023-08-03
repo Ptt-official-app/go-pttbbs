@@ -21,7 +21,7 @@ func LoadBoardsByBidsWrapper(c *gin.Context) {
 	LoginRequiredJSON(LoadBoardsByBids, params, c)
 }
 
-func LoadBoardsByBids(remoteAddr string, uuserID bbs.UUserID, params interface{}) (result interface{}, err error) {
+func LoadBoardsByBids(remoteAddr string, uuserID bbs.UUserID, params interface{}, c *gin.Context) (result interface{}, err error) {
 	theParams, ok := params.(*LoadBoardsByBidsParams)
 	if !ok {
 		return nil, ErrInvalidParams
