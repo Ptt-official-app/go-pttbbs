@@ -43,11 +43,11 @@ func loginRequiredProcess(theFunc LoginRequiredAPIFunc, params interface{}, c *g
 
 	jwt := GetJwt(c)
 
-	userID, _, err := VerifyJwt(jwt)
+	userID, _, _, err := VerifyJwt(jwt, true)
 	if err != nil {
 		userID = bbs.UUserID(GUEST)
 	}
 
-	result, err := theFunc(remoteAddr, userID, params)
+	result, err := theFunc(remoteAddr, userID, params, c)
 	processResult(c, result, err)
 }

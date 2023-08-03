@@ -61,7 +61,7 @@ func TestLoadGeneralBoards(t *testing.T) {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
-			got, err := LoadGeneralBoards(testIP, tt.args.uuserID, tt.args.params)
+			got, err := LoadGeneralBoards(testIP, tt.args.uuserID, tt.args.params, nil)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadGeneralBoards() error = %v, wantErr %v", err, tt.wantErr)
 				return

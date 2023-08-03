@@ -15,7 +15,7 @@ func ReloadUHashWrapper(c *gin.Context) {
 	LoginRequiredQuery(ReloadUHash, nil, c)
 }
 
-func ReloadUHash(remoteAddr string, uuserID bbs.UUserID, params interface{}) (result interface{}, err error) {
+func ReloadUHash(remoteAddr string, uuserID bbs.UUserID, params interface{}, c *gin.Context) (result interface{}, err error) {
 	err = bbs.ReloadUHash(uuserID)
 	if err != nil {
 		return nil, err

@@ -47,7 +47,7 @@ func TestCheckExistsUser(t *testing.T) {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
-			gotResult, err := CheckExistsUser(tt.args.remoteAddr, tt.args.params)
+			gotResult, err := CheckExistsUser(tt.args.remoteAddr, tt.args.params, nil)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CheckExistsUser() error = %v, wantErr %v", err, tt.wantErr)
 				return

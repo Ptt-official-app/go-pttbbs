@@ -14,6 +14,7 @@ type GetTokenInfoParams struct {
 type GetTokenInfoResult struct {
 	ClientInfo string      `json:"client_info"`
 	UserID     bbs.UUserID `json:"user_id"`
+	Expire     int         `json:"expire"`
 }
 
 func GetTokenInfoWrapper(c *gin.Context) {
@@ -22,13 +23,13 @@ func GetTokenInfoWrapper(c *gin.Context) {
 	LoginRequiredJSON(GetTokenInfo, params, c)
 }
 
-func GetTokenInfo(remoteAddr string, uuserID bbs.UUserID, params interface{}) (result interface{}, err error) {
+func GetTokenInfo(remoteAddr string, uuserID bbs.UUserID, params interface{}, c *gin.Context) (result interface{}, err error) {
 	theParams, ok := params.(*GetTokenInfoParams)
 	if !ok {
 		return nil, ErrInvalidParams
 	}
 
-	userID, clientInfo, err := VerifyJwt(theParams.Jwt)
+	userID, expireTS, clientInfo, err := VerifyJwt(theParams.Jwt, true)
 	if err != nil {
 		return nil, err
 	}
@@ -39,6 +40,7 @@ func GetTokenInfo(remoteAddr string, uuserID bbs.UUserID, params interface{}) (r
 	result = &GetTokenInfoResult{
 		ClientInfo: clientInfo,
 		UserID:     userID,
+		Expire:     expireTS,
 	}
 
 	return result, nil

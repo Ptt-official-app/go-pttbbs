@@ -43,7 +43,7 @@ func TestLoadFullClassBoards(t *testing.T) {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
-			gotRet, err := LoadFullClassBoards(tt.args.remoteAddr, tt.args.uuserID, tt.args.params)
+			gotRet, err := LoadFullClassBoards(tt.args.remoteAddr, tt.args.uuserID, tt.args.params, nil)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadFullClassBoards() error = %v, wantErr %v", err, tt.wantErr)
 				return

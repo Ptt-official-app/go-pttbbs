@@ -19,7 +19,7 @@ func LoadAutoCompleteBoardsWrapper(c *gin.Context) {
 	LoginRequiredQuery(LoadAutoCompleteBoards, params, c)
 }
 
-func LoadAutoCompleteBoards(remoteAddr string, uuserID bbs.UUserID, params interface{}) (interface{}, error) {
+func LoadAutoCompleteBoards(remoteAddr string, uuserID bbs.UUserID, params interface{}, c *gin.Context) (interface{}, error) {
 	theParams, ok := params.(*LoadAutoCompleteBoardsParams)
 	if !ok {
 		return nil, ErrInvalidParams
