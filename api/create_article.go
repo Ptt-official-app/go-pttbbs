@@ -25,15 +25,7 @@ func CreateArticleWrapper(c *gin.Context) {
 	LoginRequiredPathJSON(CreateArticle, params, path, c)
 }
 
-func CreateArticle(
-	remoteAddr string,
-	uuser bbs.UUserID,
-	params interface{},
-	path interface{}) (
-
-	result interface{},
-	err error) {
-
+func CreateArticle(remoteAddr string, uuser bbs.UUserID, params interface{}, path interface{}, c *gin.Context) (result interface{}, err error) {
 	theParams, ok := params.(*CreateArticleParams)
 	if !ok {
 		return nil, ErrInvalidParams

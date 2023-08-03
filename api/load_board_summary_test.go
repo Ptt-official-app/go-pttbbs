@@ -43,7 +43,7 @@ func TestLoadBoardSummary(t *testing.T) {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
-			gotResults, err := LoadBoardSummary(tt.args.remoteAddr, tt.args.uuserID, tt.args.params, tt.args.path)
+			gotResults, err := LoadBoardSummary(tt.args.remoteAddr, tt.args.uuserID, tt.args.params, tt.args.path, nil)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadBoardSummary() error = %v, wantErr %v", err, tt.wantErr)
 				return

@@ -49,11 +49,11 @@ func loginRequiredPathProcess(theFunc LoginRequiredPathAPIFunc, params interface
 
 	jwt := GetJwt(c)
 
-	userID, _, err := VerifyJwt(jwt)
+	userID, _, _, err := VerifyJwt(jwt, true)
 	if err != nil {
 		userID = bbs.UUserID(GUEST)
 	}
 
-	result, err := theFunc(remoteAddr, userID, params, path)
+	result, err := theFunc(remoteAddr, userID, params, path, c)
 	processResult(c, result, err)
 }

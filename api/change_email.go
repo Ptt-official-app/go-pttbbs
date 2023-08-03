@@ -30,7 +30,7 @@ func ChangeEmailWrapper(c *gin.Context) {
 //
 // Sysop initiates only attempt-change-mail.
 // Sysop does not change email directly.
-func ChangeEmail(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (result interface{}, err error) {
+func ChangeEmail(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}, c *gin.Context) (result interface{}, err error) {
 	theParams, ok := params.(*ChangeEmailParams)
 	if !ok {
 		return nil, ErrInvalidParams

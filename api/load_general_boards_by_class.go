@@ -13,6 +13,6 @@ func LoadGeneralBoardsByClassWrapper(c *gin.Context) {
 	LoginRequiredQuery(LoadGeneralBoardsByClass, params, c)
 }
 
-func LoadGeneralBoardsByClass(remoteAddr string, uuserID bbs.UUserID, params interface{}) (interface{}, error) {
+func LoadGeneralBoardsByClass(remoteAddr string, uuserID bbs.UUserID, params interface{}, c *gin.Context) (interface{}, error) {
 	return loadGeneralBoardsCore(remoteAddr, uuserID, params, ptttype.BSORT_BY_CLASS)
 }

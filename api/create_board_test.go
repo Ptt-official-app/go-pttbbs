@@ -63,7 +63,7 @@ func TestCreateBoard(t *testing.T) {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
-			gotResult, err := CreateBoard(tt.args.remoteAddr, tt.args.uuserID, tt.args.params, tt.args.path)
+			gotResult, err := CreateBoard(tt.args.remoteAddr, tt.args.uuserID, tt.args.params, tt.args.path, nil)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CreateBoard() error = %v, wantErr %v", err, tt.wantErr)
 				return

@@ -35,7 +35,7 @@ func userInfoIsValidEmailUser(uuserID bbs.UUserID, queryUUserID bbs.UUserID, jwt
 		return false, ""
 	}
 
-	emailUserID, _, email, err := VerifyEmailJwt(jwt, context)
+	emailUserID, _, _, email, err := VerifyEmailJwt(jwt, context)
 	if err != nil {
 		return false, ""
 	}

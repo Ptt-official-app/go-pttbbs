@@ -40,6 +40,6 @@ func process(theFunc APIFunc, params interface{}, c *gin.Context) {
 		return
 	}
 
-	result, err := theFunc(remoteAddr, params)
+	result, err := theFunc(remoteAddr, params, c)
 	processResult(c, result, err)
 }

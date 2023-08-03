@@ -26,7 +26,7 @@ func WriteFavoritesWrapper(c *gin.Context) {
 	LoginRequiredPathJSON(WriteFavorites, params, path, c)
 }
 
-func WriteFavorites(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (result interface{}, err error) {
+func WriteFavorites(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}, c *gin.Context) (result interface{}, err error) {
 	theParams, ok := params.(*WriteFavoritesParams)
 	if !ok {
 		return nil, ErrInvalidParams

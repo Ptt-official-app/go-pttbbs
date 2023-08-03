@@ -28,7 +28,7 @@ func AttemptChangeEmailWrapper(c *gin.Context) {
 	LoginRequiredPathJSON(AttemptChangeEmail, params, path, c)
 }
 
-func AttemptChangeEmail(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (result interface{}, err error) {
+func AttemptChangeEmail(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}, c *gin.Context) (result interface{}, err error) {
 	theParams, ok := params.(*AttemptChangeEmailParams)
 	if !ok {
 		return nil, ErrInvalidParams

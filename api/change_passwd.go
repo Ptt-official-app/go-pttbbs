@@ -29,7 +29,7 @@ func ChangePasswdWrapper(c *gin.Context) {
 	LoginRequiredPathJSON(ChangePasswd, params, path, c)
 }
 
-func ChangePasswd(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (result interface{}, err error) {
+func ChangePasswd(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}, c *gin.Context) (result interface{}, err error) {
 	theParams, ok := params.(*ChangePasswdParams)
 	if !ok {
 		return nil, ErrInvalidParams

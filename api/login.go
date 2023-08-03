@@ -17,6 +17,7 @@ type LoginResult struct {
 	UserID    bbs.UUserID `json:"user_id"`
 	Jwt       string      `json:"access_token"`
 	TokenType string      `json:"token_type"`
+	Refresh   string      `json:"refresh_token"`
 }
 
 func LoginWrapper(c *gin.Context) {
@@ -24,7 +25,7 @@ func LoginWrapper(c *gin.Context) {
 	JSON(Login, params, c)
 }
 
-func Login(remoteAddr string, params interface{}) (interface{}, error) {
+func Login(remoteAddr string, params interface{}, c *gin.Context) (interface{}, error) {
 	loginParams, ok := params.(*LoginParams)
 	if !ok {
 		return nil, ErrInvalidParams
@@ -40,10 +41,16 @@ func Login(remoteAddr string, params interface{}) (interface{}, error) {
 		return nil, err
 	}
 
+	refreshToken, err := CreateRefreshToken(uuserID, loginParams.ClientInfo)
+	if err != nil {
+		return nil, err
+	}
+
 	result := &LoginResult{
 		UserID:    uuserID,
 		Jwt:       token,
 		TokenType: "bearer",
+		Refresh:   refreshToken,
 	}
 
 	return result, nil

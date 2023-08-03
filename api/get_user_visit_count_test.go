@@ -31,7 +31,7 @@ func TestGetUserVisitCount(t *testing.T) {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
-			got, err := GetUserVisitCount(testIP, nil)
+			got, err := GetUserVisitCount(testIP, nil, nil)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetUserVisitCount() error = %v, wantErr %v", err, tt.wantErr)
 				return

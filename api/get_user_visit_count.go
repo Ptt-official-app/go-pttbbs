@@ -15,7 +15,7 @@ func GetUserVisitCountWrapper(c *gin.Context) {
 	Query(GetUserVisitCount, nil, c)
 }
 
-func GetUserVisitCount(remoteAddr string, params interface{}) (interface{}, error) {
+func GetUserVisitCount(remoteAddr string, params interface{}, c *gin.Context) (interface{}, error) {
 	total := bbs.GetUserVisitCount()
 	return &GetUserVisitCountResult{total}, nil
 }

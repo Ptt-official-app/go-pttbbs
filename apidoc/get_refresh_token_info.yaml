@@ -1,8 +1,8 @@
-getTokenInfo
+getRefreshTokenInfo
 ---
 tags:
   - user
-description: get token info
+description: get refresh token info
 parameters:
   - '$ref': '#/definitions/Host'
   - '$ref': '#/definitions/XForwardedFor'

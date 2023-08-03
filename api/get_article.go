@@ -41,7 +41,7 @@ func GetArticleWrapper(c *gin.Context) {
 //
 // Require middleware to parse the content.
 // Require middleware to take care of user-read-article.
-func GetArticle(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (result interface{}, err error) {
+func GetArticle(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}, c *gin.Context) (result interface{}, err error) {
 	theParams, ok := params.(*GetArticleParams)
 	if !ok {
 		return nil, ErrInvalidParams
