@@ -45,7 +45,7 @@ func TestLoadGeneralBoardsByClass(t *testing.T) {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
-			got, err := LoadGeneralBoardsByClass(tt.args.remoteAddr, tt.args.uuserID, tt.args.params)
+			got, err := LoadGeneralBoardsByClass(tt.args.remoteAddr, tt.args.uuserID, tt.args.params, nil)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadGeneralBoardsByClass() error = %v, wantErr %v", err, tt.wantErr)
 				return

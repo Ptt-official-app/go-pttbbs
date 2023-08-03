@@ -37,7 +37,7 @@ func TestIndex(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
 
-			got, err := Index(testIP, tt.args.uuserID, tt.args.params)
+			got, err := Index(testIP, tt.args.uuserID, tt.args.params, nil)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Index() error = %v, wantErr %v", err, tt.wantErr)
 				return

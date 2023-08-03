@@ -35,7 +35,7 @@ func TestReloadUHash(t *testing.T) {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
-			gotResult, err := ReloadUHash(tt.args.remoteAddr, tt.args.uuserID, tt.args.params)
+			gotResult, err := ReloadUHash(tt.args.remoteAddr, tt.args.uuserID, tt.args.params, nil)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ReloadUHash() error = %v, wantErr %v", err, tt.wantErr)
 				return

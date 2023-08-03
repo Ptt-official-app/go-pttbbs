@@ -31,7 +31,7 @@ func RegisterWrapper(c *gin.Context) {
 	JSON(Register, params, c)
 }
 
-func Register(remoteAddr string, params interface{}) (interface{}, error) {
+func Register(remoteAddr string, params interface{}, c *gin.Context) (interface{}, error) {
 	registerParams, ok := params.(*RegisterParams)
 	if !ok {
 		return nil, ErrInvalidParams

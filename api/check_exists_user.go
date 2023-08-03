@@ -21,7 +21,7 @@ func CheckExistsUserWrapper(c *gin.Context) {
 	JSON(CheckExistsUser, params, c)
 }
 
-func CheckExistsUser(remoteAddr string, params interface{}) (result interface{}, err error) {
+func CheckExistsUser(remoteAddr string, params interface{}, c *gin.Context) (result interface{}, err error) {
 	theParams, ok := params.(*CheckExistsUserParams)
 	if !ok {
 		return nil, ErrInvalidParams

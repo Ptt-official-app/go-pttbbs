@@ -70,6 +70,9 @@ func InitGin() (*gin.Engine, error) {
 	router.GET(withPrefix(api.GET_USER_VISIT_COUNT_R), api.GetUserVisitCountWrapper)
 	router.POST(withPrefix(api.WRITE_FAV_R), api.WriteFavoritesWrapper)
 
+	router.POST(withPrefix(api.REFRESH_R), api.RefreshWrapper)
+	router.POST(withPrefix(api.GET_REFRESH_TOKEN_INFO_R), api.GetRefreshTokenInfoWrapper)
+
 	// admin
 	router.GET(withPrefix(api.RELOAD_UHASH_R), api.ReloadUHashWrapper)
 	router.POST(withPrefix(api.SET_USER_PERM_R), api.SetUserPermWrapper)

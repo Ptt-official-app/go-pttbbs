@@ -21,7 +21,7 @@ func GetUserWrapper(c *gin.Context) {
 	LoginRequiredPathQuery(GetUser, nil, path, c)
 }
 
-func GetUser(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}) (result interface{}, err error) {
+func GetUser(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}, c *gin.Context) (result interface{}, err error) {
 	thePath, ok := path.(*GetUserPath)
 	if !ok {
 		return nil, ErrInvalidPath

@@ -46,7 +46,7 @@ func TestLoadAutoCompleteBoards(t *testing.T) {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
-			got, err := LoadAutoCompleteBoards(tt.args.remoteAddr, tt.args.uuserID, tt.args.params)
+			got, err := LoadAutoCompleteBoards(tt.args.remoteAddr, tt.args.uuserID, tt.args.params, nil)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadAutoCompleteBoards() error = %v, wantErr %v", err, tt.wantErr)
 				return

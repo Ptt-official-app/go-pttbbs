@@ -1,8 +1,8 @@
-getTokenInfo
+Refresh
 ---
 tags:
   - user
-description: get token info
+description: refresh token
 parameters:
   - '$ref': '#/definitions/Host'
   - '$ref': '#/definitions/XForwardedFor'
@@ -13,20 +13,9 @@ parameters:
       '$id': https://json-schema.org/draft/2019-09/output/schema
       type: object
       properties:
-        token:
-          type: string
-          required: true
-          description: token
 responses:
   200:
+    description: index-response
     schema:
       '$id': https://json-schema.org/draft/2019-09/output/schema
-      type: object
-      properties:
-        client_info:
-          type: string
-        user_id:
-          type: string
-        expire:
-          type: number
-          description: expire in ts
+      '$ref': '#/definitions/Token'

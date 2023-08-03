@@ -104,7 +104,7 @@ func TestDeleteArticles(t *testing.T) {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			wg.Done()
-			gotResult, err := DeleteArticles(tt.args.remoteAddr, tt.args.uuserID, tt.args.params, tt.args.path)
+			gotResult, err := DeleteArticles(tt.args.remoteAddr, tt.args.uuserID, tt.args.params, tt.args.path, nil)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("DeleteArticles() error = %v, wantErr %v", err, tt.wantErr)
 				return
