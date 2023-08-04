@@ -9,6 +9,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
 	"github.com/Ptt-official-app/go-pttbbs/types/ansi"
+	"github.com/sirupsen/logrus"
 )
 
 func FormatCommentString(user *ptttype.UserecRaw, board *ptttype.BoardHeaderRaw, commentType ptttype.CommentType, content []byte, ip *ptttype.IPv4_t, from []byte) (comment []byte, err error) {
@@ -45,6 +46,10 @@ func FormatCommentString(user *ptttype.UserecRaw, board *ptttype.BoardHeaderRaw,
 		maxlen -= 2
 		maxlen -= len(userBytes)
 		maxlen -= len(content)
+		if maxlen < 0 {
+			logrus.Errorf("FormatCommentString (old) maxlen < 0: userBytes: %v content: %v maxlen: %v", len(userBytes), len(content), maxlen)
+			maxlen = 0
+		}
 
 		prefix := ansi.ANSIColor("1;31") + "\xa1\xf7 " + ansi.ANSIColor("33")
 		infix := ansi.ANSIReset() + ansi.ANSIColor("33") + ":"
@@ -69,6 +74,10 @@ func FormatCommentString(user *ptttype.UserecRaw, board *ptttype.BoardHeaderRaw,
 
 	maxlen -= len(userBytes)
 	maxlen -= len(content)
+	if maxlen < 0 {
+		logrus.Errorf("FormatCommentString (new) maxlen < 0: userBytes: %v content: %v maxlen: %v", len(userBytes), len(content), maxlen)
+		maxlen = 0
+	}
 
 	commentTypeBytes := commentType.Bytes()
 	prefix := ansi.ANSIColor("33")
