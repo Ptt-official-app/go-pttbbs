@@ -13,6 +13,12 @@ parameters:
       '$id': https://json-schema.org/draft/2019-09/output/schema
       type: object
       properties:
+        client_info:
+          type: string
+          description: client info
+        refresh_token:
+          type: string
+          description: refresh token
 responses:
   200:
     description: index-response

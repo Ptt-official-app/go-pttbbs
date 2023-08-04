@@ -30,10 +30,6 @@ def _is_not_authorization(x):
 # params
 for path, data_by_path in paths3.items():
     for method, data_by_method in data_by_path.items():
-        request_body = data_by_method.get('requestBody', None)
-        if request_body is not None:
-            continue
-
         params2 = paths2.get(path, {}).get(method, {}).get('parameters')
         if params2 is None:
             logging.warning('no params: path: %s', path)
