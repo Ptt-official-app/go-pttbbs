@@ -13,7 +13,7 @@ func TestGetRefreshTokenInfo(t *testing.T) {
 	setupTest(t.Name())
 	defer teardownTest(t.Name())
 
-	refreshJwt, _ := CreateRefreshToken("SYSOP", "")
+	refreshJwt, _, _ := CreateRefreshToken("SYSOP", "")
 
 	params0 := &GetRefreshTokenInfoParams{
 		Jwt: refreshJwt,

@@ -80,6 +80,9 @@ func TestChangePasswd(t *testing.T) {
 
 			result := gotResult.(*ChangePasswdResult)
 			tt.expectedResult.Jwt = result.Jwt
+			tt.expectedResult.Refresh = result.Refresh
+			tt.expectedResult.AccessExpire = result.AccessExpire
+			tt.expectedResult.RefreshExpire = result.RefreshExpire
 			testutil.TDeepEqual(t, "result", result, tt.expectedResult)
 		})
 		wg.Wait()

@@ -20,11 +20,7 @@ type RegisterParams struct {
 	Over18   bool   `json:"over18"`
 }
 
-type RegisterResult struct {
-	UserID    bbs.UUserID `json:"user_id"`
-	Jwt       string      `json:"access_token"`
-	TokenType string      `json:"token_type"`
-}
+type RegisterResult LoginResult
 
 func RegisterWrapper(c *gin.Context) {
 	params := &RegisterParams{}
@@ -53,15 +49,23 @@ func Register(remoteAddr string, params interface{}, c *gin.Context) (interface{
 		return nil, err
 	}
 
-	token, err := CreateToken(uuserID, registerParams.ClientInfo)
+	token, accessExpireTime, err := CreateToken(uuserID, registerParams.ClientInfo)
+	if err != nil {
+		return nil, err
+	}
+
+	refreshToken, refreshExpireTime, err := CreateRefreshToken(uuserID, registerParams.ClientInfo)
 	if err != nil {
 		return nil, err
 	}
 
 	result := &RegisterResult{
-		UserID:    uuserID,
-		Jwt:       token,
-		TokenType: "bearer",
+		UserID:        uuserID,
+		Jwt:           token,
+		TokenType:     "bearer",
+		Refresh:       refreshToken,
+		AccessExpire:  accessExpireTime,
+		RefreshExpire: refreshExpireTime,
 	}
 
 	return result, nil
