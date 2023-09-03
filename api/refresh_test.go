@@ -14,8 +14,8 @@ func TestRefresh(t *testing.T) {
 	setupTest(t.Name())
 	defer teardownTest(t.Name())
 
-	jwt, _ := CreateToken("SYSOP", "")
-	refreshJwt, _ := CreateRefreshToken("SYSOP", "")
+	jwt, _, _ := CreateToken("SYSOP", "")
+	refreshJwt, _, _ := CreateRefreshToken("SYSOP", "")
 
 	logrus.Infof("TestRefresh: jwt: %v refreshJwt: %v", jwt, refreshJwt)
 
@@ -61,6 +61,8 @@ func TestRefresh(t *testing.T) {
 			result, _ := gotResult.(*RefreshResult)
 			result.Jwt = ""
 			result.Refresh = ""
+			result.AccessExpire = 0
+			result.RefreshExpire = 0
 			if !reflect.DeepEqual(gotResult, tt.expected) {
 				t.Errorf("Refresh() = %v, want %v", gotResult, tt.expected)
 			}

@@ -17,11 +17,7 @@ type ChangePasswdPath struct {
 	UserID bbs.UUserID `uri:"uid" binding:"required"`
 }
 
-type ChangePasswdResult struct {
-	UserID    bbs.UUserID `json:"user_id"`
-	Jwt       string      `json:"access_token"`
-	TokenType string      `json:"token_type"`
-}
+type ChangePasswdResult LoginResult
 
 func ChangePasswdWrapper(c *gin.Context) {
 	params := &ChangePasswdParams{}
@@ -49,15 +45,23 @@ func ChangePasswd(remoteAddr string, uuserID bbs.UUserID, params interface{}, pa
 		return nil, err
 	}
 
-	token, err := CreateToken(uuserID, theParams.ClientInfo)
+	token, accessExpireTime, err := CreateToken(uuserID, theParams.ClientInfo)
+	if err != nil {
+		return nil, err
+	}
+
+	refreshToken, refreshExpireTime, err := CreateRefreshToken(uuserID, theParams.ClientInfo)
 	if err != nil {
 		return nil, err
 	}
 
 	result = &ChangePasswdResult{
-		UserID:    uuserID,
-		Jwt:       token,
-		TokenType: "bearer",
+		UserID:        uuserID,
+		Jwt:           token,
+		TokenType:     "bearer",
+		Refresh:       refreshToken,
+		AccessExpire:  accessExpireTime,
+		RefreshExpire: refreshExpireTime,
 	}
 
 	return result, nil

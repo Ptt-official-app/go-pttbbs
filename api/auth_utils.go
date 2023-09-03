@@ -73,7 +73,7 @@ func parseJwtClaim(raw string) (cl *JwtClaim, err error) {
 	return cl, nil
 }
 
-func CreateToken(userID bbs.UUserID, clientInfo string) (raw string, err error) {
+func CreateToken(userID bbs.UUserID, clientInfo string) (raw string, expireTime types.Time4, err error) {
 	defer func() {
 		err2 := recover()
 		if err2 == nil {
@@ -83,18 +83,19 @@ func CreateToken(userID bbs.UUserID, clientInfo string) (raw string, err error) 
 		err = types.ErrRecover(err2)
 	}()
 
+	expireTime = types.NowTS() + types.Time4(JWT_TOKEN_EXPIRE_TS)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"cli": clientInfo,
 		"sub": userID,
-		"exp": int(types.NowTS()) + JWT_TOKEN_EXPIRE_TS,
+		"exp": int(expireTime),
 	})
 
 	raw, err = token.SignedString(JWT_SECRET)
 	if err != nil {
-		return "", err
+		return "", 0, err
 	}
 
-	return raw, nil
+	return raw, expireTime, nil
 }
 
 func VerifyEmailJwt(raw string, context EmailTokenContext) (userID bbs.UUserID, expireTS int, clientInfo string, email string, err error) {
@@ -248,7 +249,7 @@ func parseRefreshJwtClaim(raw string) (cl *RefreshJwtClaim, err error) {
 	return cl, nil
 }
 
-func CreateRefreshToken(userID bbs.UUserID, clientInfo string) (raw string, err error) {
+func CreateRefreshToken(userID bbs.UUserID, clientInfo string) (raw string, expireTime types.Time4, err error) {
 	defer func() {
 		err2 := recover()
 		if err2 == nil {
@@ -258,19 +259,20 @@ func CreateRefreshToken(userID bbs.UUserID, clientInfo string) (raw string, err 
 		err = types.ErrRecover(err2)
 	}()
 
+	expireTime = types.NowTS() + types.Time4(REFRESH_JWT_TOKEN_EXPIRE_TS)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"cli": clientInfo,
 		"sub": userID,
-		"exp": int(types.NowTS()) + REFRESH_JWT_TOKEN_EXPIRE_TS,
+		"exp": int(expireTime),
 		"typ": REFRESH_JWT_CLAIM_TYPE,
 	})
 
 	raw, err = token.SignedString(REFRESH_JWT_SECRET)
 	if err != nil {
-		return "", err
+		return "", 0, err
 	}
 
-	return raw, nil
+	return raw, expireTime, nil
 }
 
 func ParseJwt(raw string, secret []byte) (tok *jwt.Token, err error) {

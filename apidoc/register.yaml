@@ -50,13 +50,3 @@ responses:
     schema:
       '$id': https://json-schema.org/draft/2019-09/output/schema
       '$ref': '#/definitions/Token'
-      type: object
-      properties:
-        access_token:
-          type: string
-          description: access_token
-          required: true
-        token_type:
-          type: string
-          description: token_type
-          required: true

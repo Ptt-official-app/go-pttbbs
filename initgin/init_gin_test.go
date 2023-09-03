@@ -24,7 +24,7 @@ func TestInitGin(t *testing.T) {
 
 	jwtEmail, _ := api.CreateEmailToken("SYSOP", "", "test@ptt.test", api.CONTEXT_CHANGE_EMAIL)
 	jwtIDEmail, _ := api.CreateEmailToken("SYSOP", "", "test@ptt.test", api.CONTEXT_SET_ID_EMAIL)
-	jwtSysop2, _ := api.CreateToken("SYSOP", "")
+	jwtSysop2, _, _ := api.CreateToken("SYSOP", "")
 
 	class0 := []byte("test")
 	title0 := []byte("this is a test")

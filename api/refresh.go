@@ -52,21 +52,23 @@ func Refresh(remoteAddr string, params interface{}, c *gin.Context) (result inte
 		return nil, ErrInvalidToken
 	}
 
-	token, err := CreateToken(userID, clientInfo)
+	token, accessExpireTime, err := CreateToken(userID, clientInfo)
 	if err != nil {
 		return nil, err
 	}
 
-	refreshToken, err := CreateRefreshToken(userID, clientInfo)
+	refreshToken, refreshExpireTime, err := CreateRefreshToken(userID, clientInfo)
 	if err != nil {
 		return nil, err
 	}
 
 	result = &RefreshResult{
-		UserID:    userID,
-		Jwt:       token,
-		TokenType: "bearer",
-		Refresh:   refreshToken,
+		UserID:        userID,
+		Jwt:           token,
+		TokenType:     "bearer",
+		Refresh:       refreshToken,
+		AccessExpire:  accessExpireTime,
+		RefreshExpire: refreshExpireTime,
 	}
 
 	return result, nil

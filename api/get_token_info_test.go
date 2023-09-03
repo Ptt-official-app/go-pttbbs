@@ -13,7 +13,7 @@ func TestGetTokenInfo(t *testing.T) {
 	setupTest(t.Name())
 	defer teardownTest(t.Name())
 
-	jwt, err := CreateToken("SYSOP", "")
+	jwt, _, err := CreateToken("SYSOP", "")
 	if err != nil {
 		logrus.Errorf("GetTokenInfo: unable to create token: jwt: %v e: %v", jwt, err)
 	}

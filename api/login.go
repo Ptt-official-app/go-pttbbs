@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/Ptt-official-app/go-pttbbs/bbs"
+	"github.com/Ptt-official-app/go-pttbbs/types"
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,10 +15,12 @@ type LoginParams struct {
 }
 
 type LoginResult struct {
-	UserID    bbs.UUserID `json:"user_id"`
-	Jwt       string      `json:"access_token"`
-	TokenType string      `json:"token_type"`
-	Refresh   string      `json:"refresh_token"`
+	UserID        bbs.UUserID `json:"user_id"`
+	Jwt           string      `json:"access_token"`
+	TokenType     string      `json:"token_type"`
+	Refresh       string      `json:"refresh_token"`
+	AccessExpire  types.Time4 `json:"access_expire"`
+	RefreshExpire types.Time4 `json:"refresh_expire"`
 }
 
 func LoginWrapper(c *gin.Context) {
@@ -36,21 +39,23 @@ func Login(remoteAddr string, params interface{}, c *gin.Context) (interface{}, 
 		return nil, ErrLoginFailed
 	}
 
-	token, err := CreateToken(uuserID, loginParams.ClientInfo)
+	token, accessExpireTime, err := CreateToken(uuserID, loginParams.ClientInfo)
 	if err != nil {
 		return nil, err
 	}
 
-	refreshToken, err := CreateRefreshToken(uuserID, loginParams.ClientInfo)
+	refreshToken, refreshExpireTime, err := CreateRefreshToken(uuserID, loginParams.ClientInfo)
 	if err != nil {
 		return nil, err
 	}
 
 	result := &LoginResult{
-		UserID:    uuserID,
-		Jwt:       token,
-		TokenType: "bearer",
-		Refresh:   refreshToken,
+		UserID:        uuserID,
+		Jwt:           token,
+		TokenType:     "bearer",
+		Refresh:       refreshToken,
+		AccessExpire:  accessExpireTime,
+		RefreshExpire: refreshExpireTime,
 	}
 
 	return result, nil
