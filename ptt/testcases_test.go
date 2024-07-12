@@ -10,31 +10,40 @@ import (
 
 var (
 	testUserecRaw1 = &ptttype.UserecRaw{
-		Version:    4194,
-		UserID:     ptttype.UserID_t{83, 89, 83, 79, 80},
-		RealName:   ptttype.RealName_t{67, 111, 100, 105, 110, 103, 77, 97, 110},
-		Nickname:   ptttype.Nickname_t{175, 171},
-		PasswdHash: ptttype.Passwd_t{98, 104, 119, 118, 79, 74, 116, 102, 84, 49, 84, 65, 73, 0},
+		Version: ptttype.PASSWD_VERSION,
+		UserID:  ptttype.UserID_t{0x53, 0x59, 0x53, 0x4f, 0x50}, // SYSOP
+		RealName: ptttype.RealName_t{ // CodingMan
+			0x43, 0x6f, 0x64, 0x69, 0x6e, 0x67, 0x4d, 0x61, 0x6e,
+		},
+		Nickname:   ptttype.Nickname_t{0xaf, 0xab}, // 神
+		PasswdHash: ptttype.Passwd_t{0x62, 0x68, 0x77, 0x76, 0x4f, 0x4a, 0x74, 0x66, 0x54, 0x31, 0x54, 0x41, 0x49, 0x00},
 
-		UFlag:        33557088,
-		UserLevel:    65535,
+		UFlag:        ptttype.UF_CURSOR_ASCII | ptttype.UF_DBCS_DROP_REPEAT | ptttype.UF_DBCS_AWARE | ptttype.UF_ADBANNER | ptttype.UF_BRDSORT,
+		UserLevel:    ptttype.PERM_DEFAULT | ptttype.PERM_POST | ptttype.PERM_LOGINOK | ptttype.PERM_MAILLIMIT | ptttype.PERM_CLOAK | ptttype.PERM_SEECLOAK | ptttype.PERM_XEMPT | ptttype.PERM_SYSOPHIDE | ptttype.PERM_BM | ptttype.PERM_ACCOUNTS | ptttype.PERM_CHATROOM | ptttype.PERM_BOARD | ptttype.PERM_SYSOP | ptttype.PERM_BBSADM,
 		NumLoginDays: 2,
 		NumPosts:     0,
 		FirstLogin:   1600681288,
 		LastLogin:    1600756094,
-		LastHost:     ptttype.IPv4_t{53, 57, 46, 49, 50, 52, 46, 49, 54, 55, 46, 50, 50, 54},
-		Address:      ptttype.Address_t{183, 115, 166, 203, 191, 164, 164, 108, 181, 234, 182, 109, 175, 81, 166, 179, 167, 248, 53, 52, 51, 184, 185},
-		Over18:       true,
-		Pager:        ptttype.PAGER_ON,
-		Career:       ptttype.Career_t{165, 254, 180, 186, 179, 110, 197, 233},
-		LastSeen:     1600681288,
+		LastHost: ptttype.IPv4_t{ // 59.124.167.226
+			0x35, 0x39, 0x2e, 0x31, 0x32, 0x34, 0x2e, 0x31, 0x36, 0x37,
+			0x2e, 0x32, 0x32, 0x36,
+		},
+		Address: ptttype.Address_t{ // 新竹縣子虛鄉烏有村543號
+			0xb7, 0x73, 0xa6, 0xcb, 0xbf, 0xa4, 0xa4, 0x6c, 0xb5, 0xea,
+			0xb6, 0x6d, 0xaf, 0x51, 0xa6, 0xb3, 0xa7, 0xf8, 0x35, 0x34,
+			0x33, 0xb8, 0xb9,
+		},
+		Over18:   true,
+		Pager:    ptttype.PAGER_ON,
+		Career:   ptttype.Career_t{0xa5, 0xfe, 0xb4, 0xba, 0xb3, 0x6e, 0xc5, 0xe9}, // 全景軟體
+		LastSeen: 1600681288,
 	}
 
 	testUserecRaw2 = &ptttype.UserecRaw{
 		Version:      ptttype.PASSWD_VERSION,
 		UserID:       ptttype.UserID_t{'C', 'o', 'd', 'i', 'n', 'g', 'M', 'a', 'n'},
-		UFlag:        33557216,
-		UserLevel:    7,
+		UFlag:        ptttype.UF_CURSOR_ASCII | ptttype.UF_DBCS_DROP_REPEAT | ptttype.UF_DBCS_AWARE | ptttype.UF_ADBANNER_USONG | ptttype.UF_ADBANNER | ptttype.UF_BRDSORT,
+		UserLevel:    ptttype.PERM_DEFAULT,
 		NumLoginDays: 1,
 		NumPosts:     0,
 		FirstLogin:   1600737659,
@@ -45,8 +54,8 @@ var (
 	testUserecRaw3 = &ptttype.UserecRaw{
 		Version:      ptttype.PASSWD_VERSION,
 		UserID:       ptttype.UserID_t{'t', 'e', 's', 't'},
-		UFlag:        33557216,
-		UserLevel:    7 | ptttype.PERM_BOARD | ptttype.PERM_POST | ptttype.PERM_LOGINOK,
+		UFlag:        ptttype.UF_CURSOR_ASCII | ptttype.UF_DBCS_DROP_REPEAT | ptttype.UF_DBCS_AWARE | ptttype.UF_ADBANNER_USONG | ptttype.UF_ADBANNER | ptttype.UF_BRDSORT,
+		UserLevel:    ptttype.PERM_DEFAULT | ptttype.PERM_BOARD | ptttype.PERM_POST | ptttype.PERM_LOGINOK,
 		NumLoginDays: 1,
 		NumPosts:     0,
 		FirstLogin:   1600737659,
@@ -59,8 +68,8 @@ var (
 		UserID:       ptttype.UserID_t{'S', 'Y', 'S', 'O', 'P', '3'},
 		Nickname:     ptttype.Nickname_t{'s', 't', 'r', 'i', 'n', 'g'},
 		PasswdHash:   ptttype.Passwd_t{0x2c, 0x52, 0x69, 0x36, 0x53, 0x6b, 0x55, 0x33, 0x34, 0x72, 0x65, 0x74, 0x41},
-		UFlag:        33557088,
-		UserLevel:    7,
+		UFlag:        ptttype.UF_CURSOR_ASCII | ptttype.UF_DBCS_DROP_REPEAT | ptttype.UF_DBCS_AWARE | ptttype.UF_ADBANNER | ptttype.UF_BRDSORT,
+		UserLevel:    ptttype.PERM_DEFAULT,
 		NumLoginDays: 23,
 		NumPosts:     0,
 		FirstLogin:   1608226066,
@@ -79,8 +88,8 @@ var (
 		Nickname:   ptttype.Nickname_t{175, 171},
 		PasswdHash: ptttype.Passwd_t{98, 104, 119, 118, 79, 74, 116, 102, 84, 49, 84, 65, 73, 0},
 
-		UFlag:        33557088,
-		UserLevel:    7 | ptttype.PERM_LOGINOK | ptttype.PERM_POST,
+		UFlag:        ptttype.UF_CURSOR_ASCII | ptttype.UF_DBCS_DROP_REPEAT | ptttype.UF_DBCS_AWARE | ptttype.UF_ADBANNER | ptttype.UF_BRDSORT,
+		UserLevel:    ptttype.PERM_DEFAULT | ptttype.PERM_LOGINOK | ptttype.PERM_POST,
 		NumLoginDays: 2,
 		NumPosts:     0,
 		FirstLogin:   1600681288,
@@ -94,14 +103,14 @@ var (
 	}
 
 	testNewPostUser2 = &ptttype.UserecRaw{
-		Version:    4194,
+		Version:    ptttype.PASSWD_VERSION,
 		UserID:     ptttype.UserID_t{65, 50}, // A2
 		RealName:   ptttype.RealName_t{67, 111, 100, 105, 110, 103, 77, 97, 110},
 		Nickname:   ptttype.Nickname_t{175, 171},
 		PasswdHash: ptttype.Passwd_t{98, 104, 119, 118, 79, 74, 116, 102, 84, 49, 84, 65, 73, 0},
 
-		UFlag:        33557088,
-		UserLevel:    7 | ptttype.PERM_LOGINOK | ptttype.PERM_POST,
+		UFlag:        ptttype.UF_CURSOR_ASCII | ptttype.UF_DBCS_DROP_REPEAT | ptttype.UF_DBCS_AWARE | ptttype.UF_ADBANNER | ptttype.UF_BRDSORT,
+		UserLevel:    ptttype.PERM_DEFAULT | ptttype.PERM_LOGINOK | ptttype.PERM_POST,
 		NumLoginDays: 2,
 		NumPosts:     0,
 		FirstLogin:   1600681288,
@@ -115,14 +124,14 @@ var (
 	}
 
 	testSetupNewUser1 = &ptttype.UserecRaw{
-		Version:    4194,
+		Version:    ptttype.PASSWD_VERSION,
 		UserID:     ptttype.UserID_t{65, 48}, // A0
 		RealName:   ptttype.RealName_t{67, 111, 100, 105, 110, 103, 77, 97, 110},
 		Nickname:   ptttype.Nickname_t{175, 171},
 		PasswdHash: ptttype.Passwd_t{98, 104, 119, 118, 79, 74, 116, 102, 84, 49, 84, 65, 73, 0},
 
-		UFlag:        33557088,
-		UserLevel:    536871943,
+		UFlag:        ptttype.UF_CURSOR_ASCII | ptttype.UF_DBCS_DROP_REPEAT | ptttype.UF_DBCS_AWARE | ptttype.UF_ADBANNER | ptttype.UF_BRDSORT,
+		UserLevel:    ptttype.PERM_DEFAULT | ptttype.PERM_SYSSUBOP | ptttype.PERM_BM,
 		NumLoginDays: 2,
 		NumPosts:     0,
 		FirstLogin:   1600681288,
@@ -136,14 +145,14 @@ var (
 	}
 
 	testNewRegister1 = &ptttype.UserecRaw{
-		Version:    4194,
+		Version:    ptttype.PASSWD_VERSION,
 		UserID:     ptttype.UserID_t{66, 49}, // B1
 		RealName:   ptttype.RealName_t{67, 111, 100, 105, 110, 103, 77, 97, 110},
 		Nickname:   ptttype.Nickname_t{175, 171},
 		PasswdHash: ptttype.Passwd_t{98, 104, 119, 118, 79, 74, 116, 102, 84, 49, 84, 65, 73, 0},
 
-		UFlag:        33557088,
-		UserLevel:    7,
+		UFlag:        ptttype.UF_CURSOR_ASCII | ptttype.UF_DBCS_DROP_REPEAT | ptttype.UF_DBCS_AWARE | ptttype.UF_ADBANNER | ptttype.UF_BRDSORT,
+		UserLevel:    ptttype.PERM_DEFAULT,
 		NumLoginDays: 1,
 		NumPosts:     0,
 		FirstLogin:   1600681288,
@@ -164,8 +173,8 @@ var (
 		Nickname:   ptttype.Nickname_t{0x1e, 0x80, 0x30, 0x40, 0x80, 0x40},
 		PasswdHash: ptttype.Passwd_t{98, 104, 119, 118, 79, 74, 116, 102, 84, 49, 84, 65, 73, 0},
 
-		UFlag:        33557088,
-		UserLevel:    7,
+		UFlag:        ptttype.UF_CURSOR_ASCII | ptttype.UF_DBCS_DROP_REPEAT | ptttype.UF_DBCS_AWARE | ptttype.UF_ADBANNER | ptttype.UF_BRDSORT,
+		UserLevel:    ptttype.PERM_DEFAULT,
 		NumLoginDays: 1,
 		NumPosts:     0,
 		FirstLogin:   1600681288,
@@ -187,7 +196,7 @@ var (
 		UserID:   ptttype.UserID_t{66, 49},
 		Nickname: ptttype.Nickname_t{0x30, 0x40, 0x80, 0x40, 0x00, 0x40},
 
-		UserLevel: 7,
+		UserLevel: ptttype.PERM_DEFAULT,
 		FromIP:    0xc0a80001, // 192.168.0.1
 		From:      ptttype.From_t{'1', '9', '2', '.', '1', '6', '8', '.', '0', '.', '1'},
 		Pager:     ptttype.PAGER_ON,
@@ -200,7 +209,7 @@ var (
 
 		Nickname: ptttype.Nickname_t{0x30, 0x40, 0x80, 0x40, 0x00, 0x40},
 
-		UserLevel: 7,
+		UserLevel: ptttype.PERM_DEFAULT,
 		FromIP:    0xc0a80001, // 192.168.0.1
 		From:      ptttype.From_t{'1', '9', '2', '.', '1', '6', '8', '.', '0', '.', '1'},
 		Pager:     ptttype.PAGER_ON,

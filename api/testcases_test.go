@@ -59,8 +59,8 @@ func initTestVars() {
 		Nickname:   ptttype.Nickname_t{0xaf, 0xab}, // 神
 		PasswdHash: ptttype.Passwd_t{0x62, 0x68, 0x77, 0x76, 0x4f, 0x4a, 0x74, 0x66, 0x54, 0x31, 0x54, 0x41, 0x49, 0x00},
 
-		UFlag:        33557088,
-		UserLevel:    7 | ptttype.PERM_BOARD | ptttype.PERM_POST | ptttype.PERM_LOGINOK,
+		UFlag:        ptttype.UF_CURSOR_ASCII | ptttype.UF_DBCS_DROP_REPEAT | ptttype.UF_DBCS_AWARE | ptttype.UF_ADBANNER | ptttype.UF_BRDSORT,
+		UserLevel:    ptttype.PERM_DEFAULT | ptttype.PERM_BOARD | ptttype.PERM_POST | ptttype.PERM_LOGINOK,
 		NumLoginDays: 2,
 		NumPosts:     0,
 		FirstLogin:   1600681288,
@@ -81,14 +81,14 @@ func initTestVars() {
 	}
 
 	testNewPostUserRaw1 = &ptttype.UserecRaw{
-		Version:    4194,
+		Version:    ptttype.PASSWD_VERSION,
 		UserID:     ptttype.UserID_t{65, 49}, // A1
 		RealName:   ptttype.RealName_t{67, 111, 100, 105, 110, 103, 77, 97, 110},
 		Nickname:   ptttype.Nickname_t{175, 171},
 		PasswdHash: ptttype.Passwd_t{98, 104, 119, 118, 79, 74, 116, 102, 84, 49, 84, 65, 73, 0},
 
-		UFlag:        33557088,
-		UserLevel:    7 | ptttype.PERM_LOGINOK | ptttype.PERM_POST,
+		UFlag:        ptttype.UF_CURSOR_ASCII | ptttype.UF_DBCS_DROP_REPEAT | ptttype.UF_DBCS_AWARE | ptttype.UF_ADBANNER | ptttype.UF_BRDSORT,
+		UserLevel:    ptttype.PERM_DEFAULT | ptttype.PERM_LOGINOK | ptttype.PERM_POST,
 		NumLoginDays: 2,
 		NumPosts:     0,
 		FirstLogin:   1600681288,
@@ -110,8 +110,8 @@ func initTestVars() {
 		},
 		Nickname: []byte{0xaf, 0xab}, // 神
 
-		Uflag:        33557088,
-		Userlevel:    536871943,
+		Uflag:        ptttype.UF_CURSOR_ASCII | ptttype.UF_DBCS_DROP_REPEAT | ptttype.UF_DBCS_AWARE | ptttype.UF_ADBANNER | ptttype.UF_BRDSORT,
+		Userlevel:    ptttype.PERM_DEFAULT | ptttype.PERM_SYSSUBOP | ptttype.PERM_BM,
 		Numlogindays: 2,
 		Numposts:     0,
 		Firstlogin:   1600681288,
@@ -373,7 +373,7 @@ func initTestVars() {
 		BM:         []bbs.UUserID{},
 		IdxByName:  "1...........",
 		IdxByClass: "Li4uLg@1...........",
-		BrdAttr:    0x000008,
+		BrdAttr:    ptttype.BRD_GROUPBOARD,
 	}
 
 	testClassDetail2 = &bbs.BoardDetail{
@@ -415,7 +415,7 @@ func initTestVars() {
 		BM:         []bbs.UUserID{},
 		IdxByName:  "2...........",
 		IdxByClass: "Li4uLg@2...........",
-		BrdAttr:    0x000008,
+		BrdAttr:    ptttype.BRD_GROUPBOARD,
 	}
 
 	testClassDetail5 = &bbs.BoardDetail{
