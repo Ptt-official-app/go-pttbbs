@@ -44,5 +44,6 @@ issues:
     - '`setBBottom` is unused'
     - '`pwcuSetByBit` is unused'
     - 'unused-parameter: parameter'
+    - G115
   exclude-rules:
   exclude-use-default: true
