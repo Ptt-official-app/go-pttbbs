@@ -31,7 +31,7 @@ func GetUser(remoteAddr string, uuserID bbs.UUserID, params interface{}, path in
 		return nil, ErrInvalidUser
 	}
 
-	user, err := bbs.GetUser(uuserID)
+	user, err := bbs.GetUser(thePath.UserID)
 	if err != nil {
 		return nil, err
 	}

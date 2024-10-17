@@ -1,6 +1,6 @@
 module github.com/Ptt-official-app/go-pttbbs
 
-go 1.19
+go 1.22
 
 require (
 	github.com/gin-gonic/gin v1.10.0

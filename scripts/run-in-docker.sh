@@ -7,11 +7,6 @@ fi
 
 port=$1
 current_dir=`pwd`
-homename=`echo "${current_dir}"|awk -F '\/' '{print $2}'`
-if [ "${homename}" != "home" ]; then
-    echo "go-pttbbs in docker-dir should be with /home/[user]/go-pttbbs format"
-    exit 255
-fi
 
 ini_filename_prefix=`echo "${current_dir}"|awk -F '\/' '{print $3}'`
 ini_filename="${ini_filename_prefix}.ini"

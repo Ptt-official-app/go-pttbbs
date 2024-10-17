@@ -1,9 +1,14 @@
 FROM bbsdocker/imageptt:latest
 
-
 # golang on debian
+# THE_ARCH: uname -m
+# THE_GOARCH: amd64 or arm64
 WORKDIR /opt
-RUN curl -L https://dl.google.com/go/go1.19.3.linux-amd64.tar.gz | tar -zxv && \
+RUN THE_ARCH=`uname -m` && \
+    if [ "${THE_ARCH}" = "aarch64" -o "${THE_ARCH}" = "arm64"  ]; then THE_GOARCH=arm64; else THE_GOARCH=amd64; fi && \
+    echo "THE_ARCH: ${THE_ARCH} THE_GOARCH: ${THE_GOARCH}" && \
+    sleep 3 && \
+    curl -L https://dl.google.com/go/go1.22.2.linux-${THE_GOARCH}.tar.gz | tar -zxv && \
     mv go /usr/local
 
 RUN DEBIAN_FRONTEND=noninteractive &&  \
@@ -28,8 +33,8 @@ ENV PATH=${PATH}:/usr/local/go/bin:/home/bbs/bin:/opt/bbs/bin
 COPY . /srv/go-pttbbs
 
 WORKDIR /srv/go-pttbbs
-RUN cp 01-config-docker.go.template ptttype/01-config-docker.go && \
-    mkdir -p /etc/go-pttbbs && cp 01-config.docker.ini /etc/go-pttbbs/production.ini && \
+RUN cp docs/config/01-config-docker.go.template ptttype/01-config-docker.go && \
+    mkdir -p /etc/go-pttbbs && cp docs/config/01-config.docker.ini /etc/go-pttbbs/production.ini && \
     cp docs/etc/* /etc/go-pttbbs && \
     chown -R bbs .
 

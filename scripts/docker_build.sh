@@ -1,6 +1,10 @@
 #!/bin/bash
 
-branch=`git branch|grep '^*'|sed 's/^\* //g'|sed -E 's/^\(HEAD detached at //g'|sed -E 's/\)$//g'`
+# branch
+branch=`git rev-parse --abbrev-ref HEAD`
+if [ "${branch}" == "HEAD" ]; then branch=`git describe --tags`; fi
+
+# project
 project=`basename \`pwd\``
 
-docker build -t ${project}:${branch} .
+docker build -t ${project}:${branch} -f docker/Dockerfile .
