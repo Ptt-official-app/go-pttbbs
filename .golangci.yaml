@@ -1,13 +1,7 @@
 run:
   timeout: 30m
   tests: false
-  skip-files:
-    - testinit.go
-    - cmsys/fnv_hash.go
-    - 00-config.go
-    - ptttype/00-config-default.go
 linters-settings:
-
   misspell:
     locale: US
     ignore-words:
@@ -25,6 +19,11 @@ linters:
     - revive
     - nolintlint
 issues:
+  exclude-files:
+    - testinit.go
+    - cmsys/fnv_hash.go
+    - 00-config.go
+    - ptttype/00-config-default.go
   exclude:
     # we use underscores only for _postfix
     - don't use underscores

@@ -87,7 +87,6 @@ func NewRegister(
 	address *ptttype.Address_t,
 	over18 bool,
 ) (uid ptttype.UID, user *ptttype.UserecRaw, err error) {
-
 	// https://github.com/ptt/pttbbs/blob/master/mbbsd/register.c#L723
 	if isBadUserID(userID) {
 		return 0, nil, ptttype.ErrInvalidUserID

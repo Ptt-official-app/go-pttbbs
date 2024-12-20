@@ -8,10 +8,9 @@
 /testcase/home
 /apidoc/template.json
 /swagger
-/02-config.run.ini
-/03-config.run-in-docker.ini
+/docs/config/*.ini
 /ptttype/00-config-production.go
-/ptttype/02-config-run.go
+/ptttype/02-config-dev.go
 **/cover.out
 /docker_compose.env
 

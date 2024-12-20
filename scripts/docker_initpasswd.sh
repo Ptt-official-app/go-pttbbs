@@ -1,4 +1,5 @@
 #!/bin/bash
+# Quickly initializing the .PASSWDS using /dev/zero
 
 if [ "$#" != "3" ]; then
     echo "usage: docker_initpasswd.sh [BBSHOME] [GOPTTBBS_IMAGE] [N_USER]"

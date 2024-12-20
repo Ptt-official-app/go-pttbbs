@@ -1,4 +1,5 @@
 #!/bin/bash
+# generating swagger api document.
 
 if [ "$1" == "" ]; then
     echo "usage: swagger.sh [host]"
