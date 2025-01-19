@@ -1,4 +1,5 @@
 #!/bin/bash
+# build docker.
 
 # branch
 branch=`git rev-parse --abbrev-ref HEAD`

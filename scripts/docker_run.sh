@@ -1,6 +1,7 @@
 #!/bin/bash
 
-branch=`git branch|grep '^*'|sed 's/^\* //g'|sed -E 's/^\(HEAD detached at //g'|sed -E 's/\)$//g'`
+branch=`git rev-parse --abbrev-ref HEAD`
+if [ "${branch}" == "HEAD" ]; then branch=`git describe --tags`; fi
 project=`basename \`pwd\``
 
 BBSHOME=${1:-${BBSHOME}}

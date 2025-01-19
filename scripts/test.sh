@@ -1,4 +1,5 @@
 #!/bin/bash
+# test
 
 dirs=("cache/testcase" "ptt/testcase")
 

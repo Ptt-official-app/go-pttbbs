@@ -1,4 +1,7 @@
 #!/bin/bash
+# run customized go-pttbbs in docker.
+#
+# This is suitable only in `docker run -itd [GOPTTBBS_IMAGE] /bin/bash`.
 
 if [ "$#" != "1" ]; then
     echo "usage: run-in-docker.sh [port]"
