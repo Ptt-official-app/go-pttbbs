@@ -8,4 +8,8 @@ version=`git describe --tags`
 
 echo "commit: ${commit} version: ${version}"
 
-go build -ldflags "-X ${package}.GIT_VERSION=${commit} -X ${package}.VERSION=${version}" -tags dev && ./go-pttbbs -ini ${ini_filename}
+cd go-pttbbs
+go build -ldflags "-X ${package}.GIT_VERSION=${commit} -X ${package}.VERSION=${version}" -tags dev 
+cd ..
+
+./go-pttbbs/go-pttbbs -ini ${ini_filename}
