@@ -1,4 +1,5 @@
 #!/bin/bash
+# Updating bin/ by copying /opt/bbs/bin to /home/bbs/bin
 
 if [ "$#" != "2" ]; then
     echo "usage: docker_initbbs.sh [BBSHOME] [GOPTTBBS_IMAGE]"

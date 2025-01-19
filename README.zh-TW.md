@@ -16,6 +16,16 @@
 
 ## 開始
 
+您可以從以下步驟快速開始:
+
+* `cp docs/config/config.ini.template docs/config/02-config.dev.ini`
+* 在 `docs/config/02-config.dev.ini` 更新 `BBSHOME`
+* `./scripts/initpasswd.sh [BBSHOME] 50`
+* `./scripts/run-dev.sh`
+* (在另外一個終端機視窗) `./scripts/init-SYSOP.sh`
+
+## API Document
+
 您可以從 [swagger api](https://doc-pttbbs.devptt.dev) 查看 api 文件.
 
 ## Coding Convention

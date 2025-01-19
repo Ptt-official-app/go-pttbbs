@@ -1,4 +1,5 @@
 #!/bin/bash
+# build with tag=production and run go-pttbbs.
 
 if [ "$#" -lt "1" ]
 then

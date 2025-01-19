@@ -16,6 +16,16 @@ Collaborating with [Ptt-official-app go-pttbbsweb](https://github.com/ptt-offici
 
 ## Getting Started
 
+You can start with the following steps:
+
+* `cp docs/config/config.ini.template docs/config/02-config.dev.ini`
+* update `BBSHOME` in `docs/config/02-config.dev.ini`
+* `./scripts/initpasswd.sh [BBSHOME] 50`
+* `./scripts/run-dev.sh`
+* (in another terminal window) `./scripts/init-SYSOP.sh`
+
+## API Document
+
 You can start with the [swagger api](https://doc-pttbbs.devptt.dev)
 and check the api document.
 

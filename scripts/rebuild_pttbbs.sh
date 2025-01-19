@@ -1,4 +1,6 @@
 #!/bin/bash
+#
+# This is the script to rebuild pttbbs in Dockerfile.
 
 # https://github.com/bbsdocker/imageptt/blob/master/pttbbs_conf
 
