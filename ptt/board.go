@@ -1,10 +1,22 @@
 package ptt
 
 import (
+	"os"
+
 	"github.com/Ptt-official-app/go-pttbbs/cache"
+	"github.com/Ptt-official-app/go-pttbbs/cmbbs/path"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
+
+func IsBoardValidAllGuest(boardID *ptttype.BoardID_t) (isValid bool, err error) {
+	board_path := path.SetBPath(boardID)
+	_, err = os.Stat(board_path)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
 
 func IsBoardValidUser(user *ptttype.UserecRaw, uid ptttype.UID, boardID *ptttype.BoardID_t, bid ptttype.Bid) (isValid bool, err error) {
 	board, err := cache.GetBCache(bid)
@@ -105,8 +117,8 @@ func NewBoard(
 	isGroup bool,
 ) (
 	summary *ptttype.BoardSummaryRaw,
-	err error) {
-
+	err error,
+) {
 	clsBoard, err := cache.GetBCache(clsBid)
 	if err != nil {
 		return nil, err

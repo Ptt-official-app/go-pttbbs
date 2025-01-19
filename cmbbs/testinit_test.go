@@ -29,13 +29,13 @@ func setupTest() {
 
 	_ = types.CopyDirToDir("./testcase/home1", "./testcase/home")
 
-	err := cache.NewSHM(cache.TestShmKey, ptttype.USE_HUGETLB, true)
+	err := cache.Init(cache.TestShmKey, ptttype.USE_HUGETLB, true)
 	if err != nil {
 		log.Errorf("setupTest: unable to NewSHM: e: %v", err)
 		return
 	}
 
-	cache.Shm.Reset()
+	cache.SHM.Reset()
 
 	_ = cache.LoadUHash()
 }

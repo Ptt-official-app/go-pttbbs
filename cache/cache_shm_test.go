@@ -40,7 +40,7 @@ func TestAttachCheckSHM(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	Shm.Shm.Loaded = 1
+	SHM.Shm.Loaded = 1
 
 	tests := []struct {
 		name    string

@@ -48,6 +48,6 @@ func TestLoadBottomArticles(t *testing.T) {
 			}
 			testutil.TDeepEqual(t, "got", gotResult, tt.expectedResult)
 		})
-		wg.Wait()
 	}
+	wg.Wait()
 }

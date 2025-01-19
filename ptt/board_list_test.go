@@ -19,12 +19,12 @@ func TestLoadGeneralBoards(t *testing.T) {
 
 	cache.ReloadBCache()
 
-	bsorted := &cache.Shm.Shm.BSorted[ptttype.BSORT_BY_NAME]
+	bsorted := &cache.SHM.Shm.BSorted[ptttype.BSORT_BY_NAME]
 	logrus.Infof("bsorted (by-name): %v", bsorted)
 
-	const bsort0sz = unsafe.Sizeof(cache.Shm.Raw.BSorted[0])
+	const bsort0sz = unsafe.Sizeof(cache.SHM.Raw.BSorted[0])
 
-	bsorted = &cache.Shm.Shm.BSorted[ptttype.BSORT_BY_CLASS]
+	bsorted = &cache.SHM.Shm.BSorted[ptttype.BSORT_BY_CLASS]
 	logrus.Infof("bsorted (by-class): %v", bsorted)
 
 	type args struct {
@@ -199,8 +199,8 @@ func TestLoadHotBoards(t *testing.T) {
 	cache.ReloadBCache()
 
 	hbcache := []ptttype.BidInStore{9, 0, 7}
-	copy(cache.Shm.Shm.HBcache[:], hbcache)
-	cache.Shm.Shm.NHOTs = 3
+	copy(cache.SHM.Shm.HBcache[:], hbcache)
+	cache.SHM.Shm.NHOTs = 3
 
 	type args struct {
 		user *ptttype.UserecRaw
@@ -624,12 +624,12 @@ func TestLoadGeneralBoardDetails(t *testing.T) {
 
 	cache.ReloadBCache()
 
-	bsorted := &cache.Shm.Shm.BSorted[ptttype.BSORT_BY_NAME]
+	bsorted := &cache.SHM.Shm.BSorted[ptttype.BSORT_BY_NAME]
 	logrus.Infof("bsorted (by-name): %v", bsorted)
 
-	const bsort0sz = unsafe.Sizeof(cache.Shm.Raw.BSorted[0])
+	const bsort0sz = unsafe.Sizeof(cache.SHM.Raw.BSorted[0])
 
-	bsorted = &cache.Shm.Shm.BSorted[ptttype.BSORT_BY_CLASS]
+	bsorted = &cache.SHM.Shm.BSorted[ptttype.BSORT_BY_CLASS]
 	logrus.Infof("bsorted (by-class): %v", bsorted)
 
 	type args struct {

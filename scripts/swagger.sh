@@ -9,7 +9,7 @@ fi
 host=$1
 
 apidoc/yamltojson.py apidoc/template.yaml apidoc/template.json
-flaskswagger apidoc:app --host ${host} --base-path / --out-dir swagger --from-file-keyword=swagger_from_file --template ./apidoc/template.json
+flaskswagger apidoc --host ${host} --base-path / --out-dir swagger --from-file-keyword=swagger_from_file --template ./apidoc/template.json
 docker run --rm -v ${PWD}/swagger:/data swaggerapi/swagger-codegen-cli-v3 generate -l openapi-yaml -i file:///data/swagger.json -o /data/v3
 apidoc/addsecurity.py swagger/v3/openapi.yaml
 apidoc/parameters.py swagger/swagger.json swagger/v3/openapi.security.json

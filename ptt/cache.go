@@ -28,7 +28,7 @@ func IsBMCache(user *ptttype.UserecRaw, uid ptttype.UID, bid ptttype.Bid) bool {
 		return false
 	}
 
-	pbm := &cache.Shm.Shm.BMCache[bidInCache]
+	pbm := &cache.SHM.Shm.BMCache[bidInCache]
 	if uid == pbm[0] || uid == pbm[1] || uid == pbm[2] || uid == pbm[3] {
 		if user.UserLevel.HasUserPerm(ptttype.PERM_BM) {
 			_ = pwcuBitEnableLevel(uid, &user.UserID, ptttype.PERM_BM)
@@ -94,7 +94,7 @@ func getNewUtmpEnt(uinfo *ptttype.UserInfoRaw) (utmpID ptttype.UtmpID, err error
 			p = 0
 		}
 
-		pid = cache.Shm.Shm.UInfo[p].Pid
+		pid = cache.SHM.Shm.UInfo[p].Pid
 		// found same pid.
 		// update the newest status.
 		// XXX race condition with auto-logout.
@@ -102,18 +102,18 @@ func getNewUtmpEnt(uinfo *ptttype.UserInfoRaw) (utmpID ptttype.UtmpID, err error
 		// XXX c-pttbbs does not care the race-condition here.
 		// XXX we may not do anything with utmpID though.
 		if pid == uinfo.Pid {
-			cache.Shm.Shm.UInfo[p] = *uinfo
+			cache.SHM.Shm.UInfo[p] = *uinfo
 			// https://github.com/ptt/pttbbs/blob/master/mbbsd/mbbsd.c#L998
-			cache.Shm.Shm.UTMPNeedSort = 1
+			cache.SHM.Shm.UTMPNeedSort = 1
 
 			return ptttype.UtmpID(p), nil
 		}
 
 		// new pid
 		if pid == 0 {
-			cache.Shm.Shm.UInfo[p] = *uinfo
+			cache.SHM.Shm.UInfo[p] = *uinfo
 			// https://github.com/ptt/pttbbs/blob/master/mbbsd/mbbsd.c#L998
-			cache.Shm.Shm.UTMPNeedSort = 1
+			cache.SHM.Shm.UTMPNeedSort = 1
 
 			return ptttype.UtmpID(p), nil
 		}

@@ -15,8 +15,8 @@ func TestLoadHotBoards(t *testing.T) {
 	defer teardownTest(t.Name())
 
 	hbcache := []ptttype.BidInStore{9, 0, 7}
-	copy(cache.Shm.Shm.HBcache[:], hbcache)
-	cache.Shm.Shm.NHOTs = 3
+	copy(cache.SHM.Shm.HBcache[:], hbcache)
+	cache.SHM.Shm.NHOTs = 3
 
 	result0 := &LoadHotBoardsResult{
 		Boards: []*bbs.BoardSummary{testBoardSummary10, testBoardSummary1, testBoardSummary8},

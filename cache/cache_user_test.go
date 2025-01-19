@@ -123,10 +123,10 @@ func TestRemoveFromUHash(t *testing.T) {
 	AddToUHash(3, user)
 	AddToUHash(4, user)
 
-	hashHead := &Shm.Shm.HashHead
+	hashHead := &SHM.Shm.HashHead
 	assert.Equal(t, ptttype.UIDInStore(0), hashHead[35])
 
-	nextInHash := &Shm.Shm.NextInHash
+	nextInHash := &SHM.Shm.NextInHash
 	for i := 0; i < 4; i++ {
 		assert.Equal(t, ptttype.UIDInStore(i+1), nextInHash[i])
 	}
@@ -333,7 +333,7 @@ func TestSetUserID(t *testing.T) {
 				t.Errorf("SetUserID() userID: %v want: %v", userID, tt.args.userID)
 			}
 
-			nextInHash := &Shm.Shm.NextInHash
+			nextInHash := &SHM.Shm.NextInHash
 			assert.Equalf(t, nextInHash, tt.wantNextInHash, "SetUserID() nextInHash: %v want: %v", nextInHash, tt.wantNextInHash)
 		})
 		wg.Wait()

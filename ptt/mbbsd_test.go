@@ -118,15 +118,15 @@ func TestLogin(t *testing.T) {
 	ip1 := &ptttype.IPv4_t{}
 	copy(ip1[:], []byte("192.168.0.1"))
 
-	cache.Shm.Shm.CurrSorted = 0
+	cache.SHM.Shm.CurrSorted = 0
 
-	cache.Shm.Shm.UTMPNumber = 5
+	cache.SHM.Shm.UTMPNumber = 5
 
 	sorted := []ptttype.UtmpID{2, 1, 0, 4, 3}
-	copy(cache.Shm.Shm.Sorted[0][ptttype.SORT_BY_PID][:], sorted)
+	copy(cache.SHM.Shm.Sorted[0][ptttype.SORT_BY_PID][:], sorted)
 
 	uinfo := []ptttype.UserInfoRaw{testUserInfo1, testUserInfo2, testUserInfo3, testUserInfo4, testUserInfo5, testUserInfo6}
-	copy(cache.Shm.Shm.UInfo[:], uinfo)
+	copy(cache.SHM.Shm.UInfo[:], uinfo)
 
 	// setup login data
 	testSetupNewUser1.LastHost = *ip1

@@ -7,6 +7,8 @@ import (
 
 type APIFunc func(remoteAddr string, params interface{}, c *gin.Context) (interface{}, error)
 
+type PathAPIFunc func(remoteAddr string, params interface{}, path interface{}, c *gin.Context) (interface{}, error)
+
 type LoginRequiredAPIFunc func(remoteAddr string, uuserID bbs.UUserID, params interface{}, c *gin.Context) (interface{}, error)
 
 type LoginRequiredPathAPIFunc func(remoteAddr string, uuserID bbs.UUserID, params interface{}, path interface{}, c *gin.Context) (interface{}, error)

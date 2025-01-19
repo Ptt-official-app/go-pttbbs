@@ -70,12 +70,16 @@ func LogAttempt(userID *ptttype.UserID_t, ip *ptttype.IPv4_t, isWithUserHome boo
 //	Uid: uid
 //	*ptttype.UserecRaw: user.
 //	error: err.
-func PasswdLoadUser(userID *ptttype.UserID_t) (ptttype.UID, *ptttype.UserecRaw, error) {
+func PasswdLoadUser(userID *ptttype.UserID_t) (uid ptttype.UID, user *ptttype.UserecRaw, err error) {
+	if types.IS_ALL_GUEST {
+		return ptttype.GUEST_UID, ptttype.GUEST, nil
+	}
+
 	if userID == nil || userID[0] == 0 {
 		return 0, nil, ptttype.ErrInvalidUserID
 	}
 
-	uid, err := cache.SearchUserRaw(userID, nil)
+	uid, err = cache.SearchUserRaw(userID, nil)
 	if err != nil {
 		return 0, nil, err
 	}
@@ -84,7 +88,7 @@ func PasswdLoadUser(userID *ptttype.UserID_t) (ptttype.UID, *ptttype.UserecRaw, 
 		return 0, nil, ptttype.ErrInvalidUserID
 	}
 
-	user, err := PasswdQuery(uid)
+	user, err = PasswdQuery(uid)
 	if err != nil {
 		return 0, nil, err
 	}
@@ -103,6 +107,10 @@ func PasswdLoadUser(userID *ptttype.UserID_t) (ptttype.UID, *ptttype.UserecRaw, 
 //	*ptttype.UserecRaw: user.
 //	error: err.
 func PasswdQuery(uid ptttype.UID) (*ptttype.UserecRaw, error) {
+	if types.IS_ALL_GUEST {
+		return ptttype.GUEST, nil
+	}
+
 	if !uid.IsValid() {
 		return nil, ptttype.ErrInvalidUserID
 	}
@@ -139,6 +147,10 @@ func PasswdQuery(uid ptttype.UID) (*ptttype.UserecRaw, error) {
 //	*ptttype.UserecRaw: user.
 //	error: err.
 func PasswdQueryPasswd(uid ptttype.UID) (passwdHash *ptttype.Passwd_t, err error) {
+	if types.IS_ALL_GUEST {
+		return &ptttype.GUEST.PasswdHash, nil
+	}
+
 	if !uid.IsValid() {
 		return nil, ptttype.ErrInvalidUserID
 	}
@@ -175,6 +187,10 @@ func PasswdQueryPasswd(uid ptttype.UID) (passwdHash *ptttype.Passwd_t, err error
 //	userLevel: userLevel.
 //	error: err.
 func PasswdQueryUserLevel(uid ptttype.UID) (userLevel ptttype.PERM, err error) {
+	if types.IS_ALL_GUEST {
+		return ptttype.GUEST.UserLevel, nil
+	}
+
 	if !uid.IsValid() {
 		return ptttype.PERM_INVALID, ptttype.ErrInvalidUserID
 	}
@@ -200,6 +216,10 @@ func PasswdQueryUserLevel(uid ptttype.UID) (userLevel ptttype.PERM, err error) {
 }
 
 func PasswdUpdate(uid ptttype.UID, user *ptttype.UserecRaw) error {
+	if types.IS_ALL_GUEST {
+		return nil
+	}
+
 	if !uid.IsValid() {
 		return cache.ErrInvalidUID
 	}
@@ -225,6 +245,10 @@ func PasswdUpdate(uid ptttype.UID, user *ptttype.UserecRaw) error {
 }
 
 func PasswdUpdatePasswd(uid ptttype.UID, passwdHash *ptttype.Passwd_t) error {
+	if types.IS_ALL_GUEST {
+		return nil
+	}
+
 	if !uid.IsValid() {
 		return cache.ErrInvalidUID
 	}
@@ -251,6 +275,10 @@ func PasswdUpdatePasswd(uid ptttype.UID, passwdHash *ptttype.Passwd_t) error {
 }
 
 func PasswdUpdateEmail(uid ptttype.UID, email *ptttype.Email_t) error {
+	if types.IS_ALL_GUEST {
+		return nil
+	}
+
 	if !uid.IsValid() {
 		return cache.ErrInvalidUID
 	}
@@ -277,6 +305,10 @@ func PasswdUpdateEmail(uid ptttype.UID, email *ptttype.Email_t) error {
 }
 
 func PasswdGetUser2(userID *ptttype.UserID_t) (user *ptttype.Userec2Raw, err error) {
+	if types.IS_ALL_GUEST {
+		return ptttype.GUEST2, nil
+	}
+
 	filename, err := path.SetHomeFile(userID, ptttype.FN_PASSWD2)
 	if err != nil {
 		return nil, err
@@ -303,6 +335,10 @@ func PasswdGetUser2(userID *ptttype.UserID_t) (user *ptttype.Userec2Raw, err err
 }
 
 func PasswdGetUserLevel2(userID *ptttype.UserID_t) (userLevel2 ptttype.PERM2, err error) {
+	if types.IS_ALL_GUEST {
+		return ptttype.GUEST2.UserLevel2, nil
+	}
+
 	filename, err := path.SetHomeFile(userID, ptttype.FN_PASSWD2)
 	if err != nil {
 		return ptttype.PERM2_INVALID, err
@@ -332,6 +368,10 @@ func PasswdGetUserLevel2(userID *ptttype.UserID_t) (userLevel2 ptttype.PERM2, er
 }
 
 func PasswdUpdateUserLevel2(userID *ptttype.UserID_t, perm ptttype.PERM2, isSet bool) (err error) {
+	if types.IS_ALL_GUEST {
+		return nil
+	}
+
 	filename, err := path.SetHomeFile(userID, ptttype.FN_PASSWD2)
 	if err != nil {
 		return err
@@ -388,6 +428,10 @@ func PasswdUpdateUserLevel2(userID *ptttype.UserID_t, perm ptttype.PERM2, isSet 
 }
 
 func passwdCheckPasswd2(filename string) (err error) {
+	if types.IS_ALL_GUEST {
+		return nil
+	}
+
 	stat, err := os.Stat(filename)
 	if err != nil {
 		if !os.IsNotExist(err) {
@@ -430,6 +474,10 @@ func passwdCheckPasswd2(filename string) (err error) {
 }
 
 func PasswdInit() error {
+	if types.IS_ALL_GUEST {
+		return nil
+	}
+
 	if Sem != nil {
 		if Sem.SemID == 0 {
 			log.Errorf("PasswdInit: SemID is invalid")
@@ -467,10 +515,18 @@ func PasswdInit() error {
 }
 
 func PasswdLock() error {
+	if types.IS_ALL_GUEST {
+		return nil
+	}
+
 	return Sem.Wait(0)
 }
 
 func PasswdUnlock() error {
+	if types.IS_ALL_GUEST {
+		return nil
+	}
+
 	return Sem.Post(0)
 }
 
@@ -491,6 +547,10 @@ func PasswdUnlock() error {
 func PasswdDestroy() error {
 	if !IsTest {
 		return ErrInvalidOp
+	}
+
+	if types.IS_ALL_GUEST {
+		return nil
 	}
 
 	if Sem == nil {

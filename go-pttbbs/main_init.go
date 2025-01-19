@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 
-	"github.com/Ptt-official-app/go-pttbbs/boardd"
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs"
 	"github.com/Ptt-official-app/go-pttbbs/initgin"
@@ -37,10 +36,14 @@ func initMain() error {
 	}
 
 	// init shm
-	err = cache.NewSHM(types.Key_t(ptttype.SHM_KEY), ptttype.USE_HUGETLB, ptttype.IS_NEW_SHM)
+	err = cache.Init(types.Key_t(ptttype.SHM_KEY), ptttype.USE_HUGETLB, ptttype.IS_NEW_SHM)
 	if err != nil {
 		log.Errorf("unable to init SHM: e: %v", err)
 		return err
+	}
+
+	if types.IS_ALL_GUEST {
+		return initMainAllGuest()
 	}
 
 	if ptttype.IS_NEW_SHM {
@@ -64,11 +67,9 @@ func initMain() error {
 		return err
 	}
 
-	// init grpc
-	err = boardd.Init(false)
-	if err != nil {
-		return err
-	}
+	return nil
+}
 
+func initMainAllGuest() (err error) {
 	return nil
 }

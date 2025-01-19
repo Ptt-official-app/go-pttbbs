@@ -13,12 +13,14 @@ func setupTest() {
 
 	initTestCases()
 
-	err := NewSHM(types.Key_t(TestShmKey), ptttype.USE_HUGETLB, true)
+	err := Init(types.Key_t(TestShmKey), ptttype.USE_HUGETLB, true)
 	if err != nil {
 		return
 	}
 
-	Shm.Reset()
+	SHM.Reset()
+
+	MAP.Reset()
 
 	_ = types.CopyFileToFile("./testcase/.PASSWDS1", "./testcase/.PASSWDS")
 	_ = types.CopyFileToFile("./testcase/.BRD1", "./testcase/.BRD")
@@ -32,6 +34,8 @@ func teardownTest() {
 	defer shmTeardownTest()
 
 	defer CloseSHM()
+
+	defer CloseMAP()
 
 	defer os.Remove("./testcase/.PASSWDS")
 	defer os.Remove("./testcase/.BRD")

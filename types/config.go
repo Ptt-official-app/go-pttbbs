@@ -10,4 +10,6 @@ func config() {
 	BIG5_TO_UTF8 = setStringConfig("BIG5_TO_UTF8", BIG5_TO_UTF8)
 	UTF8_TO_BIG5 = setStringConfig("UTF8_TO_BIG5", UTF8_TO_BIG5)
 	AMBCJK = setStringConfig("AMBCJK", AMBCJK)
+
+	IS_ALL_GUEST = setBoolConfig("IS_ALL_GUEST", IS_ALL_GUEST)
 }

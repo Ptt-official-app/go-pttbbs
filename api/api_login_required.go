@@ -3,7 +3,6 @@ package api
 import (
 	"strings"
 
-	"github.com/Ptt-official-app/go-pttbbs/bbs"
 	"github.com/gin-gonic/gin"
 )
 
@@ -41,12 +40,7 @@ func loginRequiredProcess(theFunc LoginRequiredAPIFunc, params interface{}, c *g
 		return
 	}
 
-	jwt := GetJwt(c)
-
-	userID, _, _, err := VerifyJwt(jwt, true)
-	if err != nil {
-		userID = bbs.UUserID(GUEST)
-	}
+	userID, _ := apiGetUser(c)
 
 	result, err := theFunc(remoteAddr, userID, params, c)
 	processResult(c, result, err)

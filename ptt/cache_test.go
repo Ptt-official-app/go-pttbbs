@@ -51,7 +51,7 @@ func Test_getNewUtmpEnt(t *testing.T) {
 				t.Errorf("getNewUtmpEnt() = %v, want %v", gotUtmpID, tt.expectedUtmpID)
 			}
 
-			got := &cache.Shm.Shm.UInfo[gotUtmpID]
+			got := &cache.SHM.Shm.UInfo[gotUtmpID]
 
 			testutil.TDeepEqual(t, "got", got, tt.args.uinfo)
 		})

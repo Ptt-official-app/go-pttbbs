@@ -9,6 +9,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func apiGetUser(c *gin.Context) (userID bbs.UUserID, err error) {
+	if types.IS_ALL_GUEST {
+		return bbs.UUserID(GUEST), nil
+	}
+
+	jwt := GetJwt(c)
+
+	userID, _, _, err = VerifyJwt(jwt, true)
+	if err != nil {
+		return bbs.UUserID(GUEST), err
+	}
+
+	return userID, nil
+}
+
 func processResult(c *gin.Context, result interface{}, err error) {
 	setHeader(c)
 

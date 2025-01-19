@@ -9,10 +9,11 @@
 /apidoc/template.json
 /swagger
 /docs/config/*.ini
+/docs/examples/bbs/
 /ptttype/00-config-production.go
 /ptttype/02-config-dev.go
 **/cover.out
-/docker_compose.env
+/docker/go-pttbbs/docker_compose.env
 
 .idea/
 /test-config
@@ -20,4 +21,4 @@
 /apidoc/__pycache__
 /apidoc/apidoc.egg-info
 
-/docker-compose.yaml.me
+/docker/go-pttbbs/docker-compose.yaml.me

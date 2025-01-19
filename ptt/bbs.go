@@ -207,6 +207,36 @@ func ReadPost(
 	return readContent(theFilename, retrieveTS, isHash)
 }
 
+// ReadPostAllGuest
+//
+// pmore is replaced by frontend.
+// We just need to return the whole content.
+// We do not update brc here, because it requires lots of file-disk.
+// require middlewares to handle user-read-article.
+func ReadPostAllGuest(
+	boardID *ptttype.BoardID_t,
+	filename *ptttype.Filename_t,
+	retrieveTS types.Time4,
+	isHash bool) (
+	content []byte,
+	mtime types.Time4,
+	hash cmsys.Fnv64_t,
+	err error,
+) {
+	// 1. check valid filename
+	if filename[0] == 'L' || filename[0] == 0 {
+		return nil, 0, 0, ErrInvalidParams
+	}
+
+	// 3. get filename
+	theFilename, err := path.SetBFile(boardID, filename.String())
+	if err != nil {
+		return nil, 0, 0, err
+	}
+
+	return readContent(theFilename, retrieveTS, isHash)
+}
+
 // CheckPostRestriction
 //
 // true if pass the check (can post)

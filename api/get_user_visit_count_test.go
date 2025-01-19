@@ -12,7 +12,7 @@ func TestGetUserVisitCount(t *testing.T) {
 	setupTest(t.Name())
 	defer teardownTest(t.Name())
 
-	cache.Shm.Shm.UTMPNumber = 5
+	cache.SHM.Shm.UTMPNumber = 5
 
 	expected := &GetUserVisitCountResult{5}
 	tests := []struct {

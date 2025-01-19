@@ -11,4 +11,6 @@ var (
 	BIG5_TO_UTF8 = "../docs/etc/uao250-b2u.big5.txt"
 	UTF8_TO_BIG5 = "../docs/etc/uao250-u2b.big5.txt"
 	AMBCJK       = "../docs/etc/ambcjk.big5.txt"
+
+	IS_ALL_GUEST = false
 )

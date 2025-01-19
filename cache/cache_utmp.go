@@ -6,36 +6,44 @@ import (
 )
 
 func GetUTMPNumber() (total int32) {
-	return Shm.Shm.UTMPNumber
+	if types.IS_ALL_GUEST {
+		return 0
+	}
+
+	return SHM.Shm.UTMPNumber
 }
 
 func SearchUListUserID(userID *ptttype.UserID_t) (utmpID ptttype.UtmpID, uInfo *ptttype.UserInfoRaw) {
+	if types.IS_ALL_GUEST {
+		return -1, nil
+	}
+
 	// start and end
 	start := int32(0)
 
-	end := Shm.Shm.UTMPNumber
+	end := SHM.Shm.UTMPNumber
 	end--
 	if end < 0 {
 		return -1, nil
 	}
 
 	// current-sorted (for double-buffer)
-	currentSorted := Shm.Shm.CurrSorted
+	currentSorted := SHM.Shm.CurrSorted
 
 	// search
 	userIDInCache := (*ptttype.UserID_t)(nil)
 	for i := (start + end) / 2; ; i = (start + end) / 2 {
 		// get utmpID
-		utmpID = Shm.Shm.Sorted[currentSorted][ptttype.SORT_BY_ID][i]
+		utmpID = SHM.Shm.Sorted[currentSorted][ptttype.SORT_BY_ID][i]
 
 		// get user-id
-		userIDInCache = &Shm.Shm.UInfo[utmpID].UserID
+		userIDInCache = &SHM.Shm.UInfo[utmpID].UserID
 
 		// cmp
 		j := types.Cstrcasecmp(userID[:], userIDInCache[:])
 
 		if j == 0 {
-			uInfo = &Shm.Shm.UInfo[utmpID]
+			uInfo = &SHM.Shm.UInfo[utmpID]
 			return utmpID, uInfo
 		}
 
@@ -56,33 +64,37 @@ func SearchUListUserID(userID *ptttype.UserID_t) (utmpID ptttype.UtmpID, uInfo *
 }
 
 func SearchUListPID(pid types.Pid_t) (utmpID ptttype.UtmpID, uInfo *ptttype.UserInfoRaw) {
+	if types.IS_ALL_GUEST {
+		return -1, nil
+	}
+
 	// start and end
 	start := int32(0)
 
-	end := Shm.Shm.UTMPNumber
+	end := SHM.Shm.UTMPNumber
 	end--
 	if end < 0 {
 		return -1, nil
 	}
 
 	// current-sorted (for double-buffer)
-	currentSorted := Shm.Shm.CurrSorted
+	currentSorted := SHM.Shm.CurrSorted
 
 	// search
 	isDiff := types.Pid_t(0)
 	uPid := types.Pid_t(0)
 	for i := (start + end) / 2; ; i = (start + end) / 2 {
 		// get utmpID
-		utmpID = Shm.Shm.Sorted[currentSorted][ptttype.SORT_BY_PID][i]
+		utmpID = SHM.Shm.Sorted[currentSorted][ptttype.SORT_BY_PID][i]
 
 		// get uPid
-		uPid = Shm.Shm.UInfo[utmpID].Pid
+		uPid = SHM.Shm.UInfo[utmpID].Pid
 
 		// do cmp()
 		isDiff = pid - uPid
 
 		if isDiff == 0 {
-			uInfo = &Shm.Shm.UInfo[utmpID]
+			uInfo = &SHM.Shm.UInfo[utmpID]
 			return utmpID, uInfo
 		}
 
@@ -106,12 +118,16 @@ func SearchUListPID(pid types.Pid_t) (utmpID ptttype.UtmpID, uInfo *ptttype.User
 //
 // XXX skip utmp for now.
 func SetUtmpMode(uid ptttype.UID, mode ptttype.UserOpMode) (err error) {
+	if types.IS_ALL_GUEST {
+		return nil
+	}
+
 	pid := uid.ToPid()
 	utmpID, _ := SearchUListPID(pid)
 	if utmpID == -1 {
 		return ErrNotFound
 	}
-	Shm.Shm.UInfo[utmpID].Mode = mode
+	SHM.Shm.UInfo[utmpID].Mode = mode
 
 	return nil
 }
