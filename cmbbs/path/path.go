@@ -43,6 +43,19 @@ func IsValidFilename(filename string) bool {
 }
 
 func SetBPath(boardID *ptttype.BoardID_t) string {
+	// XXX hack for dup board dir path
+	if IS_DUP_BOARD_DIR_PATH {
+		return strings.Join([]string{
+			ptttype.BBSHOME,
+			ptttype.DIR_BOARD,
+			string(boardID[0]),
+			types.CstrToString(boardID[:]),
+			types.CstrToString(boardID[:]),
+		},
+			string(os.PathSeparator),
+		)
+	}
+
 	return strings.Join([]string{
 		ptttype.BBSHOME,
 		ptttype.DIR_BOARD,
@@ -56,6 +69,20 @@ func SetBPath(boardID *ptttype.BoardID_t) string {
 func SetBFile(boardID *ptttype.BoardID_t, filename string) (string, error) {
 	if filename[0] == '\x00' || !IsValidFilename(filename) {
 		return "", ptttype.ErrInvalidFilename
+	}
+
+	// XXX hack for dup board dir path
+	if IS_DUP_BOARD_DIR_PATH {
+		return strings.Join([]string{
+			ptttype.BBSHOME,
+			ptttype.DIR_BOARD,
+			string(boardID[0]),
+			types.CstrToString(boardID[:]),
+			types.CstrToString(boardID[:]),
+			filename,
+		},
+			string(os.PathSeparator),
+		), nil
 	}
 
 	return strings.Join([]string{
@@ -75,6 +102,20 @@ func SetBNFile(boardID *ptttype.BoardID_t, filename string, idx int) (string, er
 	}
 
 	theFilename := filename + "." + strconv.Itoa(idx)
+
+	// XXX hack for dup board dir path
+	if IS_DUP_BOARD_DIR_PATH {
+		return strings.Join([]string{
+			ptttype.BBSHOME,
+			ptttype.DIR_BOARD,
+			string(boardID[0]),
+			types.CstrToString(boardID[:]),
+			types.CstrToString(boardID[:]),
+			theFilename,
+		},
+			string(os.PathSeparator),
+		), nil
+	}
 
 	return strings.Join([]string{
 		ptttype.BBSHOME,

@@ -7,6 +7,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/boardd"
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs"
+	"github.com/Ptt-official-app/go-pttbbs/cmbbs/path"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
 	"github.com/gin-gonic/gin"
@@ -25,6 +26,9 @@ func setupTest() {
 	ptttype.SetIsTest()
 
 	cache.SetIsTest()
+
+	path.SetIsTest()
+
 	cmbbs.SetIsTest()
 
 	boardd.SetIsTest()
@@ -67,6 +71,8 @@ func teardownTest() {
 	defer ptttype.UnsetIsTest()
 
 	defer cache.UnsetIsTest()
+
+	defer path.UnsetIsTest()
 
 	defer cmbbs.UnsetIsTest()
 
