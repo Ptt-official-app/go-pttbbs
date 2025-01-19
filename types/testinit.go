@@ -17,13 +17,8 @@ func SetIsTest(name string) {
 	origBig5ToUtf8 = BIG5_TO_UTF8
 	origUtf8ToBig5 = UTF8_TO_BIG5
 
-	if name != "main" {
-		BIG5_TO_UTF8 = "../types/uao250-b2u.big5.txt"
-		UTF8_TO_BIG5 = "../types/uao250-u2b.big5.txt"
-	} else {
-		BIG5_TO_UTF8 = "./types/uao250-b2u.big5.txt"
-		UTF8_TO_BIG5 = "./types/uao250-u2b.big5.txt"
-	}
+	BIG5_TO_UTF8 = "../docs/etc/uao250-b2u.big5.txt"
+	UTF8_TO_BIG5 = "../docs/etc/uao250-u2b.big5.txt"
 
 	_ = initBig5()
 }
