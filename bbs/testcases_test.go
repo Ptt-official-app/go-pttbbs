@@ -77,8 +77,8 @@ func initTestVars() {
 		Nickname:   ptttype.Nickname_t{0xaf, 0xab}, // 神
 		PasswdHash: ptttype.Passwd_t{0x62, 0x68, 0x77, 0x76, 0x4f, 0x4a, 0x74, 0x66, 0x54, 0x31, 0x54, 0x41, 0x49, 0x00},
 
-		UFlag:        33557088,
-		UserLevel:    536871943,
+		UFlag:        ptttype.UF_CURSOR_ASCII | ptttype.UF_DBCS_DROP_REPEAT | ptttype.UF_DBCS_AWARE | ptttype.UF_ADBANNER | ptttype.UF_BRDSORT,
+		UserLevel:    ptttype.PERM_DEFAULT | ptttype.PERM_SYSSUBOP | ptttype.PERM_BM,
 		NumLoginDays: 2,
 		NumPosts:     0,
 		FirstLogin:   1600681288,
@@ -107,8 +107,8 @@ func initTestVars() {
 		Nickname:   ptttype.Nickname_t{0xaf, 0xab}, // 神
 		PasswdHash: ptttype.Passwd_t{0x62, 0x68, 0x77, 0x76, 0x4f, 0x4a, 0x74, 0x66, 0x54, 0x31, 0x54, 0x41, 0x49, 0x00},
 
-		UFlag:        33557088,
-		UserLevel:    7 | ptttype.PERM_BOARD | ptttype.PERM_POST | ptttype.PERM_LOGINOK,
+		UFlag:        ptttype.UF_CURSOR_ASCII | ptttype.UF_DBCS_DROP_REPEAT | ptttype.UF_DBCS_AWARE | ptttype.UF_ADBANNER | ptttype.UF_BRDSORT,
+		UserLevel:    ptttype.PERM_DEFAULT | ptttype.PERM_BOARD | ptttype.PERM_POST | ptttype.PERM_LOGINOK,
 		NumLoginDays: 2,
 		NumPosts:     0,
 		FirstLogin:   1600681288,
@@ -137,7 +137,7 @@ func initTestVars() {
 		Nickname:   ptttype.Nickname_t{0xaf, 0xab}, // 神
 		PasswdHash: ptttype.Passwd_t{0x62, 0x68, 0x77, 0x76, 0x4f, 0x4a, 0x74, 0x66, 0x54, 0x31, 0x54, 0x41, 0x49, 0x00},
 
-		UFlag:        33557088,
+		UFlag:        ptttype.UF_CURSOR_ASCII | ptttype.UF_DBCS_DROP_REPEAT | ptttype.UF_DBCS_AWARE | ptttype.UF_ADBANNER | ptttype.UF_BRDSORT,
 		UserLevel:    ptttype.PERM_SYSOP,
 		NumLoginDays: 2,
 		NumPosts:     0,
@@ -167,8 +167,8 @@ func initTestVars() {
 		Nickname:   ptttype.Nickname_t{0xaf, 0xab}, // 神
 		PasswdHash: ptttype.Passwd_t{0x62, 0x68, 0x77, 0x76, 0x4f, 0x4a, 0x74, 0x66, 0x54, 0x31, 0x54, 0x41, 0x49, 0x00},
 
-		UFlag:        33557088,
-		UserLevel:    7 | ptttype.PERM_BOARD | ptttype.PERM_POST | ptttype.PERM_LOGINOK,
+		UFlag:        ptttype.UF_CURSOR_ASCII | ptttype.UF_DBCS_DROP_REPEAT | ptttype.UF_DBCS_AWARE | ptttype.UF_ADBANNER | ptttype.UF_BRDSORT,
+		UserLevel:    ptttype.PERM_DEFAULT | ptttype.PERM_BOARD | ptttype.PERM_POST | ptttype.PERM_LOGINOK,
 		NumLoginDays: 2,
 		NumPosts:     0,
 		FirstLogin:   1600681288,
@@ -197,7 +197,7 @@ func initTestVars() {
 		Nickname:   ptttype.Nickname_t{0xaf, 0xab}, // 神
 		PasswdHash: ptttype.Passwd_t{0x62, 0x68, 0x77, 0x76, 0x4f, 0x4a, 0x74, 0x66, 0x54, 0x31, 0x54, 0x41, 0x49, 0x00},
 
-		UFlag:        33557088,
+		UFlag:        ptttype.UF_CURSOR_ASCII | ptttype.UF_DBCS_DROP_REPEAT | ptttype.UF_DBCS_AWARE | ptttype.UF_ADBANNER | ptttype.UF_BRDSORT,
 		UserLevel:    ptttype.PERM_BASIC,
 		NumLoginDays: 2,
 		NumPosts:     0,
@@ -225,8 +225,8 @@ func initTestVars() {
 		Nickname:   ptttype.Nickname_t{175, 171},
 		PasswdHash: ptttype.Passwd_t{98, 104, 119, 118, 79, 74, 116, 102, 84, 49, 84, 65, 73, 0},
 
-		UFlag:        33557088,
-		UserLevel:    7 | ptttype.PERM_LOGINOK | ptttype.PERM_POST,
+		UFlag:        ptttype.UF_CURSOR_ASCII | ptttype.UF_DBCS_DROP_REPEAT | ptttype.UF_DBCS_AWARE | ptttype.UF_ADBANNER | ptttype.UF_BRDSORT,
+		UserLevel:    ptttype.PERM_DEFAULT | ptttype.PERM_LOGINOK | ptttype.PERM_POST,
 		NumLoginDays: 2,
 		NumPosts:     0,
 		FirstLogin:   1600681288,
@@ -248,8 +248,8 @@ func initTestVars() {
 		},
 		Nickname: []byte{0xaf, 0xab}, // 神
 
-		Uflag:        33557088,
-		Userlevel:    536871943,
+		Uflag:        ptttype.UF_CURSOR_ASCII | ptttype.UF_DBCS_DROP_REPEAT | ptttype.UF_DBCS_AWARE | ptttype.UF_ADBANNER | ptttype.UF_BRDSORT,
+		Userlevel:    ptttype.PERM_DEFAULT | ptttype.PERM_SYSSUBOP | ptttype.PERM_BM,
 		Numlogindays: 2,
 		Numposts:     0,
 		Firstlogin:   1600681288,
@@ -273,8 +273,8 @@ func initTestVars() {
 		UUserID:      UUserID("B1"),
 		Username:     "B1",
 		Lasthost:     "127.0.0.1",
-		Uflag:        33557088,
-		Userlevel:    7,
+		Uflag:        ptttype.UF_CURSOR_ASCII | ptttype.UF_DBCS_DROP_REPEAT | ptttype.UF_DBCS_AWARE | ptttype.UF_ADBANNER | ptttype.UF_BRDSORT,
+		Userlevel:    ptttype.PERM_DEFAULT,
 		Numlogindays: 1,
 		Pager:        1,
 		Over18:       true,
@@ -526,7 +526,7 @@ func initTestVars() {
 		BM:         []UUserID{},
 		IdxByName:  "mnewboard",
 		IdxByClass: "Q1BCTA@mnewboard",
-		BrdAttr:    0x200000,
+		BrdAttr:    ptttype.BRD_CPLOG,
 	}
 
 	testClassSummary2 = &BoardSummary{
@@ -546,7 +546,7 @@ func initTestVars() {
 		BM:         []UUserID{},
 		IdxByName:  "1...........",
 		IdxByClass: "Li4uLg@1...........",
-		BrdAttr:    0x000008,
+		BrdAttr:    ptttype.BRD_GROUPBOARD,
 	}
 
 	testClassDetail2 = &BoardDetail{
@@ -588,7 +588,7 @@ func initTestVars() {
 		BM:         []UUserID{},
 		IdxByName:  "2...........",
 		IdxByClass: "Li4uLg@2...........",
-		BrdAttr:    0x000008,
+		BrdAttr:    ptttype.BRD_GROUPBOARD,
 	}
 
 	testClassDetail5 = &BoardDetail{

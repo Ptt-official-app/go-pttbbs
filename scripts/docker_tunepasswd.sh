@@ -1,4 +1,7 @@
 #!/bin/bash
+# Aligning the .PASSWDS with the expected MAX_USER from c-pttbbs
+#
+# https://github.com/ptt/pttbbs/blob/master/util/tunepasswd.c
 
 if [ "$#" != "2" ]; then
     echo "usage: docker_initbbs.sh [BBSHOME] [GOPTTBBS_IMAGE]"

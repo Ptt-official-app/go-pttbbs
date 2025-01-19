@@ -1,7 +1,7 @@
 version: '2'
 services:
   go-pttbbs:
-    image: pttofficialapps/go-pttbbs:v0.24.2
+    image: pttofficialapps/go-pttbbs:v0.25.0
     ports:
       - "127.0.0.1:3456:3456"
       - "127.0.0.1:8889:8888"
@@ -10,3 +10,9 @@ services:
     volumes:
       - ${BBSHOME}:/home/bbs
       - ${ETC}:/etc/go-pttbbs
+  postfix:
+    image: chhsiao1981/docker-postfix
+    volumes:
+      - ${POSTFIX_MAIN_CF}:/etc/postfix/main.cf
+      - ${POSTFIX_MASTER_CF}:/etc/postfix/master.cf
+    restart: always
