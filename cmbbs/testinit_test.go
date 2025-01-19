@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/Ptt-official-app/go-pttbbs/cache"
+	"github.com/Ptt-official-app/go-pttbbs/cmbbs/path"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
 	log "github.com/sirupsen/logrus"
@@ -15,6 +16,8 @@ func setupTest() {
 	ptttype.SetIsTest()
 
 	cache.SetIsTest()
+
+	path.SetIsTest()
 
 	SetIsTest()
 
@@ -43,6 +46,8 @@ func teardownTest() {
 	defer ptttype.UnsetIsTest()
 
 	defer cache.UnsetIsTest()
+
+	defer path.UnsetIsTest()
 
 	defer UnsetIsTest()
 

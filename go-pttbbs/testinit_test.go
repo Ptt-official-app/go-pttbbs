@@ -5,6 +5,7 @@ import (
 
 	"github.com/Ptt-official-app/go-pttbbs/cache"
 	"github.com/Ptt-official-app/go-pttbbs/cmbbs"
+	"github.com/Ptt-official-app/go-pttbbs/cmbbs/path"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
 	"github.com/gin-gonic/gin"
@@ -24,6 +25,9 @@ func setupTest() {
 	ptttype.SetIsTest()
 
 	cache.SetIsTest()
+
+	path.SetIsTest()
+
 	cmbbs.SetIsTest()
 
 	log.Infof("setupTest: to initAllConfig: sem_key: %v shm_key: %v", ptttype.PASSWDSEM_KEY, ptttype.SHM_KEY)
@@ -56,6 +60,8 @@ func teardownTest() {
 	defer ptttype.UnsetIsTest()
 
 	defer cache.UnsetIsTest()
+
+	defer path.UnsetIsTest()
 
 	defer cmbbs.UnsetIsTest()
 

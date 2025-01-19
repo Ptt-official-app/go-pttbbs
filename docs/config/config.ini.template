@@ -2,15 +2,27 @@
 HTTP_HOST = localhost:3456 # HTTP_HOST
 
 [go-pttbbs:api]
-JWT_SECRET = jwt_secret # JWT secret
 JWT_ISSUER = go-pttbbs  # JWT issuer
 GUEST      = guest   # guest account
 
-EMAIL_JWT_SECRET = email_jwt_secret
-
+JWT_SECRET = jwt_secret # JWT secret
 JWT_TOKEN_EXPIRE_TS = 86400 # 1 days
 
+EMAIL_JWT_SECRET = email_jwt_secret
 EMAIL_JWT_TOKEN_EXPIRE_TS = 900 # 15 mins
+
+REFRESH_JWT_CLAIM_TYPE = refresh
+REFRESH_JWT_SECRET = refresh_jwt_secret
+REFRESH_JWT_TOKEN_EXPIRE_TS = 604800 # 7 days
+
+[go-pttbbs:boardd]
+GRPC_HOST = localhost:5150
+
+[go-pttbbs:mand]
+GRPC_HOST = localhost:5151
+
+[go-pttbbs:cmbbs:path]
+IS_DUP_BOARD_DIR_PATH = false
 
 [go-pttbbs:types]
 TIME_LOCATION = Asia/Taipei #timezone in location-format.
@@ -19,9 +31,9 @@ DEFAULT_PID_MAX = 10000000
 
 IS_ALLOW_CROSSDOMAIN = true
 
-BIG5_TO_UTF8 = types/uao250-b2u.big5.txt
-UTF8_TO_BIG5 = types/uao250-u2b.big5.txt
-AMBCJK       = types/ambcjk.big5.txt
+BIG5_TO_UTF8 = docs/etc/uao250-b2u.big5.txt
+UTF8_TO_BIG5 = docs/etc/uao250-u2b.big5.txt
+AMBCJK       = docs/etc/ambcjk.big5.txt
 
 [go-pttbbs:ptttype]
 SERVICE_MODE = DEV
@@ -62,14 +74,17 @@ BN_RECORD = Record
 BN_SYSOP = SYSOP
 # /* 測試板 */
 BN_TEST = Test
+
 # /* 發生錯誤時建議的回報板名為此板 */
 BN_BUGREPORT = BBSMNAME + Bug
 # /* 法律訴訟的板 */
 BN_LAW = BBSMNAME + Law
 # /* 新手板(會自動進我的最愛) */
 BN_NEWBIE = BBSMNAME + NewHand
+
 # /* 找看板(會自動進我的最愛) */
 BN_ASKBOARD = AskBoard
+
 # /* 外國板 */
 BN_FOREIGN = BBSMNAME + Foreign
 
@@ -527,22 +542,38 @@ IS_UTMP = true
 # //////////
 # // misc
 # //////////
+# https://github.com/ptt/pttbbs/blob/master/mbbsd/cal.c#L23
 #assess (badpost)
 ASSESS = true
 
+# https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L608
 #allow free tn announce
 ALLOW_FREE_TN_ANNOUNCE = false
 
+# https://github.com/ptt/pttbbs/blob/master/common/bbs/string.c#L67
 USE_LEGACY_FORWARD = false
 
+# https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L1202
 USE_LIVE_ALLPOST = false
 
+# https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L402
 USE_AID_URL = false
 
+# https://github.com/ptt/pttbbs/blob/master/mbbsd/cache.c#L189
 USE_NEW_BAN_SYSTEM = true
+
+USEREC_EMAIL_IS_CONTACT                  = true
+ALLOW_REGISTER_WITH_ONLY_CONTACT_EMAIL   = true
+REQUIRE_CONTACT_EMAIL_TO_CHANGE_PASSWORD = true
 
 # https://github.com/ptt/pttbbs/blob/master/mbbsd/edit.c#L45
 POST_MONEY_RATIO = 0.5
 
 USE_POST_ENTROPY = true
 ENTROPY_RATIO    = 0.25
+
+# https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L1451
+USE_HIDDEN_BOARD_NOCREDIT = true
+
+# https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L1898
+USE_SYSOP_EDIT = true
