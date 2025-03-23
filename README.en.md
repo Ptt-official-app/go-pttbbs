@@ -5,8 +5,8 @@
 
 ## README Translation
 
-* [English](https://github.com/Ptt-official-app/go-pttbbs/blob/main/README.en.md)
-* [正體中文](https://github.com/Ptt-official-app/go-pttbbs/blob/main/README.zh-TW.md)
+- [English](./README.en.md)
+- [正體中文](./README.zh-TW.md)
 
 ## Overview
 
@@ -18,9 +18,9 @@ Collaborating with [Ptt-official-app go-pttbbsweb](https://github.com/ptt-offici
 
 You can start with the following steps:
 
-* `cd docs; tar -zxvf bbs-2025-03-22.tar.gz; cd ..`
-* `docker-compose --env-file docker/go-pttbbs/docker_compose.examples.env -f docker/go-pttbbs/docker-compose.yaml up -d`
-* `curl -i -H 'X-Forwarded-For: 127.0.0.1' 'http://localhost:3456/v1/board/WhoAmI/articles?max=5&desc=true'`
+- `cd docs; tar -zxvf bbs-2025-03-22.tar.gz; cd ..`
+- `docker-compose --env-file docker/go-pttbbs/docker_compose.examples.env -f docker/go-pttbbs/docker-compose.yaml up -d`
+- `curl -i -H 'X-Forwarded-For: 127.0.0.1' 'http://localhost:3456/v1/board/WhoAmI/articles?max=5&desc=true'`
 
 ## API Document
 
@@ -29,27 +29,27 @@ and check the api document.
 
 ## Coding Convention
 
-* [gotests](https://github.com/cweill/gotests) for test-generation
-* [gofumpt](https://github.com/mvdan/gofumpt) for formatting
+- [gotests](https://github.com/cweill/gotests) for test-generation
+- [gofumpt](https://github.com/mvdan/gofumpt) for formatting
 
 ## Docker-Compose
 
 You can do the following to start with docker-compose:
 
-* copy `docs/etc/` to some `etc` directory (ex: `/etc/go-pttbbs`).
-* copy `docs/config/01-config.docker.ini` to the `etc` directory as `production.ini` (ex: `cp docs/config/01-config.docker.ini /etc/go-pttbbs/production.ini`).
-* copy `docker/go-pttbbs/docker_compose.tmpl.env` to `docker/go-pttbbs/docker_compose.env` and modify the settings.
-* `docker-compose --env-file docker/go-pttbbs/docker_compose.env -f docker/go-pttbbs/docker-compose.yaml up -d`
+- copy `docs/etc/` to some `etc` directory (ex: `/etc/go-pttbbs`).
+- copy `docs/config/01-config.docker.ini` to the `etc` directory as `production.ini` (ex: `cp docs/config/01-config.docker.ini /etc/go-pttbbs/production.ini`).
+- copy `docker/go-pttbbs/docker_compose.tmpl.env` to `docker/go-pttbbs/docker_compose.env` and modify the settings.
+- `docker-compose --env-file docker/go-pttbbs/docker_compose.env -f docker/go-pttbbs/docker-compose.yaml up -d`
 
 ## Testing
 
-```
+```sh
 ./scripts/test.sh
 ```
 
 ## Coverage
 
-```
+```sh
 ./scripts/coverage.sh
 ```
 
@@ -57,9 +57,9 @@ You can do the following to start with docker-compose:
 
 You can do the following to execute `./scripts/run.sh`:
 
-* `cd docs; tar -zxvf bbs-2025-03-22.tar.gz; cd ..`
-* `./scripts/run-dev.sh`
-* `curl -i -H 'X-Forwarded-For: 127.0.0.1' 'http://localhost:3456/v1/board/WhoAmI/articles?max=5&desc=true'`
+- `cd docs; tar -zxvf bbs-2025-03-22.tar.gz; cd ..`
+- `./scripts/run-dev.sh`
+- `curl -i -H 'X-Forwarded-For: 127.0.0.1' 'http://localhost:3456/v1/board/WhoAmI/articles?max=5&desc=true'`
 
 ## Config
 
@@ -73,6 +73,7 @@ For the const config-variables in ptttype,
 We use docs/config/00-config-[dev-mode].go with +build flag
 
 ### docs/config/00-config.ini
+
 We use [viper](https://github.com/spf13/viper) and .ini as our config-framework.
 `docs/config/config.tmpl.ini` is the config-template file.
 

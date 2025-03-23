@@ -5,8 +5,8 @@
 
 ## README Translation
 
-* [English](https://github.com/Ptt-official-app/go-pttbbs/blob/main/README.en.md)
-* [正體中文](https://github.com/Ptt-official-app/go-pttbbs/blob/main/README.zh-TW.md)
+- [English](./README.en.md)
+- [正體中文](./README.zh-TW.md)
 
 ## 概觀
 
@@ -18,9 +18,9 @@
 
 您可以從以下步驟快速開始:
 
-* `cd docs; tar -zxvf bbs-2025-03-22.tar.gz; cd ..`
-* `docker-compose --env-file docker/go-pttbbs/docker_compose.examples.env -f docker/go-pttbbs/docker-compose.yaml up -d`
-* `curl -i -H 'X-Forwarded-For: 127.0.0.1' 'http://localhost:3456/v1/board/WhoAmI/articles?max=5&desc=true'`
+- `cd docs; tar -zxvf bbs-2025-03-22.tar.gz; cd ..`
+- `docker-compose --env-file docker/go-pttbbs/docker_compose.examples.env -f docker/go-pttbbs/docker-compose.yaml up -d`
+- `curl -i -H 'X-Forwarded-For: 127.0.0.1' 'http://localhost:3456/v1/board/WhoAmI/articles?max=5&desc=true'`
 
 ## API Document
 
@@ -28,27 +28,27 @@
 
 ## Coding Convention
 
-* [gotests](https://github.com/cweill/gotests) for test-generation
-* [gofumpt](https://github.com/mvdan/gofumpt) for formatting
+- [gotests](https://github.com/cweill/gotests) for test-generation
+- [gofumpt](https://github.com/mvdan/gofumpt) for formatting
 
 ## Docker-Compose
 
 您可以利用 docker-compose 開始:
 
-* 將 `docs/etc/` 複製到另一個 `etc` 目錄 (例: `/etc/go-pttbbs`).
-* 將 `docs/config/01-config.docker.ini` 複製到 `etc` 目錄, 並命名為 `production.ini` (例: `cp docs/config/01-config.docker.ini /etc/go-pttbbs/production.ini`).
-* 將 `docker/go-pttbbs/docker_compose.tmpl.env` 複製到 `docker/go-pttbbs/docker_compose.env` 並且更改相關設定.
-* `docker-compose --env-file docker/go-pttbbs/docker_compose.env -f docker/go-pttbbs/docker-compose.yaml up -d`
+- 將 `docs/etc/` 複製到另一個 `etc` 目錄 (例: `/etc/go-pttbbs`).
+- 將 `docs/config/01-config.docker.ini` 複製到 `etc` 目錄, 並命名為 `production.ini` (例: `cp docs/config/01-config.docker.ini /etc/go-pttbbs/production.ini`).
+- 將 `docker/go-pttbbs/docker_compose.tmpl.env` 複製到 `docker/go-pttbbs/docker_compose.env` 並且更改相關設定.
+- `docker-compose --env-file docker/go-pttbbs/docker_compose.env -f docker/go-pttbbs/docker-compose.yaml up -d`
 
 ## 測試
 
-```
+```sh
 ./scripts/test.sh
 ```
 
 ## Coverage
 
-```
+```sh
 ./scripts/coverage.sh
 ```
 
@@ -56,9 +56,9 @@
 
 您可以使用以下方式快速執行 `run-dev.sh`:
 
-* `cd docs; tar -zxvf bbs-2025-03-22.tar.gz; cd ..`
-* `./scripts/run-dev.sh`
-* `curl -i -H 'X-Forwarded-For: 127.0.0.1' 'http://localhost:3456/v1/board/WhoAmI/articles?max=5&desc=true'`
+- `cd docs; tar -zxvf bbs-2025-03-22.tar.gz; cd ..`
+- `./scripts/run-dev.sh`
+- `curl -i -H 'X-Forwarded-For: 127.0.0.1' 'http://localhost:3456/v1/board/WhoAmI/articles?max=5&desc=true'`
 
 ## 設定
 
