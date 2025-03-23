@@ -60,6 +60,22 @@ func (b BBoardID) ToRaw() (bid ptttype.Bid, boardIDRaw *ptttype.BoardID_t, err e
 	return bid, boardIDRaw, nil
 }
 
+// ToRaw
+//
+// BBoardID is possible coming from outside, requiring validation.
+func (b BBoardID) ToRawAllGuest() (boardIDRaw *ptttype.BoardID_t, err error) {
+	// boardIDRaw
+	boardIDRaw = &ptttype.BoardID_t{}
+	copy(boardIDRaw[:], []byte(b))
+
+	// XXX It's possible that we send cls-id here.
+	// if !boardIDRaw.IsValid() {
+	//		return 0, nil, ErrInvalidBBoardID
+	//	}
+
+	return boardIDRaw, nil
+}
+
 func (b BBoardID) ToBrdname() string {
 	_, boardIDRaw, _ := b.ToRaw()
 	return types.CstrToString(boardIDRaw[:])

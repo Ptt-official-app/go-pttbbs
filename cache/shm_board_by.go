@@ -16,9 +16,9 @@ func (s shmBoardByName) Swap(i, j int) {
 }
 
 func (s shmBoardByName) Less(i, j int) (isLess bool) {
-	iBCache := Shm.Shm.BSorted[ptttype.BSORT_BY_NAME][i]
-	jBCache := Shm.Shm.BSorted[ptttype.BSORT_BY_NAME][j]
-	isLess = types.Cstrcasecmp(Shm.Shm.BCache[iBCache].Brdname[:], Shm.Shm.BCache[jBCache].Brdname[:]) < 0
+	iBCache := SHM.Shm.BSorted[ptttype.BSORT_BY_NAME][i]
+	jBCache := SHM.Shm.BSorted[ptttype.BSORT_BY_NAME][j]
+	isLess = types.Cstrcasecmp(SHM.Shm.BCache[iBCache].Brdname[:], SHM.Shm.BCache[jBCache].Brdname[:]) < 0
 	return isLess
 }
 
@@ -33,13 +33,13 @@ func (s shmBoardByClass) Swap(i, j int) {
 }
 
 func (s shmBoardByClass) Less(i, j int) bool {
-	iBCache := Shm.Shm.BSorted[ptttype.BSORT_BY_CLASS][i]
-	jBCache := Shm.Shm.BSorted[ptttype.BSORT_BY_CLASS][j]
+	iBCache := SHM.Shm.BSorted[ptttype.BSORT_BY_CLASS][i]
+	jBCache := SHM.Shm.BSorted[ptttype.BSORT_BY_CLASS][j]
 
-	cmp := types.Cstrcmp(Shm.Shm.BCache[iBCache].Title[:4], Shm.Shm.BCache[jBCache].Title[:4])
+	cmp := types.Cstrcmp(SHM.Shm.BCache[iBCache].Title[:4], SHM.Shm.BCache[jBCache].Title[:4])
 	if cmp != 0 {
 		return cmp < 0
 	} else {
-		return types.Cstrcasecmp(Shm.Shm.BCache[iBCache].Brdname[:], Shm.Shm.BCache[jBCache].Brdname[:]) < 0
+		return types.Cstrcasecmp(SHM.Shm.BCache[iBCache].Brdname[:], SHM.Shm.BCache[jBCache].Brdname[:]) < 0
 	}
 }

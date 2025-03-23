@@ -109,6 +109,91 @@ func TestReadPost(t *testing.T) {
 	}
 }
 
+func TestReadPostAllGuest(t *testing.T) {
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
+
+	boardID1 := &ptttype.BoardID_t{}
+	copy(boardID1[:], []byte("WhoAmI"))
+
+	filename1 := &ptttype.Filename_t{}
+	copy(filename1[:], []byte("M.1607202239.A.30D"))
+
+	filename := "testcase/boards/W/WhoAmI/M.1607202239.A.30D"
+	mtime := time.Unix(1607209066, 0)
+	os.Chtimes(filename, mtime, mtime)
+
+	filename2 := &ptttype.Filename_t{}
+	copy(filename2[:], []byte("M.1607202239.A.31D"))
+
+	type args struct {
+		boardID    *ptttype.BoardID_t
+		filename   *ptttype.Filename_t
+		retrieveTS types.Time4
+		isHash     bool
+	}
+	tests := []struct {
+		name        string
+		args        args
+		wantContent []byte
+		wantMtime   types.Time4
+		wantHash    cmsys.Fnv64_t
+		wantErr     bool
+	}{
+		// TODO: Add test cases.
+		{
+			args: args{
+				boardID:  boardID1,
+				filename: filename1,
+			},
+			wantContent: testContent1,
+			wantMtime:   1607209066,
+		},
+		{
+			args: args{
+				boardID:    boardID1,
+				filename:   filename1,
+				retrieveTS: 1607209066,
+			},
+			wantContent: nil,
+			wantMtime:   1607209066,
+		},
+		{
+			args: args{
+				boardID:    boardID1,
+				filename:   filename2,
+				retrieveTS: 1607209066,
+			},
+			wantContent: nil,
+			wantMtime:   0,
+			wantErr:     true,
+		},
+	}
+
+	var wg sync.WaitGroup
+	for _, tt := range tests {
+		wg.Add(1)
+		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
+			gotContent, gotMtime, gotHash, err := ReadPostAllGuest(tt.args.boardID, tt.args.filename, tt.args.retrieveTS, tt.args.isHash)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ReadPostAllGuest() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotContent, tt.wantContent) {
+				t.Errorf("ReadPostAllGuest() gotContent = %v, want %v", gotContent, tt.wantContent)
+			}
+			if !reflect.DeepEqual(gotMtime, tt.wantMtime) {
+				t.Errorf("ReadPostAllGuest() gotMtime = %v, want %v", gotMtime, tt.wantMtime)
+			}
+			if !reflect.DeepEqual(gotHash, tt.wantHash) {
+				t.Errorf("ReadPostAllGuest() gotHash = %v, want %v", gotHash, tt.wantHash)
+			}
+		})
+		wg.Wait()
+	}
+}
+
 func TestNewPost(t *testing.T) {
 	setupTest(t.Name())
 	defer teardownTest(t.Name())
@@ -146,7 +231,7 @@ func TestNewPost(t *testing.T) {
 		},
 	}
 
-	cache.Shm.Shm.BCache[9].NUser = 40
+	cache.SHM.Shm.BCache[9].NUser = 40
 
 	uid0, _ := cache.DoSearchUserRaw(&testNewPostUser1.UserID, nil)
 
@@ -312,7 +397,7 @@ func TestCrossPost(t *testing.T) {
 	fullForwardTitle0 := ptttype.Title_t{}
 	copy(fullForwardTitle0[:], []byte("Fw: [test] this is a test"))
 
-	cache.Shm.Shm.BCache[9].NUser = 40
+	cache.SHM.Shm.BCache[9].NUser = 40
 
 	uid0, _ := cache.DoSearchUserRaw(&testNewPostUser1.UserID, nil)
 

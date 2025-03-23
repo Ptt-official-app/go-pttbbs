@@ -13,7 +13,7 @@ func TestStatInc(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	err := NewSHM(TestShmKey, false, true)
+	err := Init(TestShmKey, false, true)
 	if err != nil {
 		log.Errorf("TestStatInc: unable to NewSHM: e: %v", err)
 		return
@@ -49,7 +49,7 @@ func TestStatInc(t *testing.T) {
 				t.Errorf("StatInc() error = %v, wantErr %v", err, tt.wantErr)
 			}
 
-			out := Shm.Shm.Statistic[ptttype.STAT_BOARDREC]
+			out := SHM.Shm.Statistic[ptttype.STAT_BOARDREC]
 
 			if !reflect.DeepEqual(out, tt.expected) {
 				t.Errorf("StatInc() out: %v expected: %v", out, tt.expected)
@@ -63,7 +63,7 @@ func TestReadStat(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	err := NewSHM(TestShmKey, false, true)
+	err := Init(TestShmKey, false, true)
 	if err != nil {
 		log.Errorf("TestReadStat: unable to NewSHM: e: %v", err)
 		return
@@ -118,7 +118,7 @@ func TestCleanStat(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	err := NewSHM(TestShmKey, false, true)
+	err := Init(TestShmKey, false, true)
 	if err != nil {
 		log.Errorf("CleanStat: unable to new shm: e: %v", err)
 		return

@@ -19,7 +19,7 @@ func TestGetBCache(t *testing.T) {
 	defer teardownTest()
 
 	boards := []ptttype.BoardHeaderRaw{testBoardHeader0, testBoardHeader1, testBoardHeader2}
-	copy(Shm.Shm.BCache[:], boards[:])
+	copy(SHM.Shm.BCache[:], boards[:])
 
 	type args struct {
 		bidInCache ptttype.Bid
@@ -178,13 +178,13 @@ func TestReloadBCache(t *testing.T) {
 
 			ReloadBCache()
 
-			nBoard := Shm.Shm.BNumber
+			nBoard := SHM.Shm.BNumber
 
 			if !reflect.DeepEqual(nBoard, tt.expectedNBoard) {
 				t.Errorf("ReloadBCache() = %v, want %v", nBoard, tt.expectedNBoard)
 			}
 
-			bsorted := &Shm.Shm.BSorted
+			bsorted := &SHM.Shm.BSorted
 
 			for idx := int32(0); idx < nBoard; idx++ {
 				board, _ := GetBCache(ptttype.Bid(idx + 1))
@@ -231,7 +231,7 @@ func Test_reloadCacheLoadBottom(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
 			reloadCacheLoadBottom()
-			nBottom := Shm.Shm.NBottom[9]
+			nBottom := SHM.Shm.NBottom[9]
 
 			if nBottom != tt.expected {
 				t.Errorf("nBottom: %v want: %v", nBottom, tt.expected)
@@ -251,7 +251,7 @@ func TestGetBTotal(t *testing.T) {
 	bid1InCache := bid1.ToBidInStore()
 	total1 := int32(5)
 
-	Shm.Shm.Total[bid1InCache] = total1
+	SHM.Shm.Total[bid1InCache] = total1
 
 	type args struct {
 		bid ptttype.Bid
@@ -275,6 +275,74 @@ func TestGetBTotal(t *testing.T) {
 			defer wg.Done()
 			if gotTotal := GetBTotal(tt.args.bid); gotTotal != tt.expectedTotal {
 				t.Errorf("GetBTotal() = %v, want %v", gotTotal, tt.expectedTotal)
+			}
+		})
+		wg.Wait()
+	}
+}
+
+func TestGetBTotalAllGuest(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	boardID0 := &ptttype.BoardID_t{'W', 'h', 'o', 'A', 'm', 'I'}
+	total0 := int32(2)
+
+	type args struct {
+		boardID *ptttype.BoardID_t
+	}
+	tests := []struct {
+		name      string
+		args      args
+		wantTotal int32
+	}{
+		// TODO: Add test cases.
+		{
+			args:      args{boardID0},
+			wantTotal: total0,
+		},
+	}
+
+	var wg sync.WaitGroup
+	for _, tt := range tests {
+		wg.Add(1)
+		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
+			if gotTotal := GetBTotalAllGuest(tt.args.boardID); gotTotal != tt.wantTotal {
+				t.Errorf("GetBTotalAllGuest() = %v, want %v", gotTotal, tt.wantTotal)
+			}
+		})
+		wg.Wait()
+	}
+}
+
+func TestGetBottomTotalAllGuest(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	boardID0 := &ptttype.BoardID_t{'W', 'h', 'o', 'A', 'm', 'I'}
+
+	type args struct {
+		boardID *ptttype.BoardID_t
+	}
+	tests := []struct {
+		name      string
+		args      args
+		wantTotal int32
+	}{
+		// TODO: Add test cases.
+		{
+			args:      args{boardID0},
+			wantTotal: 1,
+		},
+	}
+	var wg sync.WaitGroup
+	for _, tt := range tests {
+		wg.Add(1)
+		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
+			if gotTotal := GetBottomTotalAllGuest(tt.args.boardID); gotTotal != tt.wantTotal {
+				t.Errorf("GetBottomTotalAllGuest() = %v, want %v", gotTotal, tt.wantTotal)
 			}
 		})
 		wg.Wait()
@@ -319,9 +387,56 @@ func TestSetBTotal(t *testing.T) {
 			}
 
 			bidInCache := tt.args.bid.ToBidInStore()
-			lastPostTime := Shm.Shm.LastPostTime[bidInCache]
+			lastPostTime := SHM.Shm.LastPostTime[bidInCache]
 			if lastPostTime != tt.expectedLastPostTime {
 				t.Errorf("SetBTotal: lastPostTime: %v want: %v", lastPostTime, tt.expectedLastPostTime)
+			}
+		})
+		wg.Wait()
+	}
+}
+
+func TestSetBTotalAllGuest(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	boardID0 := &ptttype.BoardID_t{'W', 'h', 'o', 'A', 'm', 'I'}
+
+	type args struct {
+		boardID *ptttype.BoardID_t
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+
+		expectedTotal        int32
+		expectedLastPostTime types.Time4
+	}{
+		// TODO: Add test cases.
+		{
+			args:                 args{boardID0},
+			expectedTotal:        2,
+			expectedLastPostTime: 1607203395,
+		},
+	}
+	var wg sync.WaitGroup
+	for _, tt := range tests {
+		wg.Add(1)
+		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
+			if err := SetBTotalAllGuest(tt.args.boardID); (err != nil) != tt.wantErr {
+				t.Errorf("SetBTotalAllGuest error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			total := GetBTotalAllGuest(tt.args.boardID)
+			if total != tt.expectedTotal {
+				t.Errorf("SetBTotalAllGuest: total: %v want: %v", total, tt.expectedTotal)
+			}
+
+			lastPostTime := MAP.BoardLastPostTime[*tt.args.boardID]
+			if lastPostTime.time != tt.expectedLastPostTime {
+				t.Errorf("SetBTotalAllGuest: lastPostTime: %v want: %v", lastPostTime, tt.expectedLastPostTime)
 			}
 		})
 		wg.Wait()
@@ -360,9 +475,50 @@ func TestSetBottomTotal(t *testing.T) {
 			}
 
 			bidInCache := tt.args.bid.ToBidInStore()
-			total := Shm.Shm.NBottom[bidInCache]
+			total := SHM.Shm.NBottom[bidInCache]
 			if total != tt.expectedTotal {
 				t.Errorf("SetBottomTotal: total: %v want: %v", total, tt.expectedTotal)
+			}
+		})
+		wg.Wait()
+	}
+}
+
+func TestSetBottomTotalAllGuest(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	boardID0 := &ptttype.BoardID_t{'W', 'h', 'o', 'A', 'm', 'I'}
+
+	type args struct {
+		boardID *ptttype.BoardID_t
+	}
+	tests := []struct {
+		name      string
+		args      args
+		wantErr   bool
+		wantTotal uint8
+	}{
+		// TODO: Add test cases.
+		// TODO: Add test cases.
+		{
+			args:      args{boardID0},
+			wantTotal: 1,
+		},
+	}
+
+	var wg sync.WaitGroup
+	for _, tt := range tests {
+		wg.Add(1)
+		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
+			if err := SetBottomTotalAllGuest(tt.args.boardID); (err != nil) != tt.wantErr {
+				t.Errorf("SetBottomTotalAllGuest() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			total := MAP.BoardNBottom[*boardID0]
+			if uint8(total.count) != tt.wantTotal {
+				t.Errorf("SetBottomTotal: total: %v want: %v", total, tt.wantTotal)
 			}
 		})
 		wg.Wait()
@@ -1040,7 +1196,7 @@ func Test_buildBMCache(t *testing.T) {
 
 	_ = LoadUHash()
 
-	Shm.Shm.BCache[0] = testBoardHeader4
+	SHM.Shm.BCache[0] = testBoardHeader4
 
 	expected0 := []ptttype.UID{1, 2, -1, -1}
 
@@ -1067,7 +1223,7 @@ func Test_buildBMCache(t *testing.T) {
 			buildBMCache(tt.args.bid)
 
 			bidInStore := tt.args.bid.ToBidInStore()
-			got := &Shm.Shm.BMCache[bidInStore]
+			got := &SHM.Shm.BMCache[bidInStore]
 
 			testutil.TDeepEqual(t, "got", got[:], tt.expected)
 		})

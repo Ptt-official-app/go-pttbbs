@@ -10,14 +10,18 @@ import (
 
 // AddToUHash
 func AddToUHash(uidInCache ptttype.UIDInStore, userID *ptttype.UserID_t) error {
+	if types.IS_ALL_GUEST {
+		return nil
+	}
+
 	h := cmsys.StringHashWithHashBits(userID[:])
 
 	// line: 166
-	Shm.Shm.Userid[uidInCache] = *userID
+	SHM.Shm.Userid[uidInCache] = *userID
 
 	// init vars
 	p := h
-	val := Shm.Shm.HashHead[p]
+	val := SHM.Shm.HashHead[p]
 
 	// line: 168
 	times := 0
@@ -25,7 +29,7 @@ func AddToUHash(uidInCache ptttype.UIDInStore, userID *ptttype.UserID_t) error {
 	for ; times < ptttype.MAX_USERS && val != -1; times++ {
 		isNext = true
 		p = cmsys.Fnv32_t(val)
-		val = Shm.Shm.NextInHash[p]
+		val = SHM.Shm.NextInHash[p]
 	}
 	if times >= ptttype.MAX_USERS {
 		log.Errorf("Unable to add-to-uhash! uid-in-cache: %v userID: %v", uidInCache, string(userID[:]))
@@ -34,26 +38,30 @@ func AddToUHash(uidInCache ptttype.UIDInStore, userID *ptttype.UserID_t) error {
 
 	// set current ptr
 	if !isNext {
-		Shm.Shm.HashHead[p] = uidInCache
+		SHM.Shm.HashHead[p] = uidInCache
 	} else {
-		Shm.Shm.NextInHash[p] = uidInCache
+		SHM.Shm.NextInHash[p] = uidInCache
 	}
 
 	// set next as -1
-	Shm.Shm.NextInHash[uidInCache] = -1
+	SHM.Shm.NextInHash[uidInCache] = -1
 
 	return nil
 }
 
 // RemoveFromUHash
 func RemoveFromUHash(uidInCache ptttype.UIDInStore) error {
-	userID := &Shm.Shm.Userid[uidInCache]
+	if types.IS_ALL_GUEST {
+		return nil
+	}
+
+	userID := &SHM.Shm.Userid[uidInCache]
 
 	h := cmsys.StringHashWithHashBits(userID[:])
 
 	// line: 191
 	p := h
-	val := Shm.Shm.HashHead[p]
+	val := SHM.Shm.HashHead[p]
 
 	// line: 194
 	times := 0
@@ -61,7 +69,7 @@ func RemoveFromUHash(uidInCache ptttype.UIDInStore) error {
 	for ; times < ptttype.MAX_USERS && val != -1 && val != uidInCache; times++ {
 		p = cmsys.Fnv32_t(val)
 		isNext = true
-		val = Shm.Shm.NextInHash[p]
+		val = SHM.Shm.NextInHash[p]
 	}
 	if times >= ptttype.MAX_USERS {
 		log.Errorf("Unable to remove-from-uhash! uid-in-cache: %v userID: %v", uidInCache, string(userID[:]))
@@ -69,11 +77,11 @@ func RemoveFromUHash(uidInCache ptttype.UIDInStore) error {
 	}
 
 	if val == uidInCache {
-		nextNum := Shm.Shm.NextInHash[uidInCache]
+		nextNum := SHM.Shm.NextInHash[uidInCache]
 		if !isNext {
-			Shm.Shm.HashHead[p] = nextNum
+			SHM.Shm.HashHead[p] = nextNum
 		} else {
-			Shm.Shm.NextInHash[p] = nextNum
+			SHM.Shm.NextInHash[p] = nextNum
 		}
 	}
 	return nil
@@ -90,6 +98,13 @@ func RemoveFromUHash(uidInCache ptttype.UIDInStore) error {
 //	uid:
 //	err:
 func SearchUserRaw(userID *ptttype.UserID_t, rightID *ptttype.UserID_t) (uid ptttype.UID, err error) {
+	if types.IS_ALL_GUEST {
+		if rightID != nil {
+			copy(rightID[:], ptttype.GUEST.UserID[:])
+		}
+		return ptttype.GUEST_UID, nil
+	}
+
 	if userID[0] == 0 {
 		return 0, nil
 	}
@@ -99,24 +114,30 @@ func SearchUserRaw(userID *ptttype.UserID_t, rightID *ptttype.UserID_t) (uid ptt
 func DoSearchUserRaw(userID *ptttype.UserID_t, rightID *ptttype.UserID_t) (ptttype.UID, error) {
 	// XXX we should have 0 as non-exists.
 	//     currently the reason why it's ok is because the probability of collision on 0 is low.
+	if types.IS_ALL_GUEST {
+		if rightID != nil {
+			copy(rightID[:], ptttype.GUEST.UserID[:])
+		}
+		return ptttype.GUEST_UID, nil
+	}
 
 	_ = StatInc(ptttype.STAT_SEARCHUSER)
 	h := cmsys.StringHashWithHashBits(userID[:])
 
 	// p = SHM->hash_head[h]  //line: 219
-	p := Shm.Shm.HashHead[h]
+	p := SHM.Shm.HashHead[h]
 
 	shmUserID := (*ptttype.UserID_t)(nil)
 	for times := 0; times < ptttype.MAX_USERS && p != -1 && p < ptttype.MAX_USERS; times++ {
 		// if (strcasecmp(SHM->userid[p], userid) == 0)  //line: 222
-		shmUserID = &Shm.Shm.Userid[p]
+		shmUserID = &SHM.Shm.Userid[p]
 		if types.Cstrcasecmp(userID[:], shmUserID[:]) == 0 {
 			if userID[0] != 0 && rightID != nil {
 				copy(rightID[:], shmUserID[:])
 			}
 			return p.ToUID(), nil
 		}
-		p = Shm.Shm.NextInHash[p]
+		p = SHM.Shm.NextInHash[p]
 	}
 
 	return 0, nil
@@ -126,18 +147,26 @@ func DoSearchUserRaw(userID *ptttype.UserID_t, rightID *ptttype.UserID_t) (pttty
 //
 // XXX uid = uid-in-cache + 1
 func GetUserID(uid ptttype.UID) (*ptttype.UserID_t, error) {
+	if types.IS_ALL_GUEST {
+		return &ptttype.GUEST.UserID, nil
+	}
+
 	uidInCache := uid.ToUIDInStore()
 	if uidInCache < 0 || uidInCache >= ptttype.MAX_USERS {
 		return nil, ErrInvalidUID
 	}
 
-	return &Shm.Shm.Userid[uidInCache], nil
+	return &SHM.Shm.Userid[uidInCache], nil
 }
 
 // SetUserID
 //
 // XXX uid = uid-in-cache + 1
 func SetUserID(uid ptttype.UID, userID *ptttype.UserID_t) (err error) {
+	if types.IS_ALL_GUEST {
+		return nil
+	}
+
 	if uid <= 0 || uid > ptttype.MAX_USERS {
 		return ErrInvalidUID
 	}
@@ -158,14 +187,22 @@ func SetUserID(uid ptttype.UID, userID *ptttype.UserID_t) (err error) {
 // CooldownTimeOf
 // https://github.com/ptt/pttbbs/blob/master/include/cmbbs.h#L97
 func CooldownTimeOf(uid ptttype.UID) (cooldowntime types.Time4) {
+	if types.IS_ALL_GUEST {
+		return 0
+	}
+
 	uidInCache := uid.ToUIDInStore()
 
 	// types.Time4 is int32, not uint32
 	// we use 0x7FFFFFF0 instead of 0xFFFFFFF0
-	return Shm.Shm.CooldownTime[uidInCache] & 0x7FFFFFF0
+	return SHM.Shm.CooldownTime[uidInCache] & 0x7FFFFFF0
 }
 
 func AddCooldownTime(uid ptttype.UID, minutes int) (err error) {
+	if types.IS_ALL_GUEST {
+		return nil
+	}
+
 	cooldowntime := CooldownTimeOf(uid)
 	base := types.NowTS()
 	if base < cooldowntime {
@@ -176,34 +213,46 @@ func AddCooldownTime(uid ptttype.UID, minutes int) (err error) {
 	base &= 0x7FFFFFF0
 
 	uidInCache := uid.ToUIDInStore()
-	Shm.Shm.CooldownTime[uidInCache] = base
+	SHM.Shm.CooldownTime[uidInCache] = base
 
 	return nil
 }
 
 func SetCooldownTime(uid ptttype.UID, cooldownTime types.Time4) (err error) {
+	if types.IS_ALL_GUEST {
+		return nil
+	}
+
 	uidInCache := uid.ToUIDInStore()
-	Shm.Shm.CooldownTime[uidInCache] = cooldownTime
+	SHM.Shm.CooldownTime[uidInCache] = cooldownTime
 	return nil
 }
 
 // PosttimesOf
 // https://github.com/ptt/pttbbs/blob/master/include/cmbbs.h#L98
 func PosttimesOf(uid ptttype.UID) (posttimes types.Time4) {
+	if types.IS_ALL_GUEST {
+		return 0
+	}
+
 	uidInCache := uid.ToUIDInStore()
 
-	return Shm.Shm.CooldownTime[uidInCache] & 0xF
+	return SHM.Shm.CooldownTime[uidInCache] & 0xF
 }
 
 func AddPosttimes(uid ptttype.UID, times int) (err error) {
+	if types.IS_ALL_GUEST {
+		return nil
+	}
+
 	posttimes := PosttimesOf(uid)
 	newPosttimes := posttimes + types.Time4(times)
 
 	uidInCache := uid.ToUIDInStore()
 	if newPosttimes < 0xf {
-		Shm.Shm.CooldownTime[uidInCache] += types.Time4(times)
+		SHM.Shm.CooldownTime[uidInCache] += types.Time4(times)
 	} else {
-		Shm.Shm.CooldownTime[uidInCache] |= 0xf
+		SHM.Shm.CooldownTime[uidInCache] |= 0xf
 	}
 
 	return nil

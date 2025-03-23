@@ -49,10 +49,12 @@ func setupTest() {
 
 	time.Sleep(1 * time.Millisecond)
 
-	_ = cache.NewSHM(types.Key_t(cache.TestShmKey), ptttype.USE_HUGETLB, true)
+	_ = cache.Init(types.Key_t(cache.TestShmKey), ptttype.USE_HUGETLB, true)
 	_ = cache.AttachSHM()
 
-	cache.Shm.Reset()
+	cache.SHM.Reset()
+
+	cache.MAP.Reset()
 
 	_ = cache.LoadUHash()
 
@@ -86,6 +88,8 @@ func teardownTest() {
 	defer os.Remove("./testcase/.post")
 
 	defer cache.CloseSHM()
+
+	defer cache.CloseMAP()
 
 	defer cmbbs.PasswdDestroy()
 

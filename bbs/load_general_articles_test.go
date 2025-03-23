@@ -209,6 +209,6 @@ func TestLoadGeneralArticles(t *testing.T) {
 				t.Errorf("LoadGeneralArticles() isNewest = %v, want %v", gotIsNewest, tt.expectedIsNewest)
 			}
 		})
-		wg.Wait()
 	}
+	wg.Wait()
 }

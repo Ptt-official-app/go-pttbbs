@@ -8,7 +8,7 @@ RUN THE_ARCH=`uname -m` && \
     if [ "${THE_ARCH}" = "aarch64" -o "${THE_ARCH}" = "arm64"  ]; then THE_GOARCH=arm64; else THE_GOARCH=amd64; fi && \
     echo "THE_ARCH: ${THE_ARCH} THE_GOARCH: ${THE_GOARCH}" && \
     sleep 3 && \
-    curl -L https://dl.google.com/go/go1.22.2.linux-${THE_GOARCH}.tar.gz | tar -zxv && \
+    curl -L https://dl.google.com/go/go1.24.1.linux-${THE_GOARCH}.tar.gz | tar -zxv && \
     mv go /usr/local
 
 RUN DEBIAN_FRONTEND=noninteractive &&  \
@@ -33,7 +33,7 @@ ENV PATH=${PATH}:/usr/local/go/bin:/home/bbs/bin:/opt/bbs/bin
 COPY . /srv/go-pttbbs
 
 WORKDIR /srv/go-pttbbs
-RUN cp docs/config/config-docker.go.template ptttype/01-config-docker.go && \
+RUN cp docs/config/config-docker.go ptttype/01-config-docker.go && \
     mkdir -p /etc/go-pttbbs && cp docs/config/01-config.docker.ini /etc/go-pttbbs/production.ini && \
     cp docs/etc/* /etc/go-pttbbs && \
     chown -R bbs .
@@ -41,17 +41,21 @@ RUN cp docs/config/config-docker.go.template ptttype/01-config-docker.go && \
 USER bbs
 WORKDIR /srv/go-pttbbs
 RUN cd go-pttbbs; go build -ldflags "-X github.com/Ptt-official-app/go-pttbbs/types.GIT_VERSION=`git rev-parse --short HEAD` -X github.com/Ptt-official-app/go-pttbbs/types.VERSION=`git describe --tags`" -tags docker; cd ..
-RUN ./scripts/rebuild_pttbbs.sh
+# XXX all-guest: no need to rebuild pttbbs
+# RUN ./scripts/rebuild_pttbbs.sh
 
+# XXX all-guest: no need to run openresty
 # mkdir -p /opt/bbs
 USER root
-RUN mkdir -p /opt/bbs && cp -R /home/bbs/pttbbs /home/bbs/bin /home/bbs/etc /home/bbs/wsproxy /opt/bbs
-RUN ./scripts/openrestry.sh
+# RUN mkdir -p /opt/bbs && cp -R /home/bbs/pttbbs /home/bbs/bin /home/bbs/etc /home/bbs/wsproxy /opt/bbs
+# RUN ./scripts/openrestry.sh
 
+# XXX all-guest: no need to run shmctl, logind, openresty, boardd, mand.
 # cmd
 WORKDIR /home/bbs
-CMD ["sh", "-c", "sudo -iu bbs /home/bbs/bin/shmctl init && sudo -iu bbs /home/bbs/bin/logind && /usr/bin/openresty && sudo -iu bbs /home/bbs/bin/boardd -l 0.0.0.0:5150 && /srv/go-pttbbs/scripts/docker-mand.sh && sudo -iu bbs /srv/go-pttbbs/go-pttbbs/go-pttbbs -ini production.ini"]
+CMD ["sh", "-c", "sudo -iu bbs /srv/go-pttbbs/go-pttbbs/go-pttbbs -ini production.ini"]
 
 EXPOSE 3456
-EXPOSE 5150
-EXPOSE 5151
+# XXX all-guest: no need to expose boardd and mand.
+# EXPOSE 5150
+# EXPOSE 5151

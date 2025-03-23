@@ -48,10 +48,13 @@ var (
 	testClassSummary2 *BoardSummary
 	testClassSummary5 *BoardSummary
 
-	testArticleSummary0 *ArticleSummary
-	testArticleSummary1 *ArticleSummary
+	testArticleSummary0         *ArticleSummary
+	testArticleSummary0AllGuest *ArticleSummary
+	testArticleSummary1         *ArticleSummary
+	testArticleSummary1AllGuest *ArticleSummary
 
-	testBottomSummary1 *ArticleSummary
+	testBottomSummary1         *ArticleSummary
+	testBottomSummary1AllGuest *ArticleSummary
 
 	testContent1 []byte
 
@@ -663,6 +666,25 @@ func initTestVars() {
 		RealTitle: []byte{0xa7, 0xda, 0xac, 0x4f, 0xbd, 0xd6, 0xa1, 0x48, 0xa1, 0xe3},
 	}
 
+	testArticleSummary0AllGuest = &ArticleSummary{
+		BBoardID:   BBoardID("WhoAmI"),
+		ArticleID:  "1Vo_M_CD",
+		IsDeleted:  false,
+		Filename:   "M.1607202239.A.30D",
+		CreateTime: 1607202239,
+		MTime:      1607202238,
+		Owner:      "SYSOP",
+		FullTitle: []byte{
+			0x5b, 0xb0, 0xdd, 0xc3, 0x44, 0x5d, 0x20, 0xa7,
+			0xda, 0xac, 0x4f, 0xbd, 0xd6, 0xa1, 0x48, 0xa1,
+			0xe3,
+		},
+
+		Class:     []byte{0xb0, 0xdd, 0xc3, 0x44},
+		Idx:       "1607202239@1Vo_M_CD",
+		RealTitle: []byte{0xa7, 0xda, 0xac, 0x4f, 0xbd, 0xd6, 0xa1, 0x48, 0xa1, 0xe3},
+	}
+
 	testArticleSummary1 = &ArticleSummary{
 		BBoardID:   BBoardID("10_WhoAmI"),
 		ArticleID:  "1Vo_f30D",
@@ -686,8 +708,55 @@ func initTestVars() {
 		},
 	}
 
+	testArticleSummary1AllGuest = &ArticleSummary{
+		BBoardID:   BBoardID("WhoAmI"),
+		ArticleID:  "1Vo_f30D",
+		IsDeleted:  false,
+		Filename:   "M.1607203395.A.00D",
+		CreateTime: 1607203395,
+		MTime:      1607203394,
+		Owner:      "SYSOP",
+		FullTitle: []byte{
+			0x5b, 0xa4, 0xdf, 0xb1, 0x6f, 0x5d, 0x20, 0xb5,
+			0x4d, 0xab, 0xe1, 0xa9, 0x4f, 0xa1, 0x48, 0xa1,
+			0xe3,
+		},
+
+		Filemode: ptttype.FILE_MARKED,
+
+		Class: []byte{0xa4, 0xdf, 0xb1, 0x6f},
+		Idx:   "1607203395@1Vo_f30D",
+		RealTitle: []byte{
+			0xb5, 0x4d, 0xab, 0xe1, 0xa9, 0x4f, 0xa1, 0x48, 0xa1, 0xe3,
+		},
+	}
+
 	testBottomSummary1 = &ArticleSummary{
 		BBoardID:   BBoardID("10_WhoAmI"),
+		ArticleID:  "1Vo_f30D",
+		IsDeleted:  false,
+		Filename:   "M.1607203395.A.00D",
+		CreateTime: 1607203395,
+		MTime:      1607203394,
+		Owner:      "SYSOP",
+		FullTitle: []byte{
+			0x5b, 0xa4, 0xdf, 0xb1, 0x6f, 0x5d, 0x20, 0xb5,
+			0x4d, 0xab, 0xe1, 0xa9, 0x4f, 0xa1, 0x48, 0xa1,
+			0xe3,
+		},
+
+		Filemode: ptttype.FILE_MULTI,
+		Money:    -2147483646,
+
+		Class: []byte{0xa4, 0xdf, 0xb1, 0x6f},
+		Idx:   "1607203395@1Vo_f30D",
+		RealTitle: []byte{
+			0xb5, 0x4d, 0xab, 0xe1, 0xa9, 0x4f, 0xa1, 0x48, 0xa1, 0xe3,
+		},
+	}
+
+	testBottomSummary1AllGuest = &ArticleSummary{
+		BBoardID:   BBoardID("WhoAmI"),
 		ArticleID:  "1Vo_f30D",
 		IsDeleted:  false,
 		Filename:   "M.1607203395.A.00D",

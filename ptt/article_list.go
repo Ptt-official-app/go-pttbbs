@@ -72,6 +72,51 @@ func LoadGeneralArticles(user *ptttype.UserecRaw, uid ptttype.UID, boardIDRaw *p
 	return summaries, isNewest, nextSummary, startIdx, nil
 }
 
+func LoadGeneralArticlesAllGuest(boardIDRaw *ptttype.BoardID_t, startIdx ptttype.SortIdx, nArticles int, isDesc bool) (summaries []*ptttype.ArticleSummaryRaw, isNewest bool, nextSummary *ptttype.ArticleSummaryRaw, startNumIdx ptttype.SortIdx, err error) {
+	// 1. check perm.
+	_, err = IsBoardValidAllGuest(boardIDRaw)
+	if err != nil {
+		return nil, false, nil, 0, err
+	}
+
+	// 2. bcache preparation.
+	total := cache.GetBTotalAllGuest(boardIDRaw)
+	if total == 0 {
+		return nil, true, nil, 0, nil
+	}
+
+	// 3. get records
+	filename, err := setBDir(boardIDRaw)
+	if err != nil {
+		return nil, false, nil, 0, err
+	}
+	// 3.1. ensure startAid
+	if startIdx == 0 && isDesc {
+		startIdx = ptttype.SortIdx(total)
+	}
+
+	summaries, err = cmsys.GetRecords(boardIDRaw, filename, startIdx, nArticles+1, isDesc)
+	if err != nil {
+		return nil, false, nil, 0, err
+	}
+
+	// 4. return
+	//nolint:ineffassign
+	isNewest = false
+	if isDesc {
+		isNewest = startIdx == ptttype.SortIdx(total)
+	} else {
+		isNewest = len(summaries) != nArticles+1
+	}
+
+	if len(summaries) == nArticles+1 {
+		nextSummary = summaries[nArticles]
+		summaries = summaries[:nArticles]
+	}
+
+	return summaries, isNewest, nextSummary, startIdx, nil
+}
+
 func LoadBottomArticles(user *ptttype.UserecRaw, uid ptttype.UID, boardIDRaw *ptttype.BoardID_t, bid ptttype.Bid) (summaries []*ptttype.ArticleSummaryRaw, err error) {
 	// 1. check perm.
 	board, err := cache.GetBCache(bid)
@@ -86,6 +131,33 @@ func LoadBottomArticles(user *ptttype.UserecRaw, uid ptttype.UID, boardIDRaw *pt
 
 	// 2. bcache preparation.
 	total := cache.GetBottomTotal(bid)
+	if total == 0 {
+		return nil, nil
+	}
+
+	// 3. get records
+	filename, err := path.SetBFile(boardIDRaw, ptttype.FN_DIR_BOTTOM)
+	if err != nil {
+		return nil, err
+	}
+
+	summaries, err = cmsys.GetRecords(boardIDRaw, filename, 1, int(total), false)
+	if err != nil {
+		return nil, err
+	}
+
+	return summaries, nil
+}
+
+func LoadBottomArticlesAllGuest(boardIDRaw *ptttype.BoardID_t) (summaries []*ptttype.ArticleSummaryRaw, err error) {
+	// 1. check perm.
+	_, err = IsBoardValidAllGuest(boardIDRaw)
+	if err != nil {
+		return nil, err
+	}
+
+	// 2. bcache preparation.
+	total := cache.GetBottomTotalAllGuest(boardIDRaw)
 	if total == 0 {
 		return nil, nil
 	}
@@ -130,6 +202,26 @@ func findArticleStartIdx(boardID *ptttype.BoardID_t, bid ptttype.Bid, createTime
 	if err != nil {
 		return -1, err
 	}
+	if total == 0 {
+		return -1, ErrNoRecord
+	}
+
+	return cmsys.FindRecordStartIdx(dirFilename, int(total), createTime, filename, isDesc)
+}
+
+func FindArticleStartIdxAllGuest(boardID *ptttype.BoardID_t, createTime types.Time4, filename *ptttype.Filename_t, isDesc bool) (startIdx ptttype.SortIdx, err error) {
+	_, err = IsBoardValidAllGuest(boardID)
+	if err != nil {
+		return -1, err
+	}
+
+	// 3. get records
+	dirFilename, err := setBDir(boardID)
+	if err != nil {
+		return -1, err
+	}
+
+	total := cache.GetBTotalAllGuest(boardID)
 	if total == 0 {
 		return -1, ErrNoRecord
 	}

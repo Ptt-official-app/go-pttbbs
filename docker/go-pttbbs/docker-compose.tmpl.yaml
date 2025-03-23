@@ -1,0 +1,13 @@
+services:
+  go-pttbbs:
+    image: pttofficialapps/go-pttbbs:v0.25.2
+    ports:
+      - "127.0.0.1:3456:3456"
+    restart: always
+    volumes:
+      - type: bind
+        source: ${BBSHOME}
+        target: /home/bbs
+      - type: bind
+        source: ${ETC}
+        target: /etc/go-pttbbs

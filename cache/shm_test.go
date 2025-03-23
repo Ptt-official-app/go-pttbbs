@@ -52,29 +52,29 @@ func TestNewSHM(t *testing.T) {
 		wg.Add(1)
 		t.Run(tt.name, func(t *testing.T) {
 			defer wg.Done()
-			err := NewSHM(tt.args.key, tt.args.isUseHugeTlb, tt.args.isCreate)
+			err := Init(tt.args.key, tt.args.isUseHugeTlb, tt.args.isCreate)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("NewSHM() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 
-			Shm.Reset()
+			SHM.Reset()
 
-			Shm.Raw.Version = Shm.Shm.Version
-			Shm.Raw.Size = Shm.Shm.Size
+			SHM.Raw.Version = SHM.Shm.Version
+			SHM.Raw.Size = SHM.Shm.Size
 
-			if !reflect.DeepEqual(Shm.Raw.Version, tt.wantVersion) {
-				t.Errorf("NewSHM() version: %v expected: %v", Shm.Raw.Version, tt.wantVersion)
+			if !reflect.DeepEqual(SHM.Raw.Version, tt.wantVersion) {
+				t.Errorf("NewSHM() version: %v expected: %v", SHM.Raw.Version, tt.wantVersion)
 			}
 
-			if !reflect.DeepEqual(Shm.Raw.Size, tt.wantSize) {
-				t.Errorf("NewSHM() size: %v expected :%v", Shm.Raw.Size, tt.wantSize)
+			if !reflect.DeepEqual(SHM.Raw.Size, tt.wantSize) {
+				t.Errorf("NewSHM() size: %v expected :%v", SHM.Raw.Size, tt.wantSize)
 			}
 
 			if tt.isClose {
 				CloseSHM()
 			} else {
-				Shm = nil
+				SHM = nil
 			}
 		})
 		wg.Wait()

@@ -14,8 +14,8 @@ func TestLoadHotBoards(t *testing.T) {
 	defer teardownTest()
 
 	hbcache := []ptttype.BidInStore{9, 0, 7}
-	copy(cache.Shm.Shm.HBcache[:], hbcache)
-	cache.Shm.Shm.NHOTs = 3
+	copy(cache.SHM.Shm.HBcache[:], hbcache)
+	cache.SHM.Shm.NHOTs = 3
 
 	type args struct {
 		uuserID UUserID

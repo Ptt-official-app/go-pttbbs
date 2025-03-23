@@ -20,14 +20,14 @@ func TestSearchUListUserID(t *testing.T) {
 	userID0 := &ptttype.UserID_t{}
 	copy(userID0[:], []byte("not-exists"))
 
-	Shm.Shm.CurrSorted = 0
-	Shm.Shm.UTMPNumber = 5
+	SHM.Shm.CurrSorted = 0
+	SHM.Shm.UTMPNumber = 5
 
 	sorted := []ptttype.UtmpID{2, 1, 0, 4, 3}
-	copy(Shm.Shm.Sorted[0][0][:], sorted)
+	copy(SHM.Shm.Sorted[0][0][:], sorted)
 
 	uinfo := []ptttype.UserInfoRaw{testUserInfo1, testUserInfo2, testUserInfo3, testUserInfo4, testUserInfo5, testUserInfo6}
-	copy(Shm.Shm.UInfo[:], uinfo)
+	copy(SHM.Shm.UInfo[:], uinfo)
 
 	type args struct {
 		userID *ptttype.UserID_t
@@ -84,16 +84,16 @@ func TestSearchUListPID(t *testing.T) {
 	userID0 := &ptttype.UserID_t{}
 	copy(userID0[:], []byte("not-exists"))
 
-	Shm.Shm.CurrSorted = 0
+	SHM.Shm.CurrSorted = 0
 
-	Shm.Shm.UTMPNumber = 5
+	SHM.Shm.UTMPNumber = 5
 
 	sorted := []ptttype.UtmpID{2, 1, 0, 4, 3}
-	copy(Shm.Shm.Sorted[0][ptttype.SORT_BY_PID][:], sorted)
-	const sizeOfSorted2 = unsafe.Sizeof(Shm.Raw.Sorted[0][0])
+	copy(SHM.Shm.Sorted[0][ptttype.SORT_BY_PID][:], sorted)
+	const sizeOfSorted2 = unsafe.Sizeof(SHM.Raw.Sorted[0][0])
 
 	uinfo := []ptttype.UserInfoRaw{testUserInfo1, testUserInfo2, testUserInfo3, testUserInfo4, testUserInfo5, testUserInfo6}
-	copy(Shm.Shm.UInfo[:], uinfo)
+	copy(SHM.Shm.UInfo[:], uinfo)
 
 	type args struct {
 		pid types.Pid_t
@@ -159,7 +159,7 @@ func TestGetUTotal(t *testing.T) {
 
 	InitFillUHash(false)
 
-	Shm.Shm.UTMPNumber = 5
+	SHM.Shm.UTMPNumber = 5
 	tests := []struct {
 		name      string
 		wantTotal int32

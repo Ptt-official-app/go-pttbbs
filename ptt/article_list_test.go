@@ -250,6 +250,204 @@ func TestLoadGeneralArticles(t *testing.T) {
 	}
 }
 
+func TestLoadGeneralArticlesAllGuest(t *testing.T) {
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
+
+	boardID := &ptttype.BoardID_t{}
+	copy(boardID[:], []byte("WhoAmI"))
+
+	boardID1 := &ptttype.BoardID_t{}
+	copy(boardID1[:], []byte("SYSOP"))
+
+	type args struct {
+		boardIDRaw *ptttype.BoardID_t
+		startIdx   ptttype.SortIdx
+		nArticles  int
+		isDesc     bool
+	}
+	tests := []struct {
+		name            string
+		args            args
+		wantSummaries   []*ptttype.ArticleSummaryRaw
+		wantIsNewest    bool
+		wantNextSummary *ptttype.ArticleSummaryRaw
+		wantStartNumIdx ptttype.SortIdx
+		wantErr         bool
+	}{
+		// TODO: Add test cases.
+		{
+			args: args{
+				boardIDRaw: boardID,
+				startIdx:   2,
+				nArticles:  1,
+				isDesc:     true,
+			},
+			wantSummaries:   []*ptttype.ArticleSummaryRaw{testArticleSummary1},
+			wantNextSummary: testArticleSummary0,
+			wantStartNumIdx: 2,
+			wantIsNewest:    true,
+		},
+		{
+			args: args{
+				boardIDRaw: boardID,
+				startIdx:   2,
+				nArticles:  100,
+				isDesc:     true,
+			},
+			wantSummaries:   []*ptttype.ArticleSummaryRaw{testArticleSummary1, testArticleSummary0},
+			wantStartNumIdx: 2,
+			wantIsNewest:    true,
+		},
+		{
+			args: args{
+				boardIDRaw: boardID,
+				startIdx:   2,
+				nArticles:  2,
+				isDesc:     true,
+			},
+			wantSummaries:   []*ptttype.ArticleSummaryRaw{testArticleSummary1, testArticleSummary0},
+			wantStartNumIdx: 2,
+			wantIsNewest:    true,
+		},
+		{
+			args: args{
+				boardIDRaw: boardID,
+				startIdx:   2,
+				nArticles:  1,
+				isDesc:     true,
+			},
+			wantSummaries:   []*ptttype.ArticleSummaryRaw{testArticleSummary1},
+			wantIsNewest:    true,
+			wantStartNumIdx: 2,
+			wantNextSummary: testArticleSummary0,
+		},
+		{
+			args: args{
+				boardIDRaw: boardID,
+				startIdx:   1,
+				nArticles:  1,
+				isDesc:     true,
+			},
+			wantSummaries:   []*ptttype.ArticleSummaryRaw{testArticleSummary0},
+			wantStartNumIdx: 1,
+			wantIsNewest:    false,
+		},
+		{
+			args: args{
+				boardIDRaw: boardID1,
+				startIdx:   2,
+				nArticles:  1,
+				isDesc:     true,
+			},
+			wantSummaries: nil,
+			wantIsNewest:  true,
+		},
+		{
+			args: args{
+				boardIDRaw: boardID,
+				startIdx:   2,
+				nArticles:  1,
+				isDesc:     false,
+			},
+			wantSummaries:   []*ptttype.ArticleSummaryRaw{testArticleSummary1},
+			wantNextSummary: nil,
+			wantStartNumIdx: 2,
+			wantIsNewest:    true,
+		},
+		{
+			args: args{
+				boardIDRaw: boardID,
+				startIdx:   1,
+				nArticles:  100,
+				isDesc:     false,
+			},
+			wantSummaries:   []*ptttype.ArticleSummaryRaw{testArticleSummary0, testArticleSummary1},
+			wantStartNumIdx: 1,
+			wantIsNewest:    true,
+		},
+		{
+			args: args{
+				boardIDRaw: boardID,
+				startIdx:   1,
+				nArticles:  2,
+				isDesc:     false,
+			},
+			wantSummaries:   []*ptttype.ArticleSummaryRaw{testArticleSummary0, testArticleSummary1},
+			wantStartNumIdx: 1,
+			wantIsNewest:    true,
+		},
+		{
+			args: args{
+				boardIDRaw: boardID,
+				startIdx:   1,
+				nArticles:  1,
+				isDesc:     false,
+			},
+			wantSummaries:   []*ptttype.ArticleSummaryRaw{testArticleSummary0},
+			wantIsNewest:    false,
+			wantStartNumIdx: 1,
+			wantNextSummary: testArticleSummary1,
+		},
+		{
+			args: args{
+				boardIDRaw: boardID,
+				startIdx:   2,
+				nArticles:  1,
+				isDesc:     false,
+			},
+			wantSummaries:   []*ptttype.ArticleSummaryRaw{testArticleSummary1},
+			wantStartNumIdx: 2,
+			wantIsNewest:    true,
+		},
+		{
+			args: args{
+				boardIDRaw: boardID1,
+				nArticles:  1,
+				isDesc:     false,
+			},
+			wantSummaries: nil,
+			wantIsNewest:  true,
+		},
+	}
+
+	var wg sync.WaitGroup
+	for _, tt := range tests {
+		wg.Add(1)
+		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
+			gotSummaries, gotIsNewest, gotNextSummary, gotStartNumIdx, err := LoadGeneralArticlesAllGuest(tt.args.boardIDRaw, tt.args.startIdx, tt.args.nArticles, tt.args.isDesc)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("LoadGeneralArticlesAllGuest() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			for _, each := range gotSummaries {
+				each.BoardID = nil
+			}
+
+			if !reflect.DeepEqual(gotSummaries, tt.wantSummaries) {
+				t.Errorf("LoadGeneralArticlesAllGuest() gotSummaries = %v, want %v", gotSummaries[0], tt.wantSummaries[0])
+			}
+			if gotIsNewest != tt.wantIsNewest {
+				t.Errorf("LoadGeneralArticlesAllGuest() gotIsNewest = %v, want %v", gotIsNewest, tt.wantIsNewest)
+			}
+
+			if gotNextSummary != nil {
+				gotNextSummary.BoardID = nil
+			}
+
+			if !reflect.DeepEqual(gotNextSummary, tt.wantNextSummary) {
+				t.Errorf("LoadGeneralArticlesAllGuest() gotNextSummary = %v, want %v", gotNextSummary, tt.wantNextSummary)
+			}
+			if !reflect.DeepEqual(gotStartNumIdx, tt.wantStartNumIdx) {
+				t.Errorf("LoadGeneralArticlesAllGuest() gotStartNumIdx = %v, want %v", gotStartNumIdx, tt.wantStartNumIdx)
+			}
+		})
+		wg.Wait()
+	}
+}
+
 func TestFindArticleStartIdx(t *testing.T) {
 	setupTest(t.Name())
 	defer teardownTest(t.Name())
@@ -406,6 +604,125 @@ func TestFindArticleStartIdx(t *testing.T) {
 	}
 }
 
+func TestFindArticleStartIdxAllGuest(t *testing.T) {
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
+
+	boardID := &ptttype.BoardID_t{}
+	copy(boardID[:], []byte("WhoAmI"))
+
+	type args struct {
+		boardID    *ptttype.BoardID_t
+		createTime types.Time4
+		filename   *ptttype.Filename_t
+		isDesc     bool
+	}
+	tests := []struct {
+		name         string
+		args         args
+		wantStartIdx ptttype.SortIdx
+		wantErr      bool
+	}{
+		// TODO: Add test cases.
+		{
+			name: "most basic: filename: beginning, asc (not isDesc)",
+			args: args{
+				boardID:    boardID,
+				createTime: 1607202239,
+				filename:   &testArticleSummary0.FileHeaderRaw.Filename,
+				isDesc:     false,
+			},
+			wantStartIdx: 1,
+		},
+		{
+			name: "most basic: filename: last, asc (not isDesc)",
+			args: args{
+				boardID:    boardID,
+				createTime: 1607203395,
+				filename:   &testArticleSummary1.FileHeaderRaw.Filename,
+				isDesc:     false,
+			},
+			wantStartIdx: 2,
+		},
+		{
+			name: "most basic: filename: beginning, desc",
+			args: args{
+				boardID:    boardID,
+				createTime: 1607202239,
+				filename:   &testArticleSummary0.FileHeaderRaw.Filename,
+				isDesc:     true,
+			},
+			wantStartIdx: 1,
+		},
+		{
+			name: "most basic: filename: last, desc",
+			args: args{
+				boardID:    boardID,
+				createTime: 1607203395,
+				filename:   &testArticleSummary1.FileHeaderRaw.Filename,
+				isDesc:     true,
+			},
+			wantStartIdx: 2,
+		},
+		{
+			name: "createTime: beginning, filename: nil, desc",
+			args: args{
+				boardID:    boardID,
+				createTime: 1607202239,
+				filename:   nil,
+				isDesc:     true,
+			},
+			wantStartIdx: 1,
+		},
+		{
+			name: "createTime: last, filename: nil, desc",
+			args: args{
+				boardID:    boardID,
+				createTime: 1607203395,
+				filename:   nil,
+				isDesc:     true,
+			},
+			wantStartIdx: 2,
+		},
+		{
+			name: "createTime: beginning, filename: nil, asc (not isDesc)",
+			args: args{
+				boardID:    boardID,
+				createTime: 1607202239,
+				filename:   nil,
+				isDesc:     false,
+			},
+			wantStartIdx: 1,
+		},
+		{
+			name: "createTime: last, filename: nil, asc (not isDesc)",
+			args: args{
+				boardID:    boardID,
+				createTime: 1607203395,
+				filename:   nil,
+				isDesc:     false,
+			},
+			wantStartIdx: 2,
+		},
+	}
+	var wg sync.WaitGroup
+	for _, tt := range tests {
+		wg.Add(1)
+		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
+			gotStartIdx, err := FindArticleStartIdxAllGuest(tt.args.boardID, tt.args.createTime, tt.args.filename, tt.args.isDesc)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("FindArticleStartIdxAllGuest() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotStartIdx, tt.wantStartIdx) {
+				t.Errorf("FindArticleStartIdxAllGuest() = %v, want %v", gotStartIdx, tt.wantStartIdx)
+			}
+		})
+		wg.Wait()
+	}
+}
+
 func TestLoadGeneralArticlesSameCreateTime(t *testing.T) {
 	setupTest(t.Name())
 	defer teardownTest(t.Name())
@@ -540,6 +857,63 @@ func TestLoadBottomArticles(t *testing.T) {
 			}
 
 			testutil.TDeepEqual(t, "summaries", gotSummaries, tt.expectedSummaries)
+		})
+		wg.Wait()
+	}
+}
+
+func TestLoadBottomArticlesAllGuest(t *testing.T) {
+	setupTest(t.Name())
+	defer teardownTest(t.Name())
+
+	boardID := &ptttype.BoardID_t{}
+	copy(boardID[:], []byte("WhoAmI"))
+
+	boardID1 := &ptttype.BoardID_t{}
+	copy(boardID1[:], []byte("SYSOP"))
+
+	type args struct {
+		boardIDRaw *ptttype.BoardID_t
+	}
+	tests := []struct {
+		name          string
+		args          args
+		wantSummaries []*ptttype.ArticleSummaryRaw
+		wantErr       bool
+	}{
+		// TODO: Add test cases.
+		{
+			args: args{
+				boardIDRaw: boardID,
+			},
+			wantSummaries: []*ptttype.ArticleSummaryRaw{testBottomSummary1},
+		},
+		{
+			args: args{
+				boardIDRaw: boardID1,
+			},
+			wantSummaries: nil,
+		},
+	}
+	var wg sync.WaitGroup
+	for _, tt := range tests {
+		wg.Add(1)
+		t.Run(tt.name, func(t *testing.T) {
+			defer wg.Done()
+			gotSummaries, err := LoadBottomArticlesAllGuest(tt.args.boardIDRaw)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("LoadBottomArticlesAllGuest() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			for _, each := range gotSummaries {
+				each.BoardID = nil
+				copy(each.Multi[:], []byte{0, 0, 0, 0})
+			}
+
+			if !reflect.DeepEqual(gotSummaries, tt.wantSummaries) {
+				t.Errorf("LoadBottomArticlesAllGuest() = %v, want %v", gotSummaries, tt.wantSummaries)
+			}
 		})
 		wg.Wait()
 	}

@@ -1,0 +1,42 @@
+[build-system]
+requires = [
+    'setuptools',
+]
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = 'go-pttbbs'
+version = '0.25.2'
+dependencies = [
+    'Flask==3.1.0',
+    'PyYAML==6.0.2',
+    'flask-swagger@git+https://github.com/chhsiao1981/flask-swagger.git@importlib.metadata#egg=flask-swagger',
+]
+authors = [
+    {name = 'Chuan-Heng Hsiao', email = 'hsiao.chuanheng@gmail.com'},
+]
+description = ""
+keywords = [
+]
+classifiers = [
+    'Programming Language :: Python :: 3',
+    'Operating System :: OS Independent',
+]
+
+[project.urls]
+# Homepage      = ""
+# Documentation = ""
+# Repository    = ""
+# "Bug Tracker" = ""
+# Changelog = ""
+
+[project.scripts]
+apidoc = 'apidoc.apidoc:app'
+
+[tool.setuptools.packages.find]
+include = [
+    'COMBINE_harmonizer',
+]
+exclude = [
+    'tests*',
+]

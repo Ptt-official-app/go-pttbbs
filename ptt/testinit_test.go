@@ -50,12 +50,14 @@ func setupTest(name string) {
 
 	time.Sleep(1 * time.Millisecond)
 
-	err = cache.NewSHM(types.Key_t(cache.TestShmKey), ptttype.USE_HUGETLB, true)
+	err = cache.Init(types.Key_t(cache.TestShmKey), ptttype.USE_HUGETLB, true)
 	if err != nil {
 		logrus.Errorf("unable to NewSHM! e: %v", err)
 	}
 
-	cache.Shm.Reset()
+	cache.SHM.Reset()
+
+	cache.MAP.Reset()
 
 	_ = cache.LoadUHash()
 
@@ -106,6 +108,8 @@ func teardownTest(name string) {
 	}()
 
 	defer cache.CloseSHM()
+
+	defer cache.CloseMAP()
 
 	defer cmbbs.PasswdDestroy()
 

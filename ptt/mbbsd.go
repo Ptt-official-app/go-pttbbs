@@ -91,7 +91,7 @@ func userLogin(uid ptttype.UID, user *ptttype.UserecRaw, ip *ptttype.IPv4_t) (er
 	// currutmp->alerts |= load_mailalert(cuser.userid)
 
 	// https://github.com/ptt/pttbbs/blob/master/mbbsd/mbbsd.c#L1219
-	cache.Shm.CheckMaxUser()
+	cache.SHM.CheckMaxUser()
 
 	// update
 	_, err = pwcuLoginSave(uid, user, uinfo, ip)

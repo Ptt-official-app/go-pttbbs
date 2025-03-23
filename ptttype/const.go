@@ -2,6 +2,7 @@ package ptttype
 
 import (
 	"os"
+	"strings"
 
 	"github.com/Ptt-official-app/go-pttbbs/types"
 )
@@ -144,3 +145,19 @@ const (
 	// https://github.com/ptt/pttbbs/blob/master/mbbsd/bbs.c#L1396
 	POSTSAMPLE = "postsample"
 )
+
+var (
+	GUEST = &UserecRaw{
+		UserID:    UserID_t{'g', 'u', 'e', 's', 't'},
+		RealName:  RealName_t{'g', 'u', 'e', 's', 't'},
+		Nickname:  Nickname_t{'g', 'u', 'e', 's', 't'},
+		UserLevel: PERM_DEFAULT,
+		Over18:    true,
+	}
+
+	GUEST2 = &Userec2Raw{}
+
+	GUEST_UID UID = 2
+)
+
+var BOARD_PREFIXES = strings.Split("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", "")

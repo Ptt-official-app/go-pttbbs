@@ -91,18 +91,18 @@ func myWrite(myUtmpID ptttype.UtmpID, myInfo *ptttype.UserInfoRaw, pid types.Pid
 }
 
 func myWriteInit(myUtmpID ptttype.UtmpID, myInfo *ptttype.UserInfoRaw) (mode ptttype.UserOpMode, c0 byte) {
-	mode = cache.Shm.Shm.UInfo[myUtmpID].Mode
-	c0 = cache.Shm.Shm.UInfo[myUtmpID].Chatid[0]
+	mode = cache.SHM.Shm.UInfo[myUtmpID].Mode
+	c0 = cache.SHM.Shm.UInfo[myUtmpID].Chatid[0]
 
-	cache.Shm.Shm.UInfo[myUtmpID].Mode = 0
-	cache.Shm.Shm.UInfo[myUtmpID].Chatid = ptttype.ChatID_t{}
+	cache.SHM.Shm.UInfo[myUtmpID].Mode = 0
+	cache.SHM.Shm.UInfo[myUtmpID].Chatid = ptttype.ChatID_t{}
 
 	return mode, c0
 }
 
 func myWriteDefer(mode ptttype.UserOpMode, c0 uint8, myUtmpID ptttype.UtmpID, myInfo *ptttype.UserInfoRaw) {
-	cache.Shm.Shm.UInfo[myUtmpID].Mode = mode
-	cache.Shm.Shm.UInfo[myUtmpID].Chatid[0] = c0
+	cache.SHM.Shm.UInfo[myUtmpID].Mode = mode
+	cache.SHM.Shm.UInfo[myUtmpID].Chatid[0] = c0
 }
 
 func myWriteMsg(myUtmpID ptttype.UtmpID, myInfo *ptttype.UserInfoRaw, flag ptttype.WaterBall, utmpID ptttype.UtmpID, uin *ptttype.UserInfoRaw, msg []byte) (msgCount uint8, err error) {
@@ -129,19 +129,19 @@ func myWriteMsg(myUtmpID ptttype.UtmpID, myInfo *ptttype.UserInfoRaw, flag pttty
 	copy(msgQueue.UserID[:], myInfo.UserID[:])
 	copy(msgQueue.LastCallIn[:], msg)
 
-	msgCount = cache.Shm.Shm.UInfo[utmpID].MsgCount
+	msgCount = cache.SHM.Shm.UInfo[utmpID].MsgCount
 	if msgCount == ptttype.MAX_MSGS-1 {
 		return 0, ErrTooManyMsgs
 	}
 
 	idxMsg := msgCount
 	msgCount++
-	cache.Shm.Shm.UInfo[utmpID].MsgCount++
-	cache.Shm.Shm.UInfo[utmpID].Msgs[idxMsg] = *msgQueue
+	cache.SHM.Shm.UInfo[utmpID].MsgCount++
+	cache.SHM.Shm.UInfo[utmpID].Msgs[idxMsg] = *msgQueue
 
 	if ptttype.NOKILLWATERBALL {
 		nowTS := types.NowTS()
-		cache.Shm.Shm.UInfo[utmpID].WBTime = nowTS
+		cache.SHM.Shm.UInfo[utmpID].WBTime = nowTS
 	} else {
 		err = types.Kill(uin.Pid, syscall.SIGUSR2)
 		if err != nil {

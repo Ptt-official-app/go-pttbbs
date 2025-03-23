@@ -6,8 +6,6 @@ linters-settings:
     locale: US
     ignore-words:
       - visable
-  gofmt:
-  goimports:
   nolintlint:
     allow-unused: true
 linters:
@@ -44,5 +42,5 @@ issues:
     - '`pwcuSetByBit` is unused'
     - 'unused-parameter: parameter'
     - G115
-  exclude-rules:
+  exclude-rules: []
   exclude-use-default: true

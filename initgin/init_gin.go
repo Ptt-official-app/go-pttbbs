@@ -2,6 +2,7 @@ package initgin
 
 import (
 	"github.com/Ptt-official-app/go-pttbbs/api"
+	"github.com/Ptt-official-app/go-pttbbs/types"
 	"github.com/gin-gonic/gin"
 )
 
@@ -12,6 +13,33 @@ func withPrefix(path string) string {
 }
 
 func InitGin() (*gin.Engine, error) {
+	if types.IS_ALL_GUEST {
+		return initGinAllGuest()
+	} else {
+		return initGin()
+	}
+}
+
+func initGinAllGuest() (*gin.Engine, error) {
+	router := gin.Default()
+
+	// options
+	router.OPTIONS("/*path", api.OptionsWrapper)
+
+	router.POST(withPrefix(api.INDEX_R), api.IndexWrapper)
+	router.GET(withPrefix(api.GET_VERSION_R), api.GetVersionWrapper)
+
+	// board
+	router.GET(withPrefix(api.LOAD_GENERAL_ARTICLES_R), api.LoadGeneralArticlesAllGuestWrapper)
+	router.GET(withPrefix(api.LOAD_BOTTOM_ARTICLES_R), api.LoadBottomArticlesAllGuestWrapper)
+
+	// article
+	router.GET(withPrefix(api.GET_ARTICLE_R), api.GetArticleAllGuestWrapper)
+
+	return router, nil
+}
+
+func initGin() (*gin.Engine, error) {
 	router := gin.Default()
 
 	// options

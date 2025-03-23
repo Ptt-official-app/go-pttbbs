@@ -14,13 +14,17 @@ import (
 // LoadUHash
 // Load user-hash into SHM.
 func LoadUHash() (err error) {
-	if Shm == nil {
+	if types.IS_ALL_GUEST {
+		return nil
+	}
+
+	if SHM == nil {
 		return ErrShmNotInit
 	}
 
 	// line: 58
-	number := Shm.Shm.Number
-	loaded := Shm.Shm.Loaded
+	number := SHM.Shm.Number
+	loaded := SHM.Shm.Loaded
 
 	// XXX in case it's not assumed zero, this becomes a race...
 	if number == 0 && loaded == 0 {
@@ -33,10 +37,10 @@ func LoadUHash() (err error) {
 		// line: 61
 		// use golang style.
 		todayIsZeroBytes := [ptttype.TODAYISSZ]byte{}
-		Shm.Shm.TodayIs = todayIsZeroBytes
+		SHM.Shm.TodayIs = todayIsZeroBytes
 
 		// line: 62
-		Shm.Shm.Loaded = 1
+		SHM.Shm.Loaded = 1
 	} else {
 		// line: 65
 		err = fillUHash(true)
@@ -87,7 +91,7 @@ func fillUHash(isOnfly bool) error {
 
 	log.Infof("fillUHash: to write usernum: %v", uidInCache)
 
-	Shm.Shm.Number = int32(uidInCache)
+	SHM.Shm.Number = int32(uidInCache)
 
 	return nil
 }
@@ -106,17 +110,17 @@ func userecRawAddToUHash(uidInCache ptttype.UIDInStore, userecRaw *ptttype.Usere
 
 	h := cmsys.StringHashWithHashBits(userecRaw.UserID[:])
 
-	shmUserID := &Shm.Shm.Userid[uidInCache]
+	shmUserID := &SHM.Shm.Userid[uidInCache]
 	if !isOnfly || types.Cstrcmp(userecRaw.UserID[:], shmUserID[:]) != 0 {
-		Shm.Shm.Userid[uidInCache] = userecRaw.UserID
-		Shm.Shm.Money[uidInCache] = userecRaw.Money
+		SHM.Shm.Userid[uidInCache] = userecRaw.UserID
+		SHM.Shm.Money[uidInCache] = userecRaw.Money
 		if ptttype.USE_COOLDOWN {
-			Shm.Shm.CooldownTime[uidInCache] = 0
+			SHM.Shm.CooldownTime[uidInCache] = 0
 		}
 	}
 
 	p := h
-	val := Shm.Shm.HashHead[p]
+	val := SHM.Shm.HashHead[p]
 	// offsetNextInHash := unsafe.Offsetof(Shm.Raw.NextInHash)
 	isFirst := true
 
@@ -131,7 +135,7 @@ func userecRawAddToUHash(uidInCache ptttype.UIDInStore, userecRaw *ptttype.Usere
 		// 1. setting p as val
 		// 2. get val from next_in_hash[p]
 		p = cmsys.Fnv32_t(val)
-		val = Shm.Shm.NextInHash[p]
+		val = SHM.Shm.NextInHash[p]
 
 		isFirst = false
 	}
@@ -139,12 +143,12 @@ func userecRawAddToUHash(uidInCache ptttype.UIDInStore, userecRaw *ptttype.Usere
 	// set next in hash as n
 
 	if isFirst {
-		Shm.Shm.HashHead[p] = uidInCache
+		SHM.Shm.HashHead[p] = uidInCache
 	} else {
-		Shm.Shm.NextInHash[p] = uidInCache
+		SHM.Shm.NextInHash[p] = uidInCache
 	}
 	// set next in hash as -1
-	Shm.Shm.NextInHash[uidInCache] = -1
+	SHM.Shm.NextInHash[uidInCache] = -1
 }
 
 func InitFillUHash(isOnfly bool) {
@@ -153,7 +157,7 @@ func InitFillUHash(isOnfly bool) {
 		for idx := range toFillHashHead {
 			toFillHashHead[idx] = -1
 		}
-		Shm.Shm.HashHead = toFillHashHead
+		SHM.Shm.HashHead = toFillHashHead
 	} else {
 		for idx := cmsys.Fnv32_t(0); idx < (1 << ptttype.HASH_BITS); idx++ {
 			checkHash(idx)
@@ -169,7 +173,7 @@ func checkHash(h cmsys.Fnv32_t) {
 
 	// line: 71
 	p := h
-	val := Shm.Shm.HashHead[p]
+	val := SHM.Shm.HashHead[p]
 
 	// line: 72
 	isFirst := true
@@ -180,15 +184,15 @@ func checkHash(h cmsys.Fnv32_t) {
 		if val < -1 || val >= ptttype.MAX_USERS {
 			log.Warnf("uhash_loader.checkHash: val invalid: h: %v p: %v val: %v isHead: %v", h, p, val, isFirst)
 			if isFirst {
-				Shm.Shm.HashHead[p] = -1
+				SHM.Shm.HashHead[p] = -1
 			} else {
-				Shm.Shm.NextInHash[p] = -1
+				SHM.Shm.NextInHash[p] = -1
 			}
 			break
 		}
 
 		// get user-id: line: 75
-		userID = &Shm.Shm.Userid[val]
+		userID = &SHM.Shm.Userid[val]
 		userIDHash := cmsys.StringHashWithHashBits(userID[:])
 
 		// check hash as expected line: 76
@@ -196,22 +200,22 @@ func checkHash(h cmsys.Fnv32_t) {
 			// XXX
 			// the result of the userID does not fit the h (broken?).
 			// XXX uhash_loader is used only 1-time when starting the service.
-			next := Shm.Shm.NextInHash[val]
+			next := SHM.Shm.NextInHash[val]
 
 			// get next from *p (val)
 			log.Warnf("userID hash is not in the corresponding idx (to remove) (%v): userID: %v userIDHash: %v h: %v next: %v", deep, types.CstrToString(userID[:]), userIDHash, h, next)
 			// remove current by setting current as the next, hopefully the next user can fit the userIDHash.
 			val = next
 			if isFirst {
-				Shm.Shm.HashHead[p] = next
+				SHM.Shm.HashHead[p] = next
 			} else {
-				Shm.Shm.NextInHash[p] = next
+				SHM.Shm.NextInHash[p] = next
 			}
 		} else {
 			// 1. p as val (pointer in NextInHash)
 			// 2. update val as NextInHash[p]
 			p = cmsys.Fnv32_t(val)
-			val = Shm.Shm.NextInHash[p]
+			val = SHM.Shm.NextInHash[p]
 			isFirst = false
 		}
 

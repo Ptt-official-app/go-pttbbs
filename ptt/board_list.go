@@ -228,13 +228,13 @@ func LoadHotBoards(user *ptttype.UserecRaw, uid ptttype.UID) (summary []*ptttype
 // https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1147
 func loadHotBoardStat(user *ptttype.UserecRaw, uid ptttype.UID, idx uint8) *ptttype.BoardStat {
 	// read bid-in-cache
-	bidInCache := cache.Shm.Shm.HBcache[idx]
+	bidInCache := cache.SHM.Shm.HBcache[idx]
 	if bidInCache < 0 {
 		return nil
 	}
 
 	// get board
-	board := &cache.Shm.Shm.BCache[bidInCache]
+	board := &cache.SHM.Shm.BCache[bidInCache]
 
 	// board-stat
 	// assuming that the hot-boards can be accessed by the public.
@@ -274,7 +274,7 @@ func LoadBoardsByBids(user *ptttype.UserecRaw, uid ptttype.UID, bids []ptttype.B
 
 func loadBoardStat(user *ptttype.UserecRaw, uid ptttype.UID, bid ptttype.Bid) (boardStat *ptttype.BoardStat) {
 	bidInCache := bid.ToBidInStore()
-	board := &cache.Shm.Shm.BCache[bidInCache]
+	board := &cache.SHM.Shm.BCache[bidInCache]
 
 	isGroupOp := groupOp(user, uid, board)
 	state := boardPermStat(user, uid, board, bid)
@@ -452,13 +452,13 @@ func LoadGeneralBoardDetails(user *ptttype.UserecRaw, uid ptttype.UID, startIdx 
 	details = make([]*ptttype.BoardDetailRaw, 0, nBoardsWithNext)
 	if isAsc {
 		for idx, idxInStore := 0, startIdxInStore; idxInStore < nBoardsInCache_siis && idx < nBoardsWithNext; idx, idxInStore = idx+1, idxInStore+1 {
-			bidInCache := cache.Shm.Shm.BSorted[bsortBy][idxInStore]
+			bidInCache := cache.SHM.Shm.BSorted[bsortBy][idxInStore]
 			bid := bidInCache.ToBid()
 			if !bid.IsValid() {
 				continue
 			}
 
-			eachBoard := &cache.Shm.Shm.BCache[bidInCache]
+			eachBoard := &cache.SHM.Shm.BCache[bidInCache]
 			lastPostTime, _ := cache.GetLastPosttime(bid)
 			total, _ := cache.GetBTotalWithRetry(bid)
 			eachBoardDetail := &ptttype.BoardDetailRaw{
@@ -474,13 +474,13 @@ func LoadGeneralBoardDetails(user *ptttype.UserecRaw, uid ptttype.UID, startIdx 
 		}
 	} else {
 		for idx, idxInStore := 0, startIdxInStore; idxInStore >= 0 && idx < nBoardsWithNext; idx, idxInStore = idx+1, idxInStore-1 {
-			bidInCache := cache.Shm.Shm.BSorted[bsortBy][idxInStore]
+			bidInCache := cache.SHM.Shm.BSorted[bsortBy][idxInStore]
 			bid := bidInCache.ToBid()
 			if !bid.IsValid() {
 				continue
 			}
 
-			eachBoard := &cache.Shm.Shm.BCache[bidInCache]
+			eachBoard := &cache.SHM.Shm.BCache[bidInCache]
 			lastPostTime, _ := cache.GetLastPosttime(bid)
 			total, _ := cache.GetBTotalWithRetry(bid)
 			eachBoardDetail := &ptttype.BoardDetailRaw{
@@ -507,12 +507,12 @@ func LoadGeneralBoardDetails(user *ptttype.UserecRaw, uid ptttype.UID, startIdx 
 //
 // https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1147
 func loadAutoCompleteBoardStat(user *ptttype.UserecRaw, uid ptttype.UID, idxInStore ptttype.SortIdxInStore, keyword []byte) (boardStat *ptttype.BoardStat, isEnd bool) {
-	bidInCache := cache.Shm.Shm.BSorted[ptttype.BSORT_BY_NAME][idxInStore]
+	bidInCache := cache.SHM.Shm.BSorted[ptttype.BSORT_BY_NAME][idxInStore]
 	if bidInCache < 0 {
 		return nil, false
 	}
 
-	board := &cache.Shm.Shm.BCache[bidInCache]
+	board := &cache.SHM.Shm.BCache[bidInCache]
 
 	if !types.CstrCaseHasPrefix(board.Brdname[:], keyword) {
 		return nil, true
@@ -574,12 +574,12 @@ func loadClassBoardStat(user *ptttype.UserecRaw, uid ptttype.UID, bid ptttype.Bi
 //
 // https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1147
 func loadGeneralBoardStat(user *ptttype.UserecRaw, uid ptttype.UID, idxInStore ptttype.SortIdxInStore, title []byte, keyword []byte, bsortBy ptttype.BSortBy) (boardStat *ptttype.BoardStat) {
-	bidInCache := cache.Shm.Shm.BSorted[bsortBy][idxInStore]
+	bidInCache := cache.SHM.Shm.BSorted[bsortBy][idxInStore]
 	if bidInCache < 0 {
 		return nil
 	}
 
-	board := &cache.Shm.Shm.BCache[bidInCache]
+	board := &cache.SHM.Shm.BCache[bidInCache]
 
 	bid := bidInCache.ToBid()
 	isGroupOp := groupOp(user, uid, board)
@@ -609,7 +609,7 @@ func newBoardStat(bidInCache ptttype.BidInStore, state ptttype.BoardStatAttr, bo
 	// XXX this is a hack to ensure the brd-postmask
 	brd_postmask := ptttype.BRD_POSTMASK
 	if (board.BrdAttr&ptttype.BRD_HIDE != 0) && (board.BrdAttr&ptttype.BRD_POSTMASK == 0) && state == ptttype.NBRD_BOARD {
-		cache.Shm.Shm.BCache[bidInCache].BrdAttr |= brd_postmask
+		cache.SHM.Shm.BCache[bidInCache].BrdAttr |= brd_postmask
 		board.BrdAttr |= brd_postmask
 	}
 

@@ -13,7 +13,7 @@ func TestLoadUHash(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	err := NewSHM(TestShmKey, ptttype.USE_HUGETLB, true)
+	err := Init(TestShmKey, ptttype.USE_HUGETLB, true)
 	if err != nil {
 		return
 	}
@@ -59,8 +59,8 @@ func TestLoadUHash(t *testing.T) {
 				t.Errorf("loadUHash() error = %v, wantErr %v", err, tt.wantErr)
 			}
 
-			hashHead := &Shm.Shm.HashHead
-			nextInHash := Shm.Shm.NextInHash
+			hashHead := &SHM.Shm.HashHead
+			nextInHash := SHM.Shm.NextInHash
 
 			for idx, each := range hashHead {
 				if each != wantHashHead[idx] {
@@ -81,7 +81,7 @@ func Test_fillUHash(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	err := NewSHM(TestShmKey, ptttype.USE_HUGETLB, true)
+	err := Init(TestShmKey, ptttype.USE_HUGETLB, true)
 	if err != nil {
 		return
 	}
@@ -140,8 +140,8 @@ func Test_fillUHash(t *testing.T) {
 				t.Errorf("fillUHash() error = %v, wantErr %v", err, tt.wantErr)
 			}
 
-			hashHead := &Shm.Shm.HashHead
-			nextInHash := Shm.Shm.NextInHash
+			hashHead := &SHM.Shm.HashHead
+			nextInHash := SHM.Shm.NextInHash
 
 			for idx, each := range hashHead {
 				if each != wantHashHead[idx] {
@@ -163,7 +163,7 @@ func TestInitFillUHash(t *testing.T) {
 
 	logrus.Infof("HASH_BITS: %v", ptttype.HASH_BITS)
 
-	err := NewSHM(TestShmKey, ptttype.USE_HUGETLB, true)
+	err := Init(TestShmKey, ptttype.USE_HUGETLB, true)
 	if err != nil {
 		return
 	}
@@ -215,8 +215,8 @@ func TestInitFillUHash(t *testing.T) {
 
 			InitFillUHash(tt.args.isOnfly)
 
-			hashHead := &Shm.Shm.HashHead
-			nextInHash := Shm.Shm.NextInHash
+			hashHead := &SHM.Shm.HashHead
+			nextInHash := SHM.Shm.NextInHash
 
 			for idx, each := range hashHead {
 				if each != wantHashHead[idx] {

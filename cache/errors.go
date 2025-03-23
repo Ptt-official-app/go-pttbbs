@@ -20,4 +20,7 @@ var (
 	ErrBusy     = errors.New("busy")
 
 	ErrInvalidNumBoards = errors.New("invalid num boards")
+
+	ErrMapNotInit     = errors.New("map not init")
+	ErrMapAlreadyInit = errors.New("map already init")
 )
