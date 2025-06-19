@@ -32,6 +32,7 @@ func initGinAllGuest() (*gin.Engine, error) {
 	// board
 	router.GET(withPrefix(api.LOAD_GENERAL_ARTICLES_R), api.LoadGeneralArticlesAllGuestWrapper)
 	router.GET(withPrefix(api.LOAD_BOTTOM_ARTICLES_R), api.LoadBottomArticlesAllGuestWrapper)
+	router.GET(withPrefix(api.LOAD_BOARD_SUMMARY_R), api.LoadBoardSummaryAllGuestWrapper)
 
 	// article
 	router.GET(withPrefix(api.GET_ARTICLE_R), api.GetArticleAllGuestWrapper)

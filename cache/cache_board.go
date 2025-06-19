@@ -1029,6 +1029,25 @@ func GetLastPosttime(bid ptttype.Bid) (lastposttime types.Time4, err error) {
 	return SHM.Shm.LastPostTime[bidInCache], nil
 }
 
+func GetLastPosttimeAllGuest(boardID *ptttype.BoardID_t) (lastposttime types.Time4, err error) {
+	ret, ok := MAP.BoardLastPostTime[*boardID]
+	nowUS := types.NowUS()
+
+	if !ok || (ret.time == 0 && nowUS-ret.updateTimeUS > BOARD_ZERO_TOTAL_RECHECK_TIME_US) || nowUS-ret.updateTimeUS > BOARD_TOTAL_RECHECK_TIME_US {
+		err := SetBTotalAllGuest(boardID)
+		if err != nil {
+			return 0, err
+		}
+
+		ret, ok = MAP.BoardLastPostTime[*boardID]
+		if !ok {
+			return 0, nil
+		}
+	}
+
+	return ret.time, nil
+}
+
 func TouchBPostNum(bid ptttype.Bid, delta int32) (err error) {
 	if !bid.IsValid() {
 		return ptttype.ErrInvalidBid

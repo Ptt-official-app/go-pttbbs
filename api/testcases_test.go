@@ -23,6 +23,8 @@ var (
 	testBoardSummary14 *bbs.BoardSummary
 	testBoardSummary15 *bbs.BoardSummary
 
+	testBoardSummary6AllGuest *bbs.BoardSummary
+
 	testBoardDetail3  *bbs.BoardDetail
 	testBoardDetail1  *bbs.BoardDetail
 	testClassDetail2  *bbs.BoardDetail
@@ -170,6 +172,11 @@ func initTestVars() {
 		BM:         []bbs.UUserID{},
 		IdxByName:  "ALLPOST",
 		IdxByClass: "vFSt-Q@ALLPOST",
+	}
+
+	testBoardSummary6AllGuest = &bbs.BoardSummary{
+		BBoardID: bbs.BBoardID("ALLPOST"),
+		Brdname:  "ALLPOST",
 	}
 
 	testBoardSummary7 = &bbs.BoardSummary{

@@ -34,6 +34,14 @@ def _index():
     return ''
 
 
+@app.route(_with_app_prefix('/board/<bid>/summary'), methods=['GET'])
+def _load_board_summary(bid):
+    """
+    swagger_from_file: apidoc/load_board_summary.yaml
+    """
+    return ''
+
+
 @app.route(_with_app_prefix('/board/<bid>/articles'), methods=['GET'])
 def _load_general_articles(bid):
     """
