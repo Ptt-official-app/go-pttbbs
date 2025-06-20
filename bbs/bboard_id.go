@@ -80,3 +80,7 @@ func (b BBoardID) ToBrdname() string {
 	_, boardIDRaw, _ := b.ToRaw()
 	return types.CstrToString(boardIDRaw[:])
 }
+
+func (b BBoardID) ToBrdnameAllGuest() string {
+	return string(b)
+}

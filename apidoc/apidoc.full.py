@@ -289,6 +289,7 @@ def _get_email_token_info():
     """
     return ''
 
+
 @app.route(_with_app_prefix('/refresh'), methods=['POST'])
 def _refresh():
     """
