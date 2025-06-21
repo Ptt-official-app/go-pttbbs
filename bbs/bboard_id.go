@@ -32,6 +32,11 @@ func ToBBoardID(bid ptttype.Bid, boardIDRaw *ptttype.BoardID_t) BBoardID {
 //
 // BBoardID is possible coming from outside, requiring validation.
 func (b BBoardID) ToRaw() (bid ptttype.Bid, boardIDRaw *ptttype.BoardID_t, err error) {
+	if types.IS_ALL_GUEST {
+		boardIDRaw, err = b.ToRawAllGuest()
+		return 0, boardIDRaw, err
+	}
+
 	bList := strings.Split(string(b), "_")
 	if len(bList) < 2 {
 		return 0, nil, ErrInvalidBBoardID
@@ -77,6 +82,10 @@ func (b BBoardID) ToRawAllGuest() (boardIDRaw *ptttype.BoardID_t, err error) {
 }
 
 func (b BBoardID) ToBrdname() string {
+	if types.IS_ALL_GUEST {
+		return b.ToBrdnameAllGuest()
+	}
+
 	_, boardIDRaw, _ := b.ToRaw()
 	return types.CstrToString(boardIDRaw[:])
 }
