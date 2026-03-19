@@ -841,7 +841,7 @@ func checkCooldown(user *ptttype.UserecRaw, uid ptttype.UID, board *ptttype.Boar
 	}
 
 	if ptttype.REJECT_FLOOD_POST {
-		for i := 0; i < len(limit); i += 2 {
+		for i := 0; i < len(limit)-1; i += 2 {
 			if int(board.NUser) > limit[i] && int(posttimes) >= limit[i+1] {
 				return true, nil
 			}

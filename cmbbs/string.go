@@ -10,10 +10,7 @@ func SubjectEx(title *ptttype.Title_t) (titleType ptttype.SubjectType, newTitle 
 	pTitle := types.CstrToBytes(title[:])
 
 	titleType = ptttype.SUBJECT_NORMAL
-	for {
-		if len(pTitle) == 0 {
-			break
-		}
+	for len(pTitle) != 0 {
 		if cmsys.StrcaseStartsWith(pTitle, ptttype.STR_REPLY) {
 			pTitle = pTitle[len(ptttype.STR_REPLY):]
 			titleType = ptttype.SUBJECT_REPLY

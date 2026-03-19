@@ -1,46 +1,69 @@
+version: "2"
 run:
   timeout: 30m
   tests: false
-linters-settings:
-  misspell:
-    locale: US
-    ignore-words:
-      - visable
-  nolintlint:
-    allow-unused: true
 linters:
   enable:
     - gosec
     - misspell
-    - gofmt
-    - goimports
     - revive
     - nolintlint
-issues:
-  exclude-files:
-    - testinit.go
-    - cmsys/fnv_hash.go
-    - 00-config.go
-    - ptttype/00-config-default.go
-  exclude:
-    # we use underscores only for _postfix
-    - don't use underscores
-    # we use ALL_CAPS for constants
-    - don't use ALL_CAPS
-    # Simplify returning boolean expression (https://staticcheck.io/docs/checks#S1008)
-    - S1008
-    # A function argument is overwritten before its first use (https://staticcheck.io/docs/checks#SA4009)
-    - SA4009
-    # Skip weak rnd for now.
-    - G404
-    - comment on exported var.*should be of the form
-    - func name will be used as .* by other packages, and that stutters; consider calling this'
-    - type name will be used as .* by other packages, and that stutters; consider calling this'
-    - 'indent-error-flow:'
-    - 'exported:'
-    - '`setBBottom` is unused'
-    - '`pwcuSetByBit` is unused'
-    - 'unused-parameter: parameter'
-    - G115
-  exclude-rules: []
-  exclude-use-default: true
+  settings:
+    misspell:
+      locale: US
+      ignore-rules:
+        - visable
+    nolintlint:
+      allow-unused: true
+    revive:
+      rules:
+      - name: var-naming
+        disabled: true
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    paths:
+      - testinit.go
+      - cmsys/fnv_hash.go
+      - 00-config.go
+      - ptttype/00-config-default.go
+    rules:
+      # we use underscores only for _postfix
+      - path: (.+)\.go$
+        text: don't use underscores
+      # we use ALL_CAPS for constants
+      - path: (.+)\.go$
+        text: don't use ALL_CAPS
+      # Simplify returning boolean expression (https://staticcheck.io/docs/checks#S1008)
+      - path: (.+)\.go$
+        text: S1008
+      # A function argument is overwritten before its first use (https://staticcheck.io/docs/checks#SA4009)
+      - path: (.+)\.go$
+        text: SA4009
+      # Skip weak rnd for now.
+      - path: (.+)\.go$
+        text: G404
+      - path: (.+)\.go$
+        text: comment on exported var.*should be of the form
+      - path: (.+)\.go$
+        text: 'func name will be used as .* by other packages, and that stutters; consider calling this'
+      - path: (.+)\.go$
+        text: 'type name will be used as .* by other packages, and that stutters; consider calling this'
+      - path: (.+)\.go$
+        text: 'indent-error-flow:'
+      - path: (.+)\.go$
+        text: 'exported:'
+      - path: (.+)\.go$
+        text: '`setBBottom` is unused'
+      - path: (.+)\.go$
+        text: '`pwcuSetByBit` is unused'
+      - path: (.+)\.go$
+        text: 'unused-parameter: parameter'
+      - path: (.+)\.go$
+        text: G115
+      - path: (.+)\.go$
+        text: QF1001

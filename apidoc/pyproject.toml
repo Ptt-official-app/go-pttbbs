@@ -35,7 +35,7 @@ apidoc = 'apidoc.apidoc:app'
 
 [tool.setuptools.packages.find]
 include = [
-    'COMBINE_harmonizer',
+    'apidoc',
 ]
 exclude = [
     'tests*',

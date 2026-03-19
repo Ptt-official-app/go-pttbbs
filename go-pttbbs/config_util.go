@@ -1,6 +1,8 @@
 package main
 
-import "github.com/Ptt-official-app/go-pttbbs/configutil"
+import (
+	"github.com/Ptt-official-app/go-pttbbs/configutil"
+)
 
 const configPrefix = "go-pttbbs"
 
