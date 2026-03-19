@@ -5,9 +5,9 @@ go 1.24.0
 require (
 	github.com/gin-gonic/gin v1.11.0
 	github.com/golang-jwt/jwt/v4 v4.5.2
-	github.com/google/go-querystring v1.1.0
+	github.com/google/go-querystring v1.2.0
 	github.com/google/uuid v1.6.0
-	github.com/sirupsen/logrus v1.9.3
+	github.com/sirupsen/logrus v1.9.4
 	github.com/spf13/jwalterweatherman v1.1.0
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.11.1
