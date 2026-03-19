@@ -8,4 +8,4 @@ if [ "${branch}" == "HEAD" ]; then branch=`git describe --tags`; fi
 # project
 project=`basename \`pwd\``
 
-docker build -t ${project}:${branch} -f docker/Dockerfile .
+docker build --platform linux/amd64,linux/arm64 -t ${project}:${branch} -f docker/Dockerfile .
