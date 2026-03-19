@@ -19,6 +19,7 @@ func pwcuEnableUFlagBit(uflag ptttype.UFlag, mask ptttype.UFlag) ptttype.UFlag {
 	return uflag | mask
 }
 
+//lint:ignore U1000 implemented in c-pttbbs
 func pwcuSetByBit(perm ptttype.PERM, mask ptttype.PERM, isSet bool) ptttype.PERM {
 	if isSet {
 		return pwcuEnableBit(perm, mask)

@@ -259,19 +259,20 @@ func findRecordStartIdxBinSearch(file *os.File, startStart ptttype.SortIdxInStor
 }
 
 func findRecordStartIdxBinSearchValidIdxInStore(idxInStore ptttype.SortIdxInStore, file *os.File, header *ptttype.FileHeaderRaw, start ptttype.SortIdxInStore, end ptttype.SortIdxInStore) (newIdxInStore ptttype.SortIdxInStore, newFileCreateTime types.Time4, newStart ptttype.SortIdxInStore, newEnd ptttype.SortIdxInStore, err error) {
-	if idxInStore == start {
+	switch idxInStore {
+	case start:
 		newIdxInStore, newFileCreateTime, err = findValidRecordIdxInStore(idxInStore, file, header, false, start, end)
 		if err != nil {
 			return -1, 0, 0, 0, err
 		}
 		return newIdxInStore, newFileCreateTime, newIdxInStore, end, nil
-	} else if idxInStore == end {
+	case end:
 		newIdxInStore, newFileCreateTime, err = findValidRecordIdxInStore(idxInStore, file, header, true, start, end)
 		if err != nil {
 			return -1, 0, 0, 0, err
 		}
 		return newIdxInStore, newFileCreateTime, start, newIdxInStore, nil
-	} else {
+	default:
 		newIdxInStore, newFileCreateTime, err = findValidRecordIdxInStore(idxInStore, file, header, false, start, end)
 		if err != nil {
 			return -1, 0, 0, 0, err

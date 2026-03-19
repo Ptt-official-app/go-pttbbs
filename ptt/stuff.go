@@ -39,6 +39,8 @@ func setBDir(boardID *ptttype.BoardID_t) (filename string, err error) {
 //
 // XXX do not deal with digest-mode in go-pttbbs.
 // will use middleware for digest.
+//
+//lint:ignore U1000 implemented in c-pttbbs
 func setBBottom(boardID *ptttype.BoardID_t) (filename string, err error) {
 	return path.SetBFile(boardID, ptttype.FN_DIR_BOTTOM)
 }

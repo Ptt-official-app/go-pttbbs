@@ -1,4 +1,4 @@
-package initgin
+package configutil
 
 import "errors"
 
