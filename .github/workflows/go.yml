@@ -22,9 +22,9 @@ jobs:
     - name: golangci-lint
       uses: golangci/golangci-lint-action@v9
       with:
-        working-directory: /home/runner/work/go-pttbbs/go-pttbbs
-        args: --verbose --config /home/runner/work/go-pttbbs/go-pttbbs/.golangci.yaml
-
+        version: v2.7
+        args: --verbose
+        
     - name: Get dependencies
       run: |
         go get -v -t -d ./...
