@@ -1,0 +1,13 @@
+coverage:
+  status:
+    patch: off
+    project:
+      default:
+        target: 50
+        threshold: 5
+ignore:
+  - apidoc
+  - scripts
+  - pttbbs
+  - swagger
+  - testutil

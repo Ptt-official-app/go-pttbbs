@@ -15,6 +15,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/cmsys"
 	"github.com/Ptt-official-app/go-pttbbs/ptttype"
 	"github.com/Ptt-official-app/go-pttbbs/types"
+	"github.com/sirupsen/logrus"
 )
 
 func GetBCache(bid ptttype.Bid) (board *ptttype.BoardHeaderRaw, err error) {
@@ -190,9 +191,14 @@ func SetBTotalAllGuest(boardID *ptttype.BoardID_t) (err error) {
 		return err
 	}
 
+	nowUS := types.NowUS()
+
 	file, err := os.Open(dirFilename)
 	if err != nil { // we should always have .DIR
+		logrus.Errorf("cache.SetBTotalAllGuest: unable to open .DIR: dirFilename: %v e: %v", dirFilename, err)
 		if os.IsNotExist(err) {
+			MAP.BoardTotal[*boardID] = mapCount{count: 0, updateTimeUS: nowUS}
+			MAP.BoardLastPostTime[*boardID] = mapTime{time: 0, updateTimeUS: nowUS}
 			err = nil
 		}
 		return err
@@ -201,10 +207,10 @@ func SetBTotalAllGuest(boardID *ptttype.BoardID_t) (err error) {
 
 	stat, err := file.Stat()
 	if err != nil {
+		logrus.Errorf("cache.SetBTotalAllGuest: unable to stat .DIR: dirFilename: %v e: %v", dirFilename, err)
 		return err
 	}
 	nArticles := int32(stat.Size() / int64(ptttype.FILE_HEADER_RAW_SZ))
-	nowUS := types.NowUS()
 	MAP.BoardTotal[*boardID] = mapCount{count: nArticles, updateTimeUS: nowUS}
 
 	if nArticles == 0 {
@@ -217,12 +223,14 @@ func SetBTotalAllGuest(boardID *ptttype.BoardID_t) (err error) {
 	// ptttype.FileHeaderRaw
 	_, err = file.Seek(int64(nArticles-1)*int64(ptttype.FILE_HEADER_RAW_SZ), 0)
 	if err != nil {
+		logrus.Errorf("cache.SetBTotalAllGuest: unable to seek .DIR: dirFilename: %v nArticles: %v e: %v", dirFilename, nArticles, err)
 		return err
 	}
 
 	articleFilename := &ptttype.Filename_t{}
 	err = types.BinaryRead(file, binary.LittleEndian, articleFilename)
 	if err != nil {
+		logrus.Errorf("cache.SetBTotalAllGuest: unable to read .DIR: dirFilename: %v e: %v", dirFilename, err)
 		return err
 	}
 	if types.Cstrcmp(articleFilename[:], []byte(ptttype.FN_SAFEDEL)) == 0 {
@@ -232,6 +240,7 @@ func SetBTotalAllGuest(boardID *ptttype.BoardID_t) (err error) {
 
 	createTime, err := articleFilename.CreateTime()
 	if err != nil {
+		logrus.Errorf("cache.SetBTotalAllGuest: unable to get CreateTime: dirFilename: %v e: %v", dirFilename, err)
 		return err
 	}
 
