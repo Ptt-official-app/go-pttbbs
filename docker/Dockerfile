@@ -8,7 +8,7 @@ RUN THE_ARCH=`uname -m` && \
     if [ "${THE_ARCH}" = "aarch64" -o "${THE_ARCH}" = "arm64"  ]; then THE_GOARCH=arm64; else THE_GOARCH=amd64; fi && \
     echo "THE_ARCH: ${THE_ARCH} THE_GOARCH: ${THE_GOARCH}" && \
     sleep 3 && \
-    curl -L https://dl.google.com/go/go1.24.1.linux-${THE_GOARCH}.tar.gz | tar -zxv && \
+    curl -L https://dl.google.com/go/go1.25.8.linux-${THE_GOARCH}.tar.gz | tar -zxv && \
     mv go /usr/local
 
 RUN DEBIAN_FRONTEND=noninteractive &&  \
