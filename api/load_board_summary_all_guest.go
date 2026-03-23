@@ -20,11 +20,11 @@ func LoadBoardSummaryAllGuest(remoteAddr string, params interface{}, path interf
 		return nil, ErrInvalidPath
 	}
 	summary, err := bbs.LoadBoardSummaryAllGuest(thePath.BBoardID)
-	if summary == nil {
-		return nil, ErrInvalidParams
-	}
 	if err != nil {
 		return nil, err
+	}
+	if summary == nil {
+		return nil, ErrInvalidParams
 	}
 	result = LoadBoardSummaryResult(summary)
 

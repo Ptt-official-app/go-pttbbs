@@ -7,7 +7,7 @@ const (
 	// copy to ptttype/00-config-production.go to setup production config.
 	//
 	// type struct requires const.
-	MAX_USERS = 2000000 /* 最高註冊人數 */
+	MAX_USERS = 2000 /* 最高註冊人數 */
 
 	MAX_ACTIVE = 512 /* 最多同時上站人數 */
 
