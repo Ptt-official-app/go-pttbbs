@@ -12,7 +12,7 @@
 
 This project intends to be the go implementation of [ptt/pttbbs](https://github.com/ptt/pttbbs).
 
-Collaborating with [Ptt-official-app go-pttbbsweb](https://github.com/ptt-official-app/go-pttbbsweb), go-pttbbs intends to be web-based bbs.
+Collaborating with [Ptt-official-app pttbbs-backend](https://github.com/Ptt-official-app/pttbbs-backend), go-pttbbs intends to be web-based bbs.
 
 ## Getting Started
 
@@ -99,4 +99,4 @@ You can do following for the swagger-api:
 1. setup the python virtualenv.
 2. cd apidoc; pip install -e . ; cd ..
 3. ./scripts/swagger.sh
-4. browse to [http://localhost:8080](http://localhost:8080).
+4. browse to [http://localhost:8081](http://localhost:8081).
