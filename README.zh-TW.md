@@ -12,7 +12,7 @@
 
 這是使用 go 實作的 [ptt/pttbbs](https://github.com/ptt/pttbbs)
 
-與 [Ptt-official-app go-pttbbsweb](https://github.com/ptt-official-app/go-pttbbsweb) 一起成為 web-based BBS.
+與 [Ptt-official-app pttbbs-backend](https://github.com/Ptt-official-app/pttbbs-backend) 一起成為 web-based BBS.
 
 ## 開始
 
@@ -96,4 +96,8 @@
 1. 設定 python virtualenv.
 2. cd apidoc; pip install -e . ; cd ..
 3. ./scripts/swagger.sh
-4. 使用 browser 觀看 [http://localhost:8080](http://localhost:8080).
+4. 使用 browser 觀看 [http://localhost:8081](http://localhost:8081).
+
+## Acknowledgement
+
+Some parts of the Dockerfile are adopted from [bbsdocker/imageptt](https://github.com/bbsdocker/imageptt), Copyright © 2018-2020 holishing, Licensed under MIT License.
