@@ -16,4 +16,4 @@ apidoc/parameters.py swagger/swagger.json swagger/v3/openapi.security.json
 
 docker container stop swagger-go-pttbbs
 docker container rm swagger-go-pttbbs
-docker run -itd --restart always --name swagger-go-pttbbs -p 127.0.0.1:8080:8080 -e SWAGGER_JSON=/foo/v3/openapi.security.params.json -v ${PWD}/swagger:/foo swaggerapi/swagger-ui
+docker run -itd --restart always --name swagger-go-pttbbs -p 127.0.0.1:8081:8080 -e SWAGGER_JSON=/foo/v3/openapi.security.params.json -v ${PWD}/swagger:/foo swaggerapi/swagger-ui

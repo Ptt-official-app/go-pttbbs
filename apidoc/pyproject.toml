@@ -8,8 +8,8 @@ build-backend = 'setuptools.build_meta'
 name = 'go-pttbbs'
 version = '0.26.5'
 dependencies = [
-    'Flask==3.1.0',
-    'PyYAML==6.0.2',
+    'Flask==3.1.3',
+    'PyYAML==6.0.3',
     'flask-swagger@git+https://github.com/chhsiao1981/flask-swagger.git@importlib.metadata#egg=flask-swagger',
 ]
 authors = [
