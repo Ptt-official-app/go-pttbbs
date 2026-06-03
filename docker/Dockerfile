@@ -1,7 +1,12 @@
 FROM golang:1.25.11-trixie
 
-RUN DEBIAN_FRONTEND=noninteractive &&  \
-    apt update && apt install -y \
+# from https://github.com/bbsdocker/imageptt
+RUN set -x && \
+    groupadd --gid 99 bbs && \
+    useradd -m -g bbs -s /bin/bash --uid 9999 bbs && \
+    rm -f /etc/localtime && \
+    ln -rsv /usr/share/zoneinfo/Asia/Taipei /etc/localtime && \
+    apt update && DEBIAN_FRONTEND=noninteractive apt install -y \
         bmake \
         gcc \
         g++ \
@@ -13,7 +18,14 @@ RUN DEBIAN_FRONTEND=noninteractive &&  \
         libgrpc++-dev \
         protobuf-compiler \
         protobuf-compiler-grpc \
-        libgflags-dev
+        libgflags-dev \
+        curl \
+        ca-certificates \
+        python3 \
+        python-is-python3 \
+        git \
+        gnupg \
+        sudo
 
 ENV PATH=${PATH}:/home/bbs/bin:/opt/bbs/bin
 
