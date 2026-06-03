@@ -12,6 +12,11 @@ func TestSubjectEx(t *testing.T) {
 	copy(title0[:], []byte("Re: Re: Fw: test0"))
 	expectedType0 := ptttype.SUBJECT_FORWARD
 	expected0 := []byte("test0")
+
+	title1 := &ptttype.Title_t{}
+	copy(title1[:], []byte(""))
+	expectedType1 := ptttype.SUBJECT_NORMAL
+	var expected1 []byte = nil
 	type args struct {
 		title *ptttype.Title_t
 	}
@@ -26,6 +31,11 @@ func TestSubjectEx(t *testing.T) {
 			args:              args{title: title0},
 			expectedTitleType: expectedType0,
 			expectedNewTitle:  expected0,
+		},
+		{
+			args:              args{title: title1},
+			expectedTitleType: expectedType1,
+			expectedNewTitle:  expected1,
 		},
 	}
 	for _, tt := range tests {
