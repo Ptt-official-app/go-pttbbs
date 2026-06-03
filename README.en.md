@@ -103,4 +103,4 @@ You can do following for the swagger-api:
 
 ## Acknowledgement
 
-Some part of the Dockerfile is adopted from [bbsdocker/imageptt](https://github.com/bbsdocker/imageptt), Copyright © 2018-2020 holishing, Licensed under MIT License.
+Some parts of the Dockerfile are adopted from [bbsdocker/imageptt](https://github.com/bbsdocker/imageptt), Copyright © 2018-2020 holishing, Licensed under MIT License.
