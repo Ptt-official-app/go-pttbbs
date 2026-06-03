@@ -100,3 +100,7 @@ You can do following for the swagger-api:
 2. cd apidoc; pip install -e . ; cd ..
 3. ./scripts/swagger.sh
 4. browse to [http://localhost:8081](http://localhost:8081).
+
+## Acknowledgement
+
+Some part of the Dockerfile is adopted from [bbsdocker/imageptt](https://github.com/bbsdocker/imageptt), Copyright © 2018-2020 holishing, Licensed under MIT License.
