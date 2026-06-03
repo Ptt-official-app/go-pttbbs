@@ -18,8 +18,8 @@ jobs:
         uses: docker/metadata-action@v6
         with:
           images: |
-            docker.io/chhsiao1981/docker-postfix
-            ghcr.io/chhsiao1981/docker-postfix
+            docker.io/pttofficialapps/go-pttbbs
+            ghcr.io/Ptt-official-app/go-pttbbs
           tags: |
             type=semver,pattern={{raw}}
 
