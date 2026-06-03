@@ -1,15 +1,4 @@
-FROM bbsdocker/imageptt:latest
-
-# golang on debian
-# THE_ARCH: uname -m
-# THE_GOARCH: amd64 or arm64
-WORKDIR /opt
-RUN THE_ARCH=`uname -m` && \
-    if [ "${THE_ARCH}" = "aarch64" -o "${THE_ARCH}" = "arm64"  ]; then THE_GOARCH=arm64; else THE_GOARCH=amd64; fi && \
-    echo "THE_ARCH: ${THE_ARCH} THE_GOARCH: ${THE_GOARCH}" && \
-    sleep 3 && \
-    curl -L https://dl.google.com/go/go1.25.8.linux-${THE_GOARCH}.tar.gz | tar -zxv && \
-    mv go /usr/local
+FROM golang:1.25.11-trixie
 
 RUN DEBIAN_FRONTEND=noninteractive &&  \
     apt update && apt install -y \
@@ -26,8 +15,7 @@ RUN DEBIAN_FRONTEND=noninteractive &&  \
         protobuf-compiler-grpc \
         libgflags-dev
 
-ENV GOROOT=/usr/local/go
-ENV PATH=${PATH}:/usr/local/go/bin:/home/bbs/bin:/opt/bbs/bin
+ENV PATH=${PATH}:/home/bbs/bin:/opt/bbs/bin
 
 # go-pttbbs
 COPY . /srv/go-pttbbs
