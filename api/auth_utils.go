@@ -7,7 +7,7 @@ import (
 	"github.com/Ptt-official-app/go-pttbbs/types"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 func GetJwt(c *gin.Context) (jwt string) {
