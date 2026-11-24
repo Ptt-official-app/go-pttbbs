@@ -6,6 +6,10 @@ import (
 )
 
 func LoadFullClassBoards(uuserID UUserID, startBid ptttype.Bid, nBoards int) (summaries []*BoardSummary, nextBid ptttype.Bid, err error) {
+	if nBoards < 0 {
+		return nil, 0, ErrInvalidParams
+	}
+
 	if !startBid.IsValid() {
 		return nil, 0, ptttype.ErrInvalidBid
 	}

@@ -6,6 +6,10 @@ import (
 )
 
 func LoadGeneralBoards(uuserID UUserID, startIdxStr string, nBoards int, title []byte, keyword []byte, isAsc bool, bsortBy ptttype.BSortBy) (summaries []*BoardSummary, nextIdxStr string, err error) {
+	if nBoards < 0 {
+		return nil, "", ErrInvalidParams
+	}
+
 	startIdx, err := loadGeneralBoardsToStartIdx(startIdxStr, isAsc, bsortBy)
 	if err != nil {
 		return nil, "", ErrInvalidParams
