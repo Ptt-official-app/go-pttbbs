@@ -85,7 +85,7 @@ func GetRecord(dirFilename string, filename *ptttype.Filename_t, total int) (idx
 	file, err := os.Open(dirFilename)
 	if err != nil {
 		if os.IsNotExist(err) {
-			err = nil
+			err = ErrRecordNotFound
 		}
 		return 0, nil, err
 	}

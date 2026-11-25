@@ -684,3 +684,19 @@ func TestDeleteRecord(t *testing.T) {
 		wg.Wait()
 	}
 }
+
+func TestGetRecord_noDirFile(t *testing.T) {
+	filename := &ptttype.Filename_t{}
+	copy(filename[:], []byte("M.1607202239.A.30D"))
+
+	fhdr, err := func() (*ptttype.FileHeaderRaw, error) {
+		_, fhdr, err := GetRecord("./testcase/not-exists/.DIR", filename, 1)
+		return fhdr, err
+	}()
+	if err != ErrRecordNotFound {
+		t.Errorf("GetRecord() err = %v, want %v", err, ErrRecordNotFound)
+	}
+	if fhdr != nil {
+		t.Errorf("GetRecord() fhdr = %v, want nil", fhdr)
+	}
+}
