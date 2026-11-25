@@ -39,3 +39,20 @@ func TestNewBoardDetailFromRaw(t *testing.T) {
 		wg.Wait()
 	}
 }
+
+func TestNewBoardDetailFromRaw_limitLogins(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	raw := *testBoardDetailRaw3
+	raw.VoteLimitLogins = 7
+	raw.PostLimitLogins = 9
+
+	got := NewBoardDetailFromRaw(&raw, 1)
+	if got.VoteLimitLogins != 7 {
+		t.Errorf("VoteLimitLogins: got: %v expected: 7", got.VoteLimitLogins)
+	}
+	if got.PostLimitLogins != 9 {
+		t.Errorf("PostLimitLogins: got: %v expected: 9", got.PostLimitLogins)
+	}
+}

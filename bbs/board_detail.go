@@ -64,7 +64,7 @@ func NewBoardDetailFromRaw(boardDetailRaw *ptttype.BoardDetailRaw, bid ptttype.B
 		ChessCountry:       boardDetailRaw.ChessCountry,
 		VoteLimitLogins:    boardDetailRaw.VoteLimitLogins,
 		BUpdate:            boardDetailRaw.BUpdate,
-		PostLimitLogins:    boardDetailRaw.VoteLimitLogins,
+		PostLimitLogins:    boardDetailRaw.PostLimitLogins,
 		BVote:              boardDetailRaw.BVote,
 		VTime:              boardDetailRaw.VTime,
 		Level:              boardDetailRaw.Level,
